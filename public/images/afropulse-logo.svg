@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">
+  <!-- Logo mark - abstract pulse/beat -->
+  <path d="M50 50 L70 50 L80 20 L90 80 L100 30 L110 50 L130 50"
+        stroke="#FF4500"
+        stroke-width="8"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- Wordmark -->
+  <text x="150" y="65"
+        font-family="Helvetica, Arial, sans-serif"
+        font-size="20"
+        font-weight="600"
+        letter-spacing="1"
+        fill="#000000">
+    afropulse
+  </text>
+</svg>

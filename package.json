@@ -1,0 +1,45 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4.0.1",
+        "@vue/compiler-sfc": "^3.4.38",
+        "autoprefixer": "^10.4.20",
+        "axios": "^1.6.4",
+        "laravel-vite-plugin": "^1.0.0",
+        "postcss": "^8.5.1",
+        "tailwindcss": "^4.0.1",
+        "vite": "^5.0.0"
+    },
+    "dependencies": {
+        "@heroicons/vue": "^2.1.5",
+        "@inertiajs/vue3": "^2.0.3",
+        "@spatie/media-library-pro-styles": "^1.4.0",
+        "@spatie/media-library-pro-vue3-attachment": "^1.4.0",
+        "@tailwindcss/forms": "^0.5.7",
+        "@tailwindcss/vite": "^4.0.1",
+        "@vitejs/plugin-vue": "^5.1.2",
+        "chart.js": "^4.4.6",
+        "datatables.net-autofill-dt": "^2.7.0",
+        "datatables.net-buttons-dt": "^3.2.1",
+        "datatables.net-colreorder-dt": "^2.0.4",
+        "datatables.net-dt": "^2.2.1",
+        "datatables.net-fixedheader-dt": "^4.0.1",
+        "datatables.net-responsive-dt": "^3.0.3",
+        "datatables.net-select-dt": "^3.0.0",
+        "datatables.net-vue3": "^3.0.4",
+        "dotenv": "^16.4.5",
+        "jszip": "^3.10.1",
+        "nprogress": "^0.2.0",
+        "path": "^0.12.7",
+        "pdfmake": "^0.2.18",
+        "pinia": "^2.3.0",
+        "quill": "^2.0.2",
+        "vue": "^3.0.0",
+        "ziggy-js": "^2.3.0"
+    }
+}
