@@ -2,54 +2,48 @@
 
     <Head title="Confirm password" />
 
-    <div class="bg-stone-100 h-screen">
-        <div>
-            <div class="sm:mx-auto sm:w-full sm:max-w-md">
-                <Logo />
-                <h2 class="main-heading">
-                    Confirm access
-                </h2>
-            </div>
+    <div class="max-w-[384px] mx-auto px-8">
+        <Logo />
 
-            <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-[384px] px-8">
-                <div class="p-5 container-border">
-                    <p class="text-gray-800 text-sm">Enter password to confirm access.</p>
-                    <form @submit.prevent="submit" class="space-y-4 mt-4">
-                        <div>
-                            <FloatLabel variant="on">
-                                <Password id="password" v-model="form.password" required fluid
-                                    :invalid="!!form.errors.password" :feedback="false" toggleMask />
-                                <label for="password">Password</label>
-                            </FloatLabel>
-                            <p class="text-xs mt-2 text-red-600" v-if="form.errors.password">{{ form.errors.password }}
-                            </p>
-                        </div>
-                        <div>
-                            <Button @click="submit" :disabled="form.processing" label="Confirm password"
-                                size="small" class="w-full btn-primary" />
-                        </div>
-                    </form>
-                </div>
-                <p class="mt-10 text-center text-sm text-gray-800">
-                    Back to
-                    <Link :href="route('home')" class="font-medium underline text-gray-800 link-hover">
-                    dashboard
-                    </Link>
-                </p>
-            </div>
+        <h2 class="main-heading text-center">
+            Confirm access
+        </h2>
+
+        <div class="mt-6 p-5 container-border">
+            <p class="text-gray-700 text-sm mb-4">
+                Enter password to confirm access
+            </p>
+
+            <form @submit.prevent="submit" class="space-y-4">
+                <FormInput v-model="form.password" label="Password" id="password" type="password" required
+                    :disabled="form.processing" :error="form.errors.password" />
+
+                <button @click="submit" :disabled="form.processing"
+                    class="w-full btn-primary h-11 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {{ form.processing ? 'Confirming...' : 'Confirm password' }}
+                </button>
+            </form>
         </div>
+
+        <p class="mt-8 text-center text-sm text-gray-700">
+            Back to
+            <Link :href="route('home')" class="text-sm link">
+            dashboard
+            </Link>
+        </p>
     </div>
 </template>
 
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import Logo from '../../Shared/Logo.vue'
+import FormInput from '../../Components/FormInput.vue'
 
 const form = useForm({
-    password: '',
+    password: ''
 })
 
 const submit = () => {
-    form.post(route('password.confirm'));
+    form.post(route('password.confirm'))
 }
 </script>

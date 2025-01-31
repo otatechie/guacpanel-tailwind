@@ -2,74 +2,38 @@
 
     <Head title="Create account" />
 
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="main-heading">
+    <div class="max-w-[384px] mx-auto px-8">
+        <h2 class="main-heading text-center">
             Create account
         </h2>
-    </div>
 
-    <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-[384px] px-8">
-        <div class="container-border p-5">
-            <form @submit.prevent="submit" class="space-y-4 mt-2">
-                <div>
-                    <FloatLabel variant="on">
-                        <InputText id="name" v-model="form.name" required :invalid="!!form.errors.name"
-                            class="w-full" />
-                        <label for="name">Legal name</label>
-                    </FloatLabel>
-                    <p v-if="form.errors.name" class="text-xs mt-2 text-red-600">
-                        {{ form.errors.name }}
-                    </p>
-                </div>
+        <div class="mt-6 container-border p-5">
+            <form @submit.prevent="submit" class="space-y-6 mt-2">
+                <FormInput v-model="form.name" label="Legal name" id="name" required :error="form.errors.name" />
 
-                <div class="pt-2">
-                    <FloatLabel variant="on">
-                        <InputText id="email" v-model="form.email" required type="email" :invalid="!!form.errors.email"
-                            class="w-full" />
-                        <label for="email">Email</label>
-                    </FloatLabel>
-                    <p v-if="form.errors.email" class="text-xs mt-2 text-red-600">
-                        {{ form.errors.email }}
-                    </p>
-                </div>
+                <FormInput v-model="form.email" label="Email" id="email" type="email" required
+                    :error="form.errors.email" />
 
-                <div class="pt-2">
-                    <FloatLabel variant="on">
-                        <Password id="password" v-model="form.password" required fluid :invalid="!!form.errors.password"
-                            :feedback="false" toggleMask />
-                        <label for="password">Password</label>
-                    </FloatLabel>
-                    <p v-if="form.errors.password" class="text-xs mt-2 text-red-600">
-                        {{ form.errors.password }}
-                    </p>
-                </div>
+                <FormInput v-model="form.password" label="Password" id="password" type="password" required
+                    :error="form.errors.password" />
 
-                <div class="pt-2">
-                    <FloatLabel variant="on">
-                        <Password id="password_confirmation" v-model="form.password_confirmation" required fluid
-                            :invalid="!!form.errors.password_confirmation" :feedback="false" toggleMask />
-                        <label for="password_confirmation">Confirm password</label>
-                    </FloatLabel>
-                    <p v-if="form.errors.password_confirmation" class="text-xs mt-2 text-red-600">
-                        {{ form.errors.password_confirmation }}
-                    </p>
-                </div>
+                <FormInput v-model="form.password_confirmation" label="Confirm password" id="password_confirmation"
+                    type="password" required :error="form.errors.password_confirmation" />
 
-                <p class="text-sm text-gray-700">
+                <p class="text-sm text-gray-600">
                     By creating an account, you agree to our <span class="underline font-medium">Terms</span> and have
-                    read and
-                    acknowledge the <span class="underline font-medium">Global Privacy</span> Statement.
+                    read and acknowledge the <span class="underline font-medium">Global Privacy</span> Statement.
                 </p>
 
-                <Button @click="submit" :disabled="form.processing" label="Create account" size="small"
-                    class="w-full btn-primary" />
+                <button @click="submit" :disabled="form.processing" class="w-full btn-primary">
+                    Create account
+                </button>
             </form>
         </div>
 
-        <p class="py-10 text-center text-sm text-gray-800">
+        <p class="mt-8 text-center text-sm text-gray-800">
             Already a member?
-            <Link :href="route('login')"
-                class="text-sm underline text-gray-800 font-medium link-hover">
+            <Link :href="route('login')" class="text-sm link">
             Login
             </Link>
         </p>
@@ -80,6 +44,7 @@
 import { Head, Link } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '../../Layouts/Auth.vue'
+import FormInput from '../../Components/FormInput.vue'
 
 defineOptions({
     layout: Auth
@@ -88,7 +53,6 @@ defineOptions({
 const form = useForm({
     name: '',
     email: '',
-    username: '',
     password: '',
     password_confirmation: '',
 })

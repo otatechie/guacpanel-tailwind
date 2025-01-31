@@ -11,8 +11,13 @@ textarea:focus, input:focus {
 }
 
 /* Custom Classes */
+
+.main-heading {
+    @apply text-2xl font-extrabold text-gray-800;
+}
+
 .sub-heading {
-    @apply text-xl font-semibold text-gray-900;
+    @apply text-2xl font-semibold text-gray-800;
 }
 
 .container-border {
@@ -23,14 +28,22 @@ textarea:focus, input:focus {
     @apply bg-white border border-gray-300 rounded shadow-sm p-0.5;
 }
 
-.link-hover {
-    @apply hover:text-blue-600 hover:bg-blue-100 -mx-1 px-0.5 py-0.5;
+.link {
+    @apply hover:text-blue-500 text-blue-600 underline font-medium;
 }
 
 .btn-primary {
     @apply inline-block rounded-md border border-blue-600 bg-blue-600 px-12 py-2
            text-sm font-medium text-white hover:bg-transparent hover:text-blue-600
            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-           transition-colors duration-200;
+           transition-colors duration-200 cursor-pointer;
 }
+
+.btn-outline {
+    @apply inline-block rounded-md border border-blue-600 bg-transparent px-12 py-2
+           text-sm font-medium text-blue-600 hover:bg-gray-50 hover:text-gray-900
+           focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2
+           transition-colors duration-200 cursor-pointer;
+}
+
 
