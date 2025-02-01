@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
-use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminPermissionRoleController;
 use App\Http\Controllers\AdminRoleController;
@@ -10,7 +9,6 @@ use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -56,7 +54,6 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('permissions-roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role');
         Route::resource('role', AdminRoleController::class)->except('show');
         Route::resource('permission', AdminPermissionController::class)->except('show');
-        Route::resource('category', AdminCategoryController::class);
     });
 
     // Backup Routes

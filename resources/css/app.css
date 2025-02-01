@@ -7,7 +7,7 @@ textarea:focus, input:focus {
 }
 
 @theme {
-    --font-sans: "Inter", "sans-serif";
+    --font-sans: "Gantari", "sans-serif";
 }
 
 /* Custom Classes */

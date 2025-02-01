@@ -5,32 +5,29 @@
                 <h3 class="text-lg font-medium text-gray-900">Roles</h3>
                 <p class="text-sm text-gray-500">Define user roles and their permissions</p>
             </div>
-            <button @click="showAddModal = true" class="btn-primary">Add New Role</button>
+            <button @click="showAddModal = true" class="btn-primary">Add new role</button>
         </div>
 
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role
+                        <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role
                             Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Users
+                        <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Users
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Permissions</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="role in roles.data" :key="role.id">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-2 py-2 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ role.name }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ role.users_count }} users</div>
-                        </td>
-                        <td class="px-6 py-4">
+                        <td class="px-2 py-2">
                             <div class="flex flex-wrap gap-2">
                                 <span v-for="permission in role.permissions.slice(0, 3)" :key="permission.id"
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -41,7 +38,7 @@
                                 </span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+                        <td class="px-2 py-2 whitespace-nowrap text-right ">
                             <button @click="editRole(role)"
                                 class="p-2 text-gray-600 hover:text-blue-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
                                 title="Edit role">

@@ -2,10 +2,8 @@
 <template>
     <Transition name="modal">
         <div v-if="show" class="fixed inset-0 z-50">
-            <!-- Backdrop -->
             <div class="fixed inset-0 bg-gray-900/50 transition-opacity duration-300"></div>
 
-            <!-- Modal -->
             <div class="fixed inset-0 z-10 overflow-y-auto">
                 <div class="flex min-h-full items-center justify-center p-4">
                     <div

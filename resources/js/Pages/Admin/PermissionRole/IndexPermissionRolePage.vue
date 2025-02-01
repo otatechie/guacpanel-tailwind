@@ -4,17 +4,15 @@
 
     <div class="max-w-5xl mx-auto px-6">
         <div class="bg-white rounded-xl shadow-sm">
-            <!-- Header -->
             <div class="p-6 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">User Access Management</h2>
-                <p class="mt-1 text-sm text-gray-500">Manage user roles and permissions</p>
+                <h2 class="sub-heading">User Access Management</h2>
+                <p class="mt-1 text-gray-500 font-medium">Manage user roles and permissions</p>
             </div>
 
-            <!-- Tabs -->
             <div class="border-b border-gray-200">
                 <nav class="flex -mb-px">
                     <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
-                        'px-6 py-3 text-sm font-medium whitespace-nowrap',
+                        'px-6 py-3 font-medium whitespace-nowrap',
                         activeTab === tab.key
                             ? 'border-b-2 border-blue-500 text-blue-600'
                             : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -24,7 +22,6 @@
                 </nav>
             </div>
 
-            <!-- Content -->
             <div class="p-6">
                 <RolesTab v-if="activeTab === 'roles'" :roles="roles" :permissions="permissions" />
 

@@ -21,7 +21,7 @@ class AdminRoleController extends Controller
                 'min:3',
                 Rule::unique('roles', 'name'),
                 'not_in:admin,superadmin', // Prevent reserved names
-                'regex:/^[a-zA-Z0-9\s-_]+$/' // Allow only alphanumeric, spaces, hyphens, underscores
+                'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/' // Must start with a letter
             ],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id']
@@ -47,7 +47,7 @@ class AdminRoleController extends Controller
                 'min:3',
                 Rule::unique('roles', 'name')->ignore($role->id),
                 'not_in:admin,superadmin',
-                'regex:/^[a-zA-Z0-9\s-_]+$/'
+                'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/' // Must start with a letter
             ],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id']
