@@ -8,16 +8,16 @@
     <footer class="border-t border-gray-400">
         <div class="mx-auto max-w-7xl px-6 py-4 md:flex md:items-center md:justify-between lg:px-8">
             <nav class="flex justify-center space-x-6 md:order-2">
-                <Link :href="route('home')" class="link">
-                <span class="text-xs">Homepage</span>
+                <Link :href="route('home')">
+                <span class="text-xs link">Homepage</span>
                 </Link>
 
-                <a href="#" class="link">
-                    <span class="text-xs">Privacy Policy</span>
+                <a href="#">
+                    <span class="text-xs link">Privacy Policy</span>
                 </a>
 
-                <a href="#" class="link">
-                    <span class="text-xs">Terms</span>
+                <a href="#">
+                    <span class="text-xs link">Terms</span>
                 </a>
             </nav>
 

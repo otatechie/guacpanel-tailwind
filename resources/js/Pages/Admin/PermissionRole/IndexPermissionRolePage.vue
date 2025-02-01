@@ -1,59 +1,59 @@
 <template>
 
-    <Head title="Permission & Roles" />
+    <Head title="Permissions & Roles" />
 
-    <slot>
-        <div class="container-border mx-5">
-           <div class="mx-0.5">
-            <Tabs value="0" class="compact-tabs">
-                <TabList>
-                    <Tab value="0" class="font-bold text-lg">Users</Tab>
-                    <Tab value="1" class="font-bold text-lg">Roles</Tab>
-                    <Tab value="2" class="font-bold text-lg">Permissions</Tab>
-                </TabList>
-                <TabPanels>
-                    <TabPanel value="0">
-                        <IndexUserTab :users="props.users"></IndexUserTab>
-                    </TabPanel>
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="bg-white rounded-xl shadow-sm">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900">User Access Management</h2>
+                <p class="mt-1 text-sm text-gray-500">Manage user roles and permissions</p>
+            </div>
 
-                    <TabPanel value="1">
-                        <Role :roles="props.roles"></Role>
-                    </TabPanel>
+            <!-- Tabs -->
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                    <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
+                        'px-6 py-3 text-sm font-medium whitespace-nowrap',
+                        activeTab === tab.key
+                            ? 'border-b-2 border-blue-500 text-blue-600'
+                            : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ]">
+                        {{ tab.label }}
+                    </button>
+                </nav>
+            </div>
 
-                    <TabPanel value="2">
-                    </TabPanel>
-                </TabPanels>
-            </Tabs>
-           </div>
+            <!-- Content -->
+            <div class="p-6">
+                <RolesTab v-if="activeTab === 'roles'" :roles="roles" :permissions="permissions" />
+
+                <PermissionsTab v-if="activeTab === 'permissions'" :permissions="permissions" />
+            </div>
         </div>
-    </slot>
+    </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { Head } from '@inertiajs/vue3';
-import Default from '../../../Layouts/Default.vue';
-
-import Role from './IndexRoleTab.vue';
-import IndexUserTab from './IndexUserTab.vue';
+import { ref } from 'vue'
+import { Head } from '@inertiajs/vue3'
+import Default from '@/Layouts/Default.vue'
+import RolesTab from './RolesTab.vue'
+import PermissionsTab from './PermissionsTab.vue'
 
 defineOptions({
-    layout: Default,
-});
+    layout: Default
+})
 
 const props = defineProps({
-    roles: {
-        type: Object,
-        required: true
-    },
-    permissions: {
-        type: Object,
-        required: true
-    },
-    users: {
-        type: Object,
-        required: true
-    }
-});
+    roles: Object,
+    permissions: Object
+})
 
+const tabs = [
+    { key: 'roles', label: 'Roles' },
+    { key: 'permissions', label: 'Permissions' }
+]
+
+const activeTab = ref('roles')
 </script>

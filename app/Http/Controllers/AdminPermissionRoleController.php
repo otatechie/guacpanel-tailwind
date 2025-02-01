@@ -14,7 +14,17 @@ class AdminPermissionRoleController extends Controller
     public function index()
     {
         $permissions = Permission::get();
-        $roles = Role::get();
+        $roles = Role::with(['permissions', 'users'])
+            ->get()
+            ->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'users_count' => $role->users->count(),
+                    'permissions' => $role->permissions,
+                    'created_at' => $role->created_at->diffForHumans()
+                ];
+            });
         $users = User::get()->map(function ($user) {
             return [
                 'id' => $user->id,
@@ -25,33 +35,13 @@ class AdminPermissionRoleController extends Controller
         });
 
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'permissions' => $permissions,
-            'roles' => $roles,
+            'permissions' => [
+                'data' => $permissions
+            ],
+            'roles' => [
+                'data' => $roles
+            ],
             'users' => $users,
         ]);
-    }
-
-
-    public function storeRole(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => ['required', 'string',  Rule::unique(Role::class)],
-        ]);
-
-        Role::create($validatedData);
-
-        session()->flash('success', 'Role created successfully.');
-    }
-
-
-    public function updateRole(Request $request, Role $role)
-    {
-        $validatedData = $request->validate([
-            'name' => ['required', 'string',  Rule::unique('campaigns', 'title')->ignore($role->id)],
-        ]);
-
-        $role->update($validatedData);
-
-        session()->flash('success', 'Role updated successfully.');
     }
 }

@@ -1,15 +1,12 @@
 <template>
+
     <Head title="Backups" />
 
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-2xl font-heading font-semibold text-gray-900">Backup Management</h2>
-            <button
-                @click="runBackup"
-                :disabled="isBackupRunning"
-                class="inline-flex items-center btn-primary"
-            >
-                {{ isBackupRunning ? 'Creating Backup...' : 'Create new backup' }}
+            <button @click="runBackup" :disabled="isBackupRunning" class="inline-flex items-center btn-primary">
+                {{ isBackupRunning ? 'Creating backup...' : 'Create new backup' }}
             </button>
         </div>
 
@@ -18,25 +15,24 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-gray-100 p-4 rounded">
                         <div class="text-sm text-gray-600">Disk</div>
-                        <div class="text-gray-600 font-medium">{{ info.disk }}</div>
+                        <div class="text-gray-600 font-medium capitalize font-mono">{{ info.disk }}</div>
                     </div>
                     <div class="bg-gray-100 p-4 rounded">
                         <div class="text-sm text-gray-600">Storage type</div>
-                        <div class="text-gray-600 font-medium">{{ info.storageType }}</div>
+                        <div class="text-gray-600 font-medium capitalize font-mono">{{ info.storageType }}</div>
                     </div>
                     <div class="bg-gray-100 p-4 rounded">
                         <div class="text-sm text-gray-600">Used space</div>
-                        <div class="text-gray-600 font-medium">{{ info.storageSpace }}</div>
+                        <div class="text-gray-600 font-medium font-mono">{{ info.storageSpace }}</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
                         <div class="text-xs font-medium text-gray-500 mb-1">Status</div>
                         <div class="flex items-center space-x-2">
-                            <i
-                                :class="info.healthy ? 'pi pi-check-circle text-green-500' : 'pi pi-times-circle text-red-500'"
-                                class="text-lg"
-                            ></i>
-                            <span :class="info.healthy ? 'text-green-600' : 'text-red-600'" class="font-medium">
-                                {{ info.healthy ? 'All Systems Go' : 'Needs Attention' }}
+                            <i :class="info.healthy ? 'pi pi-check-circle text-green-500' : 'pi pi-times-circle text-red-500'"
+                                class="text-lg"></i>
+                            <span :class="info.healthy ? 'text-green-600 font-mono' : 'text-red-600 font-mono'"
+                                class="font-medium">
+                                {{ info.healthy ? 'Operating normally' : 'Attention required' }}
                             </span>
                         </div>
                     </div>
@@ -46,34 +42,43 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File Name</th>
-                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Date</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Size</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    File Name</th>
+                                <th
+                                    class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="backup in info.backups" :key="backup.path" class="hover:bg-gray-50 transition-colors">
+                            <tr v-for="backup in info.backups" :key="backup.path"
+                                class="hover:bg-gray-50 transition-colors">
                                 <td class="px-4 py-4 whitespace-nowrap text-sm">{{ backup.date }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ backup.size }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{{ backup.path }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ backup.size
+                                    }}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{{ backup.path
+                                    }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap text-right space-x-2">
-                                    <button
-                                        @click="downloadBackup(backup.path)"
+                                    <button @click="downloadBackup(backup.path)"
                                         class="p-2 text-gray-600 hover:text-blue-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                                        title="Download backup"
-                                    >
+                                        title="Download backup">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
                                     </button>
-                                    <button
-                                        @click="deleteBackup(backup.path)"
+                                    <button @click="deleteBackup(backup.path)"
                                         class="p-2 text-gray-600 hover:text-red-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                                        title="Delete backup"
-                                    >
+                                        title="Delete backup">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </td>

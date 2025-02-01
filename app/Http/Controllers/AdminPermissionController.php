@@ -12,29 +12,35 @@ class AdminPermissionController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => ['required', 'string',  Rule::unique(Permission::class)],
+            'name' => [
+                'required',
+                'string',
+                'regex:/^[a-z]+(?:-[a-z]+)*$/i', // Hyphens only and letters only
+                Rule::unique(Permission::class)
+            ],
+        ], [
+            'name.regex' => 'Permission name must contain only letters and hyphens in format: resource-action (e.g. posts-edit)'
         ]);
 
         Permission::create($validatedData);
-
         session()->flash('success', 'Permission created successfully.');
-    }
-
-
-    public function edit(string $id)
-    {
-        //
     }
 
 
     public function update(Request $request, string $id, Permission $permission)
     {
         $validatedData = $request->validate([
-            'name' => ['required', 'string',  Rule::unique('permissions', 'name')->ignore($permission->id)],
+            'name' => [
+                'required',
+                'string',
+                'regex:/^[a-z]+(?:-[a-z]+)*$/i', // Hyphens only and letters only
+                Rule::unique('permissions', 'name')->ignore($permission->id)
+            ],
+        ], [
+            'name.regex' => 'Permission name must contain only letters and hyphens in format: resource-action (e.g. posts-edit)'
         ]);
 
         $permission->update($validatedData);
-
         session()->flash('success', 'Permission updated successfully.');
     }
 

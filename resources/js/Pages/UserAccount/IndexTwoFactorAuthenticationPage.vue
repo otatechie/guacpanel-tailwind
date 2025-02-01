@@ -10,7 +10,7 @@
                 </h2>
 
                 <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg backdrop-blur-sm">
-                    <p class="text-sm text-amber-900 font-semibold flex items-center gap-2">
+                    <p class="text-sm text-amber-600 font-semibold flex items-center gap-2">
                         <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -25,7 +25,7 @@
                     <h3 class="font-semibold text-lg text-gray-800">Benefits of 2FA:</h3>
                     <ul class="space-y-3">
                         <li v-for="(benefit, index) in benefits" :key="index"
-                            class="p-3 bg-green-50/50 rounded-lg border border-green-100 flex items-start gap-3 transition-all">
+                            class="p-3 rounded-lg border border-green-100 flex items-start gap-3 transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 text-green-300">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -56,7 +56,7 @@
                         <div class="space-y-1">
                             <div class="flex items-center gap-4">
                                 <span
-                                    class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-blue-600 text-white font-medium">1</span>
+                                    class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-500 text-white font-medium">1</span>
                                 <h3 class="font-medium text-lg text-gray-800">Download an Authenticator App</h3>
                             </div>
                             <div class="ml-10 space-y-2">
@@ -81,7 +81,7 @@
 
                         <div class="flex items-center gap-4">
                             <span
-                                class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-blue-600 text-white font-medium">2</span>
+                                class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-500 text-white font-medium">2</span>
                             <div class="space-y-1">
                                 <h3 class="font-medium text-lg text-gray-800">Scan QR Code</h3>
                                 <p class="text-sm text-gray-600">Open your authenticator app and scan the QR code
@@ -108,7 +108,7 @@
                         <div class="p-2 bg-white rounded-lg shadow-inner">
                             <div v-html="qrCodeSvg" class="w-48 h-48"></div>
                         </div>
-                        <p class="text-xs text-gray-600 text-center font-medium">
+                        <p class="text-xs text-gray-500 text-center font-medium">
                             Scan this QR code with your authenticator app
                         </p>
                     </div>
@@ -130,13 +130,13 @@
                         </p>
 
                         <div class="bg-white border border-amber-200 p-4 rounded-lg">
-                            <p class="text-sm text-amber-500 font-medium flex items-center gap-2">
+                            <p class="text-sm text-amber-600 font-medium flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                                         clip-rule="evenodd" />
                                 </svg>
-                                Each code can only be used once
+                                Important: Recovery codes expire after one use
                             </p>
                         </div>
                     </div>

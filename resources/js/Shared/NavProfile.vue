@@ -21,7 +21,7 @@
         </div>
 
         <div v-show="menuOpen"
-            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-400 ring-opacity-5 focus:outline-none"
+            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-300 ring-opacity-5 focus:outline-none"
             role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
             <Link :href="route('user.index')" @click="closeMenu"
                 class="group px-4 py-1.5 text-sm text-gray-700 flex items-center hover:text-blue-600" role="menuitem"

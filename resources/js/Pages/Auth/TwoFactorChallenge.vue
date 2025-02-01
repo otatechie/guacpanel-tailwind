@@ -3,10 +3,10 @@
     <Head title="Two-factor challenge" />
 
     <div class="max-w-[384px] mx-auto px-8">
-        <h2 class="main-heading text-center mb-2">
+        <h2 class="main-heading text-center">
             Two-factor authentication
         </h2>
-        <p class="text-gray-600 text-sm text-center font-medium">
+        <p class="text-gray-600 text-sm text-center font-medium mt-2">
             Please verify your identity to continue
         </p>
 

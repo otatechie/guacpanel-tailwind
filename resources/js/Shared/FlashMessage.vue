@@ -66,7 +66,7 @@ export default {
                 }
                 const errors = this.$page.props.errors || {};
                 if (Object.keys(errors).length > 0) {
-                    this.showAlert('Form Error', 'Please fix the errors in the form.', 'warning');
+                    this.showAlert('Form Error', 'Please review the highlighted fields', 'warning');
                 }
             },
             deep: true,
