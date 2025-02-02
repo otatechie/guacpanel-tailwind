@@ -34,12 +34,9 @@
                     <div class="p-4 space-y-4">
                         <template v-if="recentActivity.length">
                             <div v-for="activity in recentActivity" :key="activity.id"
-                                class="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-lg transition-all duration-200">
-                                <!-- Enhanced icon container -->
-                                <div :class="[
-                                    'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
-                                    activity.iconBg
-                                ]">
+                                class="flex items-start gap-4 p-3 hover:bg-gray-50 rounded-lg transition-all duration-200
+                                        hover:shadow-sm hover:-translate-y-0.5 cursor-pointer">
+                                <div :class="['flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center', activity.iconBg]">
                                     <component :is="activity.icon" class="w-6 h-6" :class="activity.iconColor" />
                                 </div>
                                 <div class="flex-1 min-w-0">

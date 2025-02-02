@@ -2,7 +2,7 @@
 
     <Head title="Two Factor Authentication" />
 
-    <div class="max-w-5xl mx-auto px-6">
+    <div class="w-full mx-auto md:max-w-5xl">
         <div v-if="!user.two_factor_secret" class="container-border p-8 space-y-8 bg-white rounded-xl shadow-lg">
             <div class="space-y-4">
                 <h2 class="sub-heading">

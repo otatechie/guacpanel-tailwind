@@ -8,13 +8,15 @@
         </h2>
 
         <div class="mt-6 p-5 container-border">
-            <p class="text-gray-700 text-sm mb-2">Password must include:</p>
-            <ul class="text-gray-700 text-sm space-y-1 list-disc pl-5">
-                <li>8+ characters</li>
-                <li>One uppercase letter</li>
-                <li>One number</li>
-                <li>One special character</li>
-            </ul>
+            <div class="bg-gray-50 p-4 rounded-md text-xs">
+                <p class="text-gray-700 mb-2">Password must include:</p>
+                <ul class="text-gray-700 space-y-1 list-disc pl-5">
+                    <li>8+ characters</li>
+                    <li>One uppercase letter</li>
+                    <li>One number</li>
+                    <li>One special character</li>
+                </ul>
+            </div>
 
             <form @submit.prevent="submit" class="space-y-6 mt-4">
                 <input type="hidden" name="token" :value="form.token">

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-stone-100 min-h-screen pb-16">
+    <div class="bg-gray-50 min-h-screen pb-16">
         <Logo />
         <FlashMessage />
         <slot></slot>

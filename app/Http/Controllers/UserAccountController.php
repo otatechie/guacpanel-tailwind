@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Inertia\Inertia;
-use App\Models\PhoneBrand;
-use Illuminate\Support\Arr;
-use App\Models\MobileDevice;
-use App\Models\PhoneVariant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class UserAccountController extends Controller
 {
@@ -43,54 +40,41 @@ class UserAccountController extends Controller
     }
 
 
-    public function userListing()
+    public function indexPasswordExpired()
     {
         $user = auth()->user();
-        $userListings = MobileDevice::with('phoneBrand', 'phoneModel', 'phoneVariant')
-            ->where('user_id', $user->id)->get();
 
-        return Inertia::render('UserAccount/IndexPageListing', [
-            'userListings' => $userListings,
-        ]);
+        if (!$user->isPasswordExpired()) {
+            return redirect()->route('home');
+        }
+
+        return Inertia::render('UserAccount/IndexPagePasswordExpired');
     }
 
 
-    public function userProfile(User $user)
-    {
-        $userListings = MobileDevice::with('phoneBrand', 'phoneModel', 'phoneVariant')
-            ->where('user_id', $user->id)
-            ->get()
-            ->map(function ($mobileDevice) {
-                return array_merge($mobileDevice->toArray(), [
-                    'media' => [
-                        'images' => $mobileDevice->getMedia('images') ?: null,
-                    ],
-                ]);
-            });
-
-        return Inertia::render('UserAccount/IndexPageProfile', [
-            'user' => array_merge($user->toArray(), [
-                'created_at_human' => $user->created_at ? $user->created_at->diffForHumans() : null,
-                'created_at_date' => $user->created_at ? $user->created_at->format('M d, Y') : null
-            ]),
-            'userListings' => $userListings
-        ]);
-    }
-
-
-    public function userFavorites()
+    public function updateExpiredPassword(Request $request)
     {
         $user = $this->getAuthUser();
 
-        $favorites = $user->favorites()
-            ->with(['mobileDevice.phoneBrand', 'mobileDevice.phoneModel', 'mobileDevice.phoneVariant'])
-            ->get()
-            ->map(function ($favorite) {
-                return $favorite->mobileDevice;
-            });
-
-        return Inertia::render('UserAccount/IndexPageFavorites', [
-            'favorites' => $favorites
+        $validatedData = $request->validate([
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[^A-Za-z0-9]/',
+            ]
         ]);
+
+        $user->update([
+            'password' => Hash::make($validatedData['password']),
+            'password_changed_at' => now(),
+            'password_expiry_at' => now()->addMonths(3),
+        ]);
+
+        session()->flash('success', 'Password has been updated successfully.');
+
+        return redirect()->route('home');
     }
 }

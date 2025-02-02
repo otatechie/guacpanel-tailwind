@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <div class="space-y-1">
                 <h3 class="text-lg font-medium text-gray-900">Roles</h3>
-                <p class="text-sm text-gray-500">Define user roles and their permissions</p>
+                <p class="text-sm text-gray-500">Define roles and their permissions</p>
             </div>
             <button @click="showAddModal = true" class="btn-primary">Add new role</button>
         </div>
@@ -14,8 +14,6 @@
                     <tr>
                         <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role
                             Name</th>
-                        <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Users
-                        </th>
                         <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Permissions</th>
                         <th class="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -23,12 +21,17 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="role in roles.data" :key="role.id">
+                    <tr v-if="!roles.data.length">
+                        <td colspan="3" class="px-2 py-4 text-sm text-gray-500 text-center">
+                            No records found
+                        </td>
+                    </tr>
+                    <tr v-else v-for="role in roles.data" :key="role.id">
                         <td class="px-2 py-2 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ role.name }}</div>
                         </td>
                         <td class="px-2 py-2">
-                            <div class="flex flex-wrap gap-2">
+                            <div v-if="role.permissions?.length" class="flex flex-wrap gap-2">
                                 <span v-for="permission in role.permissions.slice(0, 3)" :key="permission.id"
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     {{ permission.name }}
@@ -37,6 +40,7 @@
                                     +{{ role.permissions.length - 3 }} more
                                 </span>
                             </div>
+                            <span v-else class="text-xs text-gray-500">No permissions assigned</span>
                         </td>
                         <td class="px-2 py-2 whitespace-nowrap text-right ">
                             <button @click="editRole(role)"
@@ -61,7 +65,6 @@
             </table>
         </div>
 
-        <!-- Add/Edit Role Modal -->
         <Modal :show="showAddModal" @close="closeModal">
             <div class="p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">
@@ -76,16 +79,24 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
                         <div class="space-y-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
-                            <div v-for="permission in permissions.data" :key="permission.id"
-                                class="flex items-center space-x-2">
-                                <input type="checkbox" :value="permission.id" v-model="form.permissions"
-                                    class="rounded border-gray-300 text-blue-600">
-                                <span class="text-sm text-gray-700">{{ permission.name }}</span>
+                            <div v-if="permissions.data?.length" class="space-y-2">
+                                <div v-for="permission in permissions.data" :key="permission.id"
+                                    class="flex items-center space-x-2">
+                                    <input type="checkbox" :value="permission.id" v-model="form.permissions"
+                                        class="rounded border-gray-300 text-blue-600">
+                                    <span class="text-sm text-gray-700">{{ permission.name }}</span>
+                                </div>
                             </div>
+                            <div v-else class="text-sm text-gray-500 text-center py-2">
+                                No permissions available
+                            </div>
+                        </div>
+                        <div v-if="form.errors.permissions" class="mt-1 text-sm text-red-600">
+                            {{ form.errors.permissions }}
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3">
+                    <div class="flex justify-end gap-3 mt-8">
                         <button type="button"
                             class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg cursor-pointer"
                             @click="closeModal">
@@ -106,7 +117,6 @@ import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@/Components/Modal.vue'
 import FormInput from '@/Components/FormInput.vue'
-import FormCheckbox from '@/Components/FormCheckbox.vue'
 
 const props = defineProps({
     roles: Object,

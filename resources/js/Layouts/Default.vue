@@ -9,7 +9,7 @@
         <!-- Main Content -->
         <div class="flex-1">
             <!-- Header -->
-            <header class="fixed w-full top-0 shadow-sm border-b border-gray-100 z-50">
+            <header class="fixed w-full top-0 shadow-sm border-b border-gray-100 bg-white z-50 ">
                 <div class="flex items-center h-16 px-4">
                     <!-- Logo & Menu -->
                     <div class="flex items-center gap-4">

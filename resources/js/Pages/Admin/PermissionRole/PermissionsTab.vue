@@ -13,13 +13,18 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Permission Name</th>
+                            Permission name</th>
                         <th class="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="permission in permissions.data" :key="permission.id">
+                    <tr v-if="!permissions.data.length">
+                        <td colspan="2" class="px-2 py-4 text-sm text-gray-500 text-center">
+                            No records found
+                        </td>
+                    </tr>
+                    <tr v-else v-for="permission in permissions.data" :key="permission.id">
                         <td class="px-2 py-2 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ permission.name }}</div>
                         </td>
@@ -47,17 +52,17 @@
         </div>
 
         <Modal :show="showAddModal" @close="closeModal">
-            <div class="p-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
+            <div class="p-5">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
                     {{ editingPermission ? 'Edit Permission' : 'Add New Permission' }}
                 </h3>
                 <form @submit.prevent="submitPermission" class="space-y-4">
                     <div>
                         <FormInput label="Permission Name" :error="form.errors.name" v-model="form.name" type="text"
-                            required />
+                            required placeholder="Enter permission name" />
                     </div>
 
-                    <div class="flex justify-end gap-3">
+                    <div class="flex justify-end gap-3 mt-8">
                         <button type="button"
                             class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg cursor-pointer"
                             @click="closeModal">

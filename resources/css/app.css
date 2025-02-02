@@ -7,7 +7,7 @@ textarea:focus, input:focus {
 }
 
 @theme {
-    --font-sans: "Gantari", "sans-serif";
+    --font-sans: "Inter", "sans-serif";
 }
 
 /* Custom Classes */
@@ -17,7 +17,7 @@ textarea:focus, input:focus {
 }
 
 .sub-heading {
-    @apply text-2xl font-semibold text-gray-800;
+    @apply text-2xl font-bold text-gray-800;
 }
 
 .container-border {

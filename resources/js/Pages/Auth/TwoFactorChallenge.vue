@@ -76,7 +76,7 @@
 
         <p class="mt-8 text-center text-sm text-gray-600">
             Having trouble?
-            <a href="#" class="text-blue-600 hover:text-blue-500">Contact support</a>
+            <a href="#" class="link">Contact support</a>
         </p>
     </div>
 </template>

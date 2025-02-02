@@ -39,6 +39,8 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'password_changed_at' => now(),
+            'password_expiry_at' => now()->addMonths(3),
         ]);
 
         session()->flash('success', 'Great! Account created successfully.');

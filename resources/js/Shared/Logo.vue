@@ -1,7 +1,7 @@
 <template>
 
     <div class="flex justify-center">
-        <img class="h-12 w-auto mb-4" :src="logoUrl" alt="Afropulse logo" />
+        <img class="h-24 w-auto" :src="logoUrl" alt="Afropulse logo" />
     </div>
 
 </template>

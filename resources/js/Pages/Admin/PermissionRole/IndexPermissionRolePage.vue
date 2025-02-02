@@ -2,7 +2,7 @@
 
     <Head title="Permissions & Roles" />
 
-    <div class="max-w-5xl mx-auto px-6">
+    <div class="w-full mx-auto md:max-w-5xl">
         <div class="bg-white rounded-xl shadow-sm">
             <div class="p-6 border-b border-gray-200">
                 <h2 class="sub-heading">User Access Management</h2>
