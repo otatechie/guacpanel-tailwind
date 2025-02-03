@@ -24,8 +24,7 @@
                             <file-pond name="app_logo" ref="pond" label-idle="Drop files here..."
                                 :allow-multiple="false" accepted-file-types="image/jpeg, image/png"
                                 :server="uploadConfig" @init="handleFilePondInit" @processfile="handleProcessedFile"
-                                @error="handleError"       :files="initialFiles"
-                                />
+                                @error="handleError" @removefile="handleFileRemoved" :files="initialFiles" />
                         </div>
                     </div>
 
@@ -110,6 +109,10 @@ const initialFiles = computed(() => {
         }
     }]
 })
+
+const handleFileRemoved = () => {
+    form.app_logo = null  // Set to null when image is removed
+}
 
 const form = useForm({
     app_logo: props.personalisation?.app_logo || null

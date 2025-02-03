@@ -18,13 +18,21 @@ class AdminPersonalisationController extends Controller
         ]);
     }
 
+
     public function upload(Request $request)
     {
         if ($request->hasFile('app_logo')) {
+            $personalisation = Personalisation::firstOrCreate();
+
+            // Delete existing file if it exists
+            if ($personalisation->app_logo) {
+                Storage::disk('public')->delete($personalisation->app_logo);
+            }
+
+            // Store new file
             $path = $request->file('app_logo')->store('personalisation', 'public');
 
-            // Store the path right after upload
-            $personalisation = Personalisation::firstOrCreate();
+            // Update path
             $personalisation->update(['app_logo' => $path]);
 
             return response()->json(['path' => $path]);
@@ -37,10 +45,16 @@ class AdminPersonalisationController extends Controller
     {
         $validated = $request->validate([
             'app_name' => ['nullable', 'string', 'max:255'],
-            'app_logo' => ['nullable', 'string'], // Uncomment this
+            'app_logo' => ['nullable', 'string'],
         ]);
 
         $personalisation = Personalisation::firstOrCreate();
+
+        // If app_logo is null (image was removed), delete the existing file
+        if (isset($validated['app_logo']) && $validated['app_logo'] === null && $personalisation->app_logo) {
+            Storage::disk('public')->delete($personalisation->app_logo);
+        }
+
         $personalisation->update($validated);
 
         return redirect()->back()->with('success', 'Settings updated successfully');
