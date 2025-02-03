@@ -20,7 +20,7 @@
                 <FormInput v-model="form.password_confirmation" label="Confirm password" id="password_confirmation"
                     type="password" required :error="form.errors.password_confirmation" />
 
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-gray-500">
                     By creating an account, you agree to our <span class="underline font-medium">Terms</span> and have
                     read and acknowledge the <span class="underline font-medium">Global Privacy</span> Statement.
                 </p>

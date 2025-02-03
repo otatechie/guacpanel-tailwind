@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Login" />
 
     <div class="max-w-[384px] mx-auto px-8">
@@ -7,29 +6,55 @@
 
         <div class="mt-6 container-border p-5">
             <form @submit.prevent="submit" class="space-y-6 mt-2">
-                <FormInput v-model="form.email" label="Email" id="email" type="email" required
-                    :error="form.errors.email" />
+                <FormInput
+                    v-model="form.email"
+                    label="Email address"
+                    name="email"
+                    id="email"
+                    type="email"
+                    required
+                    autocomplete="email"
+                    :error="form.errors.email"
+                />
 
-                <FormInput v-model="form.password" label="Password" id="password" type="password" required
-                    :error="form.errors.password" />
-
-                <div class="flex items-center justify-between">
-                    <FormCheckbox v-model="form.remember" label="Remember me" id="remember-me" />
-                    <Link :href="route('password.request')" class="text-sm link">
-                    Forgot password?
-                    </Link>
+                <div>
+                    <FormInput
+                        v-model="form.password"
+                        label="Password"
+                        name="password"
+                        id="password"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        :error="form.errors.password"
+                    />
+                    <div class="mt-4 flex items-center justify-between">
+                        <FormCheckbox
+                            v-model="form.remember"
+                            label="Remember me"
+                            name="remember"
+                            id="remember-me"
+                        />
+                        <Link :href="route('password.request')" class="text-sm link hover:underline">
+                            Forgot password?
+                        </Link>
+                    </div>
                 </div>
 
-                <button @click="submit" :disabled="form.processing" class="w-full btn-primary">
-                    Sign in
+                <button
+                    type="submit"
+                    :disabled="form.processing"
+                    class="w-full btn-primary"
+                >
+                    {{ form.processing ? 'Signing in...' : 'Sign in' }}
                 </button>
             </form>
         </div>
 
         <p class="mt-8 text-center text-sm text-gray-800">
-            Not a member?
-            <Link :href="route('register')" class="text-sm link">
-            Create an account
+            Don't have an account?
+            <Link :href="route('register')" class="link hover:underline ml-1">
+                Sign up
             </Link>
         </p>
     </div>
@@ -53,6 +78,6 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.post('/login')
+    form.post(route('login'))
 }
 </script>

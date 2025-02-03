@@ -11,8 +11,8 @@
                     <input
                         type="text"
                         v-model="searchQuery"
-                        placeholder="Search audits..."
-                        class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        placeholder="Search"
+                        class="w-50 px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
                     />
                     <button
                         v-if="searchQuery"
@@ -26,7 +26,7 @@
                 </div>
 
                 <span v-if="Object.keys(selectedRows).length"
-                    class="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-sm">
+                    class="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs">
                     {{ Object.keys(selectedRows).length }} selected
                 </span>
                 <button @click="exportToCSV"
@@ -35,7 +35,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    <span class="text-sm font-medium text-white">Export CSV</span>
+                    <span class="text-xs text-white">Export CSV</span>
                 </button>
             </div>
         </div>
@@ -43,7 +43,6 @@
         <div class="overflow-x-auto container-border">
             <div class="min-w-full">
                 <table class="w-full divide-y divide-gray-200">
-                    <!-- Header -->
                     <thead class="bg-gray-100">
                         <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
                             <th v-for="header in headerGroup.headers" :key="header.id" :colSpan="header.colSpan" :class="[
@@ -64,7 +63,6 @@
                         </tr>
                     </thead>
 
-                    <!-- Body -->
                     <tbody class="divide-y divide-gray-200 bg-white">
                         <tr v-if="!table.getRowModel().rows.length">
                             <td :colspan="columns.length" class="px-3 sm:px-6 py-4 sm:py-8 text-center">

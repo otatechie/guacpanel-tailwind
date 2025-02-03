@@ -70,6 +70,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'password.expired' => \App\Http\Middleware\CheckPasswordExpiry::class,
-
+        'require.two.factor' => \App\Http\Middleware\RequireTwoFactor::class,
     ];
 }

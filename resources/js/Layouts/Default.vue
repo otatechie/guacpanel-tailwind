@@ -1,14 +1,11 @@
 <template>
     <div class="min-h-full flex">
-        <!-- Sidebar -->
         <NavSidebarDesktop data-sidebar :class="[
             'fixed left-0 top-16 w-64 h-screen transition-all duration-300',
             isSidebarOpen ? 'translate-x-0' : '-translate-x-64'
         ]" @close="closeSidebar" />
 
-        <!-- Main Content -->
         <div class="flex-1">
-            <!-- Header -->
             <header class="fixed w-full top-0 shadow-sm border-b border-gray-100 bg-white z-50 ">
                 <div class="flex items-center h-16 px-4">
                     <!-- Logo & Menu -->
@@ -25,7 +22,6 @@
 
                     <div class="flex-1"></div>
 
-                    <!-- User Menu -->
                     <div class="flex items-center gap-4">
                         <NavProfile v-if="user" :user="user" />
                         <Link v-else href="/login" class="flex items-center gap-2">Login</Link>
@@ -45,7 +41,6 @@
                 <footer class="bg-gradient-to-b from-gray-500 to-gray-600 py-6 mt-12">
                     <div class="container mx-auto px-4">
                         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                            <!-- Social Links -->
                             <div class="flex items-center space-x-6">
                                 <a href="#" class="text-white hover:text-indigo-400">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -79,8 +74,7 @@
             </div>
         </div>
 
-        <!-- Mobile Overlay -->
-        <div v-if="isSidebarOpen && isMobile()" class="fixed inset-0 bg-gray-600 bg-opacity-75" @click="closeSidebar" />
+        <div v-if="isSidebarOpen && isMobile()" class="fixed inset-0 bg-gray-100 bg-opacity-75" @click="closeSidebar" />
     </div>
 </template>
 

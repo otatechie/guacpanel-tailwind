@@ -66,7 +66,6 @@ import { Link } from '@inertiajs/vue3';
 const mainNavItems = [
     // User Actions Group
     { name: 'Search', href: route('logout'), icon: 'pi pi-search' },
-    { name: 'Help', href: route('public.help'), icon: 'pi pi-question-circle' },
     { type: 'divider' },
 
     // Commerce Group

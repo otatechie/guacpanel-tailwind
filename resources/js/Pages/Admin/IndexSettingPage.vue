@@ -8,7 +8,7 @@
             <div class="space-y-10 divide-y divide-gray-900/10">
                 <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
                     <div class="px-4 sm:px-0">
-                        <h2 class="sub-heading">Security</h2>
+                        <h2 class="sub-heading">Settings</h2>
                         <p class="mt-1 text-sm leading-6 text-gray-700">
                             These settings affect the entire platform. Only accessible to super administrators.
                         </p>
@@ -28,8 +28,7 @@
                                 <h3 class="mb-2 text-xl font-semibold text-gray-700">Activity</h3>
                                 </Link>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Log or history of recent actions,
-                                    logins, changes, and
-                                    notifications related to the account or platform.</p>
+                                    logins, changes, related to accounts or platform.</p>
                             </div>
                             <div>
                                 <Link>
@@ -55,7 +54,7 @@
                                 <h3 class="mb-2 text-xl font-semibold text-gray-700">Users</h3>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Configure roles, permissions,
                                     security, and management of user
-                                    accounts within the system.
+                                    accounts.
                                 </p>
                             </div>
                             <div>
@@ -69,9 +68,8 @@
                                 </svg>
                                 </Link>
                                 <h3 class="mb-2 text-xl font-semibold text-gray-700">Backup</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Create copies of data to prevent
-                                    loss and facilitate
-                                    restoration in case of accidental deletion.</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Create backups of data to prevent
+                                    loss and facilitate restoration.</p>
                             </div>
                             <div>
                                 <Link :href="route('admin.permission.role')">
@@ -82,9 +80,8 @@
                                 </svg>
                                 </Link>
                                 <h3 class="mb-2 text-xl font-semibold text-gray-700">Roles & Permissions</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Create copies of data to prevent
-                                    loss and facilitate
-                                    restoration in case of accidental deletion.</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Manage user roles and permissions
+                                    to control access and functionality.</p>
                             </div>
                             <div>
                                 <Link>
@@ -97,8 +94,21 @@
                                 </Link>
                                 <h3 class="mb-2 text-xl font-semibold text-gray-700"> Authentication Log</h3>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Track access activities and login
-                                    attempts to gain insight
-                                    into user authentication procedures.</p>
+                                    attempts to gain insight.</p>
+                            </div>
+                            <div>
+                                <Link :href="route('admin.setting.manage')">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                                </svg>
+
+                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Account Security</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Configure and manage
+                                    security controls to maintain secure access.</p>
+                                </Link>
                             </div>
                         </div>
                     </div>
