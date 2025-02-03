@@ -34,8 +34,11 @@ export default defineConfig({
         },
     },
     server: {
-        host: "localhost",
-        port: 3000,
+        hmr: {
+            host: 'starter-w.test',
+        },
+        host: 'starter-w.test',
+        cors: true,
     },
     build: {
         outDir: "public/build",

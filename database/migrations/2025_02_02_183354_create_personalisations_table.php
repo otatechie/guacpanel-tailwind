@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('personalisations', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
             $table->string('app_name')->nullable();
             $table->string('app_logo')->nullable();
             $table->string('favicon')->nullable();

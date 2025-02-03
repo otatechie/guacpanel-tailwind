@@ -31,7 +31,7 @@
                                     logins, changes, related to accounts or platform.</p>
                             </div>
                             <div>
-                                <Link>
+                                <Link :href="route('admin.personalisation.index')">
                                 <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
                                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd"

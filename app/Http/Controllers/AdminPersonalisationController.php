@@ -5,30 +5,44 @@ namespace App\Http\Controllers;
 use App\Models\Personalisation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class AdminPersonalisationController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Admin/Personalisation/IndexPage');
+        $personalisation = Personalisation::first();
+
+        return Inertia::render('Admin/Personalisation/IndexPage', [
+            'personalisation' => $personalisation
+        ]);
+    }
+
+    public function upload(Request $request)
+    {
+        if ($request->hasFile('app_logo')) {
+            $path = $request->file('app_logo')->store('personalisation', 'public');
+
+            // Store the path right after upload
+            $personalisation = Personalisation::firstOrCreate();
+            $personalisation->update(['app_logo' => $path]);
+
+            return response()->json(['path' => $path]);
+        }
+        return response()->json(['error' => 'No file uploaded'], 400);
     }
 
 
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'app_name' => ['accepted', 'string', 'max:255'],
-            'app_logo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'favicon' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'footer_text' => ['accepted', 'string', 'max:255'],
-            'copyright_text' => ['accepted', 'string', 'max:255'],
-            'email_notifications' => ['accepted', 'boolean'],
-            'push_notifications' => ['accepted', 'boolean'],
-            'timezone' => ['accepted', 'string', 'max:255'],
-            'date_format' => ['accepted', 'string', 'max:255'],
-            'time_format' => ['accepted', 'string', 'max:255'],
+            'app_name' => ['nullable', 'string', 'max:255'],
+            'app_logo' => ['nullable', 'string'], // Uncomment this
         ]);
 
-        $personalisation = Personalisation::first();
+        $personalisation = Personalisation::firstOrCreate();
+        $personalisation->update($validated);
+
+        return redirect()->back()->with('success', 'Settings updated successfully');
     }
 }
