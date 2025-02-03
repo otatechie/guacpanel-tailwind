@@ -23,8 +23,6 @@
                         <div class="grid grid-cols-2 gap-4">
                             <FormInput v-model="profileForm.location" label="Location" id="location" type="text"
                                 required :error="profileForm.errors.location" />
-                            <FormSelect v-model="profileForm.region" :options="regions" label="Region" id="region"
-                                required :error="profileForm.errors.region" option-label="name" option-value="value" />
                         </div>
                     </div>
                 </div>
@@ -85,10 +83,6 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    countries: {
-        type: Object,
-        required: true
-    },
 })
 
 defineOptions({ layout: Default })
@@ -97,7 +91,6 @@ const profileForm = useForm({
     name: props.user.name,
     email: props.user.email,
     location: props.user.location,
-    region: props.user.region,
 })
 
 const passwordForm = useForm({
@@ -105,25 +98,6 @@ const passwordForm = useForm({
     password: '',
     password_confirmation: '',
 })
-
-const regions = ref([
-    { name: 'Greater Accra', value: 'Greater Accra' },
-    { name: 'Ashanti', value: 'Ashanti' },
-    { name: 'Eastern', value: 'Eastern' },
-    { name: 'Western', value: 'Western' },
-    { name: 'Central', value: 'Central' },
-    { name: 'Volta', value: 'Volta' },
-    { name: 'Northern', value: 'Northern' },
-    { name: 'Upper East', value: 'Upper East' },
-    { name: 'Upper West', value: 'Upper West' },
-    { name: 'Bono', value: 'Bono' },
-    { name: 'Bono East', value: 'Bono East' },
-    { name: 'Ahafo', value: 'Ahafo' },
-    { name: 'Western North', value: 'Western North' },
-    { name: 'Oti', value: 'Oti' },
-    { name: 'Savannah', value: 'Savannah' },
-    { name: 'North East', value: 'North East' }
-].sort((a, b) => a.name.localeCompare(b.name)))
 
 const submitProfileForm = () => {
     profileForm.put('/user/profile-information', {

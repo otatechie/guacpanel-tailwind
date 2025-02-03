@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminPermissionRoleController;
+use App\Http\Controllers\AdminPersonalisationController;
 use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminUserController;
@@ -13,6 +14,9 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Support\Facades\Route;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+
+
 
 // Home Route
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -52,6 +56,13 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::resource('permission', AdminPermissionController::class)->except('show');
             });
 
+
+            // Personalisation Routes
+            Route::prefix('admin')->name('admin.')->group(function () {
+                Route::get('personalisation', [AdminPersonalisationController::class, 'index'])->name('personalisation.index');
+                Route::post('personalisation/update', [AdminPersonalisationController::class, 'update'])->name('personalisation.update');
+            });
+
             // Backup Routes
             Route::controller(AdminBackupController::class)
                 ->prefix('backup')
@@ -62,6 +73,8 @@ Route::middleware(['web', 'auth'])->group(function () {
                     Route::get('/download/{path}', 'downloadBackup')->where('path', '.*')->name('download');
                     Route::delete('/delete/{path}', 'deleteBackup')->where('path', '.*')->name('delete');
                 });
+
+            Route::get('health', HealthCheckResultsController::class)->name('health');
 
             // Media Library Route
             Route::mediaLibrary();
