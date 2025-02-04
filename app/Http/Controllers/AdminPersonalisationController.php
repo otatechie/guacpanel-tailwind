@@ -14,26 +14,25 @@ class AdminPersonalisationController extends Controller
         $personalisation = Personalisation::first();
 
         return Inertia::render('Admin/Personalisation/IndexPage', [
-            'personalisation' => $personalisation
+            'personalisation' => $personalisation,
+            'timezones' => $this->getTimezones()
         ]);
     }
 
 
     public function upload(Request $request)
     {
-        if ($request->hasFile('app_logo')) {
+        if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
+            $field = $request->hasFile('app_logo') ? 'app_logo' : 'favicon';
+            $path = $request->file($field)->store('personalisation', 'public');
+
             $personalisation = Personalisation::firstOrCreate();
 
-            // Delete existing file if it exists
-            if ($personalisation->app_logo) {
-                Storage::disk('public')->delete($personalisation->app_logo);
+            if ($personalisation->$field) {
+                Storage::disk('public')->delete($personalisation->$field);
             }
 
-            // Store new file
-            $path = $request->file('app_logo')->store('personalisation', 'public');
-
-            // Update path
-            $personalisation->update(['app_logo' => $path]);
+            $personalisation->update([$field => $path]);
 
             return response()->json(['path' => $path]);
         }
@@ -44,19 +43,39 @@ class AdminPersonalisationController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'app_name' => ['nullable', 'string', 'max:255'],
             'app_logo' => ['nullable', 'string'],
+            'favicon' => ['nullable', 'string'],
+            'timezone' => ['required', 'string'],
+            'footer_text' => ['nullable', 'string'],
+            'copyright_text' => ['nullable', 'string'],
         ]);
 
         $personalisation = Personalisation::firstOrCreate();
 
-        // If app_logo is null (image was removed), delete the existing file
-        if (isset($validated['app_logo']) && $validated['app_logo'] === null && $personalisation->app_logo) {
-            Storage::disk('public')->delete($personalisation->app_logo);
+        foreach (['app_logo', 'favicon'] as $field) {
+            if (isset($validated[$field]) && $validated[$field] === null && $personalisation->$field) {
+                Storage::disk('public')->delete($personalisation->$field);
+            }
         }
 
         $personalisation->update($validated);
 
         return redirect()->back()->with('success', 'Settings updated successfully');
+    }
+
+
+    private function getTimezones()
+    {
+        $timezones = timezone_identifiers_list();
+        $formatted = [];
+
+        foreach ($timezones as $timezone) {
+            $formatted[] = [
+                'value' => $timezone,
+                'label' => str_replace('_', ' ', $timezone)
+            ];
+        }
+
+        return $formatted;
     }
 }

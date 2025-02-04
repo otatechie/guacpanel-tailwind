@@ -10,4 +10,12 @@ class Personalisation extends Model
     use HasUlids;
 
     protected $guarded = ['id'];
+
+
+    protected static function booted()
+    {
+        static::saved(function ($settings) {
+            cache()->forget('system_settings');
+        });
+    }
 }
