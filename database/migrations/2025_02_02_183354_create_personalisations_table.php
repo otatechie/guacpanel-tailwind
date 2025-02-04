@@ -18,12 +18,9 @@ return new class extends Migration
             $table->string('favicon')->nullable();
             $table->string('footer_text')->nullable();
             $table->string('copyright_text')->nullable();
-            $table->boolean('email_notifications')->default(true);
-            $table->boolean('push_notifications')->default(true);
+            $table->boolean('email_notifications')->default(0);
+            $table->boolean('push_notifications')->default(0);
             $table->string('timezone')->nullable();
-            $table->string('date_format')->nullable();
-            $table->string('time_format')->nullable();
-            $table->string('currency')->nullable();
             $table->timestamps();
         });
     }

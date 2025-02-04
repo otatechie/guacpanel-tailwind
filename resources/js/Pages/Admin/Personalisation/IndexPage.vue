@@ -36,7 +36,7 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <FormSelect v-model="form.timezone" label="Timezone" id="timezone" :options="timezones" />
-                            <FormSelect v-model="form.currency" label="Currency" id="currency" :options="currencies" />
+                            <FormSelect v-model="form.locale" label="Language" id="locale" :options="localeOptions" />
                         </div>
                     </div>
                     <div class="space-y-6">
@@ -150,7 +150,7 @@ const props = defineProps({
     timezones: {
         type: Array,
         required: true
-    }
+    },
 })
 
 const uploadConfig = {
@@ -197,8 +197,9 @@ const getInitialFiles = (field) => {
 const form = useForm({
     app_logo: props.personalisation?.app_logo || null,
     favicon: props.personalisation?.favicon || null,
-    timezone: props.personalisation?.timezone || 'UTC'
+    timezone: props.personalisation?.timezone || 'UTC',
 })
+
 
 const handleFileRemoved = (error, file, name) => {
     if (error) return

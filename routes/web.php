@@ -13,10 +13,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserAccountController;
-use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Support\Facades\Route;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
-
 
 
 
@@ -84,16 +82,6 @@ Route::middleware(['web', 'auth'])->group(function () {
             // Media Library Route
             Route::mediaLibrary();
 
-            // In your test route
-Route::get('/check-timezone', function() {
-    return [
-        'app_timezone' => config('app.timezone'),
-        'php_timezone' => date_default_timezone_get(),
-        'current_time' => now()->format('Y-m-d H:i:s'),
-        'utc_time' => now()->utc()->format('Y-m-d H:i:s'),
-        'database_settings' => \App\Models\Personalisation::first()->timezone
-    ];
-});
         });
     });
 });

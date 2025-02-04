@@ -15,7 +15,7 @@ class AdminPersonalisationController extends Controller
 
         return Inertia::render('Admin/Personalisation/IndexPage', [
             'personalisation' => $personalisation,
-            'timezones' => $this->getTimezones()
+            'timezones' => $this->getTimezones(),
         ]);
     }
 
