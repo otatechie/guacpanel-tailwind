@@ -2,7 +2,8 @@
 @source "../views";
 
 /* Base Styles */
-textarea:focus, input:focus {
+textarea:focus,
+input:focus {
     outline: none !important;
 }
 
@@ -33,17 +34,17 @@ textarea:focus, input:focus {
 }
 
 .btn-primary {
-    @apply inline-block rounded-md border border-blue-600 bg-blue-600 px-12 py-2
-           text-sm font-medium text-white hover:bg-transparent hover:text-blue-600
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-           transition-colors duration-200 cursor-pointer;
+    @apply inline-block rounded-md border border-blue-600 bg-blue-600 px-12 py-2 text-sm font-medium text-white hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 cursor-pointer;
 }
 
-.btn-outline {
-    @apply inline-block rounded-md border border-blue-600 bg-transparent px-12 py-2
-           text-sm font-medium text-blue-600 hover:bg-gray-50 hover:text-gray-900
-           focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2
-           transition-colors duration-200 cursor-pointer;
+.btn-primary-outline {
+    @apply inline-block rounded-md border border-blue-600 bg-transparent px-12 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 cursor-pointer;
 }
 
+.btn-danger {
+    @apply inline-block rounded-md border border-red-600 bg-red-600 px-12 py-2 text-sm font-medium text-white hover:bg-transparent hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200 cursor-pointer;
+}
 
+.btn-danger-outline {
+    @apply inline-block rounded-md border border-red-600 bg-transparent px-12 py-2 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200 cursor-pointer;
+}

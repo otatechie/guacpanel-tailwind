@@ -1,9 +1,9 @@
 <script setup>
-import { Head } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import DataTable from '@/Components/Datatable.vue'
 import Default from '@/Layouts/Default.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
-import { h } from 'vue'
+import { h, ref } from 'vue'
 
 defineOptions({
     layout: Default
@@ -18,6 +18,9 @@ const props = defineProps({
 })
 
 const columnHelper = createColumnHelper()
+
+const showEditModal = ref(false)
+const editingUser = ref(null)
 
 const columns = [
     columnHelper.accessor('name', {
@@ -92,18 +95,17 @@ const columns = [
 ]
 
 const handleEdit = (user) => {
-    // Add your edit logic here
-    console.log('Edit user:', user)
+    router.visit(route('admin.user.edit', { id: user.id }))
 }
 
 const handleDelete = (user) => {
-    // Add your delete logic here
-    console.log('Delete user:', user)
+    if (confirm('Are you sure you want to delete this user?')) {
+        router.delete(route('admin.user.destroy', { id: user.id }))
+    }
 }
 </script>
 
 <template>
-
     <Head title="Users" />
     <DataTable :data="users" :columns="columns" title="Users" :search-fields="['name', 'email', 'created_at']"
         export-file-name="users" />

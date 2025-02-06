@@ -50,6 +50,8 @@ Route::middleware(['web', 'auth'])->group(function () {
                 Route::post('setting/update', [AdminSettingController::class, 'updateSettings'])->name('setting.update');
                 Route::get('audits', [AdminAuditController::class, 'index'])->name('audit');
                 Route::get('users', [AdminUserController::class, 'index'])->name('user');
+                Route::get('users/{id}', [AdminUserController::class, 'edit'])->name('user.edit');
+                Route::post('/admin/users/{id}', [AdminUserController::class, 'update'])->name('user.update');
                 Route::get('permissions-roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role');
                 Route::resource('role', AdminRoleController::class)->except('show');
                 Route::resource('permission', AdminPermissionController::class)->except('show');

@@ -1,6 +1,7 @@
 <template>
 
     <Head title="Personalisation" />
+
     <div class="max-w-7xl mx-auto">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-8">
             <div>

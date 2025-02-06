@@ -14,6 +14,7 @@ class AdminPermissionRoleController extends Controller
     public function index()
     {
         $permissions = Permission::get();
+
         $roles = Role::with(['permissions', 'users'])
             ->get()
             ->map(function ($role) {
@@ -25,6 +26,7 @@ class AdminPermissionRoleController extends Controller
                     'created_at' => $role->created_at->diffForHumans()
                 ];
             });
+
         $users = User::get()->map(function ($user) {
             return [
                 'id' => $user->id,
