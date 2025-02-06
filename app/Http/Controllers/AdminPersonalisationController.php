@@ -48,6 +48,8 @@ class AdminPersonalisationController extends Controller
             'timezone' => ['required', 'string'],
             'footer_text' => ['nullable', 'string'],
             'copyright_text' => ['nullable', 'string'],
+            'email_notifications' => ['required', 'boolean'],
+            'push_notifications' => ['required', 'boolean'],
         ]);
 
         $personalisation = Personalisation::firstOrCreate();

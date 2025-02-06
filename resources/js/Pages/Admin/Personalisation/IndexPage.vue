@@ -6,7 +6,7 @@
             <div>
                 <h2 class="sub-heading">Personalisation</h2>
                 <p class="mt-1 leading-6 font-medium text-gray-600">
-                    Customise the platform to your liking.
+                    Customize the platform to suit your preferences.
                 </p>
             </div>
 
@@ -36,7 +36,6 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <FormSelect v-model="form.timezone" label="Timezone" id="timezone" :options="timezones" />
-                            <FormSelect v-model="form.locale" label="Language" id="locale" :options="localeOptions" />
                         </div>
                     </div>
                     <div class="space-y-6">
@@ -45,12 +44,17 @@
                             <div class="h-px bg-gray-200 flex-1"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                            <file-pond v-for="(config, index) in fileUploadConfigs" :key="index" :name="config.name"
-                                :ref="config.ref" :label-idle="config.labelIdle" :allow-multiple="false"
-                                accepted-file-types="image/jpeg, image/png" :server="uploadConfig"
-                                @processfile="(error, file) => handleProcessedFile(error, file, config.name)"
-                                @removefile="(error, file) => handleFileRemoved(error, file, config.name)"
-                                :files="config.initialFiles" :credits="false" />
+                            <div v-for="(config, index) in fileUploadConfigs" :key="index" class="space-y-2">
+                                <label :for="config.name" class="block text-sm text-gray-600">
+                                    {{ config.name === 'app_logo' ? 'Application logo' : 'Favicon' }}
+                                </label>
+                                <file-pond :id="config.name" :name="config.name" :ref="config.ref"
+                                    :label-idle="config.labelIdle" :allow-multiple="false"
+                                    accepted-file-types="image/jpeg, image/png" :server="uploadConfig"
+                                    @processfile="(error, file) => handleProcessedFile(error, file, config.name)"
+                                    @removefile="(error, file) => handleFileRemoved(error, file, config.name)"
+                                    :files="config.initialFiles" :credits="false" />
+                            </div>
                         </div>
                     </div>
                     <div class="space-y-6">
@@ -133,7 +137,6 @@ import Switch from '@/Components/Switch.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
 
-
 const page = usePage()
 const csrfToken = page.props.csrf_token
 
@@ -196,8 +199,13 @@ const getInitialFiles = (field) => {
 
 const form = useForm({
     app_logo: props.personalisation?.app_logo || null,
+    app_name: props.personalisation?.app_name || null,
     favicon: props.personalisation?.favicon || null,
+    footer_text: props.personalisation?.footer_text || null,
+    copyright_text: props.personalisation?.copyright_text || null,
     timezone: props.personalisation?.timezone || 'UTC',
+    email_notifications: props.personalisation?.email_notifications || false,
+    push_notifications: props.personalisation?.push_notifications || false,
 })
 
 

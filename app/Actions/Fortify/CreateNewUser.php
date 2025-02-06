@@ -43,7 +43,7 @@ class CreateNewUser implements CreatesNewUsers
             'password_expiry_at' => now()->addMonths(3),
         ]);
 
-        session()->flash('success', 'Great! Account created successfully.');
+        session()->flash('success', 'Great! Account created successfully');
 
         return $user;
     }

@@ -19,7 +19,7 @@ class RegisterResponse implements RegisterResponseContract
     public function toResponse($request)
     {
         $this->guard->logout();
-        session()->flash('success', 'Check your email - we have sent you a verification link to activate your account.');
+        session()->flash('success', 'Please verify your email by clicking the activation link we have sent you');
 
         return $request->wantsJson()
             ? new JsonResponse('', 201)

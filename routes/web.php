@@ -11,7 +11,6 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserAccountController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
@@ -75,9 +74,6 @@ Route::middleware(['web', 'auth'])->group(function () {
                 });
 
             Route::get('health', HealthCheckResultsController::class)->name('health');
-
-            // Upload Route
-            Route::post('upload/app-logo', [UploadController::class, 'uploadLogo'])->name('upload.logo');
 
             // Media Library Route
             Route::mediaLibrary();

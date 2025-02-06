@@ -6,6 +6,7 @@ use App\Models\Discussion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
+use Laravolt\Avatar\Avatar;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -46,6 +47,7 @@ class HandleInertiaRequests extends Middleware
                         'name' => $request->user()->name,
                         'username' => $request->user()->username,
                         'roles' => $request->user()->roles->pluck('name'),
+                        'avatar' => (new Avatar())->create($request->user()->name)->toBase64(),
                     ] : null,
                 ],
 
@@ -56,10 +58,6 @@ class HandleInertiaRequests extends Middleware
                     'success' => fn() => $request->session()->get('success'),
                     'error' => fn() => $request->session()->get('error'),
                     'status' => fn() => $request->session()->get('status'),
-                ],
-
-                'permissions' => [
-                    'canEditDiscussion' => fn() => Auth::user()?->can('update', Discussion::class),
                 ],
             ],
         );

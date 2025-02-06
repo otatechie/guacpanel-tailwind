@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Login" />
 
     <div class="max-w-[384px] mx-auto px-8">
@@ -6,46 +7,21 @@
 
         <div class="mt-6 container-border p-5">
             <form @submit.prevent="submit" class="space-y-6 mt-2">
-                <FormInput
-                    v-model="form.email"
-                    label="Email address"
-                    name="email"
-                    id="email"
-                    type="email"
-                    required
-                    autocomplete="email"
-                    :error="form.errors.email"
-                />
+                <FormInput v-model="form.email" label="Email address" name="email" id="email" type="email" required
+                    autocomplete="email" :error="form.errors.email" />
 
                 <div>
-                    <FormInput
-                        v-model="form.password"
-                        label="Password"
-                        name="password"
-                        id="password"
-                        type="password"
-                        required
-                        autocomplete="current-password"
-                        :error="form.errors.password"
-                    />
+                    <FormInput v-model="form.password" label="Password" name="password" id="password" type="password"
+                        required autocomplete="current-password" :error="form.errors.password" />
                     <div class="mt-4 flex items-center justify-between">
-                        <FormCheckbox
-                            v-model="form.remember"
-                            label="Remember me"
-                            name="remember"
-                            id="remember-me"
-                        />
+                        <FormCheckbox v-model="form.remember" label="Remember me" name="remember" id="remember-me" />
                         <Link :href="route('password.request')" class="text-sm link hover:underline">
-                            Forgot password?
+                        Forgot password?
                         </Link>
                     </div>
                 </div>
 
-                <button
-                    type="submit"
-                    :disabled="form.processing"
-                    class="w-full btn-primary"
-                >
+                <button type="submit" :disabled="form.processing" class="w-full btn-primary">
                     {{ form.processing ? 'Signing in...' : 'Sign in' }}
                 </button>
             </form>
@@ -54,7 +30,7 @@
         <p class="mt-8 text-center text-sm text-gray-800">
             Don't have an account?
             <Link :href="route('register')" class="link hover:underline ml-1">
-                Sign up
+            Sign up
             </Link>
         </p>
     </div>

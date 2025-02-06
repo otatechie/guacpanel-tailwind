@@ -7,7 +7,7 @@
                 id="user-menu-button" :aria-expanded="menuOpen.toString()" aria-haspopup="true" @click="toggleMenu"
                 aria-label="User Menu">
                 <span class="absolute -inset-1.5 lg:hidden"></span>
-                <img class="h-6 w-6 rounded-full" :src="avatarUrl" alt="User Avatar" />
+                <img :src="avatarUrl" :alt="`${user.name}'s avatar`" class="h-8 w-8 rounded-full" />
                 <span class="ml-3 hidden text-sm font-medium text-gray-700 lg:block">
                     <span class="sr-only">Open user menu for </span>
                 </span>
@@ -26,8 +26,7 @@
                 class="group px-4 py-1.5 text-sm text-gray-700 flex items-center hover:text-blue-600" role="menuitem"
                 tabindex="-1" id="user-menu-item-0">
             <div class="flex items-center w-full">
-                <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24"
-                    stroke-width="1.5" stroke="currentColor">
+                <svg class="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
                 </svg>
@@ -125,14 +124,11 @@ const page = usePage();
 
 const user = computed(() => page.props.auth.user);
 
-const avatarUrl = computed(() => {
-    return `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(user.value.name)}&backgroundType=gradientLinear&scale=100&fontSize=50`;
-});
-
-
 const menuOpen = ref(false);
 
 const menuWrapper = ref(null);
+
+const avatarUrl = computed(() => user.value?.avatar);
 
 const toggleMenu = () => {
     menuOpen.value = !menuOpen.value;

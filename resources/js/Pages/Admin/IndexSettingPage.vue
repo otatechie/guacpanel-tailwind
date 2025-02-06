@@ -110,7 +110,7 @@
                                 </Link>
                             </div>
                             <div>
-                                <Link :href="route('health')" target="_blank">
+                                <a href="/health" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor"
                                     class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700">
@@ -120,7 +120,7 @@
                                 <h3 class="mb-2 text-xl font-semibold text-gray-700">Laravel Health</h3>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Check the health of the platform
                                     and its components.</p>
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     </div>
