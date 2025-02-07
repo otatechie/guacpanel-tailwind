@@ -23,24 +23,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 Rule::unique('users')->ignore($user->id),
             ],
             'location' => ['required', 'string', 'max:255'],
-            'region' => ['required', 'string',  Rule::in([
-                'Greater Accra',
-                'Ashanti',
-                'Eastern',
-                'Western',
-                'Central',
-                'Volta',
-                'Northern',
-                'Upper East',
-                'Upper West',
-                'Bono',
-                'Bono East',
-                'Ahafo',
-                'Western North',
-                'Oti',
-                'Savannah',
-                'North East'
-            ])],
         ])->validate();
 
         if (
@@ -53,7 +35,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'location' => $input['location'],
-                'region' => $input['region'],
             ])->save();
 
             session()->flash('success', 'Your profile has been updated successfully');

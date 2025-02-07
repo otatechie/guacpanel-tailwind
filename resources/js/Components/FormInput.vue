@@ -6,8 +6,8 @@
                 class="w-full peer border rounded-md bg-transparent placeholder-transparent px-3 py-2 transition-shadow duration-150 ease-in-out focus:outline-none"
                 :class="[
                     error
-                        ? 'border-red-500 focus:border-red-500 focus:ring focus:ring-red-200'
-                        : 'border-gray-300 focus:border-blue-400 focus:ring focus:ring-blue-200'
+                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+                        : 'border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200'
                 ]" :placeholder="label" />
             <span
                 class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white px-1 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">

@@ -1,82 +1,7 @@
-<template>
-
-    <Head title="Profile" />
-
-    <div class="divide-y divide-gray-900/10">
-        <div class="grid grid-cols-1 gap-x-8 md:grid-cols-3 pb-10">
-            <div class="px-4 sm:px-0 pb-6">
-                <h2 class="sub-heading">Account</h2>
-                <p class="mt-1 text-sm leading-6 text-gray-700">
-                    Your name and other information is visible to others. Email address stays private.
-                </p>
-            </div>
-
-            <form @submit.prevent="submitProfileForm" class="container-border md:col-span-2">
-                <div class="px-4 py-6 sm:p-8">
-                    <div class="md:max-w-md w-full space-y-8">
-                        <FormInput v-model="profileForm.name" label="Legal name" id="name" type="text" required
-                            :error="profileForm.errors.name" />
-
-                        <FormInput v-model="profileForm.email" label="Email" id="email" type="email" required
-                            :error="profileForm.errors.email" />
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <FormInput v-model="profileForm.location" label="Location" id="location" type="text"
-                                required :error="profileForm.errors.location" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-x-6 border-t border-gray-200 px-4 py-4 sm:px-8">
-                    <button type="submit" :disabled="profileForm.processing"
-                        class="btn-primary inline-flex items-center">
-                        {{ profileForm.processing ? 'Updating...' : 'Update profile' }}
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="grid grid-cols-1 gap-x-8 pt-10 md:grid-cols-3">
-            <div class="px-4 sm:px-0 pb-6">
-                <h2 class="sub-heading">Change Password</h2>
-                <p class="mt-1 text-sm leading-6 text-gray-700">
-                    Choose a strong password that's hard to guess and avoid common phrases.
-                </p>
-            </div>
-
-            <form @submit.prevent="submitPasswordForm" class="container-border md:col-span-2">
-                <div class="px-4 py-6 sm:p-8">
-                    <div class="md:max-w-md w-full space-y-8">
-                        <FormInput v-model="passwordForm.current_password" label="Current password"
-                            id="current_password" type="password" required
-                            :error="passwordForm.errors.current_password" />
-
-                        <FormInput v-model="passwordForm.password" label="Password" id="password" type="password"
-                            required :error="passwordForm.errors.password" />
-
-                        <FormInput v-model="passwordForm.password_confirmation" label="Confirm password"
-                            id="password_confirmation" type="password" required
-                            :error="passwordForm.errors.password_confirmation" />
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-x-6 border-t border-gray-200 px-4 py-4 sm:px-8">
-                    <button type="submit" :disabled="passwordForm.processing"
-                        class="btn-primary inline-flex items-center">
-                        {{ passwordForm.processing ? 'Updating...' : 'Update password' }}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
-import { ref } from 'vue'
 import Default from '../../Layouts/Default.vue'
 import FormInput from '../../Components/FormInput.vue'
-import FormSelect from '../../Components/FormSelect.vue'
 
 const props = defineProps({
     user: {
@@ -108,6 +33,59 @@ const submitProfileForm = () => {
 const submitPasswordForm = () => {
     passwordForm.put('/user/password', {
         preserveScroll: true,
+        onSuccess: () => passwordForm.reset()
     })
 }
 </script>
+
+<template>
+    <Head title="Profile" />
+
+    <div class="max-w-5xl mx-auto divide-y divide-gray-900/10">
+        <section aria-labelledby="profile-heading" class="grid grid-cols-1 gap-x-8 md:grid-cols-3 pb-10">
+            <div class="px-4 sm:px-0 pb-6">
+                <h2 id="profile-heading" class="sub-heading">Account</h2>
+                <p class="mt-1 text-sm leading-6 text-gray-700">Your name and other information is visible to others. Email address stays private.</p>
+            </div>
+
+            <form @submit.prevent="submitProfileForm" class="container-border md:col-span-2" novalidate>
+                <div class="px-4 py-6 sm:p-8">
+                    <div class="md:max-w-md w-full space-y-8">
+                        <FormInput v-model="profileForm.name" label="Legal name" id="name" type="text" required :error="profileForm.errors.name" />
+                        <FormInput v-model="profileForm.email" label="Email" id="email" type="email" required :error="profileForm.errors.email" />
+                        <FormInput v-model="profileForm.location" label="Location" id="location" type="text" required :error="profileForm.errors.location" />
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-x-6 border-t border-gray-200 px-4 py-4 sm:px-8">
+                    <button type="submit" :disabled="profileForm.processing" class="btn-primary inline-flex items-center">
+                        {{ profileForm.processing ? 'Updating...' : 'Update profile' }}
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section aria-labelledby="password-heading" class="grid grid-cols-1 gap-x-8 pt-10 md:grid-cols-3">
+            <div class="px-4 sm:px-0 pb-6">
+                <h2 id="password-heading" class="sub-heading">Change Password</h2>
+                <p class="mt-1 text-sm leading-6 text-gray-700">Choose a strong password that's hard to guess and avoid common phrases.</p>
+            </div>
+
+            <form @submit.prevent="submitPasswordForm" class="container-border md:col-span-2" novalidate>
+                <div class="px-4 py-6 sm:p-8">
+                    <div class="md:max-w-md w-full space-y-8">
+                        <FormInput v-model="passwordForm.current_password" label="Current password" id="current_password" type="password" required :error="passwordForm.errors.current_password" />
+                        <FormInput v-model="passwordForm.password" label="Password" id="password" type="password" required :error="passwordForm.errors.password" />
+                        <FormInput v-model="passwordForm.password_confirmation" label="Confirm password" id="password_confirmation" type="password" required :error="passwordForm.errors.password_confirmation" />
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-x-6 border-t border-gray-200 px-4 py-4 sm:px-8">
+                    <button type="submit" :disabled="passwordForm.processing" class="btn-primary inline-flex items-center">
+                        {{ passwordForm.processing ? 'Updating...' : 'Update password' }}
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+</template>

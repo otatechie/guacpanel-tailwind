@@ -30,7 +30,7 @@ class AdminUserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'is_active' => $user->is_active,
+                'disable_account' => $user->disable_account,
                 'force_password_change' => $user->force_password_change,
                 'roles' => $user->roles,
                 'permissions' => $user->permissions->map(fn($permission) => [
@@ -53,26 +53,30 @@ class AdminUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
-            'role' => ['required', 'exists:roles,id'],
+            'role' => ['nullable', 'exists:roles,id'],
             'permissions' => ['array'],
             'permissions.*' => ['exists:permissions,id'],
-            'is_active' => ['boolean'],
+            'disable_account' => ['boolean'],
             'force_password_change' => ['boolean'],
         ]);
+
+        if ($request->force_password_change && $request->disable_account) {
+            return back()->withErrors(['error' => 'User cannot be both disabled and forced to change password']);
+        }
 
         $user = User::findOrFail($id);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'is_active' => $request->is_active,
             'force_password_change' => $request->force_password_change,
+            'disable_account' => $request->disable_account,
         ]);
 
         $user->syncRoles([$request->role]);
         $user->syncPermissions($request->permissions);
 
-        return redirect()->back()->with('success', 'User updated successfully');
+        return redirect()->back()->with('success', 'User account updated successfully');
     }
 
 

@@ -23,7 +23,7 @@ const form = useForm({
     email: props.user.email,
     role: props.user.roles?.[0]?.id || '',
     force_password_change: Boolean(props.user.force_password_change) || false,
-    is_active: Boolean(props.user.is_active ?? true),
+    disable_account: Boolean(props.user.disable_account) || false,
     permissions: props.user.permissions?.map(permission => permission.id) || [],
 })
 
@@ -46,14 +46,13 @@ const deleteUser = () => {
 
     <Head title="Edit User" />
     <div class="max-w-4xl mx-auto">
-        <div class="bg-white rounded-xl shadow-sm divide-y divide-gray-200">
+        <div class="container-border">
             <div class="px-8 py-6">
                 <h2 class="sub-heading">Edit User Account</h2>
                 <p class="mt-1 text-gray-500 font-medium">Update user information, roles, and account settings</p>
             </div>
 
             <div class="px-6 py-6">
-                <!-- Tab Navigation -->
                 <div class="flex gap-6 border-b border-gray-200 mb-8">
                     <button @click="activeTab = 'account'" :class="activeTab === 'account'
                         ? 'border-b-2 border-blue-600 text-blue-600'
@@ -123,7 +122,7 @@ const deleteUser = () => {
                                         <h4 class="text-sm font-medium text-gray-800">Account Status</h4>
                                         <p class="text-sm text-gray-500 mt-1">Enable or disable user access</p>
                                     </div>
-                                    <Switch v-model="form.is_active" />
+                                    <Switch v-model="form.disable_account" />
                                 </div>
                                 <div
                                     class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
@@ -183,7 +182,7 @@ const deleteUser = () => {
                                     </div>
                                 </div>
                                 <p v-if="!permissions?.data?.length" class="text-sm text-gray-500 text-center py-2">
-                                    No additional permissions available. Permissions are inherited from roles.
+                                    No records found
                                 </p>
                             </div>
                         </div>

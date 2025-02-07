@@ -10,14 +10,13 @@ use OwenIt\Auditing\Models\Audit;
 
 class AdminAuditController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $audits = Audit::with('user')
-            ->latest()
-            ->paginate(10);
-
-        return Inertia::render('Admin/IndexAuditPage', [
-            'audits' => $audits
+        return inertia('Admin/IndexAuditPage', [
+            'audits' => Audit::query()
+                ->with('user')
+                ->latest()
+                ->paginate($request->input('per_page', 10))
         ]);
     }
 }

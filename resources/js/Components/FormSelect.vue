@@ -9,8 +9,8 @@
                     transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer"
                     :class="[
                         error
-                            ? 'border-red-500 focus:border-red-500 focus:ring focus:ring-red-200'
-                            : 'border-gray-300 focus:border-blue-400 focus:ring focus:ring-blue-200'
+                            ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
+                            : 'border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200'
                     ]"
                     @keydown.arrow-down="isOpen = true"
                     @keydown.enter.prevent="isOpen = !isOpen"
