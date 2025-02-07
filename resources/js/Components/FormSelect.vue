@@ -5,7 +5,7 @@
                 <!-- Fake input showing selected value -->
                 <input :id="id" type="text" readonly
                     :value="displayValue"
-                    class="w-full peer border rounded-md bg-transparent px-3 py-2 appearance-none
+                    class="w-full peer border rounded-md bg-white px-3 py-2 appearance-none
                     transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer"
                     :class="[
                         error

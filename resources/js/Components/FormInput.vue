@@ -3,7 +3,7 @@
         <label :for="id" class="relative block">
             <input :type="showPassword ? 'text' : type" :id="id" :value="modelValue" :required="required"
                 @input="$emit('update:modelValue', $event.target.value)"
-                class="w-full peer border rounded-md bg-transparent placeholder-transparent px-3 py-2 transition-shadow duration-150 ease-in-out focus:outline-none"
+                class="w-full peer border rounded-md bg-white placeholder-transparent px-3 py-2 transition-shadow duration-150 ease-in-out focus:outline-none"
                 :class="[
                     error
                         ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
