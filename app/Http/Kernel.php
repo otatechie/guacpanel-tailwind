@@ -72,5 +72,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'password.expired' => \App\Http\Middleware\CheckPasswordExpiry::class,
         'require.two.factor' => \App\Http\Middleware\RequireTwoFactor::class,
+        'disable.account' => \App\Http\Middleware\DisableAccount::class,
+        'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
     ];
 }

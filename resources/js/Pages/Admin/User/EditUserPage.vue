@@ -69,7 +69,7 @@ const deleteUser = () => {
 
                 <form @submit.prevent="submit" class="space-y-8">
                     <div v-show="activeTab === 'account'">
-                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-inner">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="bg-blue-100 p-2 rounded-lg">
                                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
@@ -89,7 +89,7 @@ const deleteUser = () => {
                             </div>
                         </div>
 
-                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mt-8">
+                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-inner mt-8">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="bg-purple-100 p-2 rounded-lg">
                                     <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor"
@@ -105,7 +105,7 @@ const deleteUser = () => {
                                 class="hover:bg-gray-50 transition-colors duration-200" />
                         </div>
 
-                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mt-8">
+                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-inner mt-8">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="bg-green-100 p-2 rounded-lg">
                                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
@@ -136,7 +136,7 @@ const deleteUser = () => {
                             </div>
                         </div>
 
-                        <div class="border border-red-200 rounded-lg bg-red-50/50 p-6 space-y-4 mt-8">
+                        <div class="border border-red-200 rounded-lg bg-red-50/50 p-6 space-y-4  mt-8">
                             <div class="flex items-center gap-3">
                                 <div class="bg-red-100 p-2 rounded-lg">
                                     <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor"
@@ -158,7 +158,7 @@ const deleteUser = () => {
                     </div>
 
                     <div v-show="activeTab === 'permissions'" class="space-y-8">
-                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+                        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-inner">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="bg-yellow-100 p-2 rounded-lg">
                                     <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor"
@@ -170,7 +170,7 @@ const deleteUser = () => {
                                 <h3 class="text-lg font-semibold text-gray-800">Direct Permissions</h3>
                             </div>
                             <div class="space-y-4">
-                                <h3 class="text-lg font-medium mb-4">User Permissions</h3>
+                                <h3 class="font-medium mb-4">User Permissions</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div v-for="permission in permissions.data" :key="permission.id"
                                         class="p-4 bg-gray-50 rounded-lg transition-colors duration-200 hover:bg-gray-100">

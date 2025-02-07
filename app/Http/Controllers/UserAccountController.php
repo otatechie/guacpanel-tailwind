@@ -17,7 +17,6 @@ class UserAccountController extends Controller
 
     public function index()
     {
-
         $user = $this->getAuthUser();
 
         return Inertia::render('UserAccount/IndexPage', [

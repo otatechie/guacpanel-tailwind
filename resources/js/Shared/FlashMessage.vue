@@ -22,10 +22,10 @@
             </svg>
         </button>
     </div>
-</template>
+ </template>
 
-<script>
-export default {
+ <script>
+ export default {
     data() {
         return {
             alert: {
@@ -60,8 +60,16 @@ export default {
                     this.showAlert('Success', newVal.success || newVal.message || newVal.status || newVal['profile-information-updated'], 'success');
                     return;
                 }
-                if (newVal.error) {
-                    this.showAlert('Error', newVal.error, 'danger');
+                if (newVal.warning) {
+                    this.showAlert('Warning', newVal.warning, 'warning');
+                    return;
+                }
+                if (newVal.info) {
+                    this.showAlert('Info', newVal.info, 'info');
+                    return;
+                }
+                if (newVal.error || newVal.danger) {
+                    this.showAlert('Error', newVal.error || newVal.danger, 'danger');
                     return;
                 }
                 const errors = this.$page.props.errors || {};
@@ -114,5 +122,5 @@ export default {
             setTimeout(() => { this.alert.visible = false; }, 10000)
         },
     },
-};
-</script>
+ };
+ </script>

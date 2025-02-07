@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserAccountController;
@@ -17,11 +18,18 @@ use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 
 
-// Home Route
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Authenticated Routes
-Route::middleware(['web', 'auth'])->group(function () {
+Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->group(function () {
+    // Home Route
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    // Force Password Change Route
+    Route::get('user/change-password', [ForcePasswordChangeController::class, 'edit'])
+        ->name('user.force.password.change')->withoutMiddleware('force.password.change');
+    Route::post('user/change-password', [ForcePasswordChangeController::class, 'update'])
+        ->name('user.force.password.change.update')->withoutMiddleware('force.password.change');
+
     // 2FA Setup Route
     Route::get('user/two-factor-authentication', [UserAccountController::class, 'twoFactorAuthentication'])
         ->name('user.two.factor');
@@ -62,7 +70,8 @@ Route::middleware(['web', 'auth'])->group(function () {
             Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('personalisation', [AdminPersonalisationController::class, 'index'])->name('personalisation.index');
                 Route::post('personalisation/update', [AdminPersonalisationController::class, 'update'])->name('personalisation.update');
-                Route::post('upload', [AdminPersonalisationController::class, 'upload'])->name('upload.store');            });
+                Route::post('upload', [AdminPersonalisationController::class, 'upload'])->name('upload.store');
+            });
 
             // Backup Routes
             Route::controller(AdminBackupController::class)
@@ -79,7 +88,6 @@ Route::middleware(['web', 'auth'])->group(function () {
 
             // Media Library Route
             Route::mediaLibrary();
-
         });
     });
 });

@@ -33,6 +33,8 @@ class User extends Authenticatable implements Auditable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'password_expiry_at' => 'datetime',
+        'force_password_change' => 'boolean',
+        'disable_account' => 'boolean',
     ];
 
 
