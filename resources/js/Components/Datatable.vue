@@ -12,7 +12,21 @@
 
         <!-- Header Controls -->
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-900">{{ title }}</h2>
+            <div class="flex items-center gap-3">
+                <!-- Page Size -->
+                <select v-model="pageSize" class="select-input transition-shadow duration-150 ease-in-out">
+                    <option v-for="size in pageSizeOptions" :key="size" :value="size">
+                        {{ size }} rows per page
+                    </option>
+                </select>
+
+                <!-- Selected Count -->
+                <span v-if="Object.keys(selectedRows).length"
+                    class="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
+                    {{ Object.keys(selectedRows).length }} selected
+                </span>
+            </div>
+
             <div class="flex items-center gap-3">
                 <!-- Search -->
                 <div v-if="enableSearch" class="relative">
@@ -27,12 +41,6 @@
                     </button>
                 </div>
 
-                <!-- Selected Count -->
-                <span v-if="Object.keys(selectedRows).length"
-                    class="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium">
-                    {{ Object.keys(selectedRows).length }} selected
-                </span>
-
                 <!-- Export -->
                 <button v-if="enableExport" @click="exportToCSV" class="btn-primary">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,15 +50,6 @@
                     Export CSV
                 </button>
             </div>
-        </div>
-
-        <!-- Page Size -->
-        <div class="mb-4">
-            <select v-model="pageSize" class="select-input transition-shadow duration-150 ease-in-out ">
-                <option v-for="size in pageSizeOptions" :key="size" :value="size">
-                    {{ size }} rows per page
-                </option>
-            </select>
         </div>
 
         <!-- Table -->
@@ -113,13 +112,17 @@
                 results
             </div>
             <div class="flex items-center gap-2">
-                <button class="pagination-btn" :disabled="!table.getCanPreviousPage()" @click="table.setPageIndex(0)">
+                <button class="pagination-btn"
+                    :disabled="props.pagination?.current_page <= 1"
+                    @click="emit('update:pagination', { ...props.pagination, current_page: 1 })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                     </svg>
                 </button>
-                <button class="pagination-btn" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
+                <button class="pagination-btn"
+                    :disabled="props.pagination?.current_page <= 1"
+                    @click="emit('update:pagination', { ...props.pagination, current_page: props.pagination.current_page - 1 })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -131,13 +134,16 @@
                         min="1" :max="table.getPageCount()" />
                     <span class="text-sm text-gray-700">of {{ table.getPageCount() }}</span>
                 </div>
-                <button class="pagination-btn" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
+                <button class="pagination-btn"
+                    :disabled="props.pagination?.current_page >= Math.ceil(props.pagination.total / props.pagination.per_page)"
+                    @click="emit('update:pagination', { ...props.pagination, current_page: props.pagination.current_page + 1 })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
-                <button class="pagination-btn" :disabled="!table.getCanNextPage()"
-                    @click="table.setPageIndex(table.getPageCount() - 1)">
+                <button class="pagination-btn"
+                    :disabled="props.pagination?.current_page >= Math.ceil(props.pagination.total / props.pagination.per_page)"
+                    @click="emit('update:pagination', { ...props.pagination, current_page: Math.ceil(props.pagination.total / props.pagination.per_page) })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 5l7 7-7 7M5 5l7 7-7 7" />
@@ -172,7 +178,15 @@ const props = defineProps({
     pageSizeOptions: { type: Array, default: () => [10, 20, 30, 40, 50] },
     defaultPageSize: { type: Number, default: 10 },
     loading: { type: Boolean, default: false },
-    error: { type: String, default: '' }
+    error: { type: String, default: '' },
+    pagination: {
+        type: Object,
+        default: () => ({
+            current_page: 1,
+            per_page: 10,
+            total: 0
+        })
+    }
 })
 
 // State
@@ -197,13 +211,13 @@ const filteredData = computed(() => {
 })
 
 const currentPage = computed(() => table.getState().pagination.pageIndex + 1)
-const totalRows = computed(() => table.getFilteredRowModel().rows.length)
+const totalRows = computed(() => props.pagination?.total || table.getFilteredRowModel().rows.length)
 const paginationStart = computed(() =>
-    table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1
+    ((props.pagination?.current_page || 1) - 1) * (props.pagination?.per_page || pageSize.value) + 1
 )
 const paginationEnd = computed(() =>
     Math.min(
-        (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+        (props.pagination?.current_page || 1) * (props.pagination?.per_page || pageSize.value),
         totalRows.value
     )
 )
@@ -215,7 +229,15 @@ const table = useVueTable({
     state: {
         get sorting() { return sorting.value },
         get rowSelection() { return selectedRows.value },
-        get pagination() { return pagination.value }
+        get pagination() {
+            if (props.pagination?.total) {
+                return {
+                    pageSize: props.pagination.per_page,
+                    pageIndex: props.pagination.current_page - 1
+                }
+            }
+            return pagination.value
+        }
     },
     onRowSelectionChange: updaterOrValue => {
         selectedRows.value = typeof updaterOrValue === 'function'
@@ -235,7 +257,7 @@ const table = useVueTable({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: props.pagination?.total ? undefined : getPaginationRowModel(),
     enableRowSelection: true,
     enableMultiRowSelection: true,
     enableSubRowSelection: false,
@@ -244,8 +266,13 @@ const table = useVueTable({
 
 // Methods
 const handlePageChange = (e) => {
+    if (!props.pagination?.total) return
     const page = Number(e.target.value)
-    table.setPageIndex(page - 1)
+    if (page < 1 || page > Math.ceil(props.pagination.total / props.pagination.per_page)) return
+    emit('update:pagination', {
+        ...props.pagination,
+        current_page: page
+    })
 }
 
 const exportToCSV = () => {
@@ -283,11 +310,17 @@ const exportToCSV = () => {
     document.body.removeChild(link)
 }
 
+// Add an emit for pagination updates
+const emit = defineEmits(['update:pagination'])
+
+// Update the watch on pageSize
 watch(pageSize, (newSize) => {
-    pagination.value = {
-        ...pagination.value,
-        pageSize: newSize,
+    const newPagination = {
+        ...props.pagination,
+        per_page: newSize,
+        current_page: 1
     }
+    emit('update:pagination', newPagination)
 })
 
 watch(() => props.data, () => {

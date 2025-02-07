@@ -56,7 +56,7 @@ const columns = [
 watch(pagination, newPagination => {
     loading.value = true
     router.get(
-        route('admin.audits.index'),
+        route('admin.audit'),
         {
             page: newPagination.current_page,
             per_page: Number(newPagination.per_page)
@@ -72,8 +72,9 @@ watch(pagination, newPagination => {
 
 <template>
     <Head title="Audits" />
+   <div class="container-border p-6 max-w-5xl mx-auto space-y-6">
+    <h2 class="sub-heading">Audit Log</h2>
     <Datatable
-        title="Audit Log"
         :data="audits.data"
         :columns="columns"
         :loading="loading"
@@ -84,4 +85,5 @@ watch(pagination, newPagination => {
         export-file-name="activity_log"
         @update:pagination="pagination = $event"
     />
+   </div>
 </template>

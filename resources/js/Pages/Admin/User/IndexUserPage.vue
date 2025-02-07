@@ -3,7 +3,7 @@ import { Head, router } from '@inertiajs/vue3'
 import DataTable from '@/Components/Datatable.vue'
 import Default from '@/Layouts/Default.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
-import { h, ref } from 'vue'
+import { h, ref, watch } from 'vue'
 
 defineOptions({
     layout: Default
@@ -11,9 +11,8 @@ defineOptions({
 
 const props = defineProps({
     users: {
-        type: Array,
-        required: true,
-        default: () => []
+        type: Object,
+        required: true
     }
 })
 
@@ -21,6 +20,13 @@ const columnHelper = createColumnHelper()
 
 const showEditModal = ref(false)
 const editingUser = ref(null)
+
+const loading = ref(false)
+const pagination = ref({
+    current_page: props.users.current_page,
+    per_page: Number(props.users.per_page),
+    total: props.users.total
+})
 
 const columns = [
     columnHelper.accessor('name', {
@@ -103,10 +109,38 @@ const handleDelete = (user) => {
         router.delete(route('admin.user.destroy', { id: user.id }))
     }
 }
+
+watch(pagination, newPagination => {
+    loading.value = true
+    router.get(
+        route('admin.user.index'),
+        {
+            page: newPagination.current_page,
+            per_page: Number(newPagination.per_page)
+        },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            onFinish: () => loading.value = false
+        }
+    )
+}, { deep: true })
 </script>
 
 <template>
     <Head title="Users" />
-    <DataTable :data="users" :columns="columns" title="Users" :search-fields="['name', 'email', 'created_at']"
-        export-file-name="users" />
+    <div class="container-border p-6 max-w-5xl mx-auto space-y-6">
+        <h2 class="sub-heading">Users</h2>
+        <DataTable
+            :data="users.data"
+            :columns="columns"
+            :loading="loading"
+            :pagination="pagination"
+            :search-fields="['name', 'email', 'created_at']"
+            empty-message="No users found"
+            empty-description="Users will appear here once created"
+            export-file-name="users"
+            @update:pagination="pagination = $event"
+        />
+    </div>
 </template>

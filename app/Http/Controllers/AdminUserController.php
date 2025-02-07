@@ -11,12 +11,13 @@ use Spatie\Permission\Models\Role;
 
 class AdminUserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-
         return Inertia::render('Admin/User/IndexUserPage', [
-            'users' => $users,
+            'users' => User::query()
+                ->with(['roles', 'permissions'])
+                ->latest()
+                ->paginate($request->input('per_page', 10))
         ]);
     }
 

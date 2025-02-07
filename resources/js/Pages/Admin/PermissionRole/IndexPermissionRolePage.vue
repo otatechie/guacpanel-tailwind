@@ -1,36 +1,3 @@
-<template>
-
-    <Head title="Permissions & Roles" />
-
-    <div class="w-full mx-auto md:max-w-5xl">
-        <div class="bg-white rounded-xl shadow-sm">
-            <div class="p-6 border-b border-gray-200">
-                <h2 class="sub-heading">User Access Management</h2>
-                <p class="mt-1 text-gray-500 font-medium">Manage user roles and permissions</p>
-            </div>
-
-            <div class="border-b border-gray-200">
-                <nav class="flex -mb-px">
-                    <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
-                        'px-6 py-3 font-medium whitespace-nowrap',
-                        activeTab === tab.key
-                            ? 'border-b-2 border-blue-500 text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    ]">
-                        {{ tab.label }}
-                    </button>
-                </nav>
-            </div>
-
-            <div class="p-6">
-                <RolesTab v-if="activeTab === 'roles'" :roles="roles" :permissions="permissions" />
-
-                <PermissionsTab v-if="activeTab === 'permissions'" :permissions="permissions" />
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
@@ -43,8 +10,14 @@ defineOptions({
 })
 
 const props = defineProps({
-    roles: Object,
-    permissions: Object
+    roles: {
+        type: Object,
+        required: true
+    },
+    permissions: {
+        type: Object,
+        required: true
+    }
 })
 
 const tabs = [
@@ -54,3 +27,54 @@ const tabs = [
 
 const activeTab = ref('roles')
 </script>
+
+<template>
+    <Head title="Permissions & Roles" />
+
+    <main class="max-w-5xl mx-auto space-y-6">
+        <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <header class="px-6 py-5 border-b border-gray-200 bg-white">
+                <h1 class="sub-heading">User Access Management</h1>
+                <p class="mt-1 text-gray-500">Manage user roles and permissions</p>
+            </header>
+
+            <nav class="px-4 bg-gray-50 border-b border-gray-200">
+                <ul class="flex -mb-px">
+                    <li v-for="tab in tabs" :key="tab.key" class="mr-2">
+                        <button
+                            type="button"
+                            @click="activeTab = tab.key"
+                            :class="[
+                                'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm rounded-t-lg whitespace-nowrap',
+                                activeTab === tab.key
+                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                            ]"
+                        >
+                            <svg v-if="tab.key === 'roles'" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <svg v-else class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                            </svg>
+                            {{ tab.label }}
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <section class="p-6 bg-white min-h-[400px]">
+                <RolesTab
+                    v-if="activeTab === 'roles'"
+                    :roles="roles"
+                    :permissions="permissions"
+                />
+
+                <PermissionsTab
+                    v-if="activeTab === 'permissions'"
+                    :permissions="permissions"
+                />
+            </section>
+        </section>
+    </main>
+</template>

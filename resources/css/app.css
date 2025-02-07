@@ -35,7 +35,17 @@ input:focus {
 
 
 .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer;
+    @apply inline-flex items-center justify-center rounded-md font-semibold tracking-wide py-2.5 px-6 text-sm text-white cursor-pointer transition-all duration-200
+    /* Background and border */
+    bg-blue-600 border-b-4 border-b-blue-800
+    /* Hover and active states */
+    hover:bg-blue-700 hover:transform hover:-translate-y-0.5 active:bg-blue-800 active:translate-y-0.5 active:border-b-0
+    /* Focus states */
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    /* Disabled state */
+    disabled:bg-blue-400 disabled:border-blue-500 disabled:cursor-not-allowed disabled:opacity-75 disabled:hover:transform-none
+    /* Dark mode */
+    dark:bg-blue-500 dark:border-b-blue-700 dark:hover:bg-blue-600 dark:focus:ring-blue-400;
 }
 
 .btn-primary-outline {
