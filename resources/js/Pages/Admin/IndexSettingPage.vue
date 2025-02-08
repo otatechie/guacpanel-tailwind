@@ -1,136 +1,3 @@
-<template>
-
-    <Head title="Settings" />
-
-    <slot>
-
-        <div class="px-5">
-            <div class="space-y-10 divide-y divide-gray-900/10">
-                <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
-                    <div class="px-4 sm:px-0">
-                        <h2 class="sub-heading">Settings</h2>
-                        <p class="mt-1 text-sm leading-6 text-gray-700">
-                            These settings affect the entire platform. Only accessible to super administrators.
-                        </p>
-                    </div>
-                    <div class="container-border md:col-span-2">
-                        <div class="col-span-2 space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0 p-8">
-                            <div>
-                                <Link :href="route('admin.audit')">
-                                <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z" />
-                                    <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
-                                    <path
-                                        d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
-                                </svg>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Activity</h3>
-                                </Link>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Log or history of recent actions,
-                                    logins, changes, related to accounts or platform.</p>
-                            </div>
-                            <div>
-                                <Link :href="route('admin.personalisation.index')">
-                                <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
-                                </svg>
-                                </Link>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Personalization</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Customization options such as
-                                    logo, application and other preferences.
-                                </p>
-                            </div>
-                            <div>
-                                <Link :href="route('admin.user')">
-                                <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4" />
-                                </svg>
-                                </Link>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Users</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Configure roles, permissions,
-                                    security, and management of user
-                                    accounts.
-                                </p>
-                            </div>
-                            <div>
-                                <Link :href="route('backup.index')">
-                                <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1M3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m2 7a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-2.5.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
-                                    <path
-                                        d="M2 2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1v2H2a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2h-1V7h1a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm13 2v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m0 7v1a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m-3-4v2H4V7z" />
-                                </svg>
-                                </Link>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Backup</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Create backups of data to prevent
-                                    loss and facilitate restoration.</p>
-                            </div>
-                            <div>
-                                <Link :href="route('admin.permission.role')">
-                                <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1zm3.63-4.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
-                                </svg>
-                                </Link>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Roles & Permissions</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Manage user roles and permissions
-                                    to control access and functionality.</p>
-                            </div>
-                            <div>
-                                <Link>
-                                <svg class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700"
-                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1" />
-                                    <path
-                                        d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z" />
-                                </svg>
-                                </Link>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700"> Authentication Log</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Track access activities and login
-                                    attempts to gain insight.</p>
-                            </div>
-                            <div>
-                                <Link :href="route('admin.setting.manage')">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-                                </svg>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Security Policies</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Configure and manage system-wide
-                                    security controls.</p>
-                                </Link>
-                            </div>
-                            <div>
-                                <a href="/health" target="_blank">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    class="w-10 h-10 mb-2 text-gray-700 md:w-12 md:h-12 dark:text-gray-700">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                                </svg>
-                                <h3 class="mb-2 text-xl font-semibold text-gray-700">Laravel Health</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Check the health of the platform
-                                    and its components.</p>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </slot>
-
-</template>
-
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import Default from '../../Layouts/Default.vue'
@@ -138,5 +5,130 @@ import Default from '../../Layouts/Default.vue'
 defineOptions({
     layout: Default,
 })
-
 </script>
+
+<template>
+    <Head title="Settings" />
+
+    <main class="max-w-5xl mx-auto">
+        <section class="container-border overflow-hidden ">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                <div class="flex items-center space-x-2 text-sm">
+                    <Link href="/admin" class="text-gray-500 hover:text-gray-700">Dashboard</Link>
+                    <span class="text-gray-400">/</span>
+                    <span class="text-gray-800 font-medium">Settings</span>
+                </div>
+            </div>
+
+            <header class="px-6 py-4 border-b border-gray-200 bg-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="sub-heading">Settings</h1>
+                        <p class="mt-1 text-gray-500">Manage system-wide settings and configurations</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6 bg-gray-50">
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <Link :href="route('admin.audit')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-blue-50 rounded-lg border border-blue-200">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">System Activity</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Track all system events, user actions, and administrative changes in real-time.</p>
+                    </Link>
+
+                    <Link :href="route('admin.personalisation.index')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-purple-50 rounded-lg border border-purple-200">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Theme Settings</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Customize the platform's appearance, branding, and visual preferences.</p>
+                    </Link>
+
+                    <Link :href="route('admin.user')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-green-50 rounded-lg border border-green-200">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">User Management</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Manage user accounts, profiles, and account settings centrally.</p>
+                    </Link>
+
+                    <Link :href="route('backup.index')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-yellow-50 rounded-lg border border-yellow-200">
+                                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Data Backup</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Schedule and manage automated backups of your system data.</p>
+                    </Link>
+
+                    <Link :href="route('admin.permission.role')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-indigo-50 rounded-lg border border-indigo-200">
+                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Access Control</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Define and manage user roles, permissions, and access levels.</p>
+                    </Link>
+
+                    <Link :href="route('admin.permission.role')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-red-50 rounded-lg border border-red-200">
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Login History</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Monitor login attempts, sessions, and authentication activities.</p>
+                    </Link>
+
+                    <Link :href="route('admin.setting.manage')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-emerald-50 rounded-lg border border-emerald-200">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Security Settings</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Configure system-wide security policies and protection measures.</p>
+                    </Link>
+
+                    <a href="/health" target="_blank" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-pink-50 rounded-lg">
+                                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">System Health</h3>
+                        </div>
+                        <p class="text-sm text-gray-500">Monitor application performance, services, and system diagnostics.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+</template>
+

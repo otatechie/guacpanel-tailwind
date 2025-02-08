@@ -141,8 +141,8 @@ watch(pagination, newPagination => {
             <header class="px-6 py-5 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-xl font-semibold text-gray-800">Users</h1>
-                        <p class="mt-1 text-sm text-gray-500">
+                        <h1 class="sub-heading">Users</h1>
+                        <p class="mt-1 text-gray-500">
                             Manage system users and their access
                         </p>
                     </div>

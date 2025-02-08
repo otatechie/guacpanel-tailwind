@@ -1,7 +1,9 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, useForm, Link } from '@inertiajs/vue3'
 import Default from '../../Layouts/Default.vue'
 import FormInput from '../../Components/FormInput.vue'
+
+defineOptions({ layout: Default })
 
 const props = defineProps({
     user: {
@@ -9,8 +11,6 @@ const props = defineProps({
         required: true
     },
 })
-
-defineOptions({ layout: Default })
 
 const profileForm = useForm({
     name: props.user.name,
@@ -41,51 +41,109 @@ const submitPasswordForm = () => {
 <template>
     <Head title="Profile" />
 
-    <div class="max-w-5xl mx-auto divide-y divide-gray-900/10">
-        <section aria-labelledby="profile-heading" class="grid grid-cols-1 gap-x-8 md:grid-cols-3 pb-10">
-            <div class="px-4 sm:px-0 pb-6">
-                <h2 id="profile-heading" class="sub-heading">Account</h2>
-                <p class="mt-1 text-sm leading-6 text-gray-700">Your name and other information is visible to others. Email address stays private.</p>
+    <main class="max-w-5xl mx-auto space-y-6">
+        <section class="container-border overflow-hidden">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                <div class="flex items-center space-x-2 text-sm">
+                    <Link href="/account" class="text-gray-500 hover:text-gray-700">Account</Link>
+                    <span class="text-gray-400">/</span>
+                    <span class="text-gray-800">Basic Information</span>
+                </div>
             </div>
 
-            <form @submit.prevent="submitProfileForm" class="container-border md:col-span-2" novalidate>
-                <div class="px-4 py-6 sm:p-8">
-                    <div class="md:max-w-md w-full space-y-8">
-                        <FormInput v-model="profileForm.name" label="Legal name" id="name" type="text" required :error="profileForm.errors.name" />
-                        <FormInput v-model="profileForm.email" label="Email" id="email" type="email" required :error="profileForm.errors.email" />
-                        <FormInput v-model="profileForm.location" label="Location" id="location" type="text" required :error="profileForm.errors.location" />
+            <header class="px-6 py-5 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="sub-heading">Basic Information</h1>
+                        <p class="mt-1 text-gray-500">
+                            Update your personal information and email address
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <form @submit.prevent="submitProfileForm" class="divide-y divide-gray-200">
+                <div class="p-6 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-blue-50 rounded-lg">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-medium text-gray-800">Basic Information</h2>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <div class="w-full md:w-2/3 space-y-6">
+                            <FormInput v-model="profileForm.name" label="Legal name" :error="profileForm.errors.name" />
+                            <FormInput v-model="profileForm.email" label="Email address" type="email" :error="profileForm.errors.email" />
+                            <FormInput v-model="profileForm.location" label="Location" :error="profileForm.errors.location" />
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-x-6 border-t border-gray-200 px-4 py-4 sm:px-8">
-                    <button type="submit" :disabled="profileForm.processing" class="btn-primary inline-flex items-center">
-                        {{ profileForm.processing ? 'Updating...' : 'Update profile' }}
+                <div class="px-6 py-4 bg-gray-50 flex items-center justify-end gap-3">
+                    <button type="submit" class="btn-primary inline-flex items-center gap-2" :disabled="profileForm.processing">
+                        <svg v-if="profileForm.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        {{ profileForm.processing ? 'Saving...' : 'Save Changes' }}
                     </button>
                 </div>
             </form>
         </section>
 
-        <section aria-labelledby="password-heading" class="grid grid-cols-1 gap-x-8 pt-10 md:grid-cols-3">
-            <div class="px-4 sm:px-0 pb-6">
-                <h2 id="password-heading" class="sub-heading">Change Password</h2>
-                <p class="mt-1 text-sm leading-6 text-gray-700">Choose a strong password that's hard to guess and avoid common phrases.</p>
+        <section class="container-border overflow-hidden mt-12" id="password-section">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                <div class="flex items-center space-x-2 text-sm">
+                    <Link href="/account" class="text-gray-500 hover:text-gray-700">Account</Link>
+                    <span class="text-gray-400">/</span>
+                    <span class="text-gray-800">Password</span>
+                </div>
             </div>
 
-            <form @submit.prevent="submitPasswordForm" class="container-border md:col-span-2" novalidate>
-                <div class="px-4 py-6 sm:p-8">
-                    <div class="md:max-w-md w-full space-y-8">
-                        <FormInput v-model="passwordForm.current_password" label="Current password" id="current_password" type="password" required :error="passwordForm.errors.current_password" />
-                        <FormInput v-model="passwordForm.password" label="Password" id="password" type="password" required :error="passwordForm.errors.password" />
-                        <FormInput v-model="passwordForm.password_confirmation" label="Confirm password" id="password_confirmation" type="password" required :error="passwordForm.errors.password_confirmation" />
+            <header class="px-6 py-5 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="sub-heading">Password</h1>
+                        <p class="mt-1 text-gray-500">
+                            Ensure your account is using a secure password
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <form @submit.prevent="submitPasswordForm" class="divide-y divide-gray-200">
+                <div class="p-6 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-purple-50 rounded-lg">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-medium text-gray-800">Change Password</h2>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <div class="w-full md:w-2/3 space-y-6">
+                            <FormInput v-model="passwordForm.current_password" label="Current password" type="password" :error="passwordForm.errors.current_password" />
+                            <FormInput v-model="passwordForm.password" label="New password" type="password" :error="passwordForm.errors.password" />
+                            <FormInput v-model="passwordForm.password_confirmation" label="Confirm new password" type="password" :error="passwordForm.errors.password_confirmation" />
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-x-6 border-t border-gray-200 px-4 py-4 sm:px-8">
-                    <button type="submit" :disabled="passwordForm.processing" class="btn-primary inline-flex items-center">
-                        {{ passwordForm.processing ? 'Updating...' : 'Update password' }}
+                <div class="px-6 py-4 bg-gray-50 flex items-center justify-end gap-3">
+                    <button type="submit" class="btn-primary inline-flex items-center gap-2" :disabled="passwordForm.processing">
+                        <svg v-if="passwordForm.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        {{ passwordForm.processing ? 'Updating...' : 'Update Password' }}
                     </button>
                 </div>
             </form>
         </section>
-    </div>
+    </main>
 </template>
