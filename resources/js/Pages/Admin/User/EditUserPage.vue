@@ -27,6 +27,11 @@ const form = useForm({
     permissions: props.user.permissions?.map(permission => permission.id) || [],
 })
 
+const tabs = [
+    { key: 'account', label: 'Account Settings' },
+    { key: 'permissions', label: 'Permissions' }
+]
+
 const activeTab = ref('account')
 
 const submit = () => {
@@ -68,26 +73,30 @@ const deleteUser = () => {
                 </div>
             </header>
 
-            <div class="px-6 py-4 border-b border-gray-200">
-                <div class="flex gap-6">
-                    <button @click="activeTab = 'account'" :class="[
-                        'pb-3 px-1 font-medium cursor-pointer',
-                        activeTab === 'account'
-                            ? 'border-b-2 border-blue-600 text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                    ]">
-                        Account Settings
-                    </button>
-                    <button @click="activeTab = 'permissions'" :class="[
-                        'pb-3 px-1 font-medium cursor-pointer',
-                        activeTab === 'permissions'
-                            ? 'border-b-2 border-blue-600 text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'
-                    ]">
-                        Permissions
-                    </button>
-                </div>
-            </div>
+            <nav class="px-6 bg-gray-50 border-b border-gray-200">
+                <ul class="flex -mb-px">
+                    <li v-for="tab in tabs" :key="tab.key" class="mr-2">
+                        <button
+                            type="button"
+                            @click="activeTab = tab.key"
+                            :class="[
+                                'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
+                                activeTab === tab.key
+                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                            ]"
+                        >
+                            <svg v-if="tab.key === 'account'" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <svg v-else class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                            </svg>
+                            {{ tab.label }}
+                        </button>
+                    </li>
+                </ul>
+            </nav>
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200">
                 <div v-show="activeTab === 'account'" class="p-6 space-y-6">
@@ -104,10 +113,12 @@ const deleteUser = () => {
                         </div>
 
                         <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" />
-                                <FormInput v-model="form.email" label="Email address" type="email"
-                                    :error="form.errors.email" />
+                            <div class="w-full md:w-2/3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" />
+                                    <FormInput v-model="form.email" label="Email address" type="email"
+                                        :error="form.errors.email" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -124,10 +135,11 @@ const deleteUser = () => {
                             <h2 class="text-lg font-medium text-gray-800">Role Assignment</h2>
                         </div>
 
-                        <div
-                            class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 rounded-lg p-6 border border-gray-200">
-                            <FormSelect v-model="form.role" :options="roles.data" option-label="name" option-value="id"
-                                label="Assigned role" :error="form.errors.role" />
+                        <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-2/3">
+                                <FormSelect v-model="form.role" :options="roles.data" option-label="name" option-value="id"
+                                    label="Assigned role" :error="form.errors.role" />
+                            </div>
                         </div>
                     </div>
 
@@ -188,18 +200,17 @@ const deleteUser = () => {
                 </div>
 
                 <div v-show="activeTab === 'permissions'" class="p-6 space-y-6">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2 bg-yellow-50 rounded-lg">
-                            <svg class="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <p class="text-sm text-amber-700 font-medium flex items-center gap-2">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                             </svg>
-                        </div>
-                        <h2 class="text-lg font-medium text-gray-800">Direct Permissions</h2>
+                            Direct permissions override role-based permissions. Only assign direct permissions when necessary.
+                        </p>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full md:w-2/3">
                             <div v-for="permission in permissions.data" :key="permission.id"
                                 class="p-2.5 bg-white rounded-lg border border-gray-200">
                                 <FormCheckbox v-model="form.permissions" :value="permission.id"

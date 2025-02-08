@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import Default from '@/Layouts/Default.vue'
 import RolesTab from './RolesTab.vue'
 import PermissionsTab from './PermissionsTab.vue'
@@ -31,21 +31,35 @@ const activeTab = ref('roles')
 <template>
     <Head title="Permissions & Roles" />
 
-    <main class="max-w-5xl mx-auto space-y-6">
-        <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <header class="px-6 py-5 border-b border-gray-200 bg-white">
-                <h1 class="sub-heading">User Access Management</h1>
-                <p class="mt-1 text-gray-500">Manage user roles and permissions</p>
+    <main class="max-w-5xl mx-auto">
+        <section class="container-border overflow-hidden">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                <div class="flex items-center space-x-2 text-sm">
+                    <Link href="/admin" class="text-gray-500 hover:text-gray-700">Dashboard</Link>
+                    <span class="text-gray-400">/</span>
+                    <span class="text-gray-800">User Access Management</span>
+                </div>
+            </div>
+
+            <header class="px-6 py-5 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="sub-heading">User Access Management</h1>
+                        <p class="mt-1 text-gray-500">
+                            Manage user roles and permissions
+                        </p>
+                    </div>
+                </div>
             </header>
 
-            <nav class="px-4 bg-gray-50 border-b border-gray-200">
+            <nav class="px-6 bg-gray-50 border-b border-gray-200">
                 <ul class="flex -mb-px">
                     <li v-for="tab in tabs" :key="tab.key" class="mr-2">
                         <button
                             type="button"
                             @click="activeTab = tab.key"
                             :class="[
-                                'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm rounded-t-lg whitespace-nowrap',
+                                'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
                                 activeTab === tab.key
                                     ? 'border-b-2 border-blue-500 text-blue-600 bg-white'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
@@ -63,7 +77,7 @@ const activeTab = ref('roles')
                 </ul>
             </nav>
 
-            <section class="p-6 bg-white min-h-[400px]">
+            <div class="bg-white">
                 <RolesTab
                     v-if="activeTab === 'roles'"
                     :roles="roles"
@@ -74,7 +88,7 @@ const activeTab = ref('roles')
                     v-if="activeTab === 'permissions'"
                     :permissions="permissions"
                 />
-            </section>
+            </div>
         </section>
     </main>
 </template>

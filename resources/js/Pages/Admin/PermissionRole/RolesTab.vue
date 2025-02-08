@@ -56,14 +56,17 @@ const toggleAllPermissions = (e) => {
 </script>
 
 <template>
-    <section class="space-y-6">
+    <section class="p-6 space-y-6">
         <header class="flex justify-between items-center">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900">Roles</h2>
-                <p class="text-sm text-gray-500">Define roles and their permissions</p>
+                <h2 class="text-lg font-semibold text-gray-800">Roles</h2>
+                <p class="mt-1 text-sm text-gray-500">Define roles and their permissions</p>
             </div>
-            <button type="button" @click="showAddModal = true" class="btn-primary">
-                Add new role
+            <button
+                type="button"
+                @click="showAddModal = true"
+                class="btn-primary inline-flex items-center gap-2"
+            >   Add role
             </button>
         </header>
 
@@ -85,13 +88,30 @@ const toggleAllPermissions = (e) => {
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         <tr v-if="!roles.data.length" class="text-center">
-                            <td colspan="3" class="px-6 py-4 text-sm text-gray-500">
-                                No roles found
+                            <td colspan="3" class="px-6 py-8 text-sm text-gray-500">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <p>No roles found</p>
+                                    <button
+                                        type="button"
+                                        @click="showAddModal = true"
+                                        class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                    >
+                                        Add your first role
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <tr v-else v-for="role in roles.data" :key="role.id" class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4">
-                                <span class="text-sm font-medium text-gray-900">{{ role.name }}</span>
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-800">{{ role.name }}</span>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div v-if="role.permissions?.length" class="flex flex-wrap gap-2">
@@ -136,7 +156,7 @@ const toggleAllPermissions = (e) => {
         <Modal :show="showAddModal" @close="closeModal">
             <div class="p-6">
                 <header class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900">
+                    <h3 class="text-lg font-semibold text-gray-800">
                         {{ editingRole ? 'Edit Role' : 'Add New Role' }}
                     </h3>
                     <p class="mt-1 text-sm text-gray-500">
@@ -161,7 +181,7 @@ const toggleAllPermissions = (e) => {
                             Permissions
                         </label>
                         <div class="border border-gray-200 rounded-lg">
-                            <div class="p-3 border-b border-gray-200 ">
+                            <div class="p-3 border-b border-gray-200">
                                 <div class="flex items-center gap-2">
                                     <input
                                         type="checkbox"
@@ -187,7 +207,7 @@ const toggleAllPermissions = (e) => {
                                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                         >
                                         <div>
-                                            <div class="text-sm font-medium text-gray-900">
+                                            <div class="text-sm font-medium text-gray-800">
                                                 {{ permission.name }}
                                             </div>
                                             <div v-if="permission.description" class="text-xs text-gray-500">
@@ -216,12 +236,12 @@ const toggleAllPermissions = (e) => {
                         </button>
                         <button
                             type="submit"
-                            class="btn-primary"
+                            class="btn-primary inline-flex items-center gap-2"
                             :disabled="form.processing"
                         >
                             <svg
                                 v-if="form.processing"
-                                class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                class="animate-spin h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
