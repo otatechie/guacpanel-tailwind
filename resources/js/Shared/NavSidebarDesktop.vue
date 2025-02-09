@@ -1,7 +1,7 @@
 <template>
     <div data-sidebar-content class="h-full flex flex-col bg-white shadow-lg transition-all duration-300 ease-in-out"
         @click.stop>
-        <div class="px-3 py-3 border-b flex justify-between items-center bg-white sticky top-0 z-10">
+        <div class="px-3 py-3 border-b border-gray-200 flex justify-between items-center bg-white sticky top-0 z-10">
             <h2 class="text-base font-semibold text-gray-700">Menu</h2>
             <button @click.stop="$emit('close')"
                 class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors hidden md:block cursor-pointer">
@@ -19,7 +19,7 @@
             </button>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-3 px-2">
+        <nav class="flex-1 overflow-y-auto py-2 px-2">
             <div class="space-y-1">
                 <template v-for="(section, sectionIndex) in navigationSections" :key="sectionIndex">
                     <div v-if="sectionIndex > 0" class="my-1.5 px-2">
@@ -71,7 +71,7 @@
             </div>
         </nav>
 
-        <div class="px-3 py-3 border-t bg-white">
+        <div class="px-3 py-3 border-t border-gray-200 bg-white">
             <div class="flex items-center gap-2.5">
                 <img src="/path-to-logo.png" alt="Logo" class="w-7 h-7 rounded-lg">
                 <div class="flex-1 min-w-0">
