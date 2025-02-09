@@ -137,8 +137,8 @@ const getStats = (info) => [
                             <p :class="[
                                 stat.type === 'status' ?
                                     (info.healthy ? 'text-emerald-600' : 'text-red-600') :
-                                    'text-gray-900',
-                                'text-xl font-semibold capitalize'
+                                    'text-gray-700',
+                                'text-xl font-medium capitalize'
                             ]">
                                 {{ stat.value }}
                             </p>

@@ -38,6 +38,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $avatar = new Avatar(config('laravolt.avatar'));
+
         return array_merge(
             parent::share($request),
             [
@@ -47,7 +49,12 @@ class HandleInertiaRequests extends Middleware
                         'name' => $request->user()->name,
                         'username' => $request->user()->username,
                         'roles' => $request->user()->roles->pluck('name'),
-                        'avatar' => (new Avatar())->create($request->user()->name)->toBase64(),
+                        'avatar' => $avatar
+                            ->create($request->user()->name)
+                            ->setTheme('pastel')
+                            ->setFontSize(48)
+                            ->setDimension(100, 100)
+                            ->toBase64(),
                     ] : null,
                 ],
 

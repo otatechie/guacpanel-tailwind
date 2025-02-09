@@ -8,7 +8,7 @@ input:focus {
 }
 
 @theme {
-    --font-sans: "Noto Sans", "sans-serif";
+    --font-sans: "Inter", "sans-serif";
 }
 
 /* Custom Classes */
