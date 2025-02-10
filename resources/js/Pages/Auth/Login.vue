@@ -3,7 +3,7 @@
     <Head title="Login" />
 
     <div class="max-w-[384px] mx-auto px-8">
-        <h2 class="main-heading text-center">Login</h2>
+        <h2 class="main-heading text-center mt-4">Login</h2>
 
         <div class="mt-6 container-border p-5">
             <form @submit.prevent="submit" class="space-y-6 mt-2">

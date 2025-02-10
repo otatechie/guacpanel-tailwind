@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Discussion;
+use App\Models\Personalisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -39,6 +40,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $avatar = new Avatar(config('laravolt.avatar'));
+        $personalisation = Personalisation::first() ?? new Personalisation();
 
         return array_merge(
             parent::share($request),
@@ -68,6 +70,14 @@ class HandleInertiaRequests extends Middleware
                     'warning' => fn() => $request->session()->get('warning'),
                     'info' => fn() => $request->session()->get('info'),
                     'danger' => fn() => $request->session()->get('danger'),
+                ],
+
+                'personalisation' => [
+                    'appName' => $personalisation->app_name,
+                    'appLogo' => $personalisation->app_logo,
+                    'favicon' => $personalisation->favicon,
+                    'footerText' => $personalisation->footer_text,
+                    'copyrightText' => $personalisation->copyright_text,
                 ],
             ],
         );

@@ -1,6 +1,20 @@
+<script setup>
+import { Link } from '@inertiajs/vue3'
+import { usePage } from '@inertiajs/vue3'
+import Logo from '@/Shared/Logo.vue'
+import FlashMessage from '@/Shared/FlashMessage.vue'
+
+const page = usePage()
+const personalisation = page.props.personalisation || {}
+console.log('Personalization data:', personalisation)
+</script>
+
 <template>
-    <div class="bg-gray-50 min-h-screen pb-16">
+    <div class="bg-gray-50 min-h-screen">
         <Logo />
+        <h1 v-if="personalisation.appName" class="text-3xl font-extrabold text-gray-900 text-center mb-4">
+            {{ personalisation.appName }}
+        </h1>
         <FlashMessage />
         <slot></slot>
     </div>
@@ -23,15 +37,10 @@
 
             <div class="mt-8 md:order-1 md:mt-0">
                 <p class="text-center text-xs text-gray-600">
-                    &copy; 2024 All rights reserved.
+                    {{ personalisation.footerText }}
+                    {{ personalisation.copyrightText || '© 2024 All rights reserved.' }}
                 </p>
             </div>
         </div>
     </footer>
 </template>
-
-<script setup>
-import { Link } from '@inertiajs/vue3'
-import Logo from '../Shared/Logo.vue'
-import FlashMessage from '../Shared/FlashMessage.vue'
-</script>

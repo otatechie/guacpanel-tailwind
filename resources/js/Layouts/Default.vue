@@ -16,14 +16,12 @@ const handleClickAway = (event) => {
     const menuButton = document.querySelector('[data-menu-button]')
     const sidebarContent = document.querySelector('[data-sidebar-content]')
 
-    // Don't close if click is inside sidebar, its content, or menu button
     if (sidebar?.contains(event.target) ||
         menuButton?.contains(event.target) ||
         sidebarContent?.contains(event.target)) {
         return
     }
 
-    // Only close on mobile
     if (isMobile()) {
         closeSidebar()
     }
@@ -54,21 +52,13 @@ onUnmounted(() => {
 
 <template>
     <div class="min-h-screen bg-gray-50">
-        <!-- Mobile overlay -->
-        <div v-if="isSidebarOpen && isMobile()"
-            class="fixed inset-0 bg-black/30 z-30"
-            @click.stop="closeSidebar"
+        <div v-if="isSidebarOpen && isMobile()" class="fixed inset-0 bg-black/30 z-30" @click.stop="closeSidebar"
             aria-hidden="true"></div>
 
-        <!-- Sidebar -->
-        <NavSidebarDesktop
-            data-sidebar
-            class="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] transition-transform duration-200 z-40"
-            :class="[
+        <NavSidebarDesktop data-sidebar
+            class="fixed left-0 top-16 w-64 h-[calc(100vh-4rem)] transition-transform duration-200 z-40" :class="[
                 isSidebarOpen ? 'translate-x-0' : '-translate-x-64'
-            ]"
-            @close="closeSidebar"
-        />
+            ]" @close="closeSidebar" />
 
         <div class="flex flex-col min-h-screen">
             <header class="fixed w-full top-0 bg-white border-b border-gray-100 z-40">
@@ -78,7 +68,7 @@ onUnmounted(() => {
                         Your Logo
                         </Link>
                         <button type="button"
-                            class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                            class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 cursor-pointer"
                             @click="toggleSidebar" data-menu-button aria-label="Toggle Menu">
                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 aria-hidden="true">
@@ -112,10 +102,3 @@ onUnmounted(() => {
         </div>
     </div>
 </template>
-
-<style scoped>
-/* Remove any transition effects from the main content */
-main {
-    transition: none;
-}
-</style>

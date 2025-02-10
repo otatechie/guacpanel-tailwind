@@ -10,14 +10,6 @@
     @vite(['resources/js/app.js', 'resources/css/app.css'])
 
     @inertiaHead
-    <script>
-        window.logoUrl = "{{ asset('images/gma-logo.png') }}";
-    </script>
-    <style>
-        .datatable-header {
-            @apply flex justify-between items-center;
-        }
-    </style>
 
 </head>
 

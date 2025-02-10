@@ -12,7 +12,7 @@ defineOptions({
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden ">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-300">
                 <div class="flex items-center space-x-2 text-sm">
                     <Link href="/admin" class="text-gray-500 hover:text-gray-700">Dashboard</Link>
                     <span class="text-gray-400">/</span>
@@ -20,7 +20,7 @@ defineOptions({
                 </div>
             </div>
 
-            <header class="px-6 py-4 border-b border-gray-200 bg-white">
+            <header class="px-6 py-4 border-b border-gray-300 bg-white">
                 <div class="flex items-center justify-between">
                     <div>
                         <h1 class="sub-heading">Settings</h1>
@@ -29,9 +29,9 @@ defineOptions({
                 </div>
             </header>
 
-            <div class="p-6 bg-gray-50">
+            <div class="p-6">
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <Link :href="route('admin.audit')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('admin.audit')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-md transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-blue-50 rounded-lg border border-blue-200">
                                 <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@ defineOptions({
                         <p class="text-sm text-gray-500">Track all system events, user actions, and administrative changes in real-time.</p>
                     </Link>
 
-                    <Link :href="route('admin.personalisation.index')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('admin.personalisation.index')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-purple-50 rounded-lg border border-purple-200">
                                 <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@ defineOptions({
                         <p class="text-sm text-gray-500">Customize the platform's appearance, branding, and visual preferences.</p>
                     </Link>
 
-                    <Link :href="route('admin.user')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('admin.user')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-green-50 rounded-lg border border-green-200">
                                 <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@ defineOptions({
                         <p class="text-sm text-gray-500">Manage user accounts, profiles, and account settings centrally.</p>
                     </Link>
 
-                    <Link :href="route('backup.index')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('backup.index')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-yellow-50 rounded-lg border border-yellow-200">
                                 <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@ defineOptions({
                         <p class="text-sm text-gray-500">Schedule and manage automated backups of your system data.</p>
                     </Link>
 
-                    <Link :href="route('admin.permission.role')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('admin.permission.role')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-indigo-50 rounded-lg border border-indigo-200">
                                 <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@ defineOptions({
                         <p class="text-sm text-gray-500">Define and manage user roles, permissions, and access levels.</p>
                     </Link>
 
-                    <Link :href="route('admin.permission.role')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('admin.permission.role')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-red-50 rounded-lg border border-red-200">
                                 <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -103,10 +103,10 @@ defineOptions({
                         <p class="text-sm text-gray-500">Monitor login attempts, sessions, and authentication activities.</p>
                     </Link>
 
-                    <Link :href="route('admin.setting.manage')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <Link :href="route('admin.setting.manage')" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
-                            <div class="p-2 bg-emerald-50 rounded-lg border border-emerald-200">
-                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <div class="p-2 bg-orange-50 rounded-lg border border-orange-200">
+                                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
                                 </svg>
                             </div>
@@ -115,9 +115,9 @@ defineOptions({
                         <p class="text-sm text-gray-500">Configure system-wide security policies and protection measures.</p>
                     </Link>
 
-                    <a href="/health" target="_blank" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
+                    <a href="/health" target="_blank" class="group flex flex-col p-5 bg-white rounded-lg border border-gray-300 hover:border-gray-300 hover:shadow-sm transition-all duration-100">
                         <div class="flex items-center gap-3 mb-2">
-                            <div class="p-2 bg-pink-50 rounded-lg">
+                            <div class="p-2 bg-pink-50 rounded-lg border border-pink-200">
                                 <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/>
                                 </svg>

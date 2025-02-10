@@ -32,6 +32,7 @@
         "rinvex/countries": "^9.0",
         "spatie/image": "^3.8",
         "spatie/laravel-backup": "^9.1",
+        "spatie/laravel-google-fonts": "^1.4",
         "spatie/laravel-health": "^1.32",
         "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-medialibrary": "^11.0",

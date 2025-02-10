@@ -14,7 +14,7 @@ input:focus {
 /* Custom Classes */
 
 .main-heading {
-    @apply text-2xl font-extrabold text-gray-800;
+    @apply text-2xl font-bold text-gray-800;
 }
 
 .sub-heading {
@@ -22,7 +22,7 @@ input:focus {
 }
 
 .container-border {
-    @apply bg-white border border-gray-100 rounded-xl shadow-sm;
+    @apply bg-white border border-gray-200 rounded-xl shadow-sm;
 }
 
 .container-border-table {

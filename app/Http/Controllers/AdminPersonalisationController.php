@@ -22,14 +22,29 @@ class AdminPersonalisationController extends Controller
 
     public function upload(Request $request)
     {
+        $request->validate([
+            'app_logo' => ['required_without:favicon', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'favicon' => ['required_without:app_logo', 'file', 'mimes:ico,png', 'max:1024'],
+        ]);
+
         if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
             $field = $request->hasFile('app_logo') ? 'app_logo' : 'favicon';
-            $path = $request->file($field)->store('personalisation', 'public');
+
+            $file = $request->file($field);
+            $sanitizedName = preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+
+            $path = $request->file($field)->storeAs(
+                'personalisation',
+                time() . '_' . $sanitizedName,
+                'public'
+            );
 
             $personalisation = Personalisation::firstOrCreate();
 
             if ($personalisation->$field) {
-                Storage::disk('public')->delete($personalisation->$field);
+                if (Storage::disk('public')->exists($personalisation->$field)) {
+                    Storage::disk('public')->delete($personalisation->$field);
+                }
             }
 
             $personalisation->update([$field => $path]);
@@ -43,11 +58,12 @@ class AdminPersonalisationController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'app_logo' => ['nullable', 'string'],
-            'favicon' => ['nullable', 'string'],
-            'timezone' => ['required', 'string'],
-            'footer_text' => ['nullable', 'string'],
-            'copyright_text' => ['nullable', 'string'],
+            'app_logo' => ['nullable', 'string', 'regex:/^personalisation\/[a-zA-Z0-9_\-\.]+$/'],
+            'app_name' => ['nullable', 'string', 'max:100'],
+            'favicon' => ['nullable', 'string', 'regex:/^personalisation\/[a-zA-Z0-9_\-\.]+$/'],
+            'timezone' => ['required', 'string', 'in:' . implode(',', timezone_identifiers_list())],
+            'footer_text' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\s\.,\'"\-&]+$/'],
+            'copyright_text' => ['nullable', 'string', 'max:50'],
             'email_notifications' => ['required', 'boolean'],
             'push_notifications' => ['required', 'boolean'],
         ]);
