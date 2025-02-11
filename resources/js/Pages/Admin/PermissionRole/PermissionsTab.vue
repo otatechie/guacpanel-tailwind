@@ -148,7 +148,7 @@ const deletePermission = (id) => {
 
                 <form @submit.prevent="submitPermission" class="space-y-6">
                     <div>
-                        <FormInput label="Permission Name" :error="form.errors.name" v-model="form.name" type="text"
+                        <FormInput label="Permission name" :error="form.errors.name" v-model="form.name" type="text"
                             required placeholder="Enter permission name" />
                     </div>
 

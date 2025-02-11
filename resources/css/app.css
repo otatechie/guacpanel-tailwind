@@ -1,22 +1,19 @@
 @import "tailwindcss";
 @source "../views";
 
+/* Theme Configuration */
+@theme {
+    --font-sans: "Inter", "sans-serif";
+}
+
 /* Base Styles */
 textarea:focus,
 input:focus {
     outline: none !important;
 }
 
-@theme {
-    --font-sans: "Inter", "sans-serif";
-}
-
-/* Custom Classes */
-
-.main-heading {
-    @apply text-2xl font-bold text-gray-800;
-}
-
+/* Utility Classes */
+.main-heading,
 .sub-heading {
     @apply text-2xl font-bold text-gray-800;
 }
@@ -33,64 +30,7 @@ input:focus {
     @apply hover:text-blue-500 text-blue-600 underline font-medium;
 }
 
-
-.btn-primary {
-    @apply inline-flex items-center justify-center rounded-md font-semibold tracking-wide py-2.5 px-6 text-sm text-white cursor-pointer transition-all duration-200
-    /* Background and border */
-    bg-blue-600 border-b-4 border-b-blue-800
-    /* Hover and active states */
-    hover:bg-blue-700 hover:transform hover:-translate-y-0.5 active:bg-blue-800 active:translate-y-0.5 active:border-b-0
-    /* Focus states */
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-    /* Disabled state */
-    disabled:bg-blue-400 disabled:border-blue-500 disabled:cursor-not-allowed disabled:opacity-75 disabled:hover:transform-none
-    /* Dark mode */
-    dark:bg-blue-500 dark:border-b-blue-700 dark:hover:bg-blue-600 dark:focus:ring-blue-400;
-}
-
-.btn-primary-outline {
-    @apply inline-flex items-center justify-center rounded-md font-semibold tracking-wide py-2.5 px-6 text-sm cursor-pointer transition-all duration-200
-    /* Background and border */
-    bg-white border border-blue-600 border-b-4 border-b-blue-800 text-blue-600
-    /* Hover and active states */
-    hover:bg-blue-50 hover:transform hover:-translate-y-0.5 active:bg-blue-100 active:translate-y-0.5 active:border-b-0
-    /* Focus states */
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-    /* Disabled state */
-    disabled:bg-blue-400 disabled:border-blue-500 disabled:cursor-not-allowed disabled:opacity-75 disabled:hover:transform-none
-    /* Dark mode */
-    dark:bg-gray-700 dark:border-b-gray-900 dark:hover:bg-blue-600 dark:focus:ring-blue-400;
-}
-
-.btn-danger {
-    @apply inline-flex items-center justify-center rounded-md font-semibold tracking-wide py-2.5 px-6 text-sm text-white cursor-pointer transition-all duration-200
-    /* Background and border */
-    bg-red-600 border-b-4 border-b-red-800
-    /* Hover and active states */
-    hover:bg-red-700 hover:transform hover:-translate-y-0.5 active:bg-red-800 active:translate-y-0.5 active:border-b-0
-    /* Focus states */
-    focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-    /* Disabled state */
-    disabled:bg-red-400 disabled:border-red-500 disabled:cursor-not-allowed disabled:opacity-75 disabled:hover:transform-none
-    /* Dark mode */
-    dark:bg-red-500 dark:border-b-red-700 dark:hover:bg-red-600 dark:focus:ring-red-400;
-}
-
-.btn-danger-outline {
-    @apply inline-flex items-center justify-center rounded-md font-semibold tracking-wide py-2.5 px-6 text-sm cursor-pointer transition-all duration-200
-    /* Background and border */
-    bg-white border border-red-600 border-b-4 border-b-red-800 text-red-600
-    /* Hover and active states */
-    hover:bg-red-50 hover:transform hover:-translate-y-0.5 active:bg-red-100 active:translate-y-0.5 active:border-b-0
-    /* Focus states */
-    focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2
-    /* Disabled state */
-    disabled:bg-red-400 disabled:border-red-500 disabled:cursor-not-allowed disabled:opacity-75 disabled:hover:transform-none
-    /* Dark mode */
-    dark:bg-gray-700 dark:border-b-gray-900 dark:hover:bg-red-600 dark:focus:ring-red-400;
-}
-
-/* Datatable Styles */
+/* Form Elements */
 .select-input {
     @apply px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500;
 }
@@ -99,10 +39,202 @@ input:focus {
     @apply rounded border-gray-300 text-blue-600 focus:ring-blue-500;
 }
 
+/* Table Styles */
 .table-header {
     @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
 }
 
 .pagination-btn {
     @apply inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white cursor-pointer;
+}
+
+@layer components {
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-property: all;
+        transition-duration: 300ms;
+        transition-timing-function: ease-in-out;
+        background-image: linear-gradient(to right, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+        --tw-gradient-from: #2563eb;
+        --tw-gradient-to: #3b82f6;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-primary-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-property: all;
+        transition-duration: 300ms;
+        transition-timing-function: ease-in-out;
+        background-color: white;
+        color: #2563eb;
+        border: 2px solid #2563eb;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-property: all;
+        transition-duration: 300ms;
+        transition-timing-function: ease-in-out;
+        background-image: linear-gradient(to right, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+        --tw-gradient-from: #dc2626;
+        --tw-gradient-to: #ef4444;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-danger-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-property: all;
+        transition-duration: 300ms;
+        transition-timing-function: ease-in-out;
+        background-color: white;
+        color: #dc2626;
+        border: 2px solid #dc2626;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    /* Hover states */
+    .btn-primary:hover,
+    .btn-danger:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-primary:hover {
+        --tw-gradient-from: #1d4ed8;
+        --tw-gradient-to: #2563eb;
+    }
+
+    .btn-danger:hover {
+        --tw-gradient-from: #b91c1c;
+        --tw-gradient-to: #dc2626;
+    }
+
+    .btn-primary-outline:hover {
+        background-color: #eff6ff;
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-danger-outline:hover {
+        background-color: #fef2f2;
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    /* Active states */
+    .btn-primary:active,
+    .btn-primary-outline:active,
+    .btn-danger:active,
+    .btn-danger-outline:active {
+        transform: scale(0.98);
+        box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    }
+
+    /* Focus states */
+    .btn-primary:focus,
+    .btn-primary-outline:focus {
+        outline: none;
+        --tw-ring-color: rgb(59 130 246 / 0.5);
+        --tw-ring-offset-width: 2px;
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000);
+    }
+
+    .btn-danger:focus,
+    .btn-danger-outline:focus {
+        outline: none;
+        --tw-ring-color: rgb(239 68 68 / 0.5);
+        --tw-ring-offset-width: 2px;
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000);
+    }
+
+    /* Disabled states */
+    .btn-primary:disabled,
+    .btn-primary-outline:disabled,
+    .btn-danger:disabled,
+    .btn-danger-outline:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+
+        .btn-primary-outline,
+        .btn-danger-outline {
+            background-color: rgb(31 41 55);
+            color: #60a5fa;
+        }
+
+        .btn-primary-outline:hover {
+            background-color: rgb(55 65 81);
+        }
+
+        .btn-danger-outline:hover {
+            background-color: rgb(55 65 81);
+        }
+
+        .btn-primary {
+            --tw-gradient-from: #3b82f6;
+            --tw-gradient-to: #60a5fa;
+        }
+
+        .btn-primary:hover {
+            --tw-gradient-from: #2563eb;
+            --tw-gradient-to: #3b82f6;
+        }
+
+        .btn-danger {
+            --tw-gradient-from: #ef4444;
+            --tw-gradient-to: #f87171;
+        }
+
+        .btn-danger:hover {
+            --tw-gradient-from: #dc2626;
+            --tw-gradient-to: #ef4444;
+        }
+    }
 }

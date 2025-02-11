@@ -35,9 +35,9 @@ export default defineConfig({
     },
     server: {
         hmr: {
-            host: 'starter-w.test',
+            host: 'starter.test',
         },
-        host: 'starter-w.test',
+        host: 'starter.test',
         cors: true,
     },
     build: {

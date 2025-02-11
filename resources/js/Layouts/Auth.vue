@@ -3,16 +3,19 @@ import { Link } from '@inertiajs/vue3'
 import { usePage } from '@inertiajs/vue3'
 import Logo from '@/Shared/Logo.vue'
 import FlashMessage from '@/Shared/FlashMessage.vue'
+import { computed } from 'vue'
 
 const page = usePage()
 const personalisation = page.props.personalisation || {}
-console.log('Personalization data:', personalisation)
+
+const hasIdentity = computed(() => personalisation.appName || personalisation.appLogo)
+
 </script>
 
 <template>
     <div class="bg-gray-50 min-h-screen">
-        <Logo />
-        <h1 v-if="personalisation.appName" class="text-3xl font-extrabold text-gray-900 text-center mb-4">
+        <Logo :class="{ 'mb-12': !hasIdentity }" />
+        <h1 v-if="personalisation.appName" class="text-3xl font-extrabold text-gray-900 text-center mb-2">
             {{ personalisation.appName }}
         </h1>
         <FlashMessage />

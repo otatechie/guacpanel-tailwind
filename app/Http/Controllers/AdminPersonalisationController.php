@@ -68,7 +68,9 @@ class AdminPersonalisationController extends Controller
             'push_notifications' => ['required', 'boolean'],
         ]);
 
-        $personalisation = Personalisation::firstOrCreate();
+        $personalisation = Personalisation::firstOrCreate([
+            'timezone' => config('app.timezone')
+        ]);
 
         foreach (['app_logo', 'favicon'] as $field) {
             if (isset($validated[$field]) && $validated[$field] === null && $personalisation->$field) {

@@ -167,7 +167,7 @@ const toggleAllPermissions = (e) => {
                 <form @submit.prevent="submitRole" class="space-y-6">
                     <div>
                         <FormInput
-                            label="Role Name"
+                            label="Role name"
                             v-model="form.name"
                             type="text"
                             :error="form.errors.name"

@@ -10,10 +10,14 @@ class SetTimezone
 {
     public function handle(Request $request, Closure $next)
     {
+        $timezone = config('app.timezone'); // Get default timezone from config
+
         if ($settings = \App\Models\Personalisation::first()) {
-            config(['app.timezone' => $settings->timezone]);
-            date_default_timezone_set($settings->timezone);
+            $timezone = $settings->timezone ?? $timezone;
         }
+
+        config(['app.timezone' => $timezone]);
+        date_default_timezone_set($timezone);
 
         return $next($request);
     }
