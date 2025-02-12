@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div class="space-y-1">
         <label :for="id" class="relative block">
             <input :type="showPassword ? 'text' : type" :id="id" :value="modelValue" :required="required"

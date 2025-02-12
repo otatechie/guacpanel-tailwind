@@ -1,28 +1,28 @@
 <template>
     <div class="relative">
         <!-- Error Alert -->
-        <div v-if="error" class="mb-4 p-4 bg-red-50 text-red-700 rounded-md">
+        <div v-if="error" class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
             {{ error }}
         </div>
 
         <!-- Loading Overlay -->
-        <div v-if="loading" class="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div v-if="loading" class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
         </div>
 
         <!-- Header Controls -->
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-3">
                 <!-- Page Size -->
-                <select v-model="pageSize" class="select-input transition-shadow duration-150 ease-in-out">
-                    <option v-for="size in pageSizeOptions" :key="size" :value="size">
+                <select v-model="pageSize" class="select-input transition-shadow duration-150 ease-in-out bg-transparen dark:text-gray-200">
+                    <option v-for="size in pageSizeOptions" :key="size" :value="size" class="dark:bg-gray-900">
                         {{ size }} rows per page
                     </option>
                 </select>
 
                 <!-- Selected Count -->
                 <span v-if="Object.keys(selectedRows).length"
-                    class="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
+                    class="px-3 py-1.5 rounded-full text-blue-700 dark:text-blue-400 text-xs font-medium">
                     {{ Object.keys(selectedRows).length }} selected
                 </span>
             </div>
@@ -31,7 +31,7 @@
                 <!-- Search -->
                 <div v-if="enableSearch" class="relative">
                     <input type="text" v-model="searchQuery" placeholder="Search"
-                        class="w-48 px-4 py-2 border border-gray-300 rounded-md transition-shadow duration-150 ease-in-out focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-200 text-sm" />
+                        class="w-48 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md transition-shadow duration-150 ease-in-out focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm dark:bg-gray-800 dark:text-gray-200" />
                     <button v-if="searchQuery" @click="searchQuery = ''"
                         class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,9 +53,9 @@
         </div>
 
         <!-- Table -->
-        <div class="overflow-x-auto border border-gray-200 rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+        <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
                         <th class="w-10 px-6 py-3">
                             <input type="checkbox" :checked="table.getIsAllRowsSelected()"
@@ -64,11 +64,11 @@
                         </th>
                         <th v-for="header in table.getHeaderGroups()[0].headers" :key="header.id" :class="[
                             'table-header',
-                            header.column.getCanSort() ? 'cursor-pointer hover:bg-gray-100' : ''
+                            header.column.getCanSort() ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700' : ''
                         ]" @click="header.column.getToggleSortingHandler()?.($event)">
                             <div class="flex items-center gap-2">
                                 {{ header.column.columnDef.header }}
-                                <span v-if="header.column.getIsSorted()" class="text-gray-900">
+                                <span v-if="header.column.getIsSorted()" class="text-gray-900 dark:text-gray-200">
                                     {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                 </span>
                             </div>
@@ -76,23 +76,23 @@
                     </tr>
                 </thead>
 
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-gray-50">
+                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-gray-50 dark:hover:bg-gray-800">
                         <td :colspan="columns.length + 1" class="px-6 py-8 text-center">
-                            <p class="text-gray-500 text-sm">{{ emptyMessage }}</p>
-                            <p class="mt-1 text-gray-400 text-sm">{{ emptyDescription }}</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">{{ emptyMessage }}</p>
+                            <p class="mt-1 text-gray-400 dark:text-gray-500 text-sm">{{ emptyDescription }}</p>
                         </td>
                     </tr>
                     <tr v-for="(row, index) in table.getRowModel().rows" :key="row.id" :class="[
-                        'hover:bg-gray-50 transition-colors',
-                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                        'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors',
+                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'
                     ]">
                         <td class="px-6 py-4">
                             <input type="checkbox" :checked="row.getIsSelected()" @change="row.toggleSelected()"
                                 class="checkbox-input" />
                         </td>
                         <td v-for="cell in row.getVisibleCells()" :key="cell.id"
-                            class="px-6 py-4 text-sm text-gray-900">
+                            class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
                             <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                         </td>
                     </tr>
@@ -102,7 +102,7 @@
 
         <!-- Pagination -->
         <div class="flex items-center justify-between mt-6 px-1">
-            <div class="text-sm text-gray-700">
+            <div class="text-sm text-gray-700 dark:text-gray-300">
                 Showing
                 <span class="font-medium">{{ paginationStart }}</span>
                 to
@@ -128,11 +128,11 @@
                     </svg>
                 </button>
                 <div class="flex items-center gap-1">
-                    <span class="text-sm text-gray-700">Page</span>
+                    <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
                     <input type="number" :value="currentPage" @change="handlePageChange"
-                        class="w-16 px-3 py-2 text-center border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                        class="w-16 px-3 py-2 text-center border border-gray-300 dark:border-gray-700 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-200"
                         min="1" :max="table.getPageCount()" />
-                    <span class="text-sm text-gray-700">of {{ table.getPageCount() }}</span>
+                    <span class="text-sm text-gray-700 dark:text-gray-300">of {{ table.getPageCount() }}</span>
                 </div>
                 <button class="pagination-btn"
                     :disabled="props.pagination?.current_page >= Math.ceil(props.pagination.total / props.pagination.per_page)"
@@ -327,3 +327,4 @@ watch(() => props.data, () => {
     pagination.value.pageIndex = 0
 }, { deep: true })
 </script>
+

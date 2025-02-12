@@ -15,7 +15,7 @@ input:focus {
 /* Utility Classes */
 .main-heading,
 .sub-heading {
-    @apply text-2xl font-bold text-gray-800;
+    @apply text-2xl font-bold text-gray-800 dark:text-white;
 }
 
 .container-border {

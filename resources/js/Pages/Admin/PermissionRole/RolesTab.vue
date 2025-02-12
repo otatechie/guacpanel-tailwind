@@ -97,7 +97,7 @@ const toggleAllPermissions = (e) => {
                                     <button
                                         type="button"
                                         @click="showAddModal = true"
-                                        class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                        class="text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
                                     >
                                         Add your first role
                                     </button>

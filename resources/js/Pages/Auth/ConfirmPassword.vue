@@ -1,15 +1,29 @@
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3'
+import Logo from '../../Shared/Logo.vue'
+import FormInput from '../../Components/FormInput.vue'
+
+const form = useForm({
+    password: ''
+})
+
+const submit = () => {
+    form.post(route('password.confirm'))
+}
+</script>
+
 <template>
 
     <Head title="Confirm password" />
 
-    <div class="max-w-[384px] mx-auto px-8">
+    <div class="max-w-[384px] mx-auto px-8 mt-8">
         <Logo />
 
-        <h2 class="main-heading text-center">
+        <h2 class="main-heading text-center mt">
             Confirm access
         </h2>
 
-        <div class="mt-6 p-5 container-border">
+        <div class="mt-6 p-5 container-border dark:bg-gray-800">
             <p class="text-gray-700 text-sm mb-4">
                 Enter password to confirm access
             </p>
@@ -25,7 +39,7 @@
             </form>
         </div>
 
-        <p class="mt-8 text-center text-sm text-gray-700">
+        <p class="mt-8 text-center text-sm text-gray-700 dark:text-gray-300">
             Back to
             <Link :href="route('home')" class="text-sm link">
             dashboard
@@ -34,16 +48,3 @@
     </div>
 </template>
 
-<script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3'
-import Logo from '../../Shared/Logo.vue'
-import FormInput from '../../Components/FormInput.vue'
-
-const form = useForm({
-    password: ''
-})
-
-const submit = () => {
-    form.post(route('password.confirm'))
-}
-</script>

@@ -2,24 +2,24 @@
 
     <Head title="Dashboard" />
 
-    <main class="min-h-screen bg-gray-50">
+    <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <header class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
                     {{ greeting }}, {{ userName }}! 👋
                 </h1>
-                <p class="text-sm text-gray-600 mt-2">{{ formattedDate }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ formattedDate }}</p>
             </header>
 
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div v-for="card in statCards" :key="card.title"
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
                     <div class="p-6">
                         <div class="flex items-center gap-4">
-                            <div :class="`bg-${card.color}-50 rounded-xl p-3`">
+                            <div :class="`bg-${card.color}-50 dark:bg-${card.color}-900/20 rounded-xl p-3`">
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="h-8 w-8 transition-transform duration-200 group-hover:scale-110"
-                                    :class="`text-${card.color}-600`"
+                                    :class="`text-${card.color}-600 dark:text-${card.color}-400`"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -27,16 +27,16 @@
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-sm font-medium text-gray-600">{{ card.title }}</h3>
+                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ card.title }}</h3>
                                 <div class="flex items-baseline gap-2">
-                                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ card.value }}</p>
-                                    <span :class="`text-xs font-medium ${card.growth.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`">
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ card.value }}</p>
+                                    <span :class="`text-xs font-medium ${card.growth.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`">
                                         {{ card.growth }}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-4 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div class="mt-4 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                             <div :class="`h-full ${`bg-${card.color}-500`} rounded-full`"
                                 :style="`width: ${Math.random() * 100}%`">
                             </div>
@@ -47,18 +47,18 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Upcoming Tasks -->
-                <section class="lg:col-span-2 bg-white rounded-xl shadow-sm">
-                    <div class="flex justify-between items-center p-6 border-b border-gray-100">
-                        <h2 class="text-lg font-semibold text-gray-900">Upcoming Tasks</h2>
-                        <button class="text-sm font-medium text-blue-600 hover:text-blue-700">View All</button>
+                <section class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-700">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Tasks</h2>
+                        <button class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">View All</button>
                     </div>
                     <div class="p-6 space-y-4">
                         <div v-for="task in upcomingTasks" :key="task.id"
-                            class="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors">
+                            class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h3 class="text-gray-900 font-medium">{{ task.title }}</h3>
-                                    <p class="text-sm text-gray-600 mt-1">Due {{ new Date(task.dueDate).toLocaleDateString() }}</p>
+                                    <h3 class="text-gray-900 dark:text-white font-medium">{{ task.title }}</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Due {{ new Date(task.dueDate).toLocaleDateString() }}</p>
                                 </div>
                                 <span :class="{
                                     'bg-rose-100 text-rose-700': task.priority === 'high',
@@ -85,9 +85,9 @@
                 </section>
 
                 <!-- Notifications Panel -->
-                <section class="bg-white rounded-xl shadow-md border border-gray-200">
-                    <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                        <h2 class="text-lg font-bold text-gray-900">Notifications</h2>
+                <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Notifications</h2>
                         <span class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold ring-2 ring-blue-500/20">
                             {{ notifications.filter(n => !n.read).length }} new
                         </span>
@@ -101,7 +101,7 @@
                             <div class="flex items-start gap-3">
                                 <div :class="[
                                     'p-2 rounded-lg',
-                                    notification.type === 'mention' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'
+                                    notification.type === 'mention' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
                                 ]">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path v-if="notification.type === 'mention'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -111,7 +111,7 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-sm text-gray-900">{{ notification.message }}</p>
+                                    <p class="text-sm text-gray-900 dark:text-gray-800">{{ notification.message }}</p>
                                     <span class="text-xs text-gray-500 mt-1 block">{{ notification.time }}</span>
                                 </div>
                                 <button class="text-gray-400 hover:text-gray-600">
@@ -128,16 +128,19 @@
             <!-- Add after notifications panel -->
             <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Recent Transactions with search -->
-                <section class="lg:col-span-2 bg-white rounded-xl shadow-sm">
-                    <div class="flex justify-between items-center p-6 border-b border-gray-100">
-                        <h2 class="text-lg font-semibold text-gray-900">Recent Transactions</h2>
+                <section class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-700">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h2>
                         <div class="flex items-center gap-4">
                             <div class="relative">
                                 <input
                                     type="text"
                                     v-model="searchQuery"
                                     placeholder="Search transactions..."
-                                    class="pl-8 pr-4 py-1.5 text-sm rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    class="pl-8 pr-4 py-1.5 text-sm rounded-lg border border-gray-200 dark:border-gray-700
+                                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none
+                                    placeholder-gray-500 dark:placeholder-gray-400"
                                 >
                                 <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -166,12 +169,12 @@
                             <p class="text-gray-500">No transactions found</p>
                         </div>
                         <div v-else v-for="transaction in filteredTransactions" :key="transaction.id"
-                            class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                            class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             <div class="flex items-center gap-4">
                                 <img :src="transaction.customer.avatar" :alt="transaction.customer.name"
                                     class="w-10 h-10 rounded-full">
                                 <div>
-                                    <h3 class="text-sm font-medium text-gray-900">{{ transaction.description }}</h3>
+                                    <h3 class="text-sm font-medium text-gray-900 dark:text-white">{{ transaction.description }}</h3>
                                     <p class="text-xs text-gray-500">{{ transaction.customer.name }}</p>
                                 </div>
                             </div>
@@ -186,21 +189,21 @@
                 </section>
 
                 <!-- System Health with refresh button -->
-                <section class="bg-white rounded-xl shadow-sm">
-                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <section class="bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+                    <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-900">System Health</h2>
-                            <p class="text-sm text-gray-500 mt-1">Real-time performance metrics</p>
+                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">System Health</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Real-time performance metrics</p>
                         </div>
                         <span class="text-xs text-gray-500">Press ⌘R to refresh</span>
                     </div>
                     <div class="p-6 space-y-6">
                         <div v-for="(value, metric) in systemHealth" :key="metric" class="space-y-2">
                             <div class="flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-600 capitalize">{{ metric }}</span>
-                                <span class="text-sm font-medium text-gray-900">{{ value }}%</span>
+                                <span class="text-sm font-medium text-gray-600 dark:text-gray-400 capitalize">{{ metric }}</span>
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ value }}%</span>
                             </div>
-                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                                 <div class="h-full rounded-full transition-all duration-500"
                                     :class="{
                                         'bg-emerald-500': value < 70,
@@ -216,10 +219,10 @@
             </div>
 
             <!-- Quick Stats Bar -->
-            <div class="mt-6 bg-white rounded-xl shadow-sm p-4">
+            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div v-for="(value, metric) in quickStats" :key="metric"
-                        class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
+                        class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
                         <div class="p-2 bg-blue-100 rounded-lg">
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -227,8 +230,8 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-gray-600">{{ metric.replace(/([A-Z])/g, ' $1').trim() }}</p>
-                            <p class="text-lg font-bold text-gray-900">{{ value }}</p>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ metric.replace(/([A-Z])/g, ' $1').trim() }}</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ value }}</p>
                         </div>
                     </div>
                 </div>

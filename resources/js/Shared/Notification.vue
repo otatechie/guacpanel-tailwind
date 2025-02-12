@@ -83,7 +83,7 @@ onUnmounted(() => {
 <template>
     <div class="relative" ref="notificationRef">
         <button type="button" data-notification-button
-            class="relative p-2 text-gray-600 hover:text-gray-800 focus:outline-none rounded-lg hover:bg-gray-100 cursor-pointer"
+            class="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white focus:outline-none rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
             @click="toggleNotifications">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -96,18 +96,18 @@ onUnmounted(() => {
         </button>
 
         <div v-show="notificationsOpen" data-notification-dropdown
-            class="absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-white py-2 shadow-lg ring-1 ring-gray-300 ring-opacity-5">
-            <div class="px-4 py-2 border-b border-gray-100">
-                <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+            class="absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-white dark:bg-gray-800 py-2 shadow-lg ring-1 ring-gray-300 dark:ring-gray-700 ring-opacity-5">
+            <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</h3>
             </div>
             <div class="max-h-96 overflow-y-auto">
-                <div v-if="notifications.length === 0" class="px-4 py-3 text-sm text-gray-500">
+                <div v-if="notifications.length === 0" class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
                     No notifications
                 </div>
                 <div v-else v-for="notification in notifications" :key="notification.id"
                     @click="markAsRead(notification.id)"
-                    class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors" :class="{
-                        'bg-blue-50/50': !notification.read,
+                    class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors" :class="{
+                        'bg-blue-50/50 dark:bg-blue-900/20': !notification.read,
                         'border-l-4': true,
                         'border-red-500': notification.priority === 'critical',
                         'border-yellow-500': notification.priority === 'high',
@@ -116,9 +116,9 @@ onUnmounted(() => {
                     }">
                     <div class="flex gap-3">
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
-                            <p class="text-sm text-gray-500 truncate">{{ notification.description }}</p>
-                            <p class="text-xs text-gray-400 mt-1">{{ notification.time }}</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ notification.title }}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ notification.description }}</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ notification.time }}</p>
                         </div>
                         <div v-if="!notification.read" class="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
                     </div>

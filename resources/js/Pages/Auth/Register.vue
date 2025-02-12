@@ -31,7 +31,7 @@
             </form>
         </div>
 
-        <p class="my-8 text-center text-sm text-gray-800">
+        <p class="my-8 text-center text-sm text-gray-800 dark:text-white">
             Already a member?
             <Link :href="route('login')" class="text-sm link">
             Login

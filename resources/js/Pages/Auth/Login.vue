@@ -3,9 +3,9 @@
     <Head title="Login" />
 
     <div class="max-w-[384px] mx-auto px-8">
-        <h2 class="main-heading text-center">Login</h2>
+        <h2 class="main-heading text-center dark:text-white">Login</h2>
 
-        <div class="mt-6 container-border p-5">
+        <div class="mt-6 container-border p-5 dark:bg-gray-800 dark:border-gray-700">
             <form @submit.prevent="submit" class="space-y-6 mt-2">
                 <FormInput v-model="form.email" label="Email address" name="email" id="email" type="email" required
                     autocomplete="email" :error="form.errors.email" />
@@ -27,7 +27,7 @@
             </form>
         </div>
 
-        <p class="mt-8 text-center text-sm text-gray-800">
+        <p class="mt-8 text-center text-sm text-gray-800 dark:text-gray-200">
             Don't have an account?
             <Link :href="route('register')" class="link hover:underline ml-1">
             Sign up

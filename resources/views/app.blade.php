@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    @vite(['resources/js/darkMode.js'])
     @vite(['resources/js/app.js', 'resources/css/app.css'])
     @inertiaHead
 </head>
 
 @googlefonts
 
-<body>
+<body class="antialiased dark:bg-gray-800">
     @routes
     @inertia
 </body>

@@ -51,7 +51,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div v-if="isSidebarOpen && isMobile()" class="fixed inset-0 bg-black/30 z-30" @click.stop="closeSidebar"
             aria-hidden="true"></div>
 
@@ -61,14 +61,14 @@ onUnmounted(() => {
             ]" @close="closeSidebar" />
 
         <div class="flex flex-col min-h-screen">
-            <header class="fixed w-full top-0 bg-white border-b border-gray-100 z-40">
+            <header class="fixed w-full top-0 bg-white dark:bg-gray-800 border-b border-gray-100 z-40">
                 <div class="flex h-16 items-center px-4 gap-4">
                     <div class="flex items-center gap-4">
                         <Link href="/" class="text-xl font-semibold text-gray-900">
                         Your Logo
                         </Link>
                         <button type="button"
-                            class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 cursor-pointer"
+                            class="rounded-lg p-2 text-gray-500 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 cursor-pointer"
                             @click="toggleSidebar" data-menu-button aria-label="Toggle Menu">
                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                 aria-hidden="true">

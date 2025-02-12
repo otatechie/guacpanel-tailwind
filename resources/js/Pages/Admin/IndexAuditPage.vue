@@ -26,9 +26,9 @@ const pagination = ref({
 
 // Event badge styles
 const eventBadgeClasses = {
-    created: 'bg-green-50 text-green-700 border border-green-100',
-    updated: 'bg-yellow-50 text-yellow-700 border border-yellow-100',
-    deleted: 'bg-red-50 text-red-700 border border-red-100'
+    created: 'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900',
+    updated: 'bg-yellow-50 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 border border-yellow-100 dark:border-yellow-900',
+    deleted: 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900'
 }
 
 const columns = [
@@ -75,26 +75,26 @@ watch(pagination, newPagination => {
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <div class="bg-gray-50 dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700">Dashboard</Link>
-                    <span class="text-gray-400">/</span>
-                    <span class="text-gray-900">Audit Log</span>
+                    <Link href="/admin" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Dashboard</Link>
+                    <span class="text-gray-400 dark:text-gray-500">/</span>
+                    <span class="text-gray-900 dark:text-gray-100">Audit Log</span>
                 </div>
             </div>
 
-            <header class="px-6 py-5 border-b border-gray-200">
+            <header class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-800">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-xl font-semibold text-gray-900">Audit Log</h1>
-                        <p class="mt-1 text-sm text-gray-500">
+                        <h1 class="sub-heading">Audit Log</h1>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             View and monitor system activities
                         </p>
                     </div>
                 </div>
             </header>
 
-            <div class="p-6">
+            <div class="p-6 dark:bg-gray-900">
                 <Datatable
                     :data="audits.data"
                     :columns="columns"

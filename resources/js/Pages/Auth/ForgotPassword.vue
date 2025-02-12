@@ -23,7 +23,7 @@
             </form>
         </div>
 
-        <p class="mt-8 text-center text-sm text-gray-800">
+        <p class="mt-8 text-center text-sm text-gray-800 dark:text-white">
             Back to
             <Link :href="route('login')" class="text-sm link">
             login
