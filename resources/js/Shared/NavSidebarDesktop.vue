@@ -66,8 +66,8 @@ const toggleDropdown = (item) => {
         class="h-full flex flex-col bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 ease-in-out"
         @click.stop>
         <div
-            class="px-3 py-3 border-b border-gray-200 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0 z-10">
-            <h2 class="text-base font-semibold text-gray-700 dark:text-white">Menu</h2>
+            class="px-3 py-3 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0 z-10">
+            <h2 class="text-base font-semibold text-gray-700 dark:text-gray-200">Menu</h2>
             <button @click.stop="$emit('close')"
                 class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors hidden md:block cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

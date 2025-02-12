@@ -59,8 +59,8 @@ const toggleAllPermissions = (e) => {
     <section class="p-6 space-y-6">
         <header class="flex justify-between items-center">
             <div>
-                <h2 class="text-lg font-semibold text-gray-800">Roles</h2>
-                <p class="mt-1 text-sm text-gray-500">Define roles and their permissions</p>
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Roles</h2>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Define roles and their permissions</p>
             </div>
             <button
                 type="button"
@@ -70,25 +70,25 @@ const toggleAllPermissions = (e) => {
             </button>
         </header>
 
-        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full" role="table">
-                    <thead class="bg-gray-50 border-b border-gray-200">
+                    <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Role Name
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Permissions
                             </th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-[100px]">
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[100px]">
                                 Actions
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         <tr v-if="!roles.data.length" class="text-center">
-                            <td colspan="3" class="px-6 py-8 text-sm text-gray-500">
+                            <td colspan="3" class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
                                 <div class="flex flex-col items-center justify-center gap-2">
                                     <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -104,26 +104,27 @@ const toggleAllPermissions = (e) => {
                                 </div>
                             </td>
                         </tr>
-                        <tr v-else v-for="role in roles.data" :key="role.id" class="hover:bg-gray-50 transition-colors">
+                        <tr v-else v-for="role in roles.data" :key="role.id"
+                            class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
-                                    <span class="text-sm font-medium text-gray-800">{{ role.name }}</span>
+                                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ role.name }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div v-if="role.permissions?.length" class="flex flex-wrap gap-2">
                                     <span v-for="permission in role.permissions.slice(0, 3)" :key="permission.id"
-                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
                                         {{ permission.name }}
                                     </span>
-                                    <span v-if="role.permissions.length > 3" class="text-xs text-gray-500 px-2 py-0.5">
+                                    <span v-if="role.permissions.length > 3" class="text-xs text-gray-500 dark:text-gray-400 px-2 py-0.5">
                                         +{{ role.permissions.length - 3 }} more
                                     </span>
                                 </div>
-                                <span v-else class="text-xs text-gray-500">
+                                <span v-else class="text-xs text-gray-500 dark:text-gray-400">
                                     No permissions assigned
                                 </span>
                             </td>
@@ -157,9 +158,9 @@ const toggleAllPermissions = (e) => {
             <div class="p-6">
                 <header class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-800">
-                        {{ editingRole ? 'Edit Role' : 'Add New Role' }}
+                        {{ editingRole ? 'Edit role' : 'Add new role' }}
                     </h3>
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                         {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions' }}
                     </p>
                 </header>
@@ -183,8 +184,7 @@ const toggleAllPermissions = (e) => {
                         <div class="border border-gray-200 rounded-lg">
                             <div class="p-3 border-b border-gray-200">
                                 <div class="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
+                                    <input type="checkbox"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                         :checked="form.permissions.length === permissions.data.length"
                                         @change="toggleAllPermissions"
@@ -195,22 +195,18 @@ const toggleAllPermissions = (e) => {
 
                             <div class="p-3 max-h-[240px] overflow-y-auto">
                                 <div v-if="permissions.data?.length" class="space-y-1">
-                                    <div
-                                        v-for="permission in permissions.data"
-                                        :key="permission.id"
-                                        class="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-50"
-                                    >
-                                        <input
-                                            type="checkbox"
+                                    <div v-for="permission in permissions.data" :key="permission.id"
+                                        class="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-50">
+                                        <input type="checkbox"
                                             :value="permission.id"
                                             v-model="form.permissions"
                                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                         >
                                         <div>
-                                            <div class="text-sm font-medium text-gray-800">
+                                            <div class="text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {{ permission.name }}
                                             </div>
-                                            <div v-if="permission.description" class="text-xs text-gray-500">
+                                            <div v-if="permission.description" class="text-xs text-gray-500 dark:text-gray-400">
                                                 {{ permission.description }}
                                             </div>
                                         </div>
@@ -229,7 +225,7 @@ const toggleAllPermissions = (e) => {
                     <footer class="flex justify-end gap-6 pt-4 border-t border-gray-200">
                         <button
                             type="button"
-                            class="btn-primary-outline"
+                            class="cursor-pointer font-medium"
                             @click="closeModal"
                         >
                             Cancel

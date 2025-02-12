@@ -43,7 +43,7 @@ const submitPasswordForm = () => {
 
     <main class="max-w-5xl mx-auto space-y-6">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center space-x-2 text-sm">
                     <Link href="/account" class="text-gray-500 hover:text-gray-700">Account</Link>
                     <span class="text-gray-400">/</span>
@@ -51,7 +51,7 @@ const submitPasswordForm = () => {
                 </div>
             </div>
 
-            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800">
+            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
                         <h1 class="sub-heading">Basic Information</h1>
@@ -73,7 +73,7 @@ const submitPasswordForm = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Basic Information</h2>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                         <div class="w-full md:w-2/3 space-y-6">
                             <FormInput v-model="profileForm.name" label="Legal name" :error="profileForm.errors.name" />
                             <FormInput v-model="profileForm.email" label="Email address" type="email" :error="profileForm.errors.email" />
@@ -95,7 +95,7 @@ const submitPasswordForm = () => {
         </section>
 
         <section class="container-border overflow-hidden mt-12" id="password-section">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center space-x-2 text-sm">
                     <Link href="/account" class="text-gray-500 hover:text-gray-700">Account</Link>
                     <span class="text-gray-400">/</span>
@@ -103,7 +103,7 @@ const submitPasswordForm = () => {
                 </div>
             </div>
 
-            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800">
+            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
                         <h1 class="sub-heading">Password</h1>
@@ -125,7 +125,7 @@ const submitPasswordForm = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Change Password</h2>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                         <div class="w-full md:w-2/3 space-y-6">
                             <FormInput v-model="passwordForm.current_password" label="Current password" type="password" :error="passwordForm.errors.current_password" />
                             <FormInput v-model="passwordForm.password" label="New password" type="password" :error="passwordForm.errors.password" />

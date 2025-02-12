@@ -61,7 +61,7 @@ const columns = [
             }, [
                 h('span', { class: 'sr-only' }, 'Edit user'),
                 h('svg', {
-                    class: 'w-4 h-4',
+                    class: 'w-4 h-4 cursor-pointer',
                     fill: 'none',
                     stroke: 'currentColor',
                     viewBox: '0 0 24 24'
@@ -81,7 +81,7 @@ const columns = [
             }, [
                 h('span', { class: 'sr-only' }, 'Delete user'),
                 h('svg', {
-                    class: 'w-4 h-4',
+                    class: 'w-4 h-4 cursor-pointer',
                     fill: 'none',
                     stroke: 'currentColor',
                     viewBox: '0 0 24 24'
@@ -130,15 +130,15 @@ watch(pagination, newPagination => {
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700">Dashboard</Link>
-                    <span class="text-gray-400">/</span>
-                    <span class="text-gray-800">Users</span>
+                    <Link href="/admin" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard</Link>
+                    <span class="text-gray-400 dark:text-gray-500">/</span>
+                    <span class="text-gray-800 dark:text-gray-200">Users</span>
                 </div>
             </div>
 
-            <header class="px-6 py-5 border-b border-gray-200">
+            <header class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-800">
                 <div class="flex items-center justify-between">
                     <div>
                         <h1 class="sub-heading">Users</h1>
@@ -149,7 +149,7 @@ watch(pagination, newPagination => {
                 </div>
             </header>
 
-            <div class="p-6">
+            <div class="p-6 dark:bg-gray-900">
                 <DataTable
                     :data="users.data"
                     :columns="columns"

@@ -6,6 +6,9 @@
     --font-sans: "Inter", "sans-serif";
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 /* Base Styles */
 textarea:focus,
 input:focus {

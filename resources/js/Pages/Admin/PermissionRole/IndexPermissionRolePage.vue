@@ -33,26 +33,26 @@ const activeTab = ref('roles')
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700">Dashboard</Link>
-                    <span class="text-gray-400">/</span>
-                    <span class="text-gray-800">User Access Management</span>
+                    <Link href="/admin" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard</Link>
+                    <span class="text-gray-400 dark:text-gray-500">/</span>
+                    <span class="text-gray-800 dark:text-gray-200">User Access Management</span>
                 </div>
             </div>
 
-            <header class="px-6 py-5 border-b border-gray-200">
+            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="sub-heading">User Access Management</h1>
-                        <p class="mt-1 text-gray-500">
+                        <h1 class="sub-heading dark:text-gray-200">User Access Management</h1>
+                        <p class="mt-1 text-gray-500 dark:text-gray-400">
                             Manage user roles and permissions
                         </p>
                     </div>
                 </div>
             </header>
 
-            <nav class="px-6 bg-gray-50 border-b border-gray-200">
+            <nav class="px-6 bg-gray-50 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <ul class="flex -mb-px">
                     <li v-for="tab in tabs" :key="tab.key" class="mr-2">
                         <button
@@ -61,8 +61,8 @@ const activeTab = ref('roles')
                             :class="[
                                 'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
                                 activeTab === tab.key
-                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white'
-                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white dark:bg-gray-700 dark:text-blue-400'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
                             ]"
                         >
                             <svg v-if="tab.key === 'roles'" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,7 +77,7 @@ const activeTab = ref('roles')
                 </ul>
             </nav>
 
-            <div class="bg-white">
+            <div class="bg-white dark:bg-gray-700">
                 <RolesTab
                     v-if="activeTab === 'roles'"
                     :roles="roles"
