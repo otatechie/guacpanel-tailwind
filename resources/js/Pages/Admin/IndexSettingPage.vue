@@ -1,27 +1,24 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import Default from '../../Layouts/Default.vue'
+import Breadcrumbs from '@/Components/Breadcrumbs.vue'
 
 defineOptions({
     layout: Default,
 })
+
+const breadcrumbItems = [
+    { label: 'Dashboard', href: '/home' },
+    { label: 'Settings' }
+]
 </script>
 
 <template>
-
     <Head title="Settings" />
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 dark:bg-gray-800 px-6 py-3 border-b border-gray-300 dark:border-gray-700">
-                <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin"
-                        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard
-                    </Link>
-                    <span class="text-gray-400 dark:text-gray-500">/</span>
-                    <span class="text-gray-800 dark:text-gray-200 font-medium">Settings</span>
-                </div>
-            </div>
+            <Breadcrumbs :items="breadcrumbItems" />
 
             <header class="px-6 py-4 border-b border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div class="flex items-center justify-between">

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
 import Default from '@/Layouts/Default.vue'
+import PageHeader from '@/Components/PageHeader.vue'
 import RolesTab from './RolesTab.vue'
 import PermissionsTab from './PermissionsTab.vue'
 
@@ -33,24 +34,14 @@ const activeTab = ref('roles')
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard</Link>
-                    <span class="text-gray-400 dark:text-gray-500">/</span>
-                    <span class="text-gray-800 dark:text-gray-200">User Access Management</span>
-                </div>
-            </div>
-
-            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="sub-heading dark:text-gray-200">User Access Management</h1>
-                        <p class="mt-1 text-gray-500 dark:text-gray-400">
-                            Manage user roles and permissions
-                        </p>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="User Access Management"
+                description="Manage user roles and permissions"
+                :breadcrumbs="[
+                    { label: 'Dashboard', href: '/home' },
+                    { label: 'User Access Management' }
+                ]"
+            />
 
             <nav class="px-6 bg-gray-50 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <ul class="flex -mb-px">

@@ -23,6 +23,9 @@ const handleThemeChange = () => {
 };
 
 onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
+
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.attributeName === 'class') {
@@ -38,6 +41,8 @@ onMounted(() => {
 
     onBeforeUnmount(() => {
         observer.disconnect();
+        document.removeEventListener('click', handleClickOutside);
+        document.removeEventListener('keydown', handleEscapeKey);
     });
 });
 
@@ -80,7 +85,7 @@ const closeMenu = () => {
         <div v-show="menuOpen"
             class="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-xl bg-white dark:bg-gray-800 py-2 shadow-md ring-1 ring-gray-300 dark:ring-gray-700 ring-opacity-5">
             <button @click="handleThemeChange"
-                class="group flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                class="group flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                 role="menuitem">
                 <svg v-if="themeState.nextThemeIcon === 'sun'"
                     class="mr-3 h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500" viewBox="0 0 24 24"

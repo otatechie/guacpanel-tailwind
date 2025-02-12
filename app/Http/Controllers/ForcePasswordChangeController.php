@@ -13,9 +13,13 @@ class ForcePasswordChangeController extends Controller
 {
     public function edit(Request $request)
     {
-        return Inertia::render('Auth/ChangePassword', [
-            'user' => $request->user()
-        ]);
+        if ($request->user()->force_password_change) {
+            return Inertia::render('Auth/ChangePassword', [
+                'user' => $request->user()
+            ]);
+        }
+
+        return redirect()->route('home');
     }
 
 
@@ -23,7 +27,7 @@ class ForcePasswordChangeController extends Controller
     {
         $key = 'user.force.password.change.update:' . $request->user()->id;
         $maxAttempts = 5;
-        $decaySeconds = 120; // 2 minutes
+        $decaySeconds = 120;
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts, $decaySeconds)) {
             $seconds = RateLimiter::availableIn($key);

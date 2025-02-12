@@ -6,6 +6,7 @@ import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
 import FormCheckbox from '@/Components/FormCheckbox.vue'
 import Switch from '@/Components/Switch.vue'
+import PageHeader from '@/Components/PageHeader.vue'
 
 defineOptions({
     layout:
@@ -52,51 +53,15 @@ const deleteUser = () => {
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-            <div class="bg-gray-50 dark:bg-gray-900 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard</Link>
-                    <span class="text-gray-400 dark:text-gray-600">/</span>
-                    <Link href="/admin/users" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Users</Link>
-                    <span class="text-gray-400 dark:text-gray-600">/</span>
-                    <span class="text-gray-800 dark:text-gray-200 font-medium">{{ props.user.name }}</span>
-                </div>
-            </div>
-
-            <header class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="sub-heading dark:text-white">Edit User</h1>
-                        <p class="mt-1 text-gray-500 dark:text-gray-400">
-                            Editing user account for <span class="font-medium text-gray-900 dark:text-white">{{ props.user.name }}</span>
-                        </p>
-                    </div>
-                </div>
-            </header>
-
-            <nav class="px-6 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-                <ul class="flex -mb-px">
-                    <li v-for="tab in tabs" :key="tab.key" class="mr-2">
-                        <button
-                            type="button"
-                            @click="activeTab = tab.key"
-                            :class="[
-                                'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
-                                activeTab === tab.key
-                                    ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800'
-                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                            ]"
-                        >
-                            <svg v-if="tab.key === 'account'" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            <svg v-else class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                            </svg>
-                            {{ tab.label }}
-                        </button>
-                    </li>
-                </ul>
-            </nav>
+            <PageHeader
+                :title="`Edit User - ${props.user.name}`"
+                description="Manage user information and permissions"
+                :breadcrumbs="[
+                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Users', href: '/admin/users' },
+                    { label: props.user.name }
+                ]"
+            />
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-800">
                 <div v-show="activeTab === 'account'" class="p-6 space-y-6">

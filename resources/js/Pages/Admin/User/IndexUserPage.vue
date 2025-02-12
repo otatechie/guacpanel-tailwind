@@ -4,6 +4,7 @@ import DataTable from '@/Components/Datatable.vue'
 import Default from '@/Layouts/Default.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
+import PageHeader from '@/Components/PageHeader.vue'
 
 defineOptions({
     layout: Default
@@ -130,24 +131,14 @@ watch(pagination, newPagination => {
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard</Link>
-                    <span class="text-gray-400 dark:text-gray-500">/</span>
-                    <span class="text-gray-800 dark:text-gray-200">Users</span>
-                </div>
-            </div>
-
-            <header class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="sub-heading">Users</h1>
-                        <p class="mt-1 text-gray-500">
-                            Manage system users and their access
-                        </p>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Users"
+                description="Manage system users and their access"
+                :breadcrumbs="[
+                    { label: 'Dashboard', href: '/admin' },
+                    { label: 'Users' }
+                ]"
+            />
 
             <div class="p-6 dark:bg-gray-900">
                 <DataTable
