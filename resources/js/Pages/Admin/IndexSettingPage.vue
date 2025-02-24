@@ -32,7 +32,7 @@ const breadcrumbItems = [
             <div class="p-6 bg-gray-50 dark:bg-gray-700">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     <Link :href="route('admin.audit')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
@@ -48,7 +48,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <Link :href="route('admin.personalisation.index')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-purple-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-purple-50 dark:bg-purple-900/30 rounded-xl border border-purple-100 dark:border-purple-800 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 transition-colors">
@@ -64,7 +64,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <Link :href="route('admin.user')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-green-50 dark:bg-green-900/30 rounded-xl border border-green-100 dark:border-green-800 group-hover:bg-green-100 dark:group-hover:bg-green-900/50 transition-colors">
@@ -80,7 +80,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <Link :href="route('backup.index')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-xl border border-yellow-100 dark:border-yellow-800 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/50 transition-colors">
@@ -96,7 +96,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <Link :href="route('admin.permission.role')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl border border-indigo-100 dark:border-indigo-800 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
@@ -111,8 +111,8 @@ const breadcrumbItems = [
                         <p class="text-sm text-gray-600 dark:text-gray-400">Define and manage user roles, permissions, and access levels.</p>
                     </Link>
 
-                    <Link :href="route('admin.permission.role')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                    <Link :href="route('admin.login.history')"
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-red-50 dark:bg-red-900/30 rounded-xl border border-red-100 dark:border-red-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
@@ -128,7 +128,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <Link :href="route('admin.setting.manage')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-orange-50 dark:bg-orange-900/30 rounded-xl border border-orange-100 dark:border-orange-800 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/50 transition-colors">
@@ -144,7 +144,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <Link :href="route('admin.setting.manage')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-teal-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-xl border border-teal-100 dark:border-teal-800 group-hover:bg-teal-100 dark:group-hover:bg-teal-900/50 transition-colors">
@@ -160,7 +160,7 @@ const breadcrumbItems = [
                     </Link>
 
                     <a href="/health" target="_blank"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-lg transition-all duration-200 overflow-hidden">
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div class="absolute top-0 left-0 h-1 w-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <div class="flex items-center gap-4 mb-3">
                             <div class="p-3 bg-pink-50 dark:bg-pink-900/30 rounded-xl border border-pink-100 dark:border-pink-800 group-hover:bg-pink-100 dark:group-hover:bg-pink-900/50 transition-colors">

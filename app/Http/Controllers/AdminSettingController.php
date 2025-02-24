@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog;
 
 class AdminSettingController extends Controller
 {
@@ -37,4 +38,5 @@ class AdminSettingController extends Controller
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }
+
 }

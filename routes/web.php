@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
+use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminPermissionRoleController;
 use App\Http\Controllers\AdminPersonalisationController;
@@ -57,6 +58,7 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
                 Route::get('setting/manage', [AdminSettingController::class, 'manageSettings'])->name('setting.manage');
                 Route::post('setting/update', [AdminSettingController::class, 'updateSettings'])->name('setting.update');
                 Route::get('audits', [AdminAuditController::class, 'index'])->name('audit');
+                Route::get('login-history', [AdminLoginHistoryController::class, 'index'])->name('login.history');
                 Route::get('users', [AdminUserController::class, 'index'])->name('user');
                 Route::get('users/{id}', [AdminUserController::class, 'edit'])->name('user.edit');
                 Route::post('/admin/users/{id}', [AdminUserController::class, 'update'])->name('user.update');
@@ -86,8 +88,6 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
 
             Route::get('health', HealthCheckResultsController::class)->name('health');
 
-            // Media Library Route
-            Route::mediaLibrary();
         });
     });
 });

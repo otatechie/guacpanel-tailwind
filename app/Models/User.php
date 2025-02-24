@@ -3,19 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Carbon\Carbon;
+use App\Models\BankAccount;
 use App\Models\Charity;
 use App\Models\Donation;
-use App\Models\BankAccount;
-use Illuminate\Support\Str;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use OwenIt\Auditing\Contracts\Auditable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Sanctum\HasApiTokens;
+use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable
 {
@@ -65,5 +65,23 @@ class User extends Authenticatable implements Auditable
 
         $expiryDate = Carbon::createFromTimestamp($this->password_expiry_at);
         return max(0, now()->diffInDays($expiryDate));
+    }
+
+
+    public function loginHistory()
+    {
+        return $this->morphMany(LoginHistory::class, 'user');
+    }
+
+
+    public function latestLogin()
+    {
+        return $this->morphOne(LoginHistory::class, 'user')->latestOfMany('login_at');
+    }
+
+
+    public function isLoggedIn(): bool
+    {
+        return $this->latestLogin?->logout_at === null;
     }
 }
