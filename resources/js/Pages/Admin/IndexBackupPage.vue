@@ -77,7 +77,7 @@ const getStats = (info) => [
                 title="Backups"
                 description="Manage system backups and restore points"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Backups' }
                 ]"
             >

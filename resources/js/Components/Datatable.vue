@@ -1,37 +1,201 @@
+<script setup>
+import { ref, computed, watch } from 'vue'
+import {
+    FlexRender,
+    getCoreRowModel,
+    useVueTable,
+    getSortedRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+} from '@tanstack/vue-table'
+
+const props = defineProps({
+    data: { type: Array, required: true, default: () => [] },
+    columns: { type: Array, required: true },
+    title: { type: String, default: 'Data Table' },
+    enableSearch: { type: Boolean, default: true },
+    enableExport: { type: Boolean, default: true },
+    searchFields: { type: Array, default: () => [] },
+    emptyMessage: { type: String, default: 'No data found' },
+    emptyDescription: { type: String, default: 'Data will appear here' },
+    exportFileName: { type: String, default: 'export' },
+    pageSizeOptions: { type: Array, default: () => [10, 20, 30, 40, 50] },
+    defaultPageSize: { type: Number, default: 10 },
+    loading: { type: Boolean, default: false },
+    error: { type: String, default: '' },
+    pagination: {
+        type: Object,
+        default: () => ({
+            current_page: 1,
+            per_page: 10,
+            total: 0
+        })
+    }
+})
+
+const sorting = ref([])
+const selectedRows = ref({})
+const searchQuery = ref('')
+const pageSize = ref(props.defaultPageSize)
+const pagination = ref({
+    pageIndex: 0,
+    pageSize: props.defaultPageSize,
+})
+
+const filteredData = computed(() => {
+    if (!searchQuery.value || !props.searchFields.length) return props.data
+    const query = searchQuery.value.toLowerCase()
+    return props.data.filter(item =>
+        props.searchFields.some(field =>
+            String(item[field] || '').toLowerCase().includes(query)
+        )
+    )
+})
+
+const currentPage = computed(() => table.getState().pagination.pageIndex + 1)
+const totalRows = computed(() => props.pagination?.total || table.getFilteredRowModel().rows.length)
+const paginationStart = computed(() =>
+    ((props.pagination?.current_page || 1) - 1) * (props.pagination?.per_page || pageSize.value) + 1
+)
+const paginationEnd = computed(() =>
+    Math.min(
+        (props.pagination?.current_page || 1) * (props.pagination?.per_page || pageSize.value),
+        totalRows.value
+    )
+)
+
+const table = useVueTable({
+    get data() { return filteredData.value },
+    columns: props.columns,
+    state: {
+        get sorting() { return sorting.value },
+        get rowSelection() { return selectedRows.value },
+        get pagination() {
+            if (props.pagination?.total) {
+                return {
+                    pageSize: props.pagination.per_page,
+                    pageIndex: props.pagination.current_page - 1
+                }
+            }
+            return pagination.value
+        }
+    },
+    onRowSelectionChange: updaterOrValue => {
+        selectedRows.value = typeof updaterOrValue === 'function'
+            ? updaterOrValue(selectedRows.value)
+            : updaterOrValue
+    },
+    onSortingChange: updaterOrValue => {
+        sorting.value = typeof updaterOrValue === 'function'
+            ? updaterOrValue(sorting.value)
+            : updaterOrValue
+    },
+    onPaginationChange: updaterOrValue => {
+        pagination.value = typeof updaterOrValue === 'function'
+            ? updaterOrValue(pagination.value)
+            : updaterOrValue
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: props.pagination?.total ? undefined : getPaginationRowModel(),
+    enableRowSelection: true,
+    enableMultiRowSelection: true,
+    enableSubRowSelection: false,
+    getRowId: (row) => row.id || row.ID || JSON.stringify(row),
+})
+
+const handlePageChange = (e) => {
+    if (!props.pagination?.total) return
+    const page = Number(e.target.value)
+    if (page < 1 || page > Math.ceil(props.pagination.total / props.pagination.per_page)) return
+    emit('update:pagination', {
+        ...props.pagination,
+        current_page: page
+    })
+}
+
+const exportToCSV = () => {
+    const rowsToExport = Object.keys(selectedRows.value).length > 0
+        ? table.getSelectedRowModel().rows
+        : table.getRowModel().rows
+
+    const dataToExport = rowsToExport.map(row => {
+        const rowData = {}
+        props.columns.forEach(column => {
+            if (column.accessorKey) {
+                rowData[column.header] = row.original[column.accessorKey]
+            }
+        })
+        return rowData
+    })
+
+    if (!dataToExport.length) return
+
+    const csvContent = [
+        Object.keys(dataToExport[0]).join(','),
+        ...dataToExport.map(row => Object.values(row).join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${props.exportFileName}_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+}
+
+const emit = defineEmits(['update:pagination'])
+
+watch(pageSize, (newSize) => {
+    const newPagination = {
+        ...props.pagination,
+        per_page: newSize,
+        current_page: 1
+    }
+    emit('update:pagination', newPagination)
+})
+
+watch(() => props.data, () => {
+    pagination.value.pageIndex = 0
+}, { deep: true })
+</script>
+
 <template>
     <div class="relative">
-        <!-- Error Alert -->
         <div v-if="error" class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
             {{ error }}
         </div>
 
-        <!-- Loading Overlay -->
-        <div v-if="loading" class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+        <div v-if="loading"
+            class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 dark:border-purple-400"></div>
         </div>
 
-        <!-- Header Controls -->
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-3">
-                <!-- Page Size -->
-                <select v-model="pageSize" class="select-input transition-shadow duration-150 ease-in-out bg-transparen dark:text-gray-200">
+                <select v-model="pageSize"
+                    class="select-input transition-shadow duration-150 ease-in-out bg-transparen dark:text-gray-200">
                     <option v-for="size in pageSizeOptions" :key="size" :value="size" class="dark:bg-gray-900">
                         {{ size }} rows per page
                     </option>
                 </select>
 
-                <!-- Selected Count -->
                 <span v-if="Object.keys(selectedRows).length"
-                    class="px-3 py-1.5 rounded-full text-blue-700 dark:text-blue-400 text-xs font-medium">
+                    class="px-3 py-1.5 rounded-full text-purple-700 dark:text-purple-400 text-xs font-medium">
                     {{ Object.keys(selectedRows).length }} selected
                 </span>
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Search -->
                 <div v-if="enableSearch" class="relative">
                     <input type="text" v-model="searchQuery" placeholder="Search"
-                        class="w-48 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md transition-shadow duration-150 ease-in-out focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm dark:bg-gray-800 dark:text-gray-200" />
+                        class="w-48 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md transition-shadow duration-150 ease-in-out focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 text-sm dark:bg-gray-800 dark:text-gray-200" />
                     <button v-if="searchQuery" @click="searchQuery = ''"
                         class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,9 +205,8 @@
                     </button>
                 </div>
 
-                <!-- Export -->
                 <button v-if="enableExport" @click="exportToCSV"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600 cursor-pointer">
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-md transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:bg-purple-500 dark:hover:bg-purple-600 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -53,7 +216,6 @@
             </div>
         </div>
 
-        <!-- Table -->
         <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-800">
@@ -101,7 +263,6 @@
             </table>
         </div>
 
-        <!-- Pagination -->
         <div class="flex items-center justify-between mt-6 px-1">
             <div class="text-sm text-gray-700 dark:text-gray-300">
                 Showing
@@ -113,16 +274,14 @@
                 results
             </div>
             <div class="flex items-center gap-2">
-                <button class="pagination-btn"
-                    :disabled="props.pagination?.current_page <= 1"
+                <button class="pagination-btn" :disabled="props.pagination?.current_page <= 1"
                     @click="emit('update:pagination', { ...props.pagination, current_page: 1 })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                     </svg>
                 </button>
-                <button class="pagination-btn"
-                    :disabled="props.pagination?.current_page <= 1"
+                <button class="pagination-btn" :disabled="props.pagination?.current_page <= 1"
                     @click="emit('update:pagination', { ...props.pagination, current_page: props.pagination.current_page - 1 })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -131,7 +290,7 @@
                 <div class="flex items-center gap-1">
                     <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
                     <input type="number" :value="currentPage" @change="handlePageChange"
-                        class="w-16 px-3 py-2 text-center border border-gray-300 dark:border-gray-700 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-200"
+                        class="w-16 px-3 py-2 text-center border border-gray-300 dark:border-gray-700 rounded-md text-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-800 dark:text-gray-200"
                         min="1" :max="table.getPageCount()" />
                     <span class="text-sm text-gray-700 dark:text-gray-300">of {{ table.getPageCount() }}</span>
                 </div>
@@ -154,178 +313,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-import { ref, computed, watch } from 'vue'
-import {
-    FlexRender,
-    getCoreRowModel,
-    useVueTable,
-    getSortedRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-} from '@tanstack/vue-table'
-
-const props = defineProps({
-    data: { type: Array, required: true, default: () => [] },
-    columns: { type: Array, required: true },
-    title: { type: String, default: 'Data Table' },
-    enableSearch: { type: Boolean, default: true },
-    enableExport: { type: Boolean, default: true },
-    searchFields: { type: Array, default: () => [] },
-    emptyMessage: { type: String, default: 'No data found' },
-    emptyDescription: { type: String, default: 'Data will appear here' },
-    exportFileName: { type: String, default: 'export' },
-    pageSizeOptions: { type: Array, default: () => [10, 20, 30, 40, 50] },
-    defaultPageSize: { type: Number, default: 10 },
-    loading: { type: Boolean, default: false },
-    error: { type: String, default: '' },
-    pagination: {
-        type: Object,
-        default: () => ({
-            current_page: 1,
-            per_page: 10,
-            total: 0
-        })
-    }
-})
-
-// State
-const sorting = ref([])
-const selectedRows = ref({})
-const searchQuery = ref('')
-const pageSize = ref(props.defaultPageSize)
-const pagination = ref({
-    pageIndex: 0,
-    pageSize: props.defaultPageSize,
-})
-
-// Computed
-const filteredData = computed(() => {
-    if (!searchQuery.value || !props.searchFields.length) return props.data
-    const query = searchQuery.value.toLowerCase()
-    return props.data.filter(item =>
-        props.searchFields.some(field =>
-            String(item[field] || '').toLowerCase().includes(query)
-        )
-    )
-})
-
-const currentPage = computed(() => table.getState().pagination.pageIndex + 1)
-const totalRows = computed(() => props.pagination?.total || table.getFilteredRowModel().rows.length)
-const paginationStart = computed(() =>
-    ((props.pagination?.current_page || 1) - 1) * (props.pagination?.per_page || pageSize.value) + 1
-)
-const paginationEnd = computed(() =>
-    Math.min(
-        (props.pagination?.current_page || 1) * (props.pagination?.per_page || pageSize.value),
-        totalRows.value
-    )
-)
-
-// Table Configuration
-const table = useVueTable({
-    get data() { return filteredData.value },
-    columns: props.columns,
-    state: {
-        get sorting() { return sorting.value },
-        get rowSelection() { return selectedRows.value },
-        get pagination() {
-            if (props.pagination?.total) {
-                return {
-                    pageSize: props.pagination.per_page,
-                    pageIndex: props.pagination.current_page - 1
-                }
-            }
-            return pagination.value
-        }
-    },
-    onRowSelectionChange: updaterOrValue => {
-        selectedRows.value = typeof updaterOrValue === 'function'
-            ? updaterOrValue(selectedRows.value)
-            : updaterOrValue
-    },
-    onSortingChange: updaterOrValue => {
-        sorting.value = typeof updaterOrValue === 'function'
-            ? updaterOrValue(sorting.value)
-            : updaterOrValue
-    },
-    onPaginationChange: updaterOrValue => {
-        pagination.value = typeof updaterOrValue === 'function'
-            ? updaterOrValue(pagination.value)
-            : updaterOrValue
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: props.pagination?.total ? undefined : getPaginationRowModel(),
-    enableRowSelection: true,
-    enableMultiRowSelection: true,
-    enableSubRowSelection: false,
-    getRowId: (row) => row.id || row.ID || JSON.stringify(row),
-})
-
-// Methods
-const handlePageChange = (e) => {
-    if (!props.pagination?.total) return
-    const page = Number(e.target.value)
-    if (page < 1 || page > Math.ceil(props.pagination.total / props.pagination.per_page)) return
-    emit('update:pagination', {
-        ...props.pagination,
-        current_page: page
-    })
-}
-
-const exportToCSV = () => {
-    const rowsToExport = Object.keys(selectedRows.value).length > 0
-        ? table.getSelectedRowModel().rows
-        : table.getRowModel().rows
-
-    const dataToExport = rowsToExport.map(row => {
-        const rowData = {}
-        props.columns.forEach(column => {
-            if (column.accessorKey) {
-                rowData[column.header] = row.original[column.accessorKey]
-            }
-        })
-        return rowData
-    })
-
-    if (!dataToExport.length) return
-
-    const csvContent = [
-        Object.keys(dataToExport[0]).join(','),
-        ...dataToExport.map(row => Object.values(row).join(','))
-    ].join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-
-    link.setAttribute('href', url)
-    link.setAttribute('download', `${props.exportFileName}_${new Date().toISOString().split('T')[0]}.csv`)
-    link.style.visibility = 'hidden'
-
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-}
-
-// Add an emit for pagination updates
-const emit = defineEmits(['update:pagination'])
-
-// Update the watch on pageSize
-watch(pageSize, (newSize) => {
-    const newPagination = {
-        ...props.pagination,
-        per_page: newSize,
-        current_page: 1
-    }
-    emit('update:pagination', newPagination)
-})
-
-watch(() => props.data, () => {
-    pagination.value.pageIndex = 0
-}, { deep: true })
-</script>
-

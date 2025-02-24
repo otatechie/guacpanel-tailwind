@@ -52,7 +52,7 @@ const submitPasswordForm = () => {
                     { label: 'Basic Information' }
                 ]" />
 
-            <form @submit.prevent="submitProfileForm" class="divide-y divide-gray-200">
+            <form @submit.prevent="submitProfileForm" class="divide-y divide-gray-200 dark:divide-gray-600">
                 <div class="p-6 space-y-6 dark:bg-gray-700">
                     <div class="flex items-center gap-3">
                         <div class="p-2 bg-blue-50 dark:bg-blue-900 rounded-lg">
@@ -65,7 +65,7 @@ const submitPasswordForm = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Basic Information</h2>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                         <div class="w-full md:w-2/3 space-y-6">
                             <FormInput v-model="profileForm.name" label="Legal name" :error="profileForm.errors.name" />
                             <FormInput v-model="profileForm.email" label="Email address" type="email"
@@ -93,12 +93,12 @@ const submitPasswordForm = () => {
 
         <section class="container-border overflow-hidden mt-12" id="password-section">
             <PageHeader title="Password" description="Ensure your account is using a secure password" :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Account' },
                     { label: 'Password' }
                 ]" />
 
-            <form @submit.prevent="submitPasswordForm" class="divide-y divide-gray-200">
+            <form @submit.prevent="submitPasswordForm" class="divide-y divide-gray-200 dark:divide-gray-600">
                 <div class="p-6 space-y-6 dark:bg-gray-700">
                     <div class="flex items-center gap-3">
                         <div class="p-2 bg-purple-50 dark:bg-purple-900 rounded-lg">
@@ -111,7 +111,7 @@ const submitPasswordForm = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Change Password</h2>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                         <div class="w-full md:w-2/3 space-y-6">
                             <FormInput v-model="passwordForm.current_password" label="Current password" type="password"
                                 :error="passwordForm.errors.current_password" />

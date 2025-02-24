@@ -11,6 +11,7 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import Switch from '@/Components/Switch.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
+import PageHeader from '@/Components/PageHeader.vue'
 
 defineOptions({
     layout: Default
@@ -110,20 +111,14 @@ const submit = () => {
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <div class="flex items-center space-x-2 text-sm">
-                    <Link href="/admin" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">Dashboard</Link>
-                    <span class="text-gray-400 dark:text-gray-500">/</span>
-                    <span class="text-gray-800 dark:text-gray-200">Personalization</span>
-                </div>
-            </div>
-
-            <header class="px-6 py-5 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                <h1 class="sub-heading dark:text-gray-200">Personalization Settings</h1>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">
-                    Configure your application's appearance and settings
-                </p>
-            </header>
+            <PageHeader
+                title="Personalization Settings"
+                description="Configure your application's appearance and settings"
+                :breadcrumbs="[
+                    { label: 'Dashboard', href: '/' },
+                    { label: 'Personalization' }
+                ]"
+            />
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200 dark:divide-gray-700">
                 <div class="p-6 space-y-6 dark:bg-gray-700">
@@ -137,7 +132,7 @@ const submit = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Basic Information</h2>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 space-y-6 w-full md:w-2/3 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 space-y-6 w-full md:w-2/3 dark:border-gray-700">
                         <FormInput v-model="form.app_name" label="Application Name"
                             placeholder="Enter your application name" :error="form.errors.app_name" />
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -160,10 +155,10 @@ const submit = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Media</h2>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div v-for="config in fileUploadConfigs" :key="config.name" class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     {{ config.name === 'app_logo' ? 'Application logo' : 'Favicon' }}
                                 </label>
                                 <file-pond :name="config.name" :ref="config.ref" :label-idle="config.labelIdle"
@@ -188,7 +183,7 @@ const submit = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Localization</h2>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
                         <FormSelect v-model="form.timezone" label="Timezone" :options="timezones" class="max-w-md" />
                     </div>
                 </div>
@@ -235,7 +230,7 @@ const submit = () => {
                             <path class="opacity-75" fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
-                        {{ form.processing ? 'Saving...' : 'Save Changes' }}
+                        {{ form.processing ? 'Saving...' : 'Save changes' }}
                     </button>
                 </div>
             </form>

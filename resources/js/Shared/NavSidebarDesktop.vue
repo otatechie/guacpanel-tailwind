@@ -19,7 +19,7 @@ const navigationSections = ref([
                 icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />',
                 isOpen: false,
                 children: [
-                    { name: 'Overview', href: route('home'), badge: { text: 'Live', class: 'bg-blue-100 text-blue-600' } },
+                    { name: 'Overview', href: route('home'), badge: { text: 'Live', class: 'bg-purple-100 text-purple-600' } },
                     { name: 'Reports', href: route('home') },
                     { name: 'Statistics', href: route('home') }
                 ]
@@ -33,7 +33,7 @@ const navigationSections = ref([
                 icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />',
                 isOpen: false,
                 children: [
-                    { name: 'Users', href: route('home'), badge: { text: '50+', class: 'bg-blue-100 text-blue-600' } },
+                    { name: 'Users', href: route('home'), badge: { text: '50+', class: 'bg-purple-100 text-purple-600' } },
                     { name: 'Roles', href: route('home') },
                     { name: 'Permissions', href: route('home') }
                 ]
@@ -48,7 +48,7 @@ const navigationSections = ref([
                 isOpen: false,
                 children: [
                     { name: 'General', href: route('home') },
-                    { name: 'Security', href: route('home'), badge: { text: 'Updated', class: 'bg-blue-100 text-blue-600' } },
+                    { name: 'Security', href: route('home'), badge: { text: 'Updated', class: 'bg-purple-100 text-purple-600' } },
                     { name: 'Backups', href: route('home') }
                 ]
             },
@@ -67,7 +67,7 @@ const toggleDropdown = (item) => {
         @click.stop>
         <div
             class="px-3 py-3 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0 z-10">
-            <h2 class="text-base font-semibold text-gray-700 dark:text-gray-200">Menu</h2>
+            <h2 class="text-base font-medium text-gray-700 dark:text-gray-200 ml-2">Menu</h2>
             <button @click.stop="$emit('close')"
                 class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors hidden md:block cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -112,7 +112,7 @@ const toggleDropdown = (item) => {
                             </button>
                             <div v-show="item.isOpen" class="pl-9 space-y-1">
                                 <Link v-for="child in item.children" :key="child.name" :href="child.href" :class="['flex items-center px-1.5 py-1.5 rounded-lg transition-all duration-200 ease-in-out',
-                                    child.active ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-medium' :
+                                    child.active ? 'bg-purple-50 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-medium' :
                                         'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white']">
                                 <span class="text-sm">{{ child.name }}</span>
                                 <span v-if="child.badge"
@@ -122,10 +122,10 @@ const toggleDropdown = (item) => {
                             </div>
                         </div>
                         <Link v-else :href="item.href" :class="['flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out',
-                            item.active ? 'text-blue-600 dark:text-blue-400' :
+                            item.active ? 'text-purple-600 dark:text-purple-400' :
                                 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white']">
                         <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200"
-                            :class="item.active ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'"
+                            :class="item.active ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400 dark:text-gray-500'"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" v-html="item.icon"></svg>
                         <span class="text-sm font-medium">{{ item.name }}</span>
@@ -139,8 +139,7 @@ const toggleDropdown = (item) => {
         </nav>
 
         <div class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <div class="flex items-center gap-2.5">
-                <img src="/path-to-logo.png" alt="Logo" class="w-7 h-7 rounded-lg">
+            <div class="flex items-center gap-2.5 ml-2">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin Panel</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">v2.0.0</p>

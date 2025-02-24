@@ -1,3 +1,23 @@
+
+<script setup>
+import { Head, Link } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
+import Auth from '../../Layouts/Auth.vue'
+import FormInput from '../../Components/FormInput.vue'
+
+defineOptions({
+    layout: Auth
+})
+
+const form = useForm({
+    email: ''
+})
+
+const submit = () => {
+    form.post(route('password.request'))
+}
+</script>
+
 <template>
 
     <Head title="Forgot password" />
@@ -8,7 +28,7 @@
         </h2>
 
         <div class="mt-6 p-5 container-border">
-            <p class="text-gray-800 text-sm">
+            <p class="text-gray-800 dark:text-white text-sm">
                 Enter your email to receive a password reset link
             </p>
 
@@ -31,22 +51,3 @@
         </p>
     </div>
 </template>
-
-<script setup>
-import { Head, Link } from '@inertiajs/vue3'
-import { useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
-
-defineOptions({
-    layout: Auth
-})
-
-const form = useForm({
-    email: ''
-})
-
-const submit = () => {
-    form.post(route('password.request'))
-}
-</script>

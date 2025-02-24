@@ -12,7 +12,7 @@
             />
         </div>
         <div class="ml-3 text-sm">
-            <label :for="id" class="font-medium text-gray-700 cursor-pointer">{{ label }}</label>
+            <label :for="id" class="font-medium text-gray-700 dark:text-gray-300 cursor-pointer">{{ label }}</label>
             <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
         </div>
     </div>

@@ -37,14 +37,9 @@ const submit = () => {
             class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
             <PageHeader title="Security & Authentication"
                 description="Configure system-wide security policies and authentication requirements" :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Security Settings' }
                 ]">
-                <template #actions>
-                    <button class="btn-primary">
-                        Some Action
-                    </button>
-                </template>
             </PageHeader>
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200 dark:divide-gray-700">

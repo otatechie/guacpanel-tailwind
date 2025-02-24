@@ -135,7 +135,7 @@ watch(pagination, newPagination => {
                 title="Users"
                 description="Manage system users and their access"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/admin' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Users' }
                 ]"
             />

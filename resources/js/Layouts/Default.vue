@@ -61,7 +61,7 @@ onUnmounted(() => {
             ]" @close="closeSidebar" />
 
         <div class="flex flex-col min-h-screen">
-            <header class="fixed w-full top-0 bg-white dark:bg-gray-800 border-b border-gray-100 z-40">
+            <header class="fixed w-full top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-40">
                 <div class="flex h-16 items-center px-4 gap-4">
                     <div class="flex items-center gap-4">
                         <Link href="/" class="text-xl font-semibold text-gray-900">

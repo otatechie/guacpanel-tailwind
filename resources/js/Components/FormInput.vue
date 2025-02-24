@@ -1,20 +1,21 @@
- <template>
+<template>
     <div class="space-y-1">
         <label :for="id" class="relative block">
             <input :type="showPassword ? 'text' : type" :id="id" :value="modelValue" :required="required"
                 @input="$emit('update:modelValue', $event.target.value)"
-                class="w-full peer border rounded-md bg-white placeholder-transparent px-3 py-2 transition-shadow duration-150 ease-in-out focus:outline-none"
+                class="w-full peer border rounded-md bg-white placeholder-transparent px-3 py-2 transition-shadow duration-150 ease-in-out focus:outline-none dark:bg-gray-800 dark:text-white"
                 :class="[
                     error
-                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200'
-                        : 'border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-200'
+                        ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:shadow focus:shadow-red-300/50 dark:focus:ring-red-900'
+                        : 'border-gray-300 dark:border-gray-600 focus:border-purple-400 focus:ring-1 focus:ring-purple-500 focus:shadow focus:shadow-purple-300/50 dark:focus:ring-purple-500'
                 ]" :placeholder="label" />
             <span
-                class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white px-1 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
+                class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white dark:bg-gray-800 px-1 text-xs text-gray-700 dark:text-gray-400 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
                 {{ label }}{{ required ? ' *' : '' }}
             </span>
 
-            <button v-if="type === 'password'" type="button" class="absolute inset-y-0 right-0 px-3 flex items-center"
+            <button v-if="type === 'password'" type="button"
+                class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-700 dark:text-white cursor-pointer"
                 @click="showPassword = !showPassword">
                 <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -29,7 +30,7 @@
                 </svg>
             </button>
         </label>
-        <p v-if="error" class="text-red-500 text-xs">{{ error }}</p>
+        <p v-if="error" class="text-red-500 dark:text-red-400 text-xs">{{ error }}</p>
     </div>
 </template>
 

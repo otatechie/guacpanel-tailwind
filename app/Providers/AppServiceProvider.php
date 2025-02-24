@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
-use Spatie\MediaLibraryPro\MediaLibraryProServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +14,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->register(MediaLibraryProServiceProvider::class);
     }
 
     /**

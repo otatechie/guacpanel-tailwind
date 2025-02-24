@@ -18,8 +18,6 @@
     "dependencies": {
         "@heroicons/vue": "^2.1.5",
         "@inertiajs/vue3": "^2.0.3",
-        "@spatie/media-library-pro-styles": "^1.4.0",
-        "@spatie/media-library-pro-vue3-attachment": "^1.4.0",
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/vite": "^4.0.1",
         "@tanstack/vue-table": "^8.20.5",
@@ -29,12 +27,9 @@
         "filepond": "^4.32.7",
         "filepond-plugin-file-validate-type": "^1.2.9",
         "filepond-plugin-image-preview": "^4.6.12",
-        "jszip": "^3.10.1",
         "nprogress": "^0.2.0",
         "path": "^0.12.7",
-        "pdfmake": "^0.2.18",
         "pinia": "^2.3.0",
-        "quill": "^2.0.2",
         "vue": "^3.0.0",
         "vue-filepond": "^7.0.4",
         "ziggy-js": "^2.3.0"

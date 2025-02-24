@@ -57,7 +57,7 @@ const deleteUser = () => {
                 :title="`Edit User - ${props.user.name}`"
                 description="Manage user information and permissions"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Users', href: '/admin/users' },
                     { label: props.user.name }
                 ]"

@@ -63,10 +63,10 @@ const deletePermission = (id) => {
             </button>
         </header>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full" role="table">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
@@ -104,7 +104,14 @@ const deletePermission = (id) => {
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ permission.name }}</span>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                            {{ permission.name }}
+                                        </div>
+                                        <div v-if="permission.description" class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ permission.description }}
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
@@ -136,9 +143,9 @@ const deletePermission = (id) => {
         </div>
 
         <Modal :show="showAddModal" @close="closeModal">
-            <div class="p-6 ">
+            <div class="p-6">
                 <header class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
                         {{ editingPermission ? 'Edit permission' : 'Add new permission' }}
                     </h3>
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -148,22 +155,48 @@ const deletePermission = (id) => {
 
                 <form @submit.prevent="submitPermission" class="space-y-6">
                     <div>
-                        <FormInput label="Permission name" :error="form.errors.name" v-model="form.name" type="text"
-                            required placeholder="Enter permission name" />
+                        <FormInput
+                            label="Permission name"
+                            v-model="form.name"
+                            type="text"
+                            :error="form.errors.name"
+                            required
+                            placeholder="Enter permission name"
+                        />
                     </div>
 
-                    <footer class="flex justify-end gap-6 pt-4 border-t border-gray-200 ">
-                        <button type="button" @click="closeModal" class="cursor-pointer font-medium">
+                    <div>
+                        <FormInput
+                            label="Description"
+                            v-model="form.description"
+                            type="text"
+                            :error="form.errors.description"
+                            placeholder="Enter permission description (optional)"
+                        />
+                    </div>
+
+                    <footer class="flex justify-end gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button
+                            type="button"
+                            class="cursor-pointer font-medium dark:text-white"
+                            @click="closeModal"
+                        >
                             Cancel
                         </button>
-                        <button type="submit" class="btn-primary" :disabled="form.processing">
-                            <svg v-if="form.processing" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                </path>
+                        <button
+                            type="submit"
+                            class="btn-primary inline-flex items-center gap-2"
+                            :disabled="form.processing"
+                        >
+                            <svg
+                                v-if="form.processing"
+                                class="animate-spin h-4 w-4"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                             {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
                         </button>

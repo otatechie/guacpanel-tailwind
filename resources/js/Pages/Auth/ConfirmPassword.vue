@@ -1,10 +1,15 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3'
-import Logo from '../../Shared/Logo.vue'
+import { Head, Link } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
+import Auth from '../../Layouts/Auth.vue'
 import FormInput from '../../Components/FormInput.vue'
 
 const form = useForm({
     password: ''
+})
+
+defineOptions({
+    layout: Auth
 })
 
 const submit = () => {
@@ -16,19 +21,17 @@ const submit = () => {
 
     <Head title="Confirm password" />
 
-    <div class="max-w-[384px] mx-auto px-8 mt-8">
-        <Logo />
-
-        <h2 class="main-heading text-center mt">
+    <div class="max-w-[384px] mx-auto px-8">
+        <h2 class="main-heading text-center">
             Confirm access
         </h2>
 
-        <div class="mt-6 p-5 container-border dark:bg-gray-800">
-            <p class="text-gray-700 text-sm mb-4">
+        <div class="mt-6 p-5 container-border">
+            <p class="text-gray-800 dark:text-white text-sm">
                 Enter password to confirm access
             </p>
 
-            <form @submit.prevent="submit" class="space-y-4">
+            <form @submit.prevent="submit" class="space-y-6 mt-4">
                 <FormInput v-model="form.password" label="Password" id="password" type="password" required
                     :disabled="form.processing" :error="form.errors.password" />
 

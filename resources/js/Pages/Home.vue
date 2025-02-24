@@ -4,10 +4,12 @@
 
     <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <PageHeader
-                :title="`${greeting}, ${userName}! 👋`"
-                :description="formattedDate"
-            />
+            <header class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                    {{ greeting }}, {{ userName }}! 👋
+                </h1>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 font-mono">{{ formattedDate }}</p>
+            </header>
 
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <div v-for="card in statCards" :key="card.title"
@@ -243,7 +245,6 @@ import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import Default from '../Layouts/Default.vue'
 import { ChevronRightIcon } from '@heroicons/vue/24/outline'
-import PageHeader from '@/Components/PageHeader.vue'
 
 defineOptions({
     layout: Default

@@ -9,12 +9,6 @@ import "nprogress/nprogress.css";
 import Default from "./Layouts/Default.vue";
 import Auth from "./Layouts/Auth.vue";
 
-// Media Library
-import "@spatie/media-library-pro-styles";
-import { MediaLibraryAttachment } from 'media-library-pro-vue3-attachment';
-import { MediaLibraryCollection } from 'media-library-pro-vue3-collection';
-
-
 // NProgress configuration
 router.on("start", () => NProgress.start());
 router.on("finish", () => NProgress.done());
@@ -47,9 +41,7 @@ createInertiaApp({
         const globalComponents = {
             Link,
             Default,
-            Auth,
-            MediaLibraryAttachment,
-            MediaLibraryCollection,
+            Auth
         };
 
         Object.entries(globalComponents).forEach(([name, component]) => {

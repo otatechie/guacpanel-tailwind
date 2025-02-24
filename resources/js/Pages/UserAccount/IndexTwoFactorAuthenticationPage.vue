@@ -64,19 +64,17 @@ const benefits = [
 </script>
 
 <template>
+
     <Head title="Two-Factor Authentication" />
 
     <main class="max-w-5xl mx-auto">
         <section class="container-border overflow-hidden">
-            <PageHeader
-                title="Two-Factor Authentication"
-                description="Add an extra layer of security to your account"
+            <PageHeader title="Two-Factor Authentication" description="Add an extra layer of security to your account"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Account', href: '/user/account' },
                     { label: 'Two-Factor Authentication' }
-                ]"
-            />
+                ]" />
 
             <div v-if="!user.two_factor_secret" class="p-6 space-y-6 dark:bg-gray-700">
                 <div class="flex items-center gap-3">
@@ -121,45 +119,65 @@ const benefits = [
                         <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Setup Instructions</h2>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="space-y-6">
-                            <div class="flex items-center gap-3">
-                                <span
-                                    class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-700 dark:bg-gray-600 text-white text-sm">1</span>
-                                <h3 class="font-medium text-gray-700 dark:text-gray-200">Download an Authenticator App
-                                </h3>
-                            </div>
-                            <div class="ml-9 space-y-3">
-                                <a href="https://apps.apple.com/us/app/ente-authenticator/id6444121398" target="_blank"
-                                    class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path
-                                            d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                                    </svg>
-                                    <span class="text-sm font-medium dark:text-gray-200">Download for iOS</span>
-                                </a>
-                                <a href="https://play.google.com/store/apps/details?id=io.ente.auth" target="_blank"
-                                    class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                        <path
-                                            d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.891 12l1.807-2.379zM5.864 2.658L16.802 8.99l-2.302 2.302-8.636-8.634z" />
-                                    </svg>
-                                    <span class="text-sm font-medium dark:text-gray-200">Download for Android</span>
-                                </a>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="space-y-8">
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="bg-gray-400 flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-primary-600 text-white font-medium">1</span>
+                                    <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Download an
+                                        Authenticator App</h3>
+                                </div>
+                                <div class="ml-11 space-y-3">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                        Choose and install one of these recommended authenticator apps:
+                                    </p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <a href="https://apps.apple.com/us/app/ente-authenticator/id6444121398" target="_blank"
+                                            class="flex flex-col items-center gap-2 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+                                            <svg class="w-8 h-8 text-gray-600 group-hover:text-gray-800 dark:text-gray-400 dark:group-hover:text-gray-200" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                                            </svg>
+                                            <div class="text-center">
+                                                <span class="font-medium text-gray-800 dark:text-gray-200">iOS</span>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">App Store</p>
+                                            </div>
+                                        </a>
+                                        <a href="https://play.google.com/store/apps/details?id=io.ente.auth" target="_blank"
+                                            class="flex flex-col items-center gap-2 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
+                                            <svg class="w-8 h-8 text-gray-600 group-hover:text-gray-800 dark:text-gray-400 dark:group-hover:text-gray-200" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.891 12l1.807-2.379zM5.864 2.658L16.802 8.99l-2.302 2.302-8.636-8.634z" />
+                                            </svg>
+                                            <div class="text-center">
+                                                <span class="font-medium text-gray-800 dark:text-gray-200">Android</span>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">Google Play</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <span
-                                    class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-gray-700 dark:bg-gray-600 text-white text-sm">2</span>
-                                <h3 class="font-medium text-gray-700 dark:text-gray-200">Scan QR Code</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="bg-gray-400 flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-white font-medium">2</span>
+                                    <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">Scan QR Code</h3>
+                                </div>
+                                <div class="ml-11">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        Open your authenticator app and scan the QR code to the right. The app will
+                                        start generating security codes automatically.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="ml-9 text-sm text-gray-500 dark:text-gray-400">Open your authenticator app and scan the QR code</p>
                         </div>
-                        <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-                            <div class="bg-white dark:bg-gray-50 p-4 rounded-lg shadow-sm flex flex-col items-center">
-                                <div v-html="qrCodeSvg" class="w-48 h-48"></div>
-                                <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">Scan with your authenticator
-                                    app</p>
+
+                        <div class="bg-gray-50 dark:bg-gray-800 p-8 rounded-xl">
+                            <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm flex flex-col items-center">
+                                <div v-html="qrCodeSvg" class="w-56 h-56"></div>
+                                <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                                    Scan this QR code with your authenticator app
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -169,7 +187,8 @@ const benefits = [
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-                                <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                                 </svg>
@@ -177,29 +196,21 @@ const benefits = [
                             <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Recovery Codes</h2>
                         </div>
                         <button @click="regenerateCodes" :disabled="regenerateForm.processing"
-                            class="btn-primary-outline">
-                            <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            {{ regenerateForm.processing ? 'Generating...' : 'Generate new codes' }}
+                            class="btn-primary">
+
+                            {{ regenerateForm.processing ? 'Generating...' : 'Regenerate codes' }}
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div v-for="code in recoveryCodes" :key="code"
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div v-for="(code, index) in recoveryCodes" :key="code"
                             class="group relative bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors">
-                            <code
-                                class="block font-mono text-sm text-gray-800 dark:text-gray-200 text-center select-all">{{ code }}</code>
-                            <div
-                                class="absolute inset-0 flex items-center justify-center bg-gray-800/5 dark:bg-gray-900/5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Click to copy</span>
-                            </div>
+                            <span class="absolute top-1 left-2 text-xs text-gray-300 dark:text-gray-500">{{ index + 1 }}</span>
+                            <code class="block font-mono text-sm text-gray-800 dark:text-gray-200 text-center select-all">{{ code }}</code>
                         </div>
                     </div>
                 </div>
 
-                <!-- Danger Zone -->
                 <div class="p-6 space-y-6">
                     <div class="flex items-center gap-3">
                         <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -241,7 +252,7 @@ const benefits = [
             </div>
 
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn-primary-outline" @click="closeModal">
+                <button type="button" class="mr-6 cursor-pointer font-medium" @click="closeModal">
                     Cancel
                 </button>
                 <button type="submit" class="btn-danger" @click="disableTwoFactor" :disabled="disableForm.processing">

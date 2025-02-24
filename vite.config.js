@@ -28,13 +28,6 @@ export default defineConfig({
         alias: {
             '@': path.resolve(__dirname, './resources/js'),
             'vue': 'vue/dist/vue.esm-bundler.js',
-
-            // Carefully validate these paths
-            'laravel-medialibrary-pro': path.resolve(__dirname, './vendor/spatie/laravel-medialibrary-pro/resources/js'),
-            'media-library-pro-vue3-attachment': path.resolve(__dirname, './vendor/spatie/laravel-medialibrary-pro/resources/js/media-library-pro-vue3-attachment'),
-            'media-library-pro-vue3-collection': path.resolve(__dirname, './vendor/spatie/laravel-medialibrary-pro/resources/js/media-library-pro-vue3-collection'),
-            'media-library-pro-react-attachment': path.resolve(__dirname, './vendor/spatie/laravel-medialibrary-pro/resources/js/media-library-pro-react-attachment'),
-            'media-library-pro-react-collection': path.resolve(__dirname, './vendor/spatie/laravel-medialibrary-pro/resources/js/media-library-pro-react-collection'),
         },
     },
     server: {

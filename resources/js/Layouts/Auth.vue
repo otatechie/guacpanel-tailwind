@@ -6,6 +6,7 @@ import FlashMessage from '@/Shared/FlashMessage.vue'
 import { computed } from 'vue'
 
 const page = usePage()
+
 const personalisation = page.props.personalisation || {}
 
 const hasIdentity = computed(() => personalisation.appName || personalisation.appLogo)
@@ -13,7 +14,7 @@ const hasIdentity = computed(() => personalisation.appName || personalisation.ap
 </script>
 
 <template>
-    <div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="bg-gray-50 dark:bg-gray-800 min-h-screen">
         <Logo :class="{ 'mb-12': !hasIdentity }" />
         <h1 v-if="personalisation.appName" class="text-3xl font-extrabold text-gray-900 text-center mb-2">
             {{ personalisation.appName }}
@@ -22,7 +23,7 @@ const hasIdentity = computed(() => personalisation.appName || personalisation.ap
         <slot></slot>
     </div>
 
-    <footer class="border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+    <footer class="border-t border-gray-200 dark:border-gray-700 dark:bg-gray-800">
         <div class="mx-auto max-w-7xl px-6 py-4 md:flex md:items-center md:justify-between lg:px-8">
             <nav class="flex justify-center space-x-6 md:order-2">
                 <Link :href="route('home')">

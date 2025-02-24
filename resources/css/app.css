@@ -8,7 +8,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 /* Base Styles */
 textarea:focus,
 input:focus {
@@ -22,7 +21,7 @@ input:focus {
 }
 
 .container-border {
-    @apply bg-white border border-gray-200 rounded-xl shadow-sm;
+    @apply bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-700 rounded-xl shadow-sm;
 }
 
 .container-border-table {
@@ -30,16 +29,16 @@ input:focus {
 }
 
 .link {
-    @apply hover:text-blue-500 text-blue-600 underline font-medium;
+    @apply hover:text-purple-400 text-purple-500 underline font-medium;
 }
 
 /* Form Elements */
 .select-input {
-    @apply px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500;
+    @apply px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-purple-500 focus:border-purple-500;
 }
 
 .checkbox-input {
-    @apply rounded border-gray-300 text-blue-600 focus:ring-blue-500;
+    @apply rounded border-gray-300 text-purple-500 focus:ring-purple-500;
 }
 
 /* Table Styles */
@@ -48,7 +47,7 @@ input:focus {
 }
 
 .pagination-btn {
-    @apply inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white cursor-pointer;
+    @apply inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white cursor-pointer;
 }
 
 @layer components {
@@ -69,8 +68,8 @@ input:focus {
         transition-duration: 300ms;
         transition-timing-function: ease-in-out;
         background-image: linear-gradient(to right, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
-        --tw-gradient-from: #2563eb;
-        --tw-gradient-to: #3b82f6;
+        --tw-gradient-from: #a855f7;
+        --tw-gradient-to: #c084fc;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     }
 
@@ -90,8 +89,8 @@ input:focus {
         transition-duration: 300ms;
         transition-timing-function: ease-in-out;
         background-color: white;
-        color: #2563eb;
-        border: 2px solid #2563eb;
+        color: #a855f7;
+        border: 2px solid #a855f7;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     }
 
@@ -146,8 +145,8 @@ input:focus {
     }
 
     .btn-primary:hover {
-        --tw-gradient-from: #1d4ed8;
-        --tw-gradient-to: #2563eb;
+        --tw-gradient-from: #9333ea;
+        --tw-gradient-to: #a855f7;
     }
 
     .btn-danger:hover {
@@ -156,7 +155,7 @@ input:focus {
     }
 
     .btn-primary-outline:hover {
-        background-color: #eff6ff;
+        background-color: #f5f3ff;
         transform: scale(1.02);
         box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     }
@@ -209,7 +208,7 @@ input:focus {
         .btn-primary-outline,
         .btn-danger-outline {
             background-color: rgb(31 41 55);
-            color: #60a5fa;
+            color: #c084fc;
         }
 
         .btn-primary-outline:hover {
@@ -221,13 +220,13 @@ input:focus {
         }
 
         .btn-primary {
-            --tw-gradient-from: #3b82f6;
-            --tw-gradient-to: #60a5fa;
+            --tw-gradient-from: #c084fc;
+            --tw-gradient-to: #d8b4fe;
         }
 
         .btn-primary:hover {
-            --tw-gradient-from: #2563eb;
-            --tw-gradient-to: #3b82f6;
+            --tw-gradient-from: #a855f7;
+            --tw-gradient-to: #c084fc;
         }
 
         .btn-danger {
@@ -240,4 +239,17 @@ input:focus {
             --tw-gradient-to: #ef4444;
         }
     }
+}
+
+/* Autofill styles */
+input:-webkit-autofill {
+    -webkit-text-fill-color: inherit !important;
+    background-color: white !important;
+    box-shadow: inset 0 0 0 9999px white !important;
+}
+
+.dark input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    background-color: rgb(31, 41, 55) !important;
+    box-shadow: inset 0 0 0 9999px rgb(31, 41, 55) !important;
 }

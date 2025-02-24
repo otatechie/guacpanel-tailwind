@@ -80,7 +80,7 @@ watch(pagination, newPagination => {
                 title="Audit Log"
                 description="View and monitor system activities"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Audit Log' }
                 ]"
             />
