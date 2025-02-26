@@ -94,9 +94,11 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
 
 
 // Magic Link Authentication Routes
-Route::middleware(['guest'])->group(function () {
-    Route::get('/magic-link/register', [MagicLinkController::class, 'create'])->name('magic.register.create');
-    Route::post('/register/magic-link', [MagicLinkController::class, 'register'])->name('magic.register');
-    Route::post('/login/magic-link', [MagicLinkController::class, 'login'])->name('magic.login.request');
-    Route::get('/magic-link/{token}', [MagicLinkController::class, 'authenticate'])->name('magic.login');
+Route::middleware(['guest', 'web'])->group(function () {
+    Route::controller(MagicLinkController::class)->group(function () {
+        Route::get('/magic-link/register', 'create')->name('magic.register.create');
+        Route::post('/register/magic-link', 'register')->name('magic.register');
+        Route::post('/login/magic-link', 'login')->name('magic.login.request');
+        Route::get('/magic-link/{token}', 'authenticate')->name('magic.login');
+    });
 });

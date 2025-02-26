@@ -85,7 +85,7 @@ const getStats = (info) => [
                     <button @click="runBackup"
                         class="btn-primary"
                         :disabled="isBackupRunning">
-                        {{ isBackupRunning ? 'Creating Backup...' : 'Create Backup' }}
+                        {{ isBackupRunning ? 'Creating backup...' : 'Create backup' }}
                     </button>
                 </template>
             </PageHeader>

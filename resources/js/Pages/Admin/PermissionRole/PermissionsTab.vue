@@ -82,8 +82,9 @@ const deletePermission = (id) => {
                         <tr v-if="!permissions.data.length" class="text-center">
                             <td colspan="2" class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
                                 <div class="flex flex-col items-center justify-center gap-2">
-                                    <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-8 h-8 text-gray-400 dark:text-gray-500"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                             d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                                     </svg>
@@ -99,8 +100,9 @@ const deletePermission = (id) => {
                             class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                                     </svg>
@@ -108,7 +110,8 @@ const deletePermission = (id) => {
                                         <div class="text-sm font-medium text-gray-800 dark:text-gray-200">
                                             {{ permission.name }}
                                         </div>
-                                        <div v-if="permission.description" class="text-xs text-gray-500 dark:text-gray-400">
+                                        <div v-if="permission.description"
+                                            class="text-xs text-gray-500 dark:text-gray-400">
                                             {{ permission.description }}
                                         </div>
                                     </div>
@@ -143,66 +146,48 @@ const deletePermission = (id) => {
         </div>
 
         <Modal :show="showAddModal" @close="closeModal">
-            <div class="p-6">
-                <header class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
-                        {{ editingPermission ? 'Edit permission' : 'Add new permission' }}
-                    </h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {{ editingPermission ? 'Modify permission details' : 'Create a new permission' }}
-                    </p>
-                </header>
+            <template #title>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+                    {{ editingPermission ? 'Edit permission' : 'Add new permission' }}
+                </h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    {{ editingPermission ? 'Modify permission details' : 'Create a new permission' }}
+                </p>
+            </template>
 
+            <template #default>
                 <form @submit.prevent="submitPermission" class="space-y-6">
                     <div>
-                        <FormInput
-                            label="Permission name"
-                            v-model="form.name"
-                            type="text"
-                            :error="form.errors.name"
-                            required
-                            placeholder="Enter permission name"
-                        />
+                        <FormInput label="Permission name" v-model="form.name" type="text" :error="form.errors.name"
+                            required placeholder="Enter permission name" />
                     </div>
 
                     <div>
-                        <FormInput
-                            label="Description"
-                            v-model="form.description"
-                            type="text"
-                            :error="form.errors.description"
-                            placeholder="Enter permission description (optional)"
-                        />
+                        <FormInput label="Description" v-model="form.description" type="text"
+                            :error="form.errors.description" placeholder="Enter permission description (optional)" />
                     </div>
-
-                    <footer class="flex justify-end gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <button
-                            type="button"
-                            class="cursor-pointer font-medium dark:text-white"
-                            @click="closeModal"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            class="btn-primary inline-flex items-center gap-2"
-                            :disabled="form.processing"
-                        >
-                            <svg
-                                v-if="form.processing"
-                                class="animate-spin h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
-                        </button>
-                    </footer>
                 </form>
-            </div>
+            </template>
+
+            <template #footer>
+                <button type="button"
+                    class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    @click="closeModal">
+                    Cancel
+                </button>
+                <button @click="submitPermission" type="button" class="btn-primary inline-flex items-center gap-2"
+                    :disabled="form.processing">
+                    <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
+                </button>
+            </template>
         </Modal>
     </section>
 </template>

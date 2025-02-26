@@ -3,7 +3,7 @@
 
 /* Theme Configuration */
 @theme {
-    --font-sans: "Instrument Sans", "sans-serif";
+    --font-sans: "Host Grotesk", "sans-serif";
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -21,7 +21,7 @@ input:focus {
 }
 
 .container-border {
-    @apply bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:shadow-gray-700 rounded-xl shadow-sm;
+    @apply bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-500 rounded-xl shadow-sm;
 }
 
 .container-border-table {

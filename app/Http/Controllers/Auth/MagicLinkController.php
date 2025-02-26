@@ -7,6 +7,7 @@ use App\Mail\MagicLoginLink;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -14,14 +15,27 @@ use Inertia\Inertia;
 
 class MagicLinkController extends Controller
 {
+    protected function checkPasswordlessEnabled()
+    {
+        $passwordlessEnabled = DB::table('settings')->value('passwordless_login') ?? true;
+
+        if (!$passwordlessEnabled) {
+            abort(404);
+        }
+    }
+
+
     public function create()
     {
+        $this->checkPasswordlessEnabled();
         return Inertia::render('Auth/RegisterMagicLink');
     }
 
 
     public function register(Request $request)
     {
+        $this->checkPasswordlessEnabled();
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -43,6 +57,8 @@ class MagicLinkController extends Controller
 
     public function login(Request $request)
     {
+        $this->checkPasswordlessEnabled();
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -65,20 +81,12 @@ class MagicLinkController extends Controller
 
     protected function sendLoginLink(User $user)
     {
-        $token = Str::random(32);
-
-        Cache::put(
-            'magic_login_' . $token,
-            [
-                'user_id' => $user->id,
-            ],
-            now()->addMinutes(10)
-        );
+        $this->checkPasswordlessEnabled();
 
         $url = URL::temporarySignedRoute(
             'magic.login',
             now()->addMinutes(10),
-            ['token' => $token]
+            ['token' => $user->id]
         );
 
         Mail::to($user)->send(new MagicLoginLink($url));
@@ -87,30 +95,18 @@ class MagicLinkController extends Controller
 
     public function authenticate(Request $request)
     {
-        try {
-            if (!$request->hasValidSignature()) {
-                throw new \Exception('This magic link has expired. Please request a new one.');
-            }
+        $this->checkPasswordlessEnabled();
 
-            $token = $request->token;
-            $cacheData = Cache::get('magic_login_' . $token);
-
-            if (!$cacheData) {
-                throw new \Exception('This magic link has already been used or has expired. Please request a new one.');
-            }
-
-            $user = User::findOrFail($cacheData['user_id']);
-
-            Cache::forget('magic_login_' . $token);
-
-            auth()->guard('web')->login($user);
-
-            return redirect()->intended(config('fortify.home'))
-                ->with('success', 'Welcome back! You have been successfully logged in.');
-
-        } catch (\Exception $e) {
+        if (!$request->hasValidSignature()) {
             return redirect()->route('login')
-                ->with('error', $e->getMessage());
+                ->with('error', 'This magic link has expired. Please request a new one.');
         }
+
+        $user = User::findOrFail($request->token);
+        auth()->guard('web')->login($user);
+        $request->session()->regenerate();
+
+        return redirect()->intended(config('fortify.home'))
+            ->with('success', 'Welcome back! You have been successfully logged in.');
     }
 }

@@ -1,6 +1,32 @@
+<script setup>
+import { Head, Link } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
+import Auth from '../../Layouts/Auth.vue'
+import FormInput from '../../Components/FormInput.vue'
+
+defineOptions({
+    layout: Auth
+})
+
+const form = useForm({
+    name: '',
+    email: '',
+})
+
+const submit = () => {
+    form.post(route('magic.register'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset()
+        },
+    })
+}
+</script>
+
+
 <template>
 
-    <Head title="Create Account with Magic Link" />
+    <Head title="Register with Magic Link" />
 
     <div class="max-w-[384px] mx-auto px-8">
         <h2 class="main-heading text-center">
@@ -39,27 +65,3 @@
     </div>
 </template>
 
-<script setup>
-import { Head, Link } from '@inertiajs/vue3'
-import { useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
-
-defineOptions({
-    layout: Auth
-})
-
-const form = useForm({
-    name: '',
-    email: '',
-})
-
-const submit = () => {
-    form.post(route('magic.register'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset()
-        },
-    })
-}
-</script>

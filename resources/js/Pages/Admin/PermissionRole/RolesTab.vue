@@ -97,7 +97,7 @@ const toggleAllPermissions = (e) => {
                                     <button
                                         type="button"
                                         @click="showAddModal = true"
-                                        class="text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
+                                        class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer"
                                     > Add your first role
                                     </button>
                                 </div>
@@ -154,16 +154,16 @@ const toggleAllPermissions = (e) => {
         </div>
 
         <Modal :show="showAddModal" @close="closeModal">
-            <div class="p-6">
-                <header class="mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
-                        {{ editingRole ? 'Edit role' : 'Add new role' }}
-                    </h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions' }}
-                    </p>
-                </header>
+            <template #title>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+                    {{ editingRole ? 'Edit role' : 'Add new role' }}
+                </h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions' }}
+                </p>
+            </template>
 
+            <template #default>
                 <form @submit.prevent="submitRole" class="space-y-6">
                     <div>
                         <FormInput
@@ -177,29 +177,29 @@ const toggleAllPermissions = (e) => {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-400">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Permissions
                         </label>
                         <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
                             <div class="p-3 border-b border-gray-200 dark:border-gray-700">
                                 <div class="flex items-center gap-2">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600"
                                         :checked="form.permissions.length === permissions.data.length"
                                         @change="toggleAllPermissions"
                                     >
-                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400">Select all permissions</span>
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Select all permissions</span>
                                 </div>
                             </div>
 
                             <div class="p-3 max-h-[240px] overflow-y-auto">
                                 <div v-if="permissions.data?.length" class="space-y-1">
                                     <div v-for="permission in permissions.data" :key="permission.id"
-                                        class="flex items-center gap-2 p-1 rounded-lg">
+                                        class="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50">
                                         <input type="checkbox"
                                             :value="permission.id"
                                             v-model="form.permissions"
-                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600 cursor-pointer"
                                         >
                                         <div>
                                             <div class="text-sm font-medium text-gray-800 dark:text-gray-200">
@@ -211,44 +211,36 @@ const toggleAllPermissions = (e) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div v-else class="text-sm text-gray-500 text-center py-4">
-                                    No permissions available
-                                </div>
                             </div>
                         </div>
-                        <div v-if="form.errors.permissions" class="mt-1 text-sm text-red-600">
+                        <div v-if="form.errors.permissions" class="mt-1 text-sm text-red-600 dark:text-red-400">
                             {{ form.errors.permissions }}
                         </div>
                     </div>
-
-                    <footer class="flex justify-end gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <button
-                            type="button"
-                            class="cursor-pointer font-medium dark:text-white"
-                            @click="closeModal"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            class="btn-primary inline-flex items-center gap-2"
-                            :disabled="form.processing"
-                        >
-                            <svg
-                                v-if="form.processing"
-                                class="animate-spin h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            {{ form.processing ? 'Saving...' : (editingRole ? 'Save changes' : 'Add role') }}
-                        </button>
-                    </footer>
                 </form>
-            </div>
+            </template>
+
+            <template #footer>
+                <button
+                    type="button"
+                    class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                    @click="closeModal"
+                >
+                    Cancel
+                </button>
+                <button
+                    @click="submitRole"
+                    type="button"
+                    class="btn-primary inline-flex items-center gap-2"
+                    :disabled="form.processing"
+                >
+                    <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {{ form.processing ? 'Saving...' : (editingRole ? 'Save changes' : 'Add role') }}
+                </button>
+            </template>
         </Modal>
     </section>
 </template>

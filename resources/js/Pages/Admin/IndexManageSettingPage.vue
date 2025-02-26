@@ -19,7 +19,7 @@ const props = defineProps({
 const form = useForm({
     force_password_change: Boolean(props.settings?.force_password_change ?? false),
     password_expiry: Boolean(props.settings?.password_expiry ?? false),
-    passwordless_login: Boolean(props.settings?.passwordless_login ?? false),
+    passwordless_login: Boolean(props.settings?.passwordless_login ?? true),
     two_factor_authentication: Boolean(props.settings?.two_factor_authentication ?? false),
 })
 

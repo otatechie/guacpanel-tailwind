@@ -197,7 +197,6 @@ const benefits = [
                         </div>
                         <button @click="regenerateCodes" :disabled="regenerateForm.processing"
                             class="btn-primary">
-
                             {{ regenerateForm.processing ? 'Generating...' : 'Regenerate codes' }}
                         </button>
                     </div>
@@ -239,26 +238,25 @@ const benefits = [
         </section>
     </main>
 
-    <Modal :show="showDisableModal" @close="closeModal">
-        <div class="p-6">
-            <div class="mb-6">
-                <h2 class="text-lg font-medium text-gray-800">
-                    Disable Two-Factor Authentication
-                </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    Are you sure you want to disable two-factor authentication? This will remove an important security
-                    layer from your account.
-                </p>
-            </div>
+    <Modal :show="showDisableModal" @close="closeModal" size="md">
+        <template #title>
+            Disable Two-Factor Authentication
+        </template>
 
-            <div class="flex justify-end gap-3">
-                <button type="button" class="mr-6 cursor-pointer font-medium" @click="closeModal">
-                    Cancel
-                </button>
-                <button type="submit" class="btn-danger" @click="disableTwoFactor" :disabled="disableForm.processing">
-                    {{ disableForm.processing ? 'Disabling...' : 'Yes, Disable 2FA' }}
-                </button>
-            </div>
-        </div>
+        <template #default>
+            <p class="text-sm text-gray-500">
+                Are you sure you want to disable two-factor authentication? This will remove an important security
+                layer from your account.
+            </p>
+        </template>
+
+        <template #footer>
+            <button @click="closeModal" type="button" class="cursor-pointer mr-2 dark:text-gray-200">
+                Cancel
+            </button>
+            <button @click="disableTwoFactor" :disabled="disableForm.processing" type="button" class="btn-danger">
+                {{ disableForm.processing ? 'Disabling...' : 'Yes, Disable 2FA' }}
+            </button>
+        </template>
     </Modal>
 </template>

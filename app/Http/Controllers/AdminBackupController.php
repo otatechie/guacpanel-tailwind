@@ -14,7 +14,7 @@ class AdminBackupController extends Controller
     {
         return Storage::disk('local');
     }
-    
+
 
     public function index()
     {
@@ -49,7 +49,7 @@ class AdminBackupController extends Controller
             if (substr($file, -4) === '.zip') {
                 $backups[] = [
                     'path' => $file,
-                    'date' => date('M d, Y, g:i A', $disk->lastModified($file)),
+                    'date' => date('M d, Y g:i A', $disk->lastModified($file)),
                     'size' => $this->formatBytes($disk->size($file)),
                 ];
             }

@@ -6,6 +6,7 @@ use App\Models\Discussion;
 use App\Models\Personalisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 use Laravolt\Avatar\Avatar;
 
@@ -78,6 +79,10 @@ class HandleInertiaRequests extends Middleware
                     'favicon' => $personalisation->favicon,
                     'footerText' => $personalisation->footer_text,
                     'copyrightText' => $personalisation->copyright_text,
+                ],
+
+                'settings' => [
+                    'passwordlessLogin' => DB::table('settings')->value('passwordless_login') ?? true,
                 ],
             ],
         );
