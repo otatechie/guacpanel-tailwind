@@ -29,6 +29,13 @@ class User extends Authenticatable implements Auditable
 
     protected $guarded = ['id'];
 
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'email_verified_at',
+    ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -44,6 +51,9 @@ class User extends Authenticatable implements Auditable
 
         static::creating(function ($user) {
             $user->user_slug = 'user-' . Str::random(12);
+            if (!$user->password) {
+                $user->password = null;
+            }
         });
     }
 

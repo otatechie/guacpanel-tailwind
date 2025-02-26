@@ -3,7 +3,7 @@
 
 /* Theme Configuration */
 @theme {
-    --font-sans: "Inter", "sans-serif";
+    --font-sans: "Instrument Sans", "sans-serif";
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

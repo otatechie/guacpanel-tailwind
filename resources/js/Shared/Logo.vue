@@ -4,7 +4,6 @@ import { usePage } from '@inertiajs/vue3'
 
 const page = usePage()
 const logoUrl = computed(() => {
-    console.log('Logo URL:', page.props.personalisation?.appLogo)
     return page.props.personalisation?.appLogo
 })
 </script>

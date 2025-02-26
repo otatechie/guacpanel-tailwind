@@ -16,6 +16,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserAccountController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use Inertia\Inertia;
+use App\Http\Controllers\Auth\MagicLinkController;
 
 
 
@@ -67,7 +69,6 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
                 Route::resource('permission', AdminPermissionController::class)->except('show');
             });
 
-
             // Personalisation Routes
             Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('personalisation', [AdminPersonalisationController::class, 'index'])->name('personalisation.index');
@@ -87,7 +88,15 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
                 });
 
             Route::get('health', HealthCheckResultsController::class)->name('health');
-
         });
     });
+});
+
+
+// Magic Link Authentication Routes
+Route::middleware(['guest'])->group(function () {
+    Route::get('/magic-link/register', [MagicLinkController::class, 'create'])->name('magic.register.create');
+    Route::post('/register/magic-link', [MagicLinkController::class, 'register'])->name('magic.register');
+    Route::post('/login/magic-link', [MagicLinkController::class, 'login'])->name('magic.login.request');
+    Route::get('/magic-link/{token}', [MagicLinkController::class, 'authenticate'])->name('magic.login');
 });

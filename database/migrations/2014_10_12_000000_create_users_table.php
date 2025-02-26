@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('user_slug')->unique()->nullable(false);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('location')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('force_password_change')->default(false);

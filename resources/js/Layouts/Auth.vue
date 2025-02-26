@@ -9,42 +9,38 @@ const page = usePage()
 
 const personalisation = page.props.personalisation || {}
 
-const hasIdentity = computed(() => personalisation.appName || personalisation.appLogo)
+const hasCustomBranding = computed(() => personalisation.appName || personalisation.appLogo)
 
 </script>
 
 <template>
-    <div class="bg-gray-50 dark:bg-gray-800 min-h-screen">
-        <Logo :class="{ 'mb-12': !hasIdentity }" />
-        <h1 v-if="personalisation.appName" class="text-3xl font-extrabold text-gray-900 text-center mb-2">
-            {{ personalisation.appName }}
-        </h1>
-        <FlashMessage />
-        <slot></slot>
-    </div>
+    <div class="min-h-screen flex flex-col">
+        <main class="flex-grow bg-gray-50 dark:bg-gray-800 pb-16">
+            <Logo :class="{ 'mb-8': !hasCustomBranding }" />
+            <h1 v-if="personalisation.appName" class="text-3xl font-extrabold text-gray-900 text-center mb-2">
+                {{ personalisation.appName }}
+            </h1>
+            <FlashMessage />
+            <slot></slot>
+        </main>
 
-    <footer class="border-t border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-        <div class="mx-auto max-w-7xl px-6 py-4 md:flex md:items-center md:justify-between lg:px-8">
-            <nav class="flex justify-center space-x-6 md:order-2">
-                <Link :href="route('home')">
-                    <span class="text-xs link text-gray-600 dark:text-gray-400">Homepage</span>
-                </Link>
+        <footer class="border-t border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+            <div class="mx-auto max-w-7xl px-4 py-4 flex flex-col gap-4 sm:px-6 md:flex-row md:items-center md:justify-between">
+                <nav class="text-center md:order-2">
+                    <Link :href="route('home')" class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Homepage</Link>
+                    <span class="mx-2 text-gray-500 dark:text-gray-300">·</span>
+                    <a href="#" class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Privacy Policy</a>
+                    <span class="mx-2 text-gray-600 dark:text-gray-300">·</span>
+                    <a href="#" class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Terms</a>
+                </nav>
 
-                <a href="#">
-                    <span class="text-xs link text-gray-600 dark:text-gray-400">Privacy Policy</span>
-                </a>
-
-                <a href="#">
-                    <span class="text-xs link text-gray-600 dark:text-gray-400">Terms</span>
-                </a>
-            </nav>
-
-            <div class="mt-8 md:order-1 md:mt-0">
-                <p class="text-center text-xs text-gray-600 dark:text-gray-400">
-                    {{ personalisation.footerText }}
-                    {{ personalisation.copyrightText || '© 2024 All rights reserved.' }}
-                </p>
+                <div class="md:order-1">
+                    <p class="text-center text-xs text-gray-500 dark:text-gray-300">
+                        {{ personalisation.footerText }}
+                        {{ personalisation.copyrightText || '© 2024 All rights reserved.' }}
+                    </p>
+                </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 </template>

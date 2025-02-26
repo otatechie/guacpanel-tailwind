@@ -4,15 +4,16 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Models\Personalisation;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetTimezone
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $timezone = config('app.timezone'); // Get default timezone from config
+        $timezone = config('app.timezone');
 
-        if ($settings = \App\Models\Personalisation::first()) {
+        if ($settings = Personalisation::first()) {
             $timezone = $settings->timezone ?? $timezone;
         }
 

@@ -15,6 +15,7 @@ class AdminLoginHistoryController extends Controller
             ->select([
                 'id',
                 'user_id',
+                'user_type',
                 'ip_address',
                 'user_agent',
                 'login_at',
