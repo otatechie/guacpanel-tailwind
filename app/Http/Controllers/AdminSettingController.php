@@ -28,7 +28,6 @@ class AdminSettingController extends Controller
     public function updateSettings(Request $request)
     {
         $validatedData = $request->validate([
-            'force_password_change' => ['boolean'],
             'password_expiry' => ['boolean'],
             'passwordless_login' => ['boolean'],
             'two_factor_authentication' => ['boolean'],

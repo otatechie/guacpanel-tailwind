@@ -167,38 +167,41 @@ watch(() => props.data, () => {
 </script>
 
 <template>
-    <div class="relative">
-        <div v-if="error" class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
+    <section class="relative">
+        <div v-if="error" role="alert" class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
             {{ error }}
         </div>
 
-        <div v-if="loading"
+        <div v-if="loading" role="status"
             class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 dark:border-purple-400"></div>
+            <span class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 dark:border-purple-400"></span>
         </div>
 
-        <div class="flex justify-between items-center mb-4">
+        <header class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-3">
-                <select v-model="pageSize"
-                    class="select-input transition-shadow duration-150 ease-in-out bg-transparen dark:text-gray-200">
+                <label class="sr-only" :for="'page-size-select'">Rows per page</label>
+                <select :id="'page-size-select'" v-model="pageSize"
+                    class="select-input transition-shadow duration-150 ease-in-out bg-transparent dark:text-gray-200">
                     <option v-for="size in pageSizeOptions" :key="size" :value="size" class="dark:bg-gray-900">
                         {{ size }} rows per page
                     </option>
                 </select>
 
-                <span v-if="Object.keys(selectedRows).length"
+                <span v-if="Object.keys(selectedRows).length" role="status"
                     class="px-3 py-1.5 rounded-full text-purple-700 dark:text-purple-400 text-xs font-medium">
                     {{ Object.keys(selectedRows).length }} selected
                 </span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <nav class="flex items-center gap-3">
                 <div v-if="enableSearch" class="relative">
-                    <input type="text" v-model="searchQuery" placeholder="Search"
+                    <label class="sr-only" :for="'table-search'">Search table</label>
+                    <input type="search" :id="'table-search'" v-model="searchQuery" placeholder="Search"
                         class="w-48 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md transition-shadow duration-150 ease-in-out focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 text-sm dark:bg-gray-800 dark:text-gray-200" />
                     <button v-if="searchQuery" @click="searchQuery = ''"
-                        class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                        aria-label="Clear search">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -207,17 +210,17 @@ watch(() => props.data, () => {
 
                 <button v-if="enableExport" @click="exportToCSV"
                     class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-md transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:bg-purple-500 dark:hover:bg-purple-600 cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     Export CSV
                 </button>
-            </div>
-        </div>
+            </nav>
+        </header>
 
         <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" role="grid">
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
                         <th class="w-10 px-6 py-3">
@@ -263,8 +266,8 @@ watch(() => props.data, () => {
             </table>
         </div>
 
-        <div class="flex items-center justify-between mt-6 px-1">
-            <div class="text-sm text-gray-700 dark:text-gray-300">
+        <footer class="flex items-center justify-between mt-6 px-1">
+            <p class="text-sm text-gray-700 dark:text-gray-300">
                 Showing
                 <span class="font-medium">{{ paginationStart }}</span>
                 to
@@ -272,8 +275,8 @@ watch(() => props.data, () => {
                 of
                 <span class="font-medium">{{ totalRows }}</span>
                 results
-            </div>
-            <div class="flex items-center gap-2">
+            </p>
+            <nav class="flex items-center gap-2" aria-label="Pagination">
                 <button class="pagination-btn" :disabled="props.pagination?.current_page <= 1"
                     @click="emit('update:pagination', { ...props.pagination, current_page: 1 })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,7 +312,7 @@ watch(() => props.data, () => {
                             d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                     </svg>
                 </button>
-            </div>
-        </div>
-    </div>
+            </nav>
+        </footer>
+    </section>
 </template>

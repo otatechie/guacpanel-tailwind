@@ -16,19 +16,22 @@ defineProps({
 </script>
 
 <template>
-    <div class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-        v-if="breadcrumbs.length">
-        <div class="flex items-center space-x-2 text-sm">
+    <nav class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+        v-if="breadcrumbs.length" aria-label="Breadcrumbs">
+        <ol class="flex items-center space-x-2 text-sm">
             <template v-for="(crumb, index) in breadcrumbs" :key="index">
-                <Link v-if="crumb.href" :href="crumb.href"
-                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                {{ crumb.label }}
-                </Link>
-                <span v-else class="text-gray-800 dark:text-gray-200">{{ crumb.label }}</span>
-                <span v-if="index < breadcrumbs.length - 1" class="text-gray-400 dark:text-gray-500">/</span>
+                <li>
+                    <Link v-if="crumb.href" :href="crumb.href"
+                        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                    {{ crumb.label }}
+                    </Link>
+                    <span v-else class="text-gray-800 dark:text-gray-200">{{ crumb.label }}</span>
+                </li>
+                <li v-if="index < breadcrumbs.length - 1" class="text-gray-400 dark:text-gray-500" aria-hidden="true">/
+                </li>
             </template>
-        </div>
-    </div>
+        </ol>
+    </nav>
 
     <header class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 dark:bg-gray-800">
         <div class="flex items-center justify-between">
@@ -38,7 +41,9 @@ defineProps({
                     {{ description }}
                 </p>
             </div>
-            <slot name="actions"></slot>
+            <aside class="actions">
+                <slot name="actions"></slot>
+            </aside>
         </div>
     </header>
 </template>

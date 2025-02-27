@@ -29,8 +29,16 @@ const form = useForm({
 })
 
 const tabs = [
-    { key: 'account', label: 'Account Settings', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
-    { key: 'permissions', label: 'Permissions', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' }
+    {
+        key: 'account',
+        label: 'Account Settings',
+        icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+    },
+    {
+        key: 'permissions',
+        label: 'Permissions',
+        icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
+    }
 ]
 
 const activeTab = ref('account')
@@ -69,20 +77,41 @@ const deleteUser = () => {
                 ]" />
 
             <div class="border-b border-gray-200 dark:border-gray-700">
-                <nav class="px-6 -mb-px flex space-x-6" aria-label="Tabs">
-                    <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
-                        activeTab === tab.key
-                            ? 'border-primary-500 text-primary-600 dark:text-white cursor-pointer'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 cursor-pointer',
-                        'group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm'
-                    ]">
-                        <svg class="mr-2 h-5 w-5"
-                            :class="activeTab === tab.key ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300'"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="tab.icon" />
-                        </svg>
-                        {{ tab.label }}
-                    </button>
+                <nav class="px-6 bg-gray-50 dark:bg-gray-800" aria-label="User tabs">
+                    <ul class="flex -mb-px" role="tablist">
+                        <li v-for="tab in tabs" :key="tab.key" class="mr-2" role="presentation">
+                            <button
+                                type="button"
+                                @click="activeTab = tab.key"
+                                :class="[
+                                    'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
+                                    activeTab === tab.key
+                                        ? 'border-b-2 border-blue-500 text-blue-600 bg-white dark:bg-gray-700 dark:text-blue-400'
+                                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
+                                ]"
+                                :aria-selected="activeTab === tab.key"
+                                :aria-controls="`${tab.key}-panel`"
+                                role="tab"
+                            >
+                                <svg
+                                    class="w-4 h-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        :d="tab.icon"
+                                    />
+                                </svg>
+                                {{ tab.label }}
+                            </button>
+                        </li>
+                    </ul>
                 </nav>
             </div>
 

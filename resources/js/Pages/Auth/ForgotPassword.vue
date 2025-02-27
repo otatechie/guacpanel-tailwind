@@ -1,4 +1,3 @@
-
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
@@ -22,32 +21,29 @@ const submit = () => {
 
     <Head title="Forgot password" />
 
-    <div class="max-w-[384px] mx-auto px-8">
-        <h2 class="main-heading text-center">
+    <main class="max-w-[384px] mx-auto px-8" role="main">
+        <h1 class="main-heading text-center dark:text-white">
             Forgot password
-        </h2>
+        </h1>
 
-        <div class="mt-6 p-5 container-border">
-            <p class="text-gray-800 dark:text-white text-sm">
+        <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6" aria-labelledby="reset-form">
+            <p class="text-gray-800 dark:text-white text-sm" role="note">
                 Enter your email to receive a password reset link
             </p>
 
-            <form @submit.prevent="submit" class="space-y-6 mt-4">
-                <FormInput v-model="form.email" label="Email" id="email" type="email" required
-                    :error="form.errors.email" />
+            <FormInput v-model="form.email" label="Email" name="email" id="email" type="email" required
+                autocomplete="email" :error="form.errors.email" />
 
-                <button @click="submit" :disabled="form.processing"
-                    class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ form.processing ? 'Please wait...' : 'Send reset email' }}
-                </button>
-            </form>
-        </div>
+            <button type="submit" :disabled="form.processing" class="w-full btn-primary" aria-busy="form.processing">
+                {{ form.processing ? 'Please wait...' : 'Send reset email' }}
+            </button>
+        </form>
 
         <p class="mt-8 text-center text-sm text-gray-800 dark:text-white">
             Back to
-            <Link :href="route('login')" class="text-sm link">
+            <Link :href="route('login')" class="text-sm link" aria-label="Return to login page">
             login
             </Link>
         </p>
-    </div>
+    </main>
 </template>

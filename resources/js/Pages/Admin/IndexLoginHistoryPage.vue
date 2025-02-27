@@ -2,9 +2,9 @@
 import { Head, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
-import Default from '../../Layouts/Default.vue'
+import Default from '@/Layouts/Default.vue'
 import PageHeader from '@/Components/PageHeader.vue'
-import Datatable from '../../Components/Datatable.vue'
+import Datatable from '@/Components/Datatable.vue'
 
 defineOptions({
     layout: Default
@@ -13,7 +13,7 @@ defineOptions({
 const props = defineProps({
     loginHistory: {
         type: Object,
-        required: true
+        required: true,
     }
 })
 
@@ -28,39 +28,59 @@ const pagination = ref({
 const columns = [
     columnHelper.accessor('login_at', {
         header: 'Login Time',
-        cell: info => info.row.original.login_at_diff
+        cell: info => info.row.original.login_at_diff,
+        meta: {
+            ariaLabel: 'Login timestamp'
+        }
     }),
     columnHelper.accessor('username', {
         header: 'User',
-        cell: info => info.row.original.username
+        cell: info => info.row.original.username,
+        meta: {
+            ariaLabel: 'Username'
+        }
     }),
     columnHelper.accessor('user_agent', {
         header: 'Browser & Device',
         cell: info => {
-            const device = info.row.original.device_info;
-            if (!device) return 'Unknown Device';
-            return `${device.browser} on ${device.platform} (${device.device})`;
+            const device = info.row.original.device_info
+            if (!device) return 'Unknown Device'
+            return h('span', {
+                'aria-label': `Browser: ${device.browser}, Platform: ${device.platform}, Device: ${device.device}`
+            }, `${device.browser} on ${device.platform} (${device.device})`)
+        },
+        meta: {
+            ariaLabel: 'Browser and device information'
         }
     }),
     columnHelper.accessor('status', {
         header: 'Status',
         cell: info => {
-            const status = info.row.original.status;
-            if (!status) return '-';
+            const status = info.row.original.status
+            if (!status) return h('span', { 'aria-label': 'Status not available' }, '-')
 
-            return h('div', { class: 'flex items-center gap-2' }, [
+            return h('div', {
+                class: 'flex items-center gap-2',
+                role: 'status',
+                'aria-label': `Login ${status.success ? 'successful' : 'failed'} from IP ${status.ip}`
+            }, [
                 h('span', {
                     class: status.success
                         ? 'px-2 py-1 text-sm rounded-md bg-green-50 text-green-700 dark:bg-green-900/50 dark:text-green-400'
                         : 'px-2 py-1 text-sm rounded-md bg-red-50 text-red-700 dark:bg-red-900/50 dark:text-red-400'
                 }, status.success ? 'Success' : 'Failed'),
-                h('span', { class: 'text-sm text-gray-500' }, `(${status.ip})`)
-            ]);
+                h('span', {
+                    class: 'text-sm text-gray-500',
+                    'aria-label': `IP Address: ${status.ip}`
+                }, `(${status.ip})`)
+            ])
+        },
+        meta: {
+            ariaLabel: 'Login status and IP address'
         }
     }),
 ]
 
-// Handle pagination changes
 watch(pagination, newPagination => {
     loading.value = true
     router.get(
@@ -81,30 +101,38 @@ watch(pagination, newPagination => {
 <template>
     <Head title="Login History" />
 
-    <main class="max-w-5xl mx-auto">
+    <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
         <section class="container-border overflow-hidden">
             <PageHeader
+                id="page-title"
                 title="Login History"
                 description="View and monitor login history"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/' },
+                    { label: 'Dashboard', href: route('home') },
+                    { label: 'Settings', href: route('admin.setting.index') },
                     { label: 'Login History' }
                 ]"
             />
 
-            <div class="p-6 dark:bg-gray-900">
+            <section class="p-6 dark:bg-gray-900">
                 <Datatable
                     :data="loginHistory.data"
                     :columns="columns"
                     :loading="loading"
                     :pagination="pagination"
-                    :search-fields="['authenticatable.name', 'user_agent', 'login_at', 'logout_at']"
+                    :search-fields="['username', 'user_agent', 'login_at']"
                     empty-message="No login history records found"
                     empty-description="Login history will appear here"
                     export-file-name="login_history"
                     @update:pagination="pagination = $event"
-                />
-            </div>
+                >
+                    <template #loading>
+                        <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
+                            Loading login history...
+                        </p>
+                    </template>
+                </Datatable>
+            </section>
         </section>
     </main>
 </template>

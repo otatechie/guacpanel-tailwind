@@ -4,12 +4,12 @@ import { useForm } from '@inertiajs/vue3'
 import Auth from '../../Layouts/Auth.vue'
 import FormInput from '../../Components/FormInput.vue'
 
-const form = useForm({
-    password: ''
-})
-
 defineOptions({
     layout: Auth
+})
+
+const form = useForm({
+    password: ''
 })
 
 const submit = () => {
@@ -21,33 +21,31 @@ const submit = () => {
 
     <Head title="Confirm password" />
 
-    <div class="max-w-[384px] mx-auto px-8">
-        <h2 class="main-heading text-center">
+    <main class="max-w-[384px] mx-auto px-8" role="main">
+        <h1 class="main-heading text-center dark:text-white">
             Confirm access
-        </h2>
+        </h1>
 
-        <div class="mt-6 p-5 container-border">
-            <p class="text-gray-800 dark:text-white text-sm">
+        <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6"
+            aria-labelledby="confirm-password-form">
+            <p class="text-gray-800 dark:text-white text-sm" role="note">
                 Enter password to confirm access
             </p>
 
-            <form @submit.prevent="submit" class="space-y-6 mt-4">
-                <FormInput v-model="form.password" label="Password" id="password" type="password" required
-                    :disabled="form.processing" :error="form.errors.password" />
+            <FormInput v-model="form.password" label="Password" id="password" name="password" type="password" required
+                autocomplete="current-password" :disabled="form.processing" :error="form.errors.password" />
 
-                <button @click="submit" :disabled="form.processing"
-                    class="w-full btn-primary h-11 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ form.processing ? 'Confirming...' : 'Confirm password' }}
-                </button>
-            </form>
-        </div>
+            <button type="submit" :disabled="form.processing" class="w-full btn-primary h-11"
+                aria-busy="form.processing">
+                {{ form.processing ? 'Confirming...' : 'Confirm password' }}
+            </button>
+        </form>
 
         <p class="mt-8 text-center text-sm text-gray-700 dark:text-gray-300">
             Back to
-            <Link :href="route('home')" class="text-sm link">
+            <Link :href="route('home')" class="text-sm link" aria-label="Return to dashboard">
             dashboard
             </Link>
         </p>
-    </div>
+    </main>
 </template>
-

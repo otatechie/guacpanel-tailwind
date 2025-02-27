@@ -109,131 +109,145 @@ const submit = () => {
 
     <Head title="Personalization Settings" />
 
-    <main class="max-w-5xl mx-auto">
-        <section class="container-border overflow-hidden">
-            <PageHeader
-                title="Personalization Settings"
-                description="Configure your application's appearance and settings"
-                :breadcrumbs="[
+    <main class="max-w-5xl mx-auto" aria-labelledby="personalization-settings">
+        <h1 class="sr-only" id="personalization-settings">Personalization Settings</h1>
+
+        <article class="container-border overflow-hidden">
+            <PageHeader title="Personalization Settings"
+                description="Configure your application's appearance and settings" :breadcrumbs="[
                     { label: 'Dashboard', href: '/' },
                     { label: 'Personalization' }
-                ]"
-            />
+                ]" />
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200 dark:divide-gray-700">
-                <div class="p-6 space-y-6 dark:bg-gray-700">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-2 bg-indigo-50 dark:bg-indigo-900/50 rounded-lg">
-                            <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Basic Information Section -->
+                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="basic-info">
+                    <header class="flex items-center gap-3 mb-4">
+                        <span class="p-2 bg-indigo-50 dark:bg-indigo-900/50 rounded-lg" aria-hidden="true">
+                            <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             </svg>
-                        </div>
-                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Basic Information</h2>
-                    </div>
+                        </span>
+                        <h2 id="basic-info" class="text-lg font-medium text-gray-800 dark:text-gray-200">Basic
+                            Information</h2>
+                    </header>
 
-                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 space-y-6 w-full md:w-2/3 dark:border-gray-700">
-                        <FormInput v-model="form.app_name" label="Application Name"
-                            placeholder="Enter your application name" :error="form.errors.app_name" />
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormInput v-model="form.footer_text" label="Footer text" placeholder="Enter footer text"
-                                :error="form.errors.footer_text" />
-                            <FormInput v-model="form.copyright_text" label="Copyright text"
-                                placeholder="Enter copyright text" :error="form.errors.copyright_text" />
-                        </div>
-                    </div>
-                </div>
+                    <FormInput v-model="form.app_name" label="Application Name"
+                        placeholder="Enter your application name" :error="form.errors.app_name"
+                        class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700" />
 
-                <div class="p-6 space-y-6 dark:bg-gray-700">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-2 bg-emerald-50 dark:bg-emerald-900/50 rounded-lg">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-6 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
+                        <FormInput v-model="form.footer_text" label="Footer text" placeholder="Enter footer text"
+                            :error="form.errors.footer_text" />
+                        <FormInput v-model="form.copyright_text" label="Copyright text"
+                            placeholder="Enter copyright text" :error="form.errors.copyright_text" />
+                    </div>
+                </section>
+
+                <!-- Media Section -->
+                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="media-section">
+                    <header class="flex items-center gap-3 mb-4">
+                        <span class="p-2 bg-emerald-50 dark:bg-emerald-900/50 rounded-lg" aria-hidden="true">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                        </div>
-                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Media</h2>
-                    </div>
+                        </span>
+                        <h2 id="media-section" class="text-lg font-medium text-gray-800 dark:text-gray-200">Media</h2>
+                    </header>
 
-                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div v-for="config in fileUploadConfigs" :key="config.name" class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {{ config.name === 'app_logo' ? 'Application logo' : 'Favicon' }}
-                                </label>
-                                <file-pond :name="config.name" :ref="config.ref" :label-idle="config.labelIdle"
-                                    :allow-multiple="false" accepted-file-types="image/jpeg, image/png"
-                                    :server="uploadConfig"
-                                    @processfile="(error, file) => handleProcessedFile(error, file, config.name)"
-                                    @removefile="(error, file) => handleFileRemoved(error, file, config.name)"
-                                    :files="config.initialFiles" :credits="false" class="bg-white rounded-lg" />
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700"
+                        role="group" aria-label="Media uploads">
+                        <div v-for="config in fileUploadConfigs" :key="config.name" class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {{ config.name === 'app_logo' ? 'Application logo' : 'Favicon' }}
+                            </label>
+                            <file-pond :name="config.name" :ref="config.ref" :label-idle="config.labelIdle"
+                                :allow-multiple="false" accepted-file-types="image/jpeg, image/png"
+                                :server="uploadConfig"
+                                @processfile="(error, file) => handleProcessedFile(error, file, config.name)"
+                                @removefile="(error, file) => handleFileRemoved(error, file, config.name)"
+                                :files="config.initialFiles" :credits="false" class="bg-white rounded-lg" />
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="p-6 space-y-6 dark:bg-gray-700">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-2 bg-purple-50 dark:bg-purple-900/50 rounded-lg">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Localization Section -->
+                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="localization-section">
+                    <header class="flex items-center gap-3 mb-4">
+                        <span class="p-2 bg-purple-50 dark:bg-purple-900/50 rounded-lg" aria-hidden="true">
+                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                        </div>
-                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Localization</h2>
-                    </div>
+                        </span>
+                        <h2 id="localization-section" class="text-lg font-medium text-gray-800 dark:text-gray-200">
+                            Localization</h2>
+                    </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700">
-                        <FormSelect v-model="form.timezone" label="Timezone" :options="timezones" class="max-w-md" />
-                    </div>
-                </div>
+                    <FormSelect v-model="form.timezone" label="Timezone" :options="timezones"
+                        class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700" />
+                </section>
 
-                <div class="p-6 space-y-6 dark:bg-gray-700">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="p-2 bg-amber-50 dark:bg-amber-900/50 rounded-lg">
-                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Notifications Section -->
+                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="notifications-section">
+                    <header class="flex items-center gap-3 mb-4">
+                        <span class="p-2 bg-amber-50 dark:bg-amber-900/50 rounded-lg" aria-hidden="true">
+                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
+                        </span>
+                        <h2 id="notifications-section" class="text-lg font-medium text-gray-800 dark:text-gray-200">
+                            Notifications</h2>
+                    </header>
+
+                    <div
+                        class="bg-gray-50 rounded-lg border border-gray-200 divide-y divide-gray-200 md:w-2/3 dark:bg-gray-800 dark:border-gray-700 dark:divide-gray-700">
+                        <div class="p-6 flex items-center justify-between" role="group"
+                            aria-labelledby="email-notifications">
+                            <div>
+                                <h3 id="email-notifications"
+                                    class="font-medium text-gray-800 dark:text-gray-200">Email Notifications
+                                </h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Receive important updates via
+                                    email</p>
+                            </div>
+                            <Switch v-model="form.email_notifications" aria-label="Toggle email notifications" />
                         </div>
-                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Notifications</h2>
+                        <div class="p-6 flex items-center justify-between" role="group"
+                            aria-labelledby="push-notifications">
+                            <div>
+                                <h3 id="push-notifications"
+                                    class="font-medium text-gray-800 dark:text-gray-200">Push Notifications</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Receive updates via browser
+                                    notifications</p>
+                            </div>
+                            <Switch v-model="form.push_notifications" aria-label="Toggle push notifications" />
+                        </div>
                     </div>
 
-                    <div class="bg-gray-50 rounded-lg border border-gray-200 divide-y divide-gray-200 md:w-2/3 dark:bg-gray-800 dark:border-gray-700 dark:divide-gray-700">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm font-medium text-gray-800 dark:text-gray-200">Email Notifications</h3>
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Receive important updates via email</p>
-                                </div>
-                                <Switch v-model="form.email_notifications" />
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm font-medium text-gray-800 dark:text-gray-200">Push Notifications</h3>
-                                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Receive updates via browser notifications</p>
-                                </div>
-                                <Switch v-model="form.push_notifications" />
-                            </div>
-                        </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="btn-primary inline-flex items-center gap-2"
+                            :disabled="form.processing" :aria-busy="form.processing">
+                            <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            {{ form.processing ? 'Saving...' : 'Save changes' }}
+                        </button>
                     </div>
-                </div>
-
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex items-center justify-end gap-3">
-                    <button type="submit" class="btn-primary inline-flex items-center gap-2"
-                        :disabled="form.processing">
-                        <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                            fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        {{ form.processing ? 'Saving...' : 'Save changes' }}
-                    </button>
-                </div>
+                </section>
             </form>
-        </section>
+        </article>
     </main>
 </template>

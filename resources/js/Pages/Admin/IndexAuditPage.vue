@@ -1,10 +1,10 @@
 <script setup>
-import { Head, router, Link } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
-import Default from '../../Layouts/Default.vue'
+import Default from '@/Layouts/Default.vue'
 import PageHeader from '@/Components/PageHeader.vue'
-import Datatable from '../../Components/Datatable.vue'
+import Datatable from '@/Components/Datatable.vue'
 
 defineOptions({
     layout: Default
@@ -25,7 +25,6 @@ const pagination = ref({
     total: props.audits.total
 })
 
-// Event badge styles
 const eventBadgeClasses = {
     created: 'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900',
     updated: 'bg-yellow-50 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 border border-yellow-100 dark:border-yellow-900',
@@ -35,25 +34,48 @@ const eventBadgeClasses = {
 const columns = [
     columnHelper.accessor('created_at', {
         header: 'Date',
-        cell: info => new Date(info.getValue()).toLocaleString()
+        cell: info => h('span', {
+            'aria-label': `Activity date: ${new Date(info.getValue()).toLocaleString()}`
+        }, new Date(info.getValue()).toLocaleString()),
+        meta: {
+            ariaLabel: 'Activity timestamp'
+        }
     }),
     columnHelper.accessor('user.name', {
         header: 'User',
-        cell: info => info.getValue() || 'System'
+        cell: info => h('span', {
+            'aria-label': `Action performed by: ${info.getValue() || 'System'}`
+        }, info.getValue() || 'System'),
+        meta: {
+            ariaLabel: 'User who performed the action'
+        }
     }),
     columnHelper.accessor('event', {
         header: 'Action',
-        cell: info => h('span', {
-            class: `px-2 py-1 rounded-full text-xs font-medium ${eventBadgeClasses[info.getValue().toLowerCase()] || 'bg-gray-50 text-gray-700 border border-gray-100'}`
-        }, info.getValue().charAt(0).toUpperCase() + info.getValue().slice(1))
+        cell: info => {
+            const event = info.getValue()
+            const formattedEvent = event.charAt(0).toUpperCase() + event.slice(1)
+            return h('span', {
+                class: `px-2 py-1 rounded-full text-xs font-medium ${eventBadgeClasses[event.toLowerCase()] || 'bg-gray-50 text-gray-700 border border-gray-100'}`,
+                role: 'status',
+                'aria-label': `Action type: ${formattedEvent}`
+            }, formattedEvent)
+        },
+        meta: {
+            ariaLabel: 'Type of action performed'
+        }
     }),
     columnHelper.accessor('auditable_type', {
         header: 'Type',
-        cell: info => info.getValue().split('\\').pop()
+        cell: info => h('span', {
+            'aria-label': `Resource type: ${info.getValue().split('\\').pop()}`
+        }, info.getValue().split('\\').pop()),
+        meta: {
+            ariaLabel: 'Resource type affected'
+        }
     })
 ]
 
-// Handle pagination changes
 watch(pagination, newPagination => {
     loading.value = true
     router.get(
@@ -74,18 +96,20 @@ watch(pagination, newPagination => {
 <template>
     <Head title="Audit Log" />
 
-    <main class="max-w-5xl mx-auto">
+    <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
         <section class="container-border overflow-hidden">
             <PageHeader
+                id="page-title"
                 title="Audit Log"
                 description="View and monitor system activities"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/' },
+                    { label: 'Dashboard', href: route('home') },
+                    { label: 'Settings', href: route('admin.setting.index') },
                     { label: 'Audit Log' }
                 ]"
             />
 
-            <div class="p-6 dark:bg-gray-900">
+            <section class="p-6 dark:bg-gray-900">
                 <Datatable
                     :data="audits.data"
                     :columns="columns"
@@ -96,8 +120,14 @@ watch(pagination, newPagination => {
                     empty-description="System activities will appear here"
                     export-file-name="activity_log"
                     @update:pagination="pagination = $event"
-                />
-            </div>
+                >
+                    <template #loading>
+                        <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
+                            Loading audit history...
+                        </p>
+                    </template>
+                </Datatable>
+            </section>
         </section>
     </main>
 </template>

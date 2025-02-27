@@ -1,42 +1,3 @@
-<template>
-
-    <Head title="Reset password" />
-
-    <div class="max-w-[384px] mx-auto px-8">
-        <h2 class="main-heading text-center">
-            Reset your password
-        </h2>
-
-        <div class="mt-6 p-5 container-border">
-            <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md text-xs">
-                <p class="text-gray-500 dark:text-gray-400 mb-2">Password must include:</p>
-                <ul class="text-gray-500 dark:text-gray-400 space-y-1 list-disc pl-5">
-                    <li>8+ characters</li>
-                    <li>One uppercase letter</li>
-                    <li>One number</li>
-                    <li>One special character</li>
-                </ul>
-            </div>
-
-            <form @submit.prevent="submit" class="space-y-6 mt-4">
-                <input type="hidden" name="token" :value="form.token">
-                <input type="hidden" name="email" :value="form.email">
-
-                <FormInput v-model="form.password" label="Password" id="password" type="password" required
-                    :error="form.errors.password" />
-
-                <FormInput v-model="form.password_confirmation" label="Confirm password" id="password_confirmation"
-                    type="password" required :error="form.errors.password_confirmation" />
-
-                <button @click="submit" :disabled="form.processing"
-                    class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
-                    {{ form.processing ? 'Please wait...' : 'Reset password' }}
-                </button>
-            </form>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
@@ -63,3 +24,42 @@ const submit = () => {
     form.post(route('password.update'))
 }
 </script>
+
+<template>
+
+    <Head title="Reset password" />
+
+    <main class="max-w-[384px] mx-auto px-8" role="main">
+        <h1 class="main-heading text-center dark:text-white">
+            Reset your password
+        </h1>
+
+        <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6"
+            aria-labelledby="reset-password-form">
+            <section class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md" aria-labelledby="password-requirements">
+                <h2 id="password-requirements" class="text-gray-400 dark:text-gray-400 text-sm mb-2">
+                    Password must include:
+                </h2>
+                <ul class="text-gray-400 dark:text-gray-400 space-y-1 list-disc pl-5 text-sm">
+                    <li>8+ characters</li>
+                    <li>One uppercase letter</li>
+                    <li>One number</li>
+                    <li>One special character</li>
+                </ul>
+            </section>
+
+            <input type="hidden" name="token" :value="form.token">
+            <input type="hidden" name="email" :value="form.email">
+
+            <FormInput v-model="form.password" label="Password" id="password" type="password" required
+                autocomplete="new-password" :error="form.errors.password" aria-describedby="password-requirements" />
+
+            <FormInput v-model="form.password_confirmation" label="Confirm password" id="password_confirmation"
+                type="password" required autocomplete="new-password" :error="form.errors.password_confirmation" />
+
+            <button type="submit" :disabled="form.processing" class="w-full btn-primary" aria-busy="form.processing">
+                {{ form.processing ? 'Please wait...' : 'Reset password' }}
+            </button>
+        </form>
+    </main>
+</template>

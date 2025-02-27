@@ -12,7 +12,7 @@ class DisableAccount
     {
         if (auth()->check() && auth()->user()->disable_account) {
             auth()->logout();
-            session()->flash('warning', 'You are not authorized to login. Contact support.');
+            session()->flash('warning', 'Your account has been disabled. Please contact support for assistance.');
             return redirect()->route('login');
         }
 

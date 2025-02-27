@@ -13,8 +13,9 @@ class CheckPasswordExpiry
     {
         if (auth()->check()) {
             $user = auth()->user();
+            $settings = Setting::first();
 
-            if ($user->isPasswordExpired() && Setting::first()->password_expiry) {
+            if ($settings && $settings->password_expiry && $user->isPasswordExpired()) {
                 session()->flash('warning', 'Your password has expired. Please change it to continue.');
                 return redirect()->route('user.password.expired');
             }

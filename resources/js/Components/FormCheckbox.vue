@@ -1,23 +1,3 @@
-<template>
-    <div class="flex items-start">
-        <div class="flex items-center h-5">
-            <input
-                type="checkbox"
-                :id="id"
-                :name="name"
-                :value="value"
-                :checked="Array.isArray(modelValue) ? modelValue.includes(value) : modelValue"
-                @change="updateValue"
-                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-        </div>
-        <div class="ml-3 text-sm">
-            <label :for="id" class="font-medium text-gray-700 dark:text-gray-300 cursor-pointer">{{ label }}</label>
-            <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref } from 'vue'
 
@@ -67,3 +47,22 @@ const updateValue = (e) => {
     }
 }
 </script>
+
+<template>
+    <fieldset class="flex items-start">
+        <label :for="id" class="flex items-start cursor-pointer">
+            <span class="flex items-center h-5">
+                <input type="checkbox" :id="id" :name="name" :value="value"
+                    :checked="Array.isArray(modelValue) ? modelValue.includes(value) : modelValue" @change="updateValue"
+                    :aria-describedby="error ? `${id}-error` : undefined" :aria-invalid="!!error"
+                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+            </span>
+            <span class="ml-3 text-sm">
+                <span class="font-medium text-gray-700 dark:text-gray-300">{{ label }}</span>
+                <p v-if="error" :id="`${id}-error`" role="alert" class="mt-1 text-sm text-red-600">
+                    {{ error }}
+                </p>
+            </span>
+        </label>
+    </fieldset>
+</template>

@@ -62,91 +62,101 @@ const toggleDropdown = (item) => {
 </script>
 
 <template>
-    <div data-sidebar-content
+    <aside data-sidebar-content
         class="h-full flex flex-col bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 ease-in-out"
         @click.stop>
-        <div
+        <header
             class="px-3 py-3 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200 flex justify-between items-center bg-white dark:bg-gray-800 sticky top-0 z-10">
-            <h2 class="text-base font-medium text-gray-700 dark:text-gray-200 ml-2">Menu</h2>
+            <h2 class="text-base font-medium text-gray-700 dark:text-gray-200 ml-2" id="nav-heading">Menu</h2>
             <button @click.stop="$emit('close')"
-                class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors hidden md:block cursor-pointer">
+                class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors hidden md:block cursor-pointer"
+                aria-label="Collapse sidebar">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-5 h-5">
+                    stroke="currentColor" class="w-5 h-5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                 </svg>
             </button>
             <button @click.stop="$emit('close')"
-                class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors md:hidden cursor-pointer">
+                class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors md:hidden cursor-pointer"
+                aria-label="Close sidebar">
                 <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+                    stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-        </div>
+        </header>
 
-        <nav class="flex-1 overflow-y-auto py-2 px-2">
-            <div class="space-y-1">
+        <nav class="flex-1 overflow-y-auto py-2 px-2" aria-labelledby="nav-heading">
+            <ul class="space-y-1">
                 <template v-for="(section, sectionIndex) in navigationSections" :key="sectionIndex">
-                    <div v-if="sectionIndex > 0" class="my-1.5 px-2">
+                    <li v-if="sectionIndex > 0" class="my-1.5 px-2" role="separator">
                         <div class="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
-                    </div>
+                    </li>
                     <template v-for="(item, itemIndex) in section.items" :key="itemIndex">
-                        <div v-if="item.type === 'divider'" class="my-1.5 px-2">
+                        <li v-if="item.type === 'divider'" class="my-1.5 px-2" role="separator">
                             <div class="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
-                        </div>
-                        <div v-else-if="item.children" class="space-y-1">
+                        </li>
+                        <li v-else-if="item.children">
                             <button @click="toggleDropdown(item)"
-                                class="w-full flex items-center justify-between px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer">
+                                class="w-full flex items-center justify-between px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer"
+                                :aria-expanded="item.isOpen">
                                 <div class="flex items-center">
                                     <svg class="w-[18px] h-[18px] mr-2.5 text-gray-400 dark:text-gray-500"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" v-html="item.icon"></svg>
+                                        stroke-width="1.5" stroke="currentColor" aria-hidden="true" v-html="item.icon"></svg>
                                     <span class="text-sm font-medium">{{ item.name }}</span>
                                 </div>
                                 <svg :class="['w-4 h-4 transition-transform duration-200 text-gray-400 dark:text-gray-500', item.isOpen ? 'rotate-180' : '']"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd"
                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                         clip-rule="evenodd" />
                                 </svg>
                             </button>
-                            <div v-show="item.isOpen" class="pl-9 space-y-1">
-                                <Link v-for="child in item.children" :key="child.name" :href="child.href" :class="['flex items-center px-1.5 py-1.5 rounded-lg transition-all duration-200 ease-in-out',
-                                    child.active ? 'bg-purple-50 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-medium' :
-                                        'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white']">
-                                <span class="text-sm">{{ child.name }}</span>
-                                <span v-if="child.badge"
+                            <ul v-show="item.isOpen" class="pl-9 space-y-1">
+                                <li v-for="child in item.children" :key="child.name">
+                                    <Link :href="child.href" :class="['flex items-center px-1.5 py-1.5 rounded-lg transition-all duration-200 ease-in-out',
+                                        child.active ? 'bg-purple-50 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-medium' :
+                                            'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white']"
+                                        :aria-current="child.active ? 'page' : undefined">
+                                        <span class="text-sm">{{ child.name }}</span>
+                                        <span v-if="child.badge"
+                                            class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium"
+                                            :class="child.badge.class">{{ child.badge.text }}</span>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li v-else>
+                            <Link :href="item.href"
+                                :class="['flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out',
+                                    item.active ? 'text-purple-600 dark:text-purple-400' :
+                                        'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white']"
+                                :aria-current="item.active ? 'page' : undefined">
+                                <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200"
+                                    :class="item.active ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400 dark:text-gray-500'"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" aria-hidden="true" v-html="item.icon"></svg>
+                                <span class="text-sm font-medium">{{ item.name }}</span>
+                                <span v-if="item.badge"
                                     class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium"
-                                    :class="child.badge.class">{{ child.badge.text }}</span>
-                                </Link>
-                            </div>
-                        </div>
-                        <Link v-else :href="item.href" :class="['flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out',
-                            item.active ? 'text-purple-600 dark:text-purple-400' :
-                                'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white']">
-                        <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200"
-                            :class="item.active ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400 dark:text-gray-500'"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" v-html="item.icon"></svg>
-                        <span class="text-sm font-medium">{{ item.name }}</span>
-                        <span v-if="item.badge"
-                            class="ml-auto inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium"
-                            :class="item.badge.class">{{ item.badge.text }}</span>
-                        </Link>
+                                    :class="item.badge.class">{{ item.badge.text }}</span>
+                            </Link>
+                        </li>
                     </template>
                 </template>
-            </div>
+            </ul>
         </nav>
 
-        <div class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <footer class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div class="flex items-center gap-2.5 ml-2">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin Panel</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">v2.0.0</p>
                 </div>
             </div>
-        </div>
-    </div>
+        </footer>
+    </aside>
 </template>
 
 <style scoped>
