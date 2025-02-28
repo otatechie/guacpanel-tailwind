@@ -253,3 +253,11 @@ input:-webkit-autofill {
     background-color: rgb(31, 41, 55) !important;
     box-shadow: inset 0 0 0 9999px rgb(31, 41, 55) !important;
 }
+
+/* Add this to your CSS file */
+pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-words;
+    max-width: 100%;
+}
