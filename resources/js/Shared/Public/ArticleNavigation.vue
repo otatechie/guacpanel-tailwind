@@ -1,9 +1,36 @@
 <script setup>
-defineProps({
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const props = defineProps({
     links: {
         type: Array,
         default: () => []
     }
+});
+
+const activeSection = ref('');
+
+const updateActiveSection = () => {
+    const scrollPosition = window.scrollY + 100;
+    for (const link of props.links) {
+        const sectionId = link.href.replace('#', '');
+        const section = document.getElementById(sectionId);
+        if (section && section.offsetTop <= scrollPosition) {
+            activeSection.value = link.href;
+        }
+    }
+    if (!activeSection.value && props.links.length > 0) {
+        activeSection.value = props.links[0].href;
+    }
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', updateActiveSection);
+    updateActiveSection();
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', updateActiveSection);
 });
 </script>
 
@@ -20,10 +47,10 @@ defineProps({
                 <ul class="space-y-1">
                     <li v-for="link in links" :key="link.href">
                         <a :href="link.href"
-                            class="block px-4 py-2 text-sm rounded-md transition-colors duration-200 ease-in-out"
+                            class="block px-2 py-1 text-sm rounded-md transition-colors duration-200 ease-in-out"
                             :class="[
-                                link.active
-                                    ? 'text-purple-600 dark:text-purple-400 font-medium'
+                                link.href === activeSection
+                                    ? 'text-purple-600 dark:text-purple-400 font-medium bg-purple-50 dark:bg-purple-900/20'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
                             ]">
                             {{ link.text }}

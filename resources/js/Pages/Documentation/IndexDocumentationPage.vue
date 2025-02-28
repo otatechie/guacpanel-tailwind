@@ -2,14 +2,22 @@
 import { Head } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Public from '@/Layouts/Public.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import FormInput from '@/Components/FormInput.vue'
+import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
 
 defineOptions({
     layout: Public
 })
 
 const searchQuery = ref('')
+
+// Define navigation links based on the sections in your page
+const articleLinks = [
+    { text: 'Introduction', href: '#introduction' },
+    { text: 'Authentication', href: '#authentication' },
+    { text: 'Interface & Layout', href: '#interface' },
+    { text: 'Data Management', href: '#data-management' },
+    { text: 'Technologies', href: '#technologies' }
+]
 
 const filteredSections = computed(() => {
     if (!searchQuery.value) return features.core
@@ -29,10 +37,11 @@ const filteredSections = computed(() => {
     <Head title="Obomaa Documentation" />
 
     <div class="max-w-7xl mx-auto">
-        <!-- Introduction with Visual Element -->
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Getting Started</h2>
+
         <div class="relative overflow-hidden rounded-2xl mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
             <div class="relative z-10 p-8">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Introduction</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">Introduction</h2>
                 <p class="text-gray-600 max-w-3xl mb-6">
                     Obomaa is designed for developers who need a robust admin interface without unnecessary complexity.
                     By leveraging the best of Laravel's backend capabilities, Vue's reactive components, Inertia's
@@ -553,4 +562,7 @@ const filteredSections = computed(() => {
             </section>
         </div>
     </div>
+
+    <!-- Add ArticleNavigation component -->
+    <ArticleNavigation :links="articleLinks" />
 </template>

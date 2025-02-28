@@ -153,9 +153,6 @@ onMounted(() => {
                     </article>
                 </div>
             </main>
-
-            <ArticleNavigation :links="articleLinks" />
-
             <Footer />
         </div>
     </div>

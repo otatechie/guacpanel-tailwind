@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\AdminAuditController;
-use App\Http\Controllers\AdminBackupController;
-use App\Http\Controllers\AdminLoginHistoryController;
-use App\Http\Controllers\AdminPermissionController;
-use App\Http\Controllers\AdminPermissionRoleController;
-use App\Http\Controllers\AdminPersonalisationController;
-use App\Http\Controllers\AdminRoleController;
-use App\Http\Controllers\AdminSettingController;
-use App\Http\Controllers\AdminUserController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\ForcePasswordChangeController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AdminRoleController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminAuditController;
+use App\Http\Controllers\AdminBackupController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\UserAccountController;
-use Illuminate\Support\Facades\Route;
-use Spatie\Health\Http\Controllers\HealthCheckResultsController;
-use Inertia\Inertia;
+use App\Http\Controllers\AdminSettingController;
+use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\Auth\MagicLinkController;
+use App\Http\Controllers\AdminPermissionController;
+use App\Http\Controllers\AdminLoginHistoryController;
+use App\Http\Controllers\AdminPermissionRoleController;
+use App\Http\Controllers\ForcePasswordChangeController;
+use App\Http\Controllers\AdminPersonalisationController;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 
 
@@ -94,7 +95,9 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
 
 
 // Documentation Route
-Route::get('/documentation', [PageController::class, 'documentation'])->name('documentation');
+Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation');
+Route::get('/documentation/intro', [DocumentationController::class, 'intro'])->name('documentation.intro');
+Route::get('/documentation/features', [DocumentationController::class, 'features'])->name('documentation.features');
 
 
 // Magic Link Authentication Routes
