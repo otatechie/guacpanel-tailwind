@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
 <head>
     <meta charset="utf-8">
@@ -7,25 +7,35 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Primary Meta Tags -->
-    <title inertia>{{ config('app.name', 'Obomaa') }}</title>
-    <meta name="title" content="Obomaa - Admin Dashboard">
+    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    <meta name="title" content="Modern Admin Dashboard">
     <meta name="description"
-        content="Modern admin dashboard built with Laravel, Inertia.js, and Vue.js. Streamline your business operations with our powerful management tools.">
+        content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
+    <meta name="keywords" content="Laravel, Inertia.js, Vue.js, Tailwind CSS, Admin Dashboard, SaaS">
+    <meta name="author" content="Your Name">
+    <meta name="theme-color" content="#3B82F6">
+    <meta name="color-scheme" content="light dark">
+
+    <!-- Tailwind CSS Configuration -->
+    <meta name="tailwind-theme" content="modern">
+    <meta name="tailwind-version" content="3.x">
+    <meta name="tailwind-components" content="admin-dashboard">
+    <meta name="tailwind-plugins" content="forms,typography,aspect-ratio,line-clamp">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ config('app.url') }}">
-    <meta property="og:title" content="Obomaa - Admin Dashboard">
+    <meta property="og:title" content="Modern Admin Dashboard">
     <meta property="og:description"
-        content="Modern admin dashboard built with Laravel, Inertia.js, and Vue.js. Streamline your business operations with our powerful management tools.">
+        content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ config('app.url') }}">
-    <meta property="twitter:title" content="Obomaa - Admin Dashboard">
+    <meta property="twitter:title" content="Modern Admin Dashboard">
     <meta property="twitter:description"
-        content="Modern admin dashboard built with Laravel, Inertia.js, and Vue.js. Streamline your business operations with our powerful management tools.">
+        content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
     <meta property="twitter:image" content="{{ asset('images/og-image.png') }}">
 
     <!-- Favicon -->
@@ -42,7 +52,7 @@
 
 @googlefonts
 
-<body class="antialiased dark:bg-gray-800">
+<body class="antialiased h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     @routes
     @inertia
 </body>

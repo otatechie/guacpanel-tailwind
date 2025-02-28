@@ -3,7 +3,7 @@
 
 /* Theme Configuration */
 @theme {
-    --font-sans: "Host Grotesk", "sans-serif";
+    --font-sans: "Inclusive Sans", "sans-serif";
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

@@ -93,6 +93,10 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
 });
 
 
+// Documentation Route
+Route::get('/documentation', [PageController::class, 'documentation'])->name('documentation');
+
+
 // Magic Link Authentication Routes
 Route::middleware(['guest', 'web'])->group(function () {
     Route::controller(MagicLinkController::class)->group(function () {

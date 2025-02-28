@@ -116,6 +116,7 @@ const submit = () => {
             <PageHeader title="Personalization Settings"
                 description="Configure your application's appearance and settings" :breadcrumbs="[
                     { label: 'Dashboard', href: '/' },
+                    { label: 'Settings', href: route('admin.setting.index') },
                     { label: 'Personalization' }
                 ]" />
 

@@ -4,45 +4,51 @@
 
     <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <header class="mb-8">
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ greeting }}, {{ userName }}! 👋
+            <header class="py-8">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    {{ greeting }}, {{ userName }}
+                    <span role="img" aria-label="wave">👋</span>
                 </h1>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 font-mono">{{ formattedDate }}</p>
+                <time datetime="" class="text-sm text-gray-600 dark:text-gray-400 mt-2 font-mono">
+                    {{ formattedDate.display }}
+                </time>
             </header>
 
-            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <div v-for="card in statCards" :key="card.title"
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer group">
-                    <div class="p-6">
-                        <div class="flex items-center gap-4">
-                            <div :class="`bg-${card.color}-50 dark:bg-${card.color}-900/20 rounded-xl p-3`">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-8 w-8 transition-transform duration-200 group-hover:scale-110"
-                                    :class="`text-${card.color}-600 dark:text-${card.color}-400`"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    v-html="card.icon">
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ card.title }}</h3>
-                                <div class="flex items-baseline gap-2">
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ card.value }}</p>
-                                    <span :class="`text-xs font-medium ${card.growth.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`">
-                                        {{ card.growth }}
-                                    </span>
-                                </div>
-                            </div>
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" aria-label="Key Statistics">
+                <article v-for="card in statCards" :key="card.title"
+                    class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <div :class="`shrink-0 bg-${card.color}-50 dark:bg-${card.color}-900/20 rounded-xl p-3`">
+                            <svg aria-hidden="true"
+                                class="h-8 w-8 transition-transform duration-200 group-hover:scale-110"
+                                :class="`text-${card.color}-600 dark:text-${card.color}-400`"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                v-html="card.icon">
+                            </svg>
                         </div>
-                        <div class="mt-4 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                            <div :class="`h-full ${`bg-${card.color}-500`} rounded-full`"
-                                :style="`width: ${Math.random() * 100}%`">
+                        <div>
+                            <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ card.title }}</h2>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <strong class="text-2xl font-bold text-gray-900 dark:text-white">{{ card.value }}</strong>
+                                <span :class="`text-xs font-medium ${card.growth.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`"
+                                    role="status">
+                                    {{ card.growth }}
+                                </span>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="mt-4 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div :class="`h-full ${`bg-${card.color}-500`} rounded-full`"
+                            :style="`width: ${Math.random() * 100}%`"
+                            role="progressbar"
+                            :aria-valuenow="Math.random() * 100"
+                            aria-valuemin="0"
+                            aria-valuemax="100">
+                        </div>
+                    </div>
+                </article>
             </section>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -85,15 +91,15 @@
                 </section>
 
                 <!-- Notifications Panel -->
-                <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-                    <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                <section class="bg-white dark:bg-gray-800 rounded-xl shadow-md" aria-label="Notifications">
+                    <header class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Notifications</h2>
-                        <span class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold ring-2 ring-blue-500/20">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 ring-2 ring-blue-500/20">
                             {{ notifications.filter(n => !n.read).length }} new
                         </span>
-                    </div>
-                    <div class="p-6 space-y-4">
-                        <div v-for="notification in notifications" :key="notification.id"
+                    </header>
+                    <ul class="p-6 space-y-4">
+                        <li v-for="notification in notifications" :key="notification.id"
                             :class="[
                                 'p-4 rounded-xl transition-all duration-200',
                                 notification.read ? 'bg-gray-50' : 'bg-blue-50 ring-1 ring-blue-100'
@@ -120,8 +126,8 @@
                                     </svg>
                                 </button>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </section>
             </div>
 
@@ -254,11 +260,14 @@ const page = usePage()
 const userName = computed(() => page.props.auth.user?.name || 'User')
 
 const formattedDate = computed(() => {
-    return new Date().toLocaleDateString('en-US', {
+    const date = new Date()
+    const formatted = date.toLocaleDateString('en-US', {
         weekday: 'long',
         month: 'long',
         day: 'numeric'
     })
+    const isoDate = date.toISOString().split('T')[0]
+    return { display: formatted, iso: isoDate }
 })
 
 const greeting = computed(() => {

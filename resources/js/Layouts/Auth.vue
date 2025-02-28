@@ -1,8 +1,8 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import { usePage } from '@inertiajs/vue3'
-import Logo from '@/Shared/Logo.vue'
-import FlashMessage from '@/Shared/FlashMessage.vue'
+import Logo from '@/Components/Logo.vue'
+import FlashMessage from '@/Components/FlashMessage.vue'
 import { computed } from 'vue'
 
 const page = usePage()

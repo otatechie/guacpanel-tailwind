@@ -28,27 +28,50 @@ const pagination = ref({
 const columns = [
     columnHelper.accessor('name', {
         header: 'Name',
+        cell: info => h('span', {
+            'aria-label': `User name: ${info.getValue()}`
+        }, info.getValue()),
+        meta: {
+            ariaLabel: 'User name'
+        }
     }),
     columnHelper.accessor('email', {
         header: 'Email',
+        cell: info => h('span', {
+            'aria-label': `Email address: ${info.getValue()}`
+        }, info.getValue()),
+        meta: {
+            ariaLabel: 'User email address'
+        }
     }),
     columnHelper.accessor('created_at', {
         header: 'Created At',
-        cell: info => new Date(info.getValue()).toLocaleString()
+        cell: info => h('span', {
+            'aria-label': `Account created on: ${new Date(info.getValue()).toLocaleString()}`
+        }, new Date(info.getValue()).toLocaleString()),
+        meta: {
+            ariaLabel: 'Account creation date'
+        }
     }),
     columnHelper.accessor('status', {
         header: 'Status',
         cell: info => {
             const status = info.getValue()
+            const formattedStatus = status?.charAt(0).toUpperCase() + status?.slice(1) || 'N/A'
             const badgeClass = {
-                active: 'bg-green-50 text-green-700 border border-green-100',
-                inactive: 'bg-red-50 text-red-700 border border-red-100',
-                pending: 'bg-yellow-50 text-yellow-700 border border-yellow-100'
+                active: 'bg-green-50 text-green-700 border border-green-100 dark:bg-green-950 dark:text-green-400 dark:border-green-900',
+                inactive: 'bg-red-50 text-red-700 border border-red-100 dark:bg-red-950 dark:text-red-400 dark:border-red-900',
+                pending: 'bg-yellow-50 text-yellow-700 border border-yellow-100 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-900'
             }[status?.toLowerCase()] || 'bg-gray-50 text-gray-700 border border-gray-100'
 
             return h('span', {
-                class: `px-2 py-1 rounded-full text-xs font-medium ${badgeClass}`
-            }, status?.charAt(0).toUpperCase() + status?.slice(1) || 'N/A')
+                class: `px-2 py-1 rounded-full text-xs font-medium ${badgeClass}`,
+                role: 'status',
+                'aria-label': `Account status: ${formattedStatus}`
+            }, formattedStatus)
+        },
+        meta: {
+            ariaLabel: 'User account status'
         }
     }),
     columnHelper.display({
@@ -136,6 +159,7 @@ watch(pagination, newPagination => {
                 description="Manage system users and their access"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: '/' },
+                    { label: 'Settings', href: route('admin.setting.index') },
                     { label: 'Users' }
                 ]"
             />

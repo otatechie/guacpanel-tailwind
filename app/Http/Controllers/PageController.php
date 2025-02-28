@@ -13,4 +13,11 @@ class PageController extends Controller
         return Inertia::render('IndexHelpPage', [
         ]);
     }
+
+
+    public function documentation()
+    {
+        return Inertia::render('IndexDocumentationPage', [
+        ]);
+    }
 }

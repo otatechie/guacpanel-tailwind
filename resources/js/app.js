@@ -8,6 +8,7 @@ import "nprogress/nprogress.css";
 // Layouts
 import Default from "./Layouts/Default.vue";
 import Auth from "./Layouts/Auth.vue";
+import Public from "./Layouts/Public.vue";
 
 // NProgress configuration
 router.on("start", () => NProgress.start());
@@ -24,7 +25,7 @@ createInertiaApp({
         showSpinner: true,
     },
 
-    title: (title) => `${title} - Paxfund`,
+    title: (title) => `${title} - Obomaa`,
 
     resolve: (name) => {
         const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
@@ -41,7 +42,8 @@ createInertiaApp({
         const globalComponents = {
             Link,
             Default,
-            Auth
+            Auth,
+            Public
         };
 
         Object.entries(globalComponents).forEach(([name, component]) => {

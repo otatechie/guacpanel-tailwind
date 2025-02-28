@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePage } from '@inertiajs/vue3'
-import NavSidebarDesktop from '../Shared/NavSidebarDesktop.vue'
-import NavProfile from '../Shared/NavProfile.vue'
-import Notification from '../Shared/Notification.vue'
-import FlashMessage from '../Shared/FlashMessage.vue'
+import NavSidebarDesktop from '../Components/NavSidebarDesktop.vue'
+import NavProfile from '../Components/NavProfile.vue'
+import Notification from '../Components/Notification.vue'
+import FlashMessage from '../Components/FlashMessage.vue'
 import Footer from '../Shared/Public/Footer.vue'
 
 const page = usePage()

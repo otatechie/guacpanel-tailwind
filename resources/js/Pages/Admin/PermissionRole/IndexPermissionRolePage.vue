@@ -40,6 +40,7 @@ const activeTab = ref('roles')
         <article class="container-border overflow-hidden">
             <PageHeader title="User Access Management" description="Manage user roles and permissions" :breadcrumbs="[
                 { label: 'Dashboard', href: '/' },
+                { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'User Access Management' }
             ]" />
 
