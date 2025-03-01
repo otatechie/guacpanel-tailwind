@@ -23,4 +23,10 @@ class DocumentationController extends Controller
     {
         return Inertia::render('Documentation/IndexFeaturePage');
     }
+
+
+    public function components()
+    {
+        return Inertia::render('Documentation/IndexComponentPage');
+    }
 }

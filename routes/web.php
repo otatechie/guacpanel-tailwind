@@ -98,7 +98,7 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
 Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation');
 Route::get('/documentation/intro', [DocumentationController::class, 'intro'])->name('documentation.intro');
 Route::get('/documentation/features', [DocumentationController::class, 'features'])->name('documentation.features');
-
+Route::get('/documentation/components', [DocumentationController::class, 'components'])->name('documentation.components');
 
 // Magic Link Authentication Routes
 Route::middleware(['guest', 'web'])->group(function () {

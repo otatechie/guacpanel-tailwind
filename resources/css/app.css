@@ -3,7 +3,7 @@
 
 /* Theme Configuration */
 @theme {
-    --font-sans: "Inclusive Sans", "sans-serif";
+    --font-sans: "Instrument Sans", "sans-serif";
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -256,6 +256,7 @@ input:-webkit-autofill {
 
 /* Add this to your CSS file */
 pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-words;
