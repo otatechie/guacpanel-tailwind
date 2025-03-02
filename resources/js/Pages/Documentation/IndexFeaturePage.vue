@@ -3,10 +3,24 @@ import { Head } from '@inertiajs/vue3'
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import Public from '@/Layouts/Public.vue'
 import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import hljs from 'highlight.js'
-import 'highlight.js/lib/languages/php'
-import 'highlight.js/lib/languages/javascript'
-import 'highlight.js/styles/night-owl.css'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import bash from 'highlight.js/lib/languages/bash'
+import 'highlight.js/styles/github-dark.css'
+
+// Register languages
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('bash', bash)
+
+// Highlight.js directive
+const vHighlight = {
+    mounted(el) {
+        hljs.highlightElement(el)
+    },
+    updated(el) {
+        hljs.highlightElement(el)
+    }
+}
 
 defineOptions({
     layout: Public
@@ -249,8 +263,9 @@ const applyHighlighting = () => {
 }
 
 onMounted(() => {
-    // Initialize highlight.js
-    applyHighlighting()
+    document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block)
+    })
 })
 
 // Watch for changes in any code blocks and reapply highlighting
@@ -293,28 +308,28 @@ const handleDelete = (user) => {
                                 d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                         </svg>
                     </div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-white">Obomaa Documentation</h1>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white">Core Features</h1>
                 </div>
                 <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
-                    New to Obomaa? Start here! Our step-by-step guides will help you build powerful admin interfaces
-                    quickly and efficiently.
+                    Explore Obomaa's powerful built-in features including authentication, permissions, security middleware, backup systems,
+                    data tables, and activity tracking. Each feature is designed to help you build secure and scalable admin interfaces.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="#quick-start"
+                    <a href="#authentication"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-purple-600 hover:bg-purple-50 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        Quick Start Guide
+                        Authentication
                     </a>
-                    <a href="#video-tutorials"
+                    <a href="#datatables"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-purple-500 text-white hover:bg-purple-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                         </svg>
-                        Video Tutorials
+                        Data Tables
                     </a>
                 </div>
             </div>
@@ -900,7 +915,7 @@ const handleDelete = (user) => {
                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </button>
-                                        <pre><code class="language-vue">{{ templateExampleCode }}</code></pre>
+                                        <pre><code v-highlight class="language-html">{{ templateExampleCode }}</code></pre>
                                     </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">

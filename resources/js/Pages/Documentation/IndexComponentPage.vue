@@ -7,227 +7,44 @@ import hljs from 'highlight.js'
 import 'highlight.js/lib/languages/php'
 import 'highlight.js/lib/languages/javascript'
 import 'highlight.js/styles/night-owl.css'
+import FormInput from '@/Components/FormInput.vue'
+import FormCheckbox from '@/Components/FormCheckbox.vue'
+import FormSelect from '@/Components/FormSelect.vue'
+import Modal from '@/Components/Modal.vue'
+import PageHeader from '@/Components/PageHeader.vue'
+import Switch from '@/Components/Switch.vue'
+import FlashMessage from '@/Components/FlashMessage.vue'
 
 defineOptions({
     layout: Public
 })
+const validationCode = ref(`FormInput
+    v-model="form.email"
+    label="Email Address"
+    :error="errors.email"
+    required;
 
-const routeConfigCode = ref(`// Magic Link Authentication Routes
-Route::middleware(['guest', 'web'])->group(function () {
-    Route::controller(MagicLinkController::class)->group(function () {
-        Route::get('/magic-link/register', 'create')->name('magic.register.create');
-        Route::post('/register/magic-link', 'register')->name('magic.register');
-        Route::post('/login/magic-link', 'login')->name('magic.login.request');
-        Route::get('/magic-link/{token}', 'authenticate')->name('magic.login');
-    });
-});`)
-
-const featureToggleCode = ref(`protected function checkPasswordlessEnabled()
-{
-    $passwordlessEnabled = DB::table('settings')->value('passwordless_login') ?? true;
-    if (!$passwordlessEnabled) {
-        abort(404);
-    }
-}`)
-
-const magicLinkCode = ref(`protected function sendLoginLink(User $user)
-{
-    $url = URL::temporarySignedRoute(
-        'magic.login',
-        now()->addMinutes(10),
-        ['token' => $user->id]
-    );
-
-    Mail::to($user)->send(new MagicLoginLink($url));
-}`)
-
-const authProcessCode = ref(`public function authenticate(Request $request)
-{
-    if (!$request->hasValidSignature()) {
-        return redirect()->route('login')
-            ->with('error', 'Magic link expired.');
-    }
-
-    $user = User::findOrFail($request->token);
-    auth()->guard('web')->login($user);
-    $request->session()->regenerate();
-
-    return redirect()->intended(config('fortify.home'));
-}`)
-
-const accountDisablingCode = ref(`public function handle(Request $request, Closure $next): Response
-{
-    if (auth()->check() && auth()->user()->is_disabled) {
-        auth()->logout();
-        session()->flash('error', 'Your account has been disabled.');
-        return redirect()->route('login');
-    }
-
-    return $next($request);
-}`)
-
-const passwordExpiryCode = ref(`public function handle(Request $request, Closure $next): Response
-{
-    if (auth()->check()) {
-        $user = auth()->user();
-        $settings = Setting::first();
-
-        if ($settings && $settings->password_expiry && $user->isPasswordExpired()) {
-            session()->flash('warning', 'Your password has expired. Please change it to continue.');
-            return redirect()->route('user.password.expired');
-        }
-    }
-
-    return $next($request);
-}`)
-
-const forcePasswordCode = ref(`public function handle(Request $request, Closure $next): Response
-{
-    if (auth()->check() && auth()->user()->force_password_change) {
-        session()->flash('warning', 'You must change your password before continuing.');
-        return redirect()->route('user.force.password.change');
-    }
-
-    return $next($request);
-}`)
-
-const twoFactorCode = ref(`public function handle(Request $request, Closure $next): Response
-{
-    if (!auth()->check()) {
-        return $next($request);
-    }
-
-    $settings = Setting::first();
-    if (!$settings || !$settings->two_factor_authentication) {
-        return $next($request);
-    }
-
-    $user = auth()->user();
-    if (!$user->two_factor_secret) {
-        session()->flash('warning', 'Two-factor authentication is required. Please enable it to continue.');
-        return redirect()->route('user.two.factor');
-    }
-
-    return $next($request);
-}`)
-
-const tableExampleCode = ref(`// Import required dependencies
-import { createColumnHelper } from '@tanstack/vue-table'
-import { h, ref, watch } from 'vue'
-import Datatable from '@/Components/Datatable.vue'
-
-// Initialize column helper and state
-const columnHelper = createColumnHelper()
-const loading = ref(false)
-const pagination = ref({
-    current_page: props.users.current_page,
-    per_page: Number(props.users.per_page),
-    total: props.users.total
+// In your component:
+const form = useForm({
+    email: ''
 })
 
-// Define table columns
-const columns = [
-    columnHelper.accessor('name', {
-        header: 'Name',
-        cell: info => h('span', {
-            'aria-label': \`User: \${info.getValue()}\`
-        }, info.getValue())
-    }),
-    columnHelper.accessor('status', {
-        header: 'Status',
-        cell: info => h('span', {
-            class: \`px-2 py-1 rounded-full text-xs font-medium \${
-                info.getValue() === 'active'
-                    ? 'bg-green-50 text-green-700'
-                    : 'bg-red-50 text-red-700'
-            }\`,
-            role: 'status'
-        }, info.getValue())
-    })
-]
-
-// Handle pagination changes
-watch(pagination, newPagination => {
-    loading.value = true
-    router.get(
-        route('users.index'),
-        {
-            page: newPagination.current_page,
-            per_page: newPagination.per_page
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            onFinish: () => loading.value = false
-        }
-    )
-}, { deep: true })`)
-
-const templateExampleCode = ref(`<Datatable
-    :data="users.data"
-    :columns="columns"
-    :loading="loading"
-    :pagination="pagination"
-    :search-fields="['name', 'email']"
-    empty-message="No users found"
-    empty-description="Users will appear here"
-    export-file-name="users_export"
-    @update:pagination="pagination = $event"
-/>`)
-
-const backendCode = ref(`public function index(Request $request)
-{
-    return Inertia::render('Admin/User/IndexUserPage', [
-        'users' => User::query()
-            ->with(['roles', 'permissions'])  // Eager load relationships
-            ->latest()                        // Order by newest first
-            ->paginate($request->input('per_page', 10))  // Get paginated results
-    ]);
-}`)
-
-
-const middlewareCode = ref(`class RoleMiddleware
-{
-    public function handle($request, Closure $next, $role)
-    {
-        if (!auth()->check() || !auth()->user()->hasRole($role)) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        return $next($request);
-    }
-}`)
-
-const actionButtonsCode = ref(`columnHelper.display({
-    id: 'actions',
-    header: 'Actions',
-    cell: ({ row }) => {
-        return (
-            <div class="flex space-x-2">
-                <button
-                    onClick={() => handleEdit(row.original)}
-                    class="text-blue-600 hover:text-blue-800"
-                >
-                    Edit
-                </button>
-                <button
-                    onClick={() => handleDelete(row.original)}
-                    class="text-red-600 hover:text-red-800"
-                >
-                    Delete
-                </button>
-            </div>
-        )
-    }
-})`)
+// Errors from Laravel will automatically be displayed
+form.post(route('user.update'));`)
 
 const articleLinks = [
-    { text: 'Authentication', href: '#authentication' },
-    { text: 'Permissions & Roles', href: '#permissions-roles' },
-    { text: 'Security Middleware', href: '#middleware' },
-    { text: 'Backup System', href: '#backup-system' },
-    { text: 'Data Tables', href: '#datatables' },
-    { text: 'Activity Tracking', href: '#auditing' }
+    { text: 'Form Components', href: '#form-components', children: [
+        { text: 'Form Input', href: '#form-input' },
+        { text: 'Form Checkbox', href: '#form-checkbox' },
+        { text: 'Form Select', href: '#form-select' }
+    ]},
+    { text: 'Feedback Components', href: '#feedback-components', children: [
+        { text: 'Flash Message', href: '#flash-message' },
+        { text: 'Modal', href: '#modal' }
+    ]},
+    { text: 'Utility Components', href: '#utility-components', children: [
+        { text: 'Switch', href: '#switch' }
+    ]}
 ]
 
 // Fixed the language mappings for highlight.js
@@ -253,33 +70,82 @@ onMounted(() => {
     applyHighlighting()
 })
 
-// Watch for changes in any code blocks and reapply highlighting
-watch([
-    routeConfigCode, featureToggleCode, magicLinkCode, authProcessCode,
-    accountDisablingCode, passwordExpiryCode, forcePasswordCode,
-    twoFactorCode, tableExampleCode, templateExampleCode,
-    backendCode, middlewareCode, actionButtonsCode
-], () => {
-    applyHighlighting()
-}, { deep: true })
 
-// Handle edit clicks
-const handleEdit = (user) => {
-    router.get(route('users.edit', user.id))
-}
+// Demo data for examples
+const demoEmail = ref('')
+const demoIsChecked = ref(false)
+const demoIsOpen = ref(false)
+const demoIsEnabled = ref(false)
+const demoSelectedCountry = ref('')
+const demoCountries = ref([
+    { name: 'United States', code: 'US' },
+    { name: 'Canada', code: 'CA' },
+    { name: 'United Kingdom', code: 'GB' }
+])
 
-// Handle delete clicks (you can implement this as needed)
-const handleDelete = (user) => {
-    // Implementation for delete functionality
-    console.log('Delete user:', user)
-}
+const formInputCode = ref(`<FormInput
+    v-model="email"
+    label="Email Address"
+    id="demo-email"
+    type="email"
+    required
+    error="Please enter a valid email address"
+/>`)
 
-// ... rest of your existing code ...
+const formCheckboxCode = ref(`<FormCheckbox
+    v-model="selectedItems"
+    :value="item.id"
+    :label="item.name"
+    :name="remember"
+    :id="remember"
+/>`)
+
+const modalCode = ref(`<Modal :show="isOpen" @close="isOpen = false" size="md">
+    <template #title>Edit Profile</template>
+
+    <div class="space-y-4">
+        <!-- Modal content here -->
+    </div>
+
+    <template #footer>
+        <button @click="save">Save Changes</button>
+    </template>
+</Modal>`)
+
+const pageHeaderCode = ref(`<PageHeader
+    title="User Management"
+    description="Manage user accounts and permissions"
+    :breadcrumbs="[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Users' }
+    ]"
+>
+    <template #actions>
+        <button>Add User</button>
+    </template>
+</PageHeader>`)
+
+const switchCode = ref(`<Switch
+    v-model="isEnabled"
+    label="Enable notifications"
+/>`)
+
+const formSelectCode = ref(`<FormSelect
+    v-model="selectedCountry"
+    label="Country"
+    id="demo-country"
+    :options="demoCountries"
+    option-label="name"
+    option-value="code"
+    required
+/>`)
+
+
 </script>
 
 <template>
 
-    <Head title="Features - Obomaa" />
+    <Head title="Components - Obomaa" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <!-- Hero Section -->
@@ -290,31 +156,32 @@ const handleDelete = (user) => {
                     <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mr-4">
                         <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
                     </div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-white">Obomaa Documentation</h1>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white">Component Library</h1>
                 </div>
                 <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
-                    New to Obomaa? Start here! Our step-by-step guides will help you build powerful admin interfaces
-                    quickly and efficiently.
+                    Explore our collection of beautiful, accessible, and reusable components built with Vue 3 and
+                    Tailwind CSS.
+                    Each component is designed to be flexible, customizable, and easy to integrate into your projects.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="#quick-start"
+                    <a href="#form-components"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-purple-600 hover:bg-purple-50 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Quick Start Guide
+                        Form Components
                     </a>
-                    <a href="#video-tutorials"
+                    <a href="#component-api"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-purple-500 text-white hover:bg-purple-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                         </svg>
-                        Video Tutorials
+                        Component API
                     </a>
                 </div>
             </div>
@@ -328,661 +195,583 @@ const handleDelete = (user) => {
 
             <!-- Main Content Sections -->
             <div class="space-y-16">
-                <!-- Authentication Section -->
-                <section id="authentication" class="space-y-6 scroll-mt-16">
+                <!-- Form Components Section -->
+                <section id="form-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
                             class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
                             <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Authentication</h2>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Form Components</h2>
                     </div>
 
+                    <!-- Form Input -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-2">
-                                Laravel Fortify automatically scaffolds the login, two-factor login, registration,
-                                password
-                                reset, and email verification features for your project, allowing you to start building
-                                the
-                                features you care about instead of worrying about the nitty-gritty details of user
-                                authentication.
-                            </p>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                <a href="https://laravel.com/docs/fortify" target="_blank"
-                                    class="border-b-2 border-purple-500 dark:border-purple-400">Learn more about Laravel
-                                    Fortify</a>
-                            </p>
-                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Input</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A flexible input component with floating label support, error handling, and password toggle
+                            functionality.
+                            Provides comprehensive error handling with visual feedback and error messages.
+                        </p>
 
-                        <!-- Passwordless Login -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Passwordless authentication allows users to sign in securely using email-based magic
-                                links
-                                instead of traditional passwords. This modern approach enhances security by eliminating
-                                password-related vulnerabilities while providing a smoother user experience.
-                            </p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <FormInput v-model="demoEmail" label="Email Address" id="demo-email" type="email"
+                                    required error="Please enter a valid email address" />
+                            </div>
 
-                            <div
-                                class="mt-6 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
-                                <p class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
-                                    <span class="flex-shrink-0 text-xl">💡</span>
-                                    <span><strong>Pro Tip:</strong> Passwordless login is perfect for non-technical
-                                        users -
-                                        no more forgotten passwords or security concerns!</span>
-                                </p>
+                            <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    @click="navigator.clipboard.writeText(formInputCode)">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <pre><code class="language-vue">{{ formInputCode }}</code></pre>
                             </div>
                         </div>
 
-                        <!-- Implementation -->
-                        <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
-                            <div class="grid gap-8">
-                                <!-- Route Configuration -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">1.</span> Route Configuration
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        First, set up the routes for magic link authentication:
-                                    </p>
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Error Handling</h4>
+                            <div class="prose prose-purple dark:prose-invert max-w-none">
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    The FormInput component provides comprehensive error handling through the following
+                                    features:
+                                </p>
+                                <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 mt-4">
+                                    <li>Visual feedback with red border and error icon when errors are present</li>
+                                    <li>Error message display below the input field</li>
+                                    <li>ARIA attributes for accessibility (aria-invalid, aria-describedby)</li>
+                                    <li>Integration with Laravel validation</li>
+                                </ul>
 
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(routeConfigCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-php">{{ routeConfigCode }}</code></pre>
-                                    </div>
+                                <div class="mt-6 bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                                    <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Example with
+                                        Laravel Validation</h5>
+                                    <pre><code class="language-php">{{ validationCode }}</code></pre>
                                 </div>
 
-                                <!-- Rest of authentication content... -->
                             </div>
                         </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">modelValue</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String,
+                                                Number</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">''</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The input
+                                                value (v-model binding)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">label</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Label text
+                                                for the input field</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">type</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'text'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Input type
+                                                (text, email, password, number, etc.)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">error</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String, Array
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Error
+                                                message(s) to display</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">id</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Input element
+                                                ID (auto-generated if not provided)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">name</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Input name
+                                                attribute</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">placeholder</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Input
+                                                placeholder text</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">required</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether the
+                                                input is required</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">disabled</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether the
+                                                input is disabled</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">autocomplete
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'off'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Input
+                                                autocomplete attribute</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">autofocus</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether the
+                                                input should be focused on mount</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">readonly</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether the
+                                                input is read-only</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">help</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Help text to
+                                                display below the input</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Form Checkbox -->
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Checkbox</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A customizable checkbox component that supports both single boolean values and arrays for
+                            multiple selections.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <FormCheckbox v-model="demoIsChecked" label="I agree to the terms and conditions"
+                                    name="terms" id="terms" />
+                            </div>
+
+                            <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    @click="navigator.clipboard.writeText(formCheckboxCode)">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <pre><code class="language-vue">{{ formCheckboxCode }}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Select -->
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Select</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A searchable select component with support for custom option formatting and keyboard
+                            navigation.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <FormSelect v-model="demoSelectedCountry" label="Country" id="demo-country"
+                                    :options="demoCountries" option-label="name" option-value="code" required />
+                            </div>
+
+                            <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    @click="navigator.clipboard.writeText(formSelectCode)">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <pre><code class="language-vue">{{ formSelectCode }}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">modelValue</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Any</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The selected
+                                                value</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">options</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">[]</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of
+                                                options to display</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">optionLabel</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'label'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Property name
+                                                for option label</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">optionValue</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'value'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Property name
+                                                for option value</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
 
-                <!-- Permissions & Roles Section -->
-                <section id="permissions-roles" class="space-y-6 scroll-mt-16">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Permissions & Roles</h2>
-                    </div>
-
+                <!-- Feedback Components Section -->
+                <section id="feedback-components" class="space-y-6 scroll-mt-16">
+                    <!-- Flash Message Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa provides a robust permissions and roles system built on top of Spatie's
-                                Laravel-Permission package. This system allows you to control access to different parts
-                                of your application with granular precision.
-                            </p>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                <a href="https://spatie.be/docs/laravel-permission" target="_blank"
-                                    class="border-b-2 border-amber-500 dark:border-amber-400">Learn more about
-                                    Laravel-Permission</a>
-                            </p>
-                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Flash Message</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A versatile toast notification component for displaying feedback messages. Supports multiple
+                            message types,
+                            customizable duration, positioning, and automatic stacking. Built with accessibility in mind
+                            and seamlessly
+                            integrates with Laravel's session flash messages.
+                        </p>
 
-                        <!-- Key Concepts -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Key Concepts</h3>
 
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div
-                                    class="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
-                                    <h4 class="font-semibold text-amber-800 dark:text-amber-300 mb-2">Permissions</h4>
-                                    <p class="text-amber-700 dark:text-amber-400 text-sm">
-                                        Granular access controls that define what actions a user can perform. Examples:
-                                        <code>create-user</code>, <code>edit-post</code>, <code>delete-comment</code>.
-                                    </p>
-                                </div>
 
-                                <div
-                                    class="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
-                                    <h4 class="font-semibold text-amber-800 dark:text-amber-300 mb-2">Roles</h4>
-                                    <p class="text-amber-700 dark:text-amber-400 text-sm">
-                                        Collections of permissions that can be assigned to users. Examples:
-                                        <code>admin</code>, <code>editor</code>, <code>subscriber</code>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Implementation -->
-                        <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
-                            <div class="grid gap-8">
-                                <!-- Middleware Setup -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">1.</span> Role-Based Middleware
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Protect routes with role-based middleware:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(middlewareCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-php">{{ middlewareCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> The
-                                        <pre
-                                            class="inline bg-teal-50 dark:bg-teal-900/30 px-2 py-1 rounded text-teal-700 dark:text-teal-300 text-xs font-mono">App\Http\Middleware\RoleMiddleware</pre>
-                                        checks if the authenticated user has the specified role. If not, it returns a
-                                        403 Unauthorized response.</p>
-                                    </div>
-                                </div>
-
-                                <!-- Route Protection -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">2.</span> Protecting Routes
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Apply the middleware to your routes:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText('Route::middleware([\'role:admin\'])->group(function () {\n    Route::get(\'/admin/dashboard\', [AdminController::class, \'dashboard\']);\n    Route::resource(\'/admin/users\', UserController::class);\n});')">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-php">Route::middleware(['role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
-    Route::resource('/admin/users', UserController::class);
-});</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Only users with the 'admin' role can access
-                                            the admin dashboard and user management routes.</p>
-                                    </div>
-                                </div>
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Message Types</h4>
+                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Key</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Usage</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Style</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">Success</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">success</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Successful
+                                                operations and confirmations</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    Green with checkmark icon
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">Error</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">error</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Failed
+                                                operations and error states</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                                    Red with X icon
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">Warning</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">warning</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Important
+                                                notices and cautions</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                    Yellow with exclamation icon
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">Info</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">info</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">General
+                                                information and updates</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                    Blue with info icon
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- Security Middleware Section -->
-                <section id="middleware" class="space-y-6 scroll-mt-16">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Security Middleware</h2>
-                    </div>
-
+                    <!-- Modal Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa includes several middleware components that enhance security and user management.
-                                These middleware classes intercept HTTP requests before they reach your controllers,
-                                allowing you to implement security checks, enforce policies, and manage user sessions.
-                            </p>
-                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Modal</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A flexible modal dialog component built with Headless UI for accessibility and smooth
+                            transitions.
+                            Supports multiple sizes, custom headers, and footer actions.
+                        </p>
 
-                        <!-- Key Middleware Components -->
-                        <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Key Middleware
-                                Components</h3>
-
-                            <!-- Account Disabling Middleware -->
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">1.</span> Account Disabling
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Prevents disabled user accounts from accessing the application:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(accountDisablingCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <div class="space-y-4">
+                                    <button @click="demoIsOpen = true"
+                                        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                        Open Modal
                                     </button>
-                                    <pre><code class="language-php">{{ accountDisablingCode }}</code></pre>
-                                </div>
 
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">disable.account</code>
-                                        checks
-                                        if the authenticated user has been disabled. If so, it logs them out and
-                                        redirects to the login page with an error message.</p>
-                                </div>
-                            </div>
-
-                            <!-- Password Expiry Middleware -->
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">2.</span> Password Expiry
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Enforces password expiration policies:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(passwordExpiryCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre><code class="language-php">{{ passwordExpiryCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">password.expired</code>
-                                        checks
-                                        if the authenticated user's password has expired based on the system settings.
-                                        If expired, redirects to a password change page.</p>
+                                    <Modal :show="demoIsOpen" @close="demoIsOpen = false" size="md">
+                                        <template #title>Edit Profile</template>
+                                        <div class="p-6">
+                                            <p>Modal content goes here</p>
+                                        </div>
+                                        <template #footer>
+                                            <div class="flex justify-end space-x-3">
+                                                <button @click="demoIsOpen = false"
+                                                    class="px-4 py-2 text-gray-700 hover:text-gray-900">
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                                    Save Changes
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </Modal>
                                 </div>
                             </div>
 
-                            <!-- Force Password Change Middleware -->
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">3.</span> Force Password Change
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Forces users to change their password when required:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(forcePasswordCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre><code class="language-php">{{ forcePasswordCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">force.password.change</code>
-                                        checks if the user is flagged for a mandatory password change. If so, redirects
-                                        to the password change page.</p>
-                                </div>
+                            <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    @click="navigator.clipboard.writeText(modalCode)">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <pre><code class="language-vue">{{ modalCode }}</code></pre>
                             </div>
+                        </div>
 
-                            <!-- Two-Factor Authentication Middleware -->
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">4.</span> Two-Factor Authentication
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Enforces two-factor authentication requirements:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(twoFactorCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre><code class="language-php">{{ twoFactorCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The
-                                        <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">require.two.factor</code>
-                                        checks if two-factor
-                                        authentication is enabled in system settings. If so and the user hasn't
-                                        configured 2FA, redirects to the setup page.
-                                    </p>
-                                </div>
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">show</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Controls
+                                                modal visibility
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">size</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'md'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Modal size
+                                                (sm, md, lg, xl)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">closeable</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">true</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Allow closing
+                                                with escape key
+                                                and overlay click</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Backup System Section -->
-                <section id="backup-system" class="space-y-6 scroll-mt-16">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Backup System</h2>
-                    </div>
-
+                <!-- Utility Components Section -->
+                <section id="utility-components" class="space-y-6 scroll-mt-16">
+                    <!-- Switch Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa includes a powerful backup system built on <a
-                                    href="https://spatie.be/docs/laravel-backup" target="_blank"
-                                    class="border-b-2 border-emerald-500 dark:border-emerald-400">Spatie's Laravel
-                                    Backup package</a>. This system enables you to:
-                            </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>Automatically backup your database and files</li>
-                                <li>Schedule regular backups</li>
-                                <li>Store backups across multiple storage locations (local, S3, Dropbox, etc.)</li>
-                                <li>Monitor backup health</li>
-                                <li>Automatically manage and remove outdated backups</li>
-                            </ul>
-                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Switch</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A toggle switch component for boolean values with support for labels and disabled states.
+                            Built with accessibility in mind using Headless UI.
+                        </p>
 
-                        <!-- Backup UI Features -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Backup UI</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                The backup interface provides an intuitive way to manage your system backups directly
-                                from the admin panel, letting you create, download, and manage backups with ease.
-                            </p>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <Switch v-model="demoIsEnabled" label="Enable notifications" />
+                            </div>
 
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Backup
-                                        Dashboard</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        View backup history, disk usage statistics, and system health indicators at a
-                                        glance.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">One-Click
-                                        Backups</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        Create manual backups instantly with a single click, without needing command
-                                        line access.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Backup
-                                        Management</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        Download, delete, or restore backups through a user-friendly interface with
-                                        clear status indicators.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Health
-                                        Monitoring</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        Receive notifications about backup status and potential issues through the admin
-                                        dashboard.
-                                    </p>
-                                </div>
+                            <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    @click="navigator.clipboard.writeText(switchCode)">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <pre><code class="language-vue">{{ switchCode }}</code></pre>
                             </div>
                         </div>
-                    </div>
-                </section>
 
-                <!-- Data Tables Section -->
-                <section id="datatables" class="space-y-6 scroll-mt-16">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Data Tables</h2>
-                    </div>
-
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa includes a powerful data tables component built on top of <a
-                                    href="https://tanstack.com/table/v8" target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. These
-                                tables provide a rich interactive experience with features like:
-                            </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>Column sorting and filtering</li>
-                                <li>Pagination with server-side support</li>
-                                <li>Data export (CSV, Excel, PDF)</li>
-                                <li>Responsive design for all screen sizes</li>
-                                <li>Customizable columns and cell rendering</li>
-                                <li>Search functionality across multiple fields</li>
-                            </ul>
-                        </div>
-
-                        <!-- Implementation -->
-                        <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
-
-                            <div class="grid gap-8">
-                                <!-- Table Setup -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">1.</span> Table Configuration
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Set up your columns and table state:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(tableExampleCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-javascript">{{ tableExampleCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Creates a table configuration with two
-                                            columns (Name and Status) and sets up pagination state.</p>
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">2.</span> Adding Action Buttons
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Add action buttons to your table:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(actionButtonsCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-javascript">{{ actionButtonsCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Adds Edit and Delete action buttons to your
-                                            table. These buttons call the handleEdit and handleDelete functions when
-                                            clicked.</p>
-                                    </div>
-                                </div>
-
-                                <!-- Table Component -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">3.</span> Using the Datatable Component
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Implement the datatable in your template:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(templateExampleCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-vue">{{ templateExampleCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Renders the datatable component with your
-                                            configuration and binds the necessary props and events.</p>
-                                    </div>
-                                </div>
-
-                                <!-- Backend Integration -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">4.</span> Backend Integration
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Set up your backend controller to provide paginated data:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(backendCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre><code class="language-php">{{ backendCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> The controller returns paginated data to
-                                            your frontend, with eager-loaded relationships for better performance.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Activity Tracking Section -->
-                <section id="auditing" class="space-y-6 scroll-mt-16">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                            </svg>
-                        </div>
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Activity Tracking</h2>
-                    </div>
-
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Auditing content... -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Model Auditing</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa integrates <a href="https://github.com/owen-it/laravel-auditing" target="_blank"
-                                    class="border-b-2 border-purple-500 dark:border-purple-400">owen-it/laravel-auditing</a>
-                                package
-                                for comprehensive model auditing and activity tracking. While the core auditing
-                                functionality is
-                                handled by the package, Obomaa provides:
-                            </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>User-friendly interface to view audit logs</li>
-                                <li>Activity timeline visualization</li>
-                                <li>Filtering and search capabilities for audits</li>
-                                <li>User activity tracking dashboard</li>
-                            </ul>
-
-                            <div
-                                class="mt-6 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
-                                <p class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
-                                    <span class="flex-shrink-0 text-xl">💡</span>
-                                    <span><strong>Pro Tip:</strong> Implement the <code
-                                            class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">Auditable</code>
-                                        interface on critical models to track important changes automatically.</span>
-                                </p>
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">modelValue</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The switch
+                                                value</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">label</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">null</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Label text
+                                                for the switch
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">disabled</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Boolean</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">false</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether the
+                                                switch is
+                                                disabled</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -1004,18 +793,20 @@ const handleDelete = (user) => {
                     <div class="text-sm text-gray-500 dark:text-gray-400">Previous</div>
                     <div
                         class="font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                        Getting Started</div>
+                        Getting Started
+                    </div>
                 </div>
             </a>
 
             <!-- Next Page -->
-            <a href="/documentation/advanced-features"
+            <a href="/documentation/component-api"
                 class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
                 <div class="text-right">
                     <div class="text-sm text-gray-500 dark:text-gray-400">Next</div>
                     <div
                         class="font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                        Advanced Features</div>
+                        Component API
+                    </div>
                 </div>
                 <svg class="w-5 h-5 ml-3 text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
