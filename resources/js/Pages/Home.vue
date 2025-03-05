@@ -9,7 +9,7 @@
                     {{ greeting }}, {{ userName }}
                     <span role="img" aria-label="wave">👋</span>
                 </h1>
-                <time datetime="" class="text-sm text-gray-600 dark:text-gray-400 mt-2 font-mono">
+                <time datetime="" class="text-sm text-gray-600 dark:text-gray-400 mt-2 uppercase">
                     {{ formattedDate.display }}
                 </time>
             </header>
@@ -250,7 +250,6 @@
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import Default from '../Layouts/Default.vue'
-import { ChevronRightIcon } from '@heroicons/vue/24/outline'
 
 defineOptions({
     layout: Default
@@ -262,9 +261,9 @@ const userName = computed(() => page.props.auth.user?.name || 'User')
 const formattedDate = computed(() => {
     const date = new Date()
     const formatted = date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric'
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
     })
     const isoDate = date.toISOString().split('T')[0]
     return { display: formatted, iso: isoDate }

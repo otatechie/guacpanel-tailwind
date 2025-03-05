@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-gray-100 border-t border-gray-200 text-gray-500">
+    <footer class="bg-gray-100 border-t border-gray-200 text-gray-500 dark:border-t dark:border-gray-700 dark:bg-gray-800">
         <div class="mx-auto px-2 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-6">
@@ -26,7 +26,7 @@
                     </a>
                 </div>
                 <div class="text-xs">
-                    © {{ new Date().getFullYear() }} Ghana Maritime Authority. All rights reserved.
+                    © {{ new Date().getFullYear() }} . All rights reserved.
                 </div>
             </div>
         </div>

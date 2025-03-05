@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '../../Layouts/Auth.vue'
 import FormInput from '../../Components/FormInput.vue'
@@ -14,6 +14,8 @@ const form = useForm({
     password: '',
     password_confirmation: '',
 })
+
+const { settings: { passwordlessLogin = true } = {} } = usePage().props
 
 const submit = () => {
     form.post(route('register'))
@@ -49,25 +51,27 @@ const submit = () => {
                 {{ form.processing ? 'Creating account...' : 'Create account' }}
             </button>
 
-            <div class="relative flex items-center" role="separator" aria-label="or separator">
-                <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                <span
-                    class="absolute left-1/2 -translate-x-1/2 px-2 bg-white dark:bg-gray-800 text-gray-500 text-sm">OR</span>
-            </div>
+            <template v-if="passwordlessLogin">
+                <div class="relative flex items-center" role="separator" aria-label="or separator">
+                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                    <span
+                        class="absolute left-1/2 -translate-x-1/2 px-2 bg-white dark:bg-gray-800 text-gray-500 text-sm">OR</span>
+                </div>
 
-            <Link :href="route('magic.register.create')"
-                class="w-full flex items-center justify-center gap-2 btn-secondary dark:hover:bg-gray-800 dark:text-gray-200 dark:hover:text-purple-400 transition-colors cursor-pointer"
-                role="button" aria-label="Create account with magic link">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <span>Create account with magic link</span>
-            </Link>
-            <p class="text-xs text-center text-gray-500 dark:text-gray-400" role="note">
-                We'll send a secure login link to your email
-            </p>
+                <Link :href="route('magic.register.create')"
+                    class="w-full flex items-center justify-center gap-2 btn-secondary dark:hover:bg-gray-800 dark:text-gray-200 dark:hover:text-purple-400 transition-colors cursor-pointer"
+                    role="button" aria-label="Create account with magic link">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>Create account with magic link</span>
+                </Link>
+                <p class="text-xs text-center text-gray-500 dark:text-gray-400" role="note">
+                    We'll send a secure login link to your email
+                </p>
+            </template>
         </form>
 
         <p class="my-8 text-center text-sm text-gray-800 dark:text-white">

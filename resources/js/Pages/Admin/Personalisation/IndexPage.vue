@@ -3,11 +3,7 @@ import { Head, Link } from '@inertiajs/vue3'
 import Default from '../../../Layouts/Default.vue'
 import { computed } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
-import vueFilePond from 'vue-filepond'
-import 'filepond/dist/filepond.min.css'
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+import FilePondUploader from '@/Components/FilePondUploader.vue'
 import Switch from '@/Components/Switch.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
@@ -19,7 +15,6 @@ defineOptions({
 
 const page = usePage()
 const csrfToken = page.props.csrf_token
-const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview)
 
 const props = defineProps({
     personalisation: {
@@ -61,21 +56,6 @@ const uploadConfig = {
             .then(load)
     }
 }
-
-const fileUploadConfigs = computed(() => [
-    {
-        name: 'app_logo',
-        ref: 'logoPond',
-        labelIdle: 'Drop logo here...',
-        initialFiles: getInitialFiles('app_logo')
-    },
-    {
-        name: 'favicon',
-        ref: 'faviconPond',
-        labelIdle: 'Drop favicon here...',
-        initialFiles: getInitialFiles('favicon')
-    }
-])
 
 const getInitialFiles = (field) => {
     if (!props.personalisation?.[field]) return []
@@ -163,17 +143,29 @@ const submit = () => {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700"
                         role="group" aria-label="Media uploads">
-                        <div v-for="config in fileUploadConfigs" :key="config.name" class="space-y-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {{ config.name === 'app_logo' ? 'Application logo' : 'Favicon' }}
-                            </label>
-                            <file-pond :name="config.name" :ref="config.ref" :label-idle="config.labelIdle"
-                                :allow-multiple="false" accepted-file-types="image/jpeg, image/png"
-                                :server="uploadConfig"
-                                @processfile="(error, file) => handleProcessedFile(error, file, config.name)"
-                                @removefile="(error, file) => handleFileRemoved(error, file, config.name)"
-                                :files="config.initialFiles" :credits="false" class="bg-white rounded-lg" />
-                        </div>
+                        <!-- Application Logo Upload -->
+                        <FilePondUploader 
+                            name="app_logo"
+                            label="Application logo"
+                            label-idle="Drop logo here..."
+                            :accepted-file-types="['image/jpeg', 'image/png']"
+                            :server="uploadConfig"
+                            :files="getInitialFiles('app_logo')"
+                            @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
+                            @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')"
+                        />
+
+                        <!-- Favicon Upload -->
+                        <FilePondUploader 
+                            name="favicon"
+                            label="Favicon"
+                            label-idle="Drop favicon here..."
+                            :accepted-file-types="['image/jpeg', 'image/png']"
+                            :server="uploadConfig"
+                            :files="getInitialFiles('favicon')"
+                            @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
+                            @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')"
+                        />
                     </div>
                 </section>
 
@@ -214,8 +206,8 @@ const submit = () => {
                         <div class="p-6 flex items-center justify-between" role="group"
                             aria-labelledby="email-notifications">
                             <div>
-                                <h3 id="email-notifications"
-                                    class="font-medium text-gray-800 dark:text-gray-200">Email Notifications
+                                <h3 id="email-notifications" class="font-medium text-gray-800 dark:text-gray-200">Email
+                                    Notifications
                                 </h3>
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Receive important updates via
                                     email</p>
@@ -225,8 +217,8 @@ const submit = () => {
                         <div class="p-6 flex items-center justify-between" role="group"
                             aria-labelledby="push-notifications">
                             <div>
-                                <h3 id="push-notifications"
-                                    class="font-medium text-gray-800 dark:text-gray-200">Push Notifications</h3>
+                                <h3 id="push-notifications" class="font-medium text-gray-800 dark:text-gray-200">Push
+                                    Notifications</h3>
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Receive updates via browser
                                     notifications</p>
                             </div>

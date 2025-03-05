@@ -44,11 +44,11 @@ const features = {
 // Define navigation links based on the sections in your page
 const articleLinks = [
     { text: 'Introduction', href: '#introduction' },
-    { text: 'Quick Start', href: '#quick-start' },
-    { text: 'Prerequisites', href: '#prerequisites' },
-    { text: 'Features', href: '#features' },
-    { text: 'Core Stack', href: '#technologies' },
-    { text: 'Community', href: '#community' },
+    { text: 'Authentication', href: '#authentication' },
+    { text: 'Interface & Layout', href: '#interface' },
+    { text: 'Data Management', href: '#data-management' },
+    { text: 'Technologies & Packages', href: '#technologies' },
+    { text: 'Community & Support', href: '#community' },
     { text: 'Contributing', href: '#contributing' }
 ]
 

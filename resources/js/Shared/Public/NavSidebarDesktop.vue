@@ -65,7 +65,7 @@ const isActive = (href) => {
                         <li v-else>
                             <Link :href="item.href" :class="{
                                 'flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out': true,
-                                'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/50': isActive(item.href),
+                                'text-purple-600 dark:text-purple-400': isActive(item.href),
                                 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700/50': !isActive(item.href)
                             }">
                             <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200" :class="{

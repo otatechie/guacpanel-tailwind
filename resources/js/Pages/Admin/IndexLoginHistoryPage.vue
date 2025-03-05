@@ -99,33 +99,22 @@ watch(pagination, newPagination => {
 </script>
 
 <template>
+
     <Head title="Login History" />
 
     <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
         <section class="container-border overflow-hidden">
-            <PageHeader
-                id="page-title"
-                title="Login History"
-                description="View and monitor login history"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('home') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Login History' }
-                ]"
-            />
+            <PageHeader id="page-title" title="Login History" description="View and monitor login history" :breadcrumbs="[
+                { label: 'Dashboard', href: route('home') },
+                { label: 'Settings', href: route('admin.setting.index') },
+                { label: 'Login History' }
+            ]" />
 
             <section class="p-6 dark:bg-gray-900">
-                <Datatable
-                    :data="loginHistory.data"
-                    :columns="columns"
-                    :loading="loading"
-                    :pagination="pagination"
+                <Datatable :data="loginHistory.data" :columns="columns" :loading="loading" :pagination="pagination"
                     :search-fields="['username', 'user_agent', 'login_at']"
-                    empty-message="No login history records found"
-                    empty-description="Login history will appear here"
-                    export-file-name="login_history"
-                    @update:pagination="pagination = $event"
-                >
+                    empty-message="No login history records found" empty-description="Login history will appear here"
+                    export-file-name="login_history" @update:pagination="pagination = $event">
                     <template #loading>
                         <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
                             Loading login history...

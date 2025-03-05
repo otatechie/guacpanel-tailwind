@@ -151,7 +151,7 @@ const toggleDropdown = (item) => {
         <footer class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div class="flex items-center gap-2.5 ml-2">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin Panel</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Obomaa Panel</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">v2.0.0</p>
                 </div>
             </div>
