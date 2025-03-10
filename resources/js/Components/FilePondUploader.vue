@@ -1,5 +1,4 @@
 <script setup>
-import { computed } from 'vue'
 import vueFilePond from 'vue-filepond'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
@@ -8,7 +7,6 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
 import FilePondPluginPdfPreview from 'filepond-plugin-pdf-preview'
 
-// Initialize FilePond with all plugins
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
@@ -31,19 +29,19 @@ const props = defineProps({
     },
     acceptedFileTypes: {
         type: Array,
-        default: () => ['image/jpeg', 'image/png', 'application/pdf']
+        default: () => ['image/jpeg', 'image/png']
     },
     maxFileSize: {
         type: String,
         default: '5MB'
     },
-    maxFiles: {
-        type: Number,
-        default: 1
-    },
     allowMultiple: {
         type: Boolean,
         default: false
+    },
+    maxFiles: {
+        type: Number,
+        default: 1
     },
     server: {
         type: Object,
@@ -66,9 +64,25 @@ const emit = defineEmits(['processfile', 'removefile'])
     <div class="space-y-2">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
             {{ label }}
+            <span class="text-xs text-gray-500 ml-2">
+                ({{ acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ') }}
+                <template v-if="allowMultiple"> - Max files: {{ maxFiles }}</template>)
+            </span>
         </label>
-        <file-pond :name="name" :label-idle="labelIdle" :allow-multiple="false" :accepted-file-types="acceptedFileTypes"
-            :max-file-size="maxFileSize" :server="server" @processfile="$emit('processfile', $event)"
-            @removefile="$emit('removefile', $event)" :files="files" :credits="false" class="bg-white rounded-lg" />
+        
+        <file-pond 
+            :name="name" 
+            :label-idle="labelIdle" 
+            :allow-multiple="allowMultiple"
+            :max-files="maxFiles"
+            :accepted-file-types="acceptedFileTypes"
+            :max-file-size="maxFileSize"
+            :server="server"
+            :files="files" 
+            :credits="false" 
+            class="bg-white dark:bg-gray-800 rounded-lg" 
+            @processfile="$emit('processfile', $event)"
+            @removefile="$emit('removefile', $event)"
+        />
     </div>
 </template>

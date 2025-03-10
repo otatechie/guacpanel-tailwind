@@ -69,7 +69,7 @@ const submitPasswordForm = () => {
                             Information</h2>
                     </header>
 
-                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                         <fieldset class="w-full md:w-2/3 space-y-6">
                             <legend class="sr-only">Personal Information</legend>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,7 +108,7 @@ const submitPasswordForm = () => {
             ]" />
 
             <form @submit.prevent="submitPasswordForm" class="divide-y divide-gray-200 dark:divide-gray-600">
-                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="change-password">
+                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="change-password" id="password-section">
                     <header class="flex items-center gap-3">
                         <span class="p-2 bg-purple-50 dark:bg-purple-900 rounded-lg">
                             <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
@@ -117,11 +117,11 @@ const submitPasswordForm = () => {
                                     d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                             </svg>
                         </span>
-                        <h2 id="change-password" class="text-lg font-medium text-gray-800 dark:text-gray-200">Change
+                        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-200">Change
                             Password</h2>
                     </header>
 
-                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                         <fieldset class="w-full md:w-2/3 space-y-6">
                             <legend class="sr-only">Password Change Form</legend>
                             <FormInput v-model="passwordForm.current_password" label="Current password" type="password"

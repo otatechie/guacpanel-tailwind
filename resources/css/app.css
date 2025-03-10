@@ -14,6 +14,10 @@ input:focus {
     outline: none !important;
 }
 
+.filepond--drop-label {
+    font-family: var(--font-sans);
+}
+
 /* Utility Classes */
 .main-heading,
 .sub-heading {

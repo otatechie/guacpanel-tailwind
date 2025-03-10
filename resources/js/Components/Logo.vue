@@ -14,7 +14,7 @@ const appName = computed(() => {
 <template>
     <header class="flex justify-center">
         <figure v-if="logoUrl" class="flex justify-center">
-            <img class="h-24 w-auto object-contain"
+            <img class="h-10 my-2 w-auto object-contain"
                 :src="logoUrl"
                 :alt="`${appName} logo`" />
         </figure>
@@ -23,3 +23,4 @@ const appName = computed(() => {
         </h1>
     </header>
 </template>
+ 

@@ -13,6 +13,8 @@ const props = defineProps({
 
 const showAddModal = ref(false)
 const editingPermission = ref(null)
+const showDeleteModal = ref(false)
+const permissionToDelete = ref(null)
 
 const form = useForm({
     name: '',
@@ -21,7 +23,9 @@ const form = useForm({
 
 const closeModal = () => {
     showAddModal.value = false
+    showDeleteModal.value = false
     editingPermission.value = null
+    permissionToDelete.value = null
     form.reset()
 }
 
@@ -44,10 +48,15 @@ const submitPermission = () => {
     }
 }
 
-const deletePermission = (id) => {
-    if (confirm('Are you sure you want to delete this permission?')) {
-        form.delete(route('admin.permission.destroy', id))
-    }
+const confirmDeletePermission = (permission) => {
+    permissionToDelete.value = permission
+    showDeleteModal.value = true
+}
+
+const deletePermission = () => {
+    form.delete(route('admin.permission.destroy', permissionToDelete.value.id), {
+        onSuccess: () => closeModal()
+    })
 }
 </script>
 
@@ -117,7 +126,7 @@ const deletePermission = (id) => {
                         <menu class="flex justify-end gap-2">
                             <li>
                                 <button type="button" @click="editPermission(permission)"
-                                    class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                    class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
                                     title="Edit permission">
                                     <span class="sr-only">Edit permission</span>
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -128,8 +137,8 @@ const deletePermission = (id) => {
                                 </button>
                             </li>
                             <li>
-                                <button type="button" @click="deletePermission(permission.id)"
-                                    class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                <button type="button" @click="confirmDeletePermission(permission)"
+                                    class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
                                     title="Delete permission">
                                     <span class="sr-only">Delete permission</span>
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -181,6 +190,55 @@ const deletePermission = (id) => {
                     </svg>
                     {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
                 </button>
+            </template>
+        </Modal>
+
+        <Modal :show="showDeleteModal" @close="closeModal" size="md">
+            <template #title>
+                <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Delete Permission
+                </div>
+            </template>
+
+            <template #default>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete this permission? This action cannot be undone.
+                    </p>
+                    <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                        <div class="flex gap-2">
+                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-sm text-amber-700 dark:text-amber-300">
+                                Deleting this permission will remove it from all roles that currently use it.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="flex justify-end gap-3">
+                    <button @click="closeModal"
+                        type="button"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
+                        :disabled="form.processing">
+                        Cancel
+                    </button>
+                    <button @click="deletePermission"
+                        type="button"
+                        class="btn-danger"
+                        :disabled="form.processing">
+                        {{ form.processing ? 'Deleting...' : 'Yes, delete permission' }}
+                    </button>
+                </div>
             </template>
         </Modal>
     </section>

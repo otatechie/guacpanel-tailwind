@@ -23,8 +23,8 @@ class AdminPersonalisationController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'app_logo' => ['required_without:favicon', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'favicon' => ['required_without:app_logo', 'file', 'mimes:ico,png', 'max:1024'],
+            'app_logo' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'favicon' => ['nullable', 'file', 'mimes:ico,png', 'max:1024'],
         ]);
 
         if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
@@ -64,8 +64,6 @@ class AdminPersonalisationController extends Controller
             'timezone' => ['required', 'string', 'in:' . implode(',', timezone_identifiers_list())],
             'footer_text' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\s\.,\'"\-&]+$/'],
             'copyright_text' => ['nullable', 'string', 'max:50'],
-            'email_notifications' => ['required', 'boolean'],
-            'push_notifications' => ['required', 'boolean'],
         ]);
 
         $personalisation = Personalisation::firstOrCreate([

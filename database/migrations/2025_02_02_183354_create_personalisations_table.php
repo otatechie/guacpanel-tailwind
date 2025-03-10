@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('favicon')->nullable();
             $table->string('footer_text')->nullable();
             $table->string('copyright_text')->nullable();
-            $table->boolean('email_notifications')->default(0);
-            $table->boolean('push_notifications')->default(0);
             $table->string('timezone')->nullable();
             $table->timestamps();
         });
