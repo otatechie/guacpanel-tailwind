@@ -21,91 +21,122 @@ use App\Http\Controllers\AdminPersonalisationController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 
-
-
 // Authenticated Routes
 Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->group(function () {
     // Home Route
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    // Force Password Change Route
-    Route::get('user/change-password', [ForcePasswordChangeController::class, 'edit'])
-        ->name('user.force.password.change')->withoutMiddleware('force.password.change');
-    Route::post('user/change-password', [ForcePasswordChangeController::class, 'update'])
-        ->name('user.force.password.change.update')->withoutMiddleware('force.password.change');
+    // User Account Management Routes
+    Route::prefix('user')->name('user.')->group(function () {
+        // Force Password Change Routes
+        Route::controller(ForcePasswordChangeController::class)->group(function () {
+            Route::get('password/change', 'edit')
+                ->name('password.change')
+                ->withoutMiddleware('force.password.change');
+            Route::post('password/change', 'update')
+                ->name('password.change.update')
+                ->withoutMiddleware('force.password.change');
+        });
 
-    // 2FA Setup Route
-    Route::get('user/two-factor-authentication', [UserAccountController::class, 'twoFactorAuthentication'])
-        ->name('user.two.factor');
+        // 2FA Routes
+        Route::get('two-factor-authentication', [UserAccountController::class, 'indexTwoFactorAuthentication'])
+            ->name('two.factor');
 
-    // Password Expired Routes
-    Route::get('user/password-expired', [UserAccountController::class, 'indexPasswordExpired'])
-        ->name('user.password.expired');
-    Route::post('user/password-expired', [UserAccountController::class, 'updateExpiredPassword'])
-        ->name('user.password.expired.update');
+        // Password Expired Routes
+        Route::controller(UserAccountController::class)->group(function () {
+            Route::get('password-expired', 'indexPasswordExpired')->name('password.expired');
+            Route::post('password-expired', 'updateExpiredPassword')->name('password.expired.update');
+        });
+    });
 
     // Logout Route
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
     // Protected Routes requiring 2FA
-    Route::middleware(['require.two.factor'])->group(function () {
-        Route::middleware(['password.expired'])->group(function () {
-            // User Account Routes
-            Route::prefix('user')->name('user.')->group(function () {
-                Route::get('account', [UserAccountController::class, 'index'])->name('index');
-            });
-
-            // Admin Routes
-            Route::prefix('admin')->name('admin.')->group(function () {
-                Route::get('setting', [AdminSettingController::class, 'index'])->name('setting.index');
-                Route::get('setting/manage', [AdminSettingController::class, 'manageSettings'])->name('setting.manage');
-                Route::post('setting/update', [AdminSettingController::class, 'updateSettings'])->name('setting.update');
-                Route::get('audits', [AdminAuditController::class, 'index'])->name('audit');
-                Route::get('login-history', [AdminLoginHistoryController::class, 'index'])->name('login.history');
-                Route::get('users', [AdminUserController::class, 'index'])->name('user');
-                Route::get('users/{id}', [AdminUserController::class, 'edit'])->name('user.edit');
-                Route::post('/admin/users/{id}', [AdminUserController::class, 'update'])->name('user.update');
-                Route::get('permissions-roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role');
-                Route::resource('role', AdminRoleController::class)->except('show');
-                Route::resource('permission', AdminPermissionController::class)->except('show');
-            });
-
-            // Personalisation Routes
-            Route::prefix('admin')->name('admin.')->group(function () {
-                Route::get('personalisation', [AdminPersonalisationController::class, 'index'])->name('personalisation.index');
-                Route::post('personalisation/update', [AdminPersonalisationController::class, 'update'])->name('personalisation.update');
-                Route::post('upload', [AdminPersonalisationController::class, 'upload'])->name('upload.store');
-            });
-
-            // Backup Routes
-            Route::controller(AdminBackupController::class)
-                ->prefix('backup')
-                ->name('backup.')
-                ->group(function () {
-                    Route::get('/', 'index')->name('index');
-                    Route::post('/run', 'runBackup')->name('run');
-                    Route::get('/download/{path}', 'downloadBackup')->where('path', '.*')->name('download');
-                    Route::delete('/delete/{path}', 'deleteBackup')->where('path', '.*')->name('delete');
-                });
-
-            Route::get('health', HealthCheckResultsController::class)->name('health');
+    Route::middleware(['require.two.factor', 'password.expired'])->group(function () {
+        // User Account Routes
+        Route::prefix('user')->name('user.')->group(function () {
+            Route::get('user/account', [UserAccountController::class, 'index'])->name('index');
         });
+
+        // Admin Routes
+        Route::prefix('admin')->name('admin.')->group(function () {
+            // Settings Routes
+            Route::prefix('settings')->name('setting.')->group(function () {
+                Route::controller(AdminSettingController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/show', 'show')->name('show');
+                    Route::post('/update', 'update')->name('update');
+                });
+            });
+
+            // User Management Routes
+            Route::prefix('users')->name('user.')->group(function () {
+                Route::controller(AdminUserController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/', 'store')->name('store');
+                    Route::get('/{id}', 'edit')->name('edit');
+                    Route::put('/{id}', 'update')->name('update');
+                    Route::delete('/{id}', 'destroy')->name('destroy');
+                });
+            });
+
+            // Audit & History Routes
+            Route::get('audits', [AdminAuditController::class, 'index'])->name('audit.index');
+            Route::get('login/history', [AdminLoginHistoryController::class, 'index'])->name('login.history.index');
+
+            // Permissions & Roles Routes
+            Route::get('permissions/roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role.index');
+            Route::resource('roles', AdminRoleController::class)->except('show')->names('role.index');
+            Route::resource('permissions', AdminPermissionController::class)->except('show')->names('permission.index');
+
+            // Personalization Routes
+            Route::prefix('personalization')->name('personalization.')->group(function () {
+                Route::controller(AdminPersonalisationController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/', 'store')->name('store');
+                    Route::put('/update', 'update')->name('update');
+                    Route::delete('/{id}', 'destroy')->name('destroy');
+                    Route::post('/upload', 'upload')->name('upload');
+                });
+            });
+        });
+
+        // Backup Routes
+        Route::prefix('backup')->name('backup.')->group(function () {
+            Route::controller(AdminBackupController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'createBackup')->name('create');
+                Route::get('/download/{path}', 'download')->name('download');
+                Route::delete('/{path}', 'destroy')->name('destroy');
+            });
+        });
+
+        // Health Check Route
+        Route::get('health', HealthCheckResultsController::class)->name('health');
     });
 });
 
-
-// Documentation Route
-Route::get('/documentation', [DocumentationController::class, 'index'])->name('documentation');
-Route::get('/documentation/intro', [DocumentationController::class, 'intro'])->name('documentation.intro');
-Route::get('/documentation/features', [DocumentationController::class, 'features'])->name('documentation.features');
-Route::get('/documentation/components', [DocumentationController::class, 'components'])->name('documentation.components');
+// Documentation Routes
+Route::prefix('documentation')->name('documentation.')->group(function () {
+    Route::controller(DocumentationController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/installation', 'installation')->name('installation');
+        Route::get('/features', 'features')->name('features');
+        Route::get('/components', 'components')->name('components');
+    });
+});
 
 // Magic Link Authentication Routes
 Route::middleware(['guest', 'web'])->group(function () {
-    Route::controller(MagicLinkController::class)->group(function () {
-        Route::get('/magic-link/register', 'create')->name('magic.register.create');
-        Route::post('/register/magic-link', 'register')->name('magic.register');
-        Route::post('/login/magic-link', 'login')->name('magic.login.request');
-        Route::get('/magic-link/{token}', 'authenticate')->name('magic.login');
+    Route::prefix('magic-link')->name('magic.')->group(function () {
+        Route::controller(MagicLinkController::class)->group(function () {
+            Route::get('/register', 'create')->name('register.create');
+            Route::post('/register', 'store')->name('register.store');
+            Route::post('/login', 'login')->name('login.request');
+            Route::get('/{token}', 'authenticate')->name('login.authenticate');
+        });
     });
 });

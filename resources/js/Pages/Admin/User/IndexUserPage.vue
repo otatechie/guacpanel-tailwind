@@ -2,6 +2,7 @@
 import { Head, router, Link } from '@inertiajs/vue3'
 import DataTable from '@/Components/Datatable.vue'
 import Default from '@/Layouts/Default.vue'
+import Modal from '@/Components/Modal.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
 import PageHeader from '@/Components/PageHeader.vue'
@@ -24,6 +25,28 @@ const pagination = ref({
     per_page: Number(props.users.per_page),
     total: props.users.total
 })
+
+const showDeleteModal = ref(false)
+const userToDelete = ref(null)
+
+const closeModal = () => {
+    showDeleteModal.value = false
+    userToDelete.value = null
+}
+
+const confirmDeleteUser = (user) => {
+    userToDelete.value = user
+    showDeleteModal.value = true
+}
+
+const deleteUser = () => {
+    router.delete(route('admin.user.destroy', { id: userToDelete.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showDeleteModal.value = false
+        }
+    })
+}
 
 const columns = [
     columnHelper.accessor('name', {
@@ -100,7 +123,7 @@ const columns = [
             ]),
             h('button', {
                 class: 'p-2 text-gray-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50',
-                onClick: () => handleDelete(info.row.original),
+                onClick: () => confirmDeleteUser(info.row.original),
                 title: 'Delete user'
             }, [
                 h('span', { class: 'sr-only' }, 'Delete user'),
@@ -124,12 +147,6 @@ const columns = [
 
 const handleEdit = (user) => {
     router.visit(route('admin.user.edit', { id: user.id }))
-}
-
-const handleDelete = (user) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-        router.delete(route('admin.user.destroy', { id: user.id }))
-    }
 }
 
 watch(pagination, newPagination => {
@@ -179,4 +196,66 @@ watch(pagination, newPagination => {
             </div>
         </section>
     </main>
+
+    <!-- Add Delete Confirmation Modal -->
+    <Modal :show="showDeleteModal" @close="closeModal" size="md">
+        <template #title>
+            <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Delete User
+            </div>
+        </template>
+
+        <template #default>
+            <div class="space-y-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Are you sure you want to delete this user? This action cannot be undone.
+                </p>
+                <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <div class="flex gap-2">
+                        <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-amber-700 dark:text-amber-300">
+                            This will permanently delete the user's account and all associated data.
+                        </p>
+                    </div>
+                </div>
+                <div v-if="userToDelete" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">User details:</h4>
+                    <dl class="space-y-1">
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.name }}</dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.email }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </template>
+
+        <template #footer>
+            <div class="flex justify-end gap-3">
+                <button @click="closeModal"
+                    type="button"
+                    class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
+                    Cancel
+                </button>
+                <button @click="deleteUser"
+                    type="button"
+                    class="btn-danger"
+                    :disabled="false">
+                    Yes, delete user
+                </button>
+            </div>
+        </template>
+    </Modal>
 </template>

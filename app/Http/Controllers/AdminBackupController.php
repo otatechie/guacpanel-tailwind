@@ -24,7 +24,7 @@ class AdminBackupController extends Controller
     }
 
 
-    public function runBackup()
+    public function createBackup()
     {
         $exitCode = Artisan::call('backup:run', ['--quiet' => true]);
 
@@ -38,7 +38,7 @@ class AdminBackupController extends Controller
     }
 
 
-    public function getBackupInfo()
+    public function fetchBackupInfo()
     {
         $disk = $this->getDisk();
         $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
@@ -72,7 +72,7 @@ class AdminBackupController extends Controller
     }
 
 
-    public function downloadBackup(string $path)
+    public function download(string $path)
     {
         $disk = $this->getDisk();
         $backupPath = $path;
@@ -86,7 +86,7 @@ class AdminBackupController extends Controller
     }
 
 
-    public function deleteBackup(string $path)
+    public function delete(string $path)
     {
         $disk = $this->getDisk();
         $backupPath = $path;

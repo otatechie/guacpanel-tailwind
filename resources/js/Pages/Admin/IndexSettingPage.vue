@@ -21,7 +21,7 @@ defineOptions({
 
             <div class="p-6 bg-gray-50 dark:bg-gray-700">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <Link :href="route('admin.audit')"
+                    <Link :href="route('admin.audit.index')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden"
                         aria-label="System Activity Settings">
                     <div
@@ -42,7 +42,7 @@ defineOptions({
                         administrative changes in real-time.</p>
                     </Link>
 
-                    <Link :href="route('admin.personalisation.index')"
+                    <Link :href="route('admin.personalization.index')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden"
                         aria-label="Theme Settings">
                     <div
@@ -63,7 +63,7 @@ defineOptions({
                         and visual preferences.</p>
                     </Link>
 
-                    <Link :href="route('admin.user')"
+                    <Link :href="route('admin.user.index')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                     <div
                         class="absolute top-0 left-0 h-1 w-full bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -103,7 +103,7 @@ defineOptions({
                         system data.</p>
                     </Link>
 
-                    <Link :href="route('admin.permission.role')"
+                    <Link :href="route('admin.permission.role.index')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                     <div
                         class="absolute top-0 left-0 h-1 w-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -123,7 +123,7 @@ defineOptions({
                         access levels.</p>
                     </Link>
 
-                    <Link :href="route('admin.login.history')"
+                    <Link :href="route('admin.login.history.index')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                     <div
                         class="absolute top-0 left-0 h-1 w-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -143,7 +143,7 @@ defineOptions({
                         authentication activities.</p>
                     </Link>
 
-                    <Link :href="route('admin.setting.manage')"
+                    <Link :href="route('admin.setting.show')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                     <div
                         class="absolute top-0 left-0 h-1 w-full bg-orange-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -163,7 +163,7 @@ defineOptions({
                         protection measures.</p>
                     </Link>
 
-                    <Link :href="route('admin.setting.manage')"
+                    <Link :href="route('admin.setting.show')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                     <div
                         class="absolute top-0 left-0 h-1 w-full bg-teal-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -182,7 +182,7 @@ defineOptions({
                     <p class="text-sm text-gray-600 dark:text-gray-400">Monitor scheduled tasks in a Laravel app</p>
                     </Link>
 
-                    <a href="/health" target="_blank"
+                    <Link :href="route('health')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                         <div
                             class="absolute top-0 left-0 h-1 w-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -200,7 +200,7 @@ defineOptions({
                         </div>
                         <p class="text-sm text-gray-600 dark:text-gray-400">Monitor application performance, services,
                             and system diagnostics.</p>
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>

@@ -15,7 +15,7 @@ class AdminSettingController extends Controller
     }
 
 
-    public function manageSettings()
+    public function show()
     {
         $settings = Setting::first();
 
@@ -25,7 +25,7 @@ class AdminSettingController extends Controller
     }
 
 
-    public function updateSettings(Request $request)
+    public function update(Request $request)
     {
         $validatedData = $request->validate([
             'password_expiry' => ['boolean'],

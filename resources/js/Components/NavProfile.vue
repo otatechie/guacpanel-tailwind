@@ -164,7 +164,7 @@ const closeMenu = () => {
             </li>
 
             <li>
-                <Link :href="route('documentation')" target="_blank" @click="closeMenu"
+                <Link :href="route('documentation.index')" target="_blank" @click="closeMenu"
                     class="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <svg class="mr-3 h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">

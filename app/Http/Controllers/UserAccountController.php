@@ -25,7 +25,7 @@ class UserAccountController extends Controller
     }
 
 
-    public function twoFactorAuthentication()
+    public function indexTwoFactorAuthentication()
     {
         $user = $this->getAuthUser();
 
@@ -41,7 +41,7 @@ class UserAccountController extends Controller
 
     public function indexPasswordExpired()
     {
-        $user = auth()->user();
+        $user = $this->getAuthUser();
 
         if (!$user->isPasswordExpired()) {
             return redirect()->route('home');

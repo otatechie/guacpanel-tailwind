@@ -17,7 +17,9 @@ class MagicLinkController extends Controller
 {
     protected function checkPasswordlessEnabled()
     {
-        $passwordlessEnabled = DB::table('settings')->value('passwordless_login') ?? true;
+        $passwordlessEnabled = Cache::rememberForever('passwordless_login', function () {
+            return DB::table('settings')->value('passwordless_login') ?? true;
+        });
 
         if (!$passwordlessEnabled) {
             abort(404);
@@ -32,7 +34,7 @@ class MagicLinkController extends Controller
     }
 
 
-    public function register(Request $request)
+    public function store(Request $request)
     {
         $this->checkPasswordlessEnabled();
 
@@ -83,10 +85,13 @@ class MagicLinkController extends Controller
     {
         $this->checkPasswordlessEnabled();
 
+        $token = Str::random(40);
+        Cache::put("magic_link:{$user->id}", $token, now()->addMinutes(10));
+
         $url = URL::temporarySignedRoute(
             'magic.login',
             now()->addMinutes(10),
-            ['token' => $user->id]
+            ['token' => $token]
         );
 
         Mail::to($user)->send(new MagicLoginLink($url));
@@ -102,7 +107,8 @@ class MagicLinkController extends Controller
                 ->with('error', 'This magic link has expired. Please request a new one.');
         }
 
-        $user = User::findOrFail($request->token);
+        $user = User::where('id', Cache::get("magic_link:{$request->token}"))->firstOrFail();
+
         auth()->guard('web')->login($user);
         $request->session()->regenerate();
 

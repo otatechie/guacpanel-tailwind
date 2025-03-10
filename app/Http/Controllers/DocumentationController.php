@@ -13,7 +13,7 @@ class DocumentationController extends Controller
     }
 
 
-    public function intro()
+    public function installation()
     {
         return Inertia::render('Documentation/IndexInstallPage');
     }
