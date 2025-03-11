@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: 'FloatingLabelInput',
+    name: 'FormInput', // Changed from FloatingLabelInput to match the import name
     props: {
         modelValue: {
             type: [String, Number],
@@ -25,11 +25,20 @@ export default {
         error: {
             type: String,
             default: ''
+        },
+        placeholder: {
+            type: String,
+            default: null
         }
     },
     data() {
         return {
             showPassword: false
+        }
+    },
+    computed: {
+        inputPlaceholder() {
+            return this.placeholder || this.label
         }
     },
     emits: ['update:modelValue']
@@ -46,7 +55,7 @@ export default {
                     error
                         ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:shadow focus:shadow-red-300/50 dark:focus:ring-red-900'
                         : 'border-gray-300 dark:border-gray-600 focus:border-purple-400 focus:ring-1 focus:ring-purple-500 focus:shadow focus:shadow-purple-300/50 dark:focus:ring-purple-500'
-                ]" :placeholder="label" :aria-invalid="!!error"
+                ]" :placeholder="inputPlaceholder" :aria-invalid="!!error"
                 :aria-describedby="error ? `${id}-error` : undefined" />
             <span
                 class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white dark:bg-gray-800 px-1 text-xs text-gray-700 dark:text-gray-400 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">

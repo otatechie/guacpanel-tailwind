@@ -23,8 +23,8 @@ class AdminPersonalisationController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'app_logo' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'favicon' => ['nullable', 'file', 'mimes:ico,png', 'max:1024'],
+            'app_logo' => ['nullable'],
+            'favicon' => ['nullable'],
         ]);
 
         if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
@@ -58,21 +58,21 @@ class AdminPersonalisationController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'app_logo' => ['nullable', 'string', 'regex:/^personalisation\/[a-zA-Z0-9_\-\.]+$/'],
+            'app_logo' => ['nullable', 'string'],
             'app_name' => ['nullable', 'string', 'max:100'],
-            'favicon' => ['nullable', 'string', 'regex:/^personalisation\/[a-zA-Z0-9_\-\.]+$/'],
+            'favicon' => ['nullable', 'string'],
             'timezone' => ['required', 'string', 'in:' . implode(',', timezone_identifiers_list())],
             'footer_text' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\s\.,\'"\-&]+$/'],
             'copyright_text' => ['nullable', 'string', 'max:50'],
         ]);
 
-        $personalisation = Personalisation::firstOrCreate([
-            'timezone' => config('app.timezone')
-        ]);
+        $personalisation = Personalisation::firstOrCreate();
 
+        // Only delete files if they're being removed
         foreach (['app_logo', 'favicon'] as $field) {
             if (isset($validated[$field]) && $validated[$field] === null && $personalisation->$field) {
                 Storage::disk('public')->delete($personalisation->$field);
+                $validated[$field] = null; // Ensure null is saved for removed files
             }
         }
 

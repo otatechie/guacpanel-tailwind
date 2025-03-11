@@ -95,11 +95,8 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
             Route::prefix('personalization')->name('personalization.')->group(function () {
                 Route::controller(AdminPersonalisationController::class)->group(function () {
                     Route::get('/', 'index')->name('index');
-                    Route::get('/create', 'create')->name('create');
-                    Route::post('/', 'store')->name('store');
-                    Route::put('/update', 'update')->name('update');
-                    Route::delete('/{id}', 'destroy')->name('destroy');
                     Route::post('/upload', 'upload')->name('upload');
+                    Route::post('/update', 'update')->name('update');
                 });
             });
         });

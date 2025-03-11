@@ -224,19 +224,19 @@ const formSelectCode = ref(`<FormSelect
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
                                 <FormInput v-model="demoEmail" label="Email Address" id="demo-email" type="email"
                                     required error="Please enter a valid email address" />
-                            </div>
+                        </div>
 
                             <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                     @click="navigator.clipboard.writeText(formInputCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
                                 <pre><code class="language-vue">{{ formInputCode }}</code></pre>
-                            </div>
-                        </div>
+                                    </div>
+                                </div>
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Error Handling</h4>
@@ -256,10 +256,10 @@ const formSelectCode = ref(`<FormSelect
                                     <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Example with
                                         Laravel Validation</h5>
                                     <pre><code class="language-php">{{ validationCode }}</code></pre>
-                                </div>
-
                             </div>
+
                         </div>
+                    </div>
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
@@ -379,10 +379,10 @@ const formSelectCode = ref(`<FormSelect
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
                         </div>
+                                </div>
 
-                    </div>
+                        </div>
 
                     <!-- Form Checkbox -->
                     <div
@@ -398,20 +398,20 @@ const formSelectCode = ref(`<FormSelect
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
                                 <FormCheckbox v-model="demoIsChecked" label="I agree to the terms and conditions"
                                     name="terms" id="terms" />
-                            </div>
+                                    </div>
 
                             <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                     @click="navigator.clipboard.writeText(formCheckboxCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
                                 <pre><code class="language-vue">{{ formCheckboxCode }}</code></pre>
-                            </div>
-                        </div>
-                    </div>
+                                    </div>
+                                    </div>
+                                </div>
 
                     <!-- Form Select -->
                     <div
@@ -427,19 +427,19 @@ const formSelectCode = ref(`<FormSelect
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
                                 <FormSelect v-model="demoSelectedCountry" label="Country" id="demo-country"
                                     :options="demoCountries" option-label="name" option-value="code" required />
-                            </div>
+                                </div>
 
                             <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                     @click="navigator.clipboard.writeText(formSelectCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
                                 <pre><code class="language-vue">{{ formSelectCode }}</code></pre>
+                                </div>
                             </div>
-                        </div>
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
@@ -493,8 +493,8 @@ const formSelectCode = ref(`<FormSelect
                                         </tr>
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
-                        </div>
 
                     </div>
                 </section>
@@ -587,9 +587,9 @@ const formSelectCode = ref(`<FormSelect
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
+                                </div>
+                                </div>
+                                </div>
 
                     <!-- Modal Component -->
                     <div
@@ -608,40 +608,40 @@ const formSelectCode = ref(`<FormSelect
                                     <button @click="demoIsOpen = true"
                                         class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                                         Open Modal
-                                    </button>
+                                        </button>
 
                                     <Modal :show="demoIsOpen" @close="demoIsOpen = false" size="md">
                                         <template #title>Edit Profile</template>
                                         <div class="p-6">
                                             <p>Modal content goes here</p>
-                                        </div>
+                                    </div>
                                         <template #footer>
                                             <div class="flex justify-end space-x-3">
                                                 <button @click="demoIsOpen = false"
                                                     class="px-4 py-2 text-gray-700 hover:text-gray-900">
                                                     Cancel
-                                                </button>
+                                        </button>
                                                 <button
                                                     class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                                                     Save Changes
                                                 </button>
-                                            </div>
+                                    </div>
                                         </template>
                                     </Modal>
+                                    </div>
                                 </div>
-                            </div>
 
                             <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                     @click="navigator.clipboard.writeText(modalCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
                                 <pre><code class="language-vue">{{ modalCode }}</code></pre>
                             </div>
-                        </div>
+                                    </div>
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
@@ -691,8 +691,8 @@ const formSelectCode = ref(`<FormSelect
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
+                                    </div>
+                                </div>
                     </div>
                 </section>
 
@@ -714,16 +714,16 @@ const formSelectCode = ref(`<FormSelect
                             </div>
 
                             <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                     @click="navigator.clipboard.writeText(switchCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
                                 <pre><code class="language-vue">{{ switchCode }}</code></pre>
-                            </div>
-                        </div>
+                                    </div>
+                                    </div>
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
@@ -772,7 +772,7 @@ const formSelectCode = ref(`<FormSelect
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </section>

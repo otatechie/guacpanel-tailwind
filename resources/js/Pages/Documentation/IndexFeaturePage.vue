@@ -343,7 +343,7 @@ const handleDelete = (user) => {
 
             <!-- Main Content Sections -->
             <div class="space-y-16">
-                <!-- Authentication Section -->
+            <!-- Authentication Section -->
                 <section id="authentication" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -357,35 +357,35 @@ const handleDelete = (user) => {
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Authentication</h2>
                     </div>
 
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-2">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                    <!-- Introduction -->
+                    <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-2">
                                 Laravel Fortify automatically scaffolds the login, two-factor login, registration,
                                 password
                                 reset, and email verification features for your project, allowing you to start building
                                 the
-                                features you care about instead of worrying about the nitty-gritty details of user
-                                authentication.
-                            </p>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                <a href="https://laravel.com/docs/fortify" target="_blank"
-                                    class="border-b-2 border-purple-500 dark:border-purple-400">Learn more about Laravel
-                                    Fortify</a>
-                            </p>
-                        </div>
+                            features you care about instead of worrying about the nitty-gritty details of user
+                            authentication.
+                        </p>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            <a href="https://laravel.com/docs/fortify" target="_blank"
+                                class="border-b-2 border-purple-500 dark:border-purple-400">Learn more about Laravel
+                                Fortify</a>
+                        </p>
+                    </div>
 
-                        <!-- Passwordless Login -->
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    <!-- Passwordless Login -->
+                    <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 Passwordless authentication allows users to sign in securely using email-based magic
                                 links
-                                instead of traditional passwords. This modern approach enhances security by eliminating
-                                password-related vulnerabilities while providing a smoother user experience.
-                            </p>
+                            instead of traditional passwords. This modern approach enhances security by eliminating
+                            password-related vulnerabilities while providing a smoother user experience.
+                        </p>
 
                             <div
                                 class="mt-6 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
@@ -394,33 +394,33 @@ const handleDelete = (user) => {
                                     <span><strong>Pro Tip:</strong> Passwordless login is perfect for non-technical
                                         users -
                                         no more forgotten passwords or security concerns!</span>
-                                </p>
-                            </div>
+                            </p>
                         </div>
+                    </div>
 
-                        <!-- Implementation -->
-                        <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
-                            <div class="grid gap-8">
-                                <!-- Route Configuration -->
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <!-- Implementation -->
+                    <div class="space-y-8">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
+                        <div class="grid gap-8">
+                            <!-- Route Configuration -->
+                            <div
+                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5
                                         class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">1.</span> Route Configuration
-                                    </h5>
+                                </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
                                         First, set up the routes for magic link authentication:
                                     </p>
 
                                     <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                             @click="navigator.clipboard.writeText(routeConfigCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
                                         <pre><code class="language-php">{{ routeConfigCode }}</code></pre>
                                     </div>
                                 </div>
@@ -714,8 +714,8 @@ const handleDelete = (user) => {
                                     <p class="text-emerald-700 dark:text-emerald-400 text-sm">
                                         Download, delete, or restore backups through a user-friendly interface with
                                         clear status indicators.
-                                    </p>
-                                </div>
+                                        </p>
+                                    </div>
 
                                 <div
                                     class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
@@ -791,7 +791,7 @@ const handleDelete = (user) => {
                                             </svg>
                                         </button>
                                         <pre><code class="language-javascript">{{ tableExampleCode }}</code></pre>
-                                    </div>
+                            </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                                         <p><strong>What this does:</strong> Creates a table configuration with two
@@ -930,10 +930,10 @@ const handleDelete = (user) => {
                                             class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">Auditable</code>
                                         interface on critical models to track important changes automatically.</span>
                                 </p>
-                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
             </div>
         </div>
     </div>

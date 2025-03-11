@@ -65,24 +65,15 @@ const emit = defineEmits(['processfile', 'removefile'])
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
             {{ label }}
             <span class="text-xs text-gray-500 ml-2">
-                ({{ acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ') }}
+                ({{acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ')}}
                 <template v-if="allowMultiple"> - Max files: {{ maxFiles }}</template>)
             </span>
         </label>
-        
-        <file-pond 
-            :name="name" 
-            :label-idle="labelIdle" 
-            :allow-multiple="allowMultiple"
-            :max-files="maxFiles"
-            :accepted-file-types="acceptedFileTypes"
-            :max-file-size="maxFileSize"
-            :server="server"
-            :files="files" 
-            :credits="false" 
-            class="bg-white dark:bg-gray-800 rounded-lg" 
-            @processfile="$emit('processfile', $event)"
-            @removefile="$emit('removefile', $event)"
-        />
+
+        <file-pond :name="name" :label-idle="labelIdle" :allow-multiple="allowMultiple" :max-files="maxFiles"
+            :accepted-file-types="acceptedFileTypes" :max-file-size="maxFileSize" :server="server" :files="files"
+            :credits="null" class="bg-white dark:bg-gray-800 rounded-lg"
+            @processfile="(error, file) => $emit('processfile', error, file)"
+            @removefile="(error, file) => $emit('removefile', error, file)" />
     </div>
 </template>

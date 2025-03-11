@@ -31,82 +31,66 @@ const props = defineProps({
 const form = useForm({
     app_logo: props.personalisation?.app_logo || null,
     app_name: props.personalisation?.app_name || null,
-    favicon: props.personalisation?.favicon || [],
+    favicon: props.personalisation?.favicon || null,
     footer_text: props.personalisation?.footer_text || null,
     copyright_text: props.personalisation?.copyright_text || null,
     timezone: props.personalisation?.timezone || 'UTC',
-    email_notifications: props.personalisation?.email_notifications || false,
-    push_notifications: props.personalisation?.push_notifications || false,
 })
 
 const uploadConfig = {
     process: {
-        url: route('admin.upload.store'),
+        url: route('admin.personalization.upload'),
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken,
             'Accept': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
         },
-        withCredentials: true
+        withCredentials: true,
+        onload: (response) => {
+            return typeof response === 'string' ? JSON.parse(response) : response;
+        }
     },
     load: (source, load) => {
         fetch(source)
             .then(res => res.blob())
-            .then(load)
+            .then(load);
     }
 }
 
 const getInitialFiles = (field) => {
-    if (!props.personalisation?.[field]) return []
-
-    if (!Array.isArray(props.personalisation[field])) {
-        return [{
-            source: `/storage/${props.personalisation[field]}`,
-            options: { type: 'local' }
-        }]
+    if (!props.personalisation?.[field]) {
+        return [];
     }
 
-    return props.personalisation[field].map(file => ({
-        source: `/storage/${file}`,
+    return [{
+        source: `/storage/${props.personalisation[field]}`,
         options: { type: 'local' }
-    }))
+    }];
 }
 
 const handleProcessedFile = (error, file, name) => {
-    if (error) return
+    if (error || !file) return;
 
-    if (file.serverId) {
-        const response = JSON.parse(file.serverId)
+    const response = file.serverId ?
+        (typeof file.serverId === 'string' ? JSON.parse(file.serverId) : file.serverId) :
+        (typeof file === 'string' ? JSON.parse(file) : file);
 
-        if (props.allowMultiple) {
-            if (!Array.isArray(form[name])) {
-                form[name] = []
-            }
-            form[name].push(response.path)
-        } else {
-            form[name] = response.path
-        }
+    if (response?.path) {
+        form[name] = response.path;
     }
 }
 
 const handleFileRemoved = (error, file, name) => {
-    if (error) return
-
-    if (props.allowMultiple) {
-        const fileIndex = form[name].indexOf(file.serverId)
-        if (fileIndex !== -1) {
-            form[name].splice(fileIndex, 1)
-        }
-    } else {
-        form[name] = null
+    if (!error) {
+        form[name] = null;
     }
 }
 
 const submit = () => {
-    form.post(route('admin.personalisation.update'), {
+    form.post(route('admin.personalization.update'), {
         preserveScroll: true
-    })
+    });
 }
 </script>
 
@@ -142,12 +126,12 @@ const submit = () => {
                     <div class="w-full md:w-2/3">
                         <div class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                             <fieldset class="space-y-6">
-                                <FormInput v-model="form.app_name" label="Application Name"
+                                <FormInput v-model="form.app_name" label="Application Name" id="app_name"
                                     placeholder="Enter your application name" :error="form.errors.app_name" />
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput v-model="form.footer_text" label="Footer text"
+                                    <FormInput v-model="form.footer_text" label="Footer text" id="footer_text"
                                         placeholder="Enter footer text" :error="form.errors.footer_text" />
-                                    <FormInput v-model="form.copyright_text" label="Copyright text"
+                                    <FormInput v-model="form.copyright_text" label="Copyright text" id="copyright_text"
                                         placeholder="Enter copyright text" :error="form.errors.copyright_text" />
                                 </div>
                             </fieldset>
@@ -172,19 +156,20 @@ const submit = () => {
                         role="group" aria-label="Media uploads">
                         <!-- Application Logo Upload -->
                         <FilePondUploader name="app_logo" label="Application logo" label-idle="Drop logo here..."
-                            :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                            id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
                             :files="getInitialFiles('app_logo')"
                             @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
                             @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
 
                         <!-- Favicon Upload -->
-                        <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
-                            :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                        <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..." id="favicon"
+                            :accepted-file-types="['image/jpeg', 'application/png']" :server="uploadConfig"
                             :files="getInitialFiles('favicon')"
                             @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
                             @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />
                     </div>
                 </section>
+
 
                 <!-- Localization Section -->
                 <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="localization-section">
@@ -200,9 +185,21 @@ const submit = () => {
                             Localization</h2>
                     </header>
 
-                    <FormSelect v-model="form.timezone" label="Timezone" :options="timezones"
+                    <FormSelect v-model="form.timezone" label="Timezone" :options="timezones" id="timezone"
                         class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700" />
                 </section>
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
+                    <button type="submit" class="btn-primary inline-flex items-center gap-2" :disabled="form.processing"
+                        :aria-busy="form.processing">
+                        <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        {{ form.processing ? 'Saving...' : 'Save changes' }}
+                    </button>
+                </div>
             </form>
         </article>
     </main>
