@@ -97,6 +97,7 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
                     Route::get('/', 'index')->name('index');
                     Route::post('/upload', 'upload')->name('upload');
                     Route::post('/update', 'update')->name('update');
+                    Route::post('/delete', 'delete')->name('delete');
                 });
             });
         });

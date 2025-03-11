@@ -1,12 +1,13 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import Default from '../../../Layouts/Default.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import FilePondUploader from '@/Components/FilePondUploader.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
 import PageHeader from '@/Components/PageHeader.vue'
+import axios from 'axios'
 
 defineOptions({
     layout: Default
@@ -14,6 +15,7 @@ defineOptions({
 
 const page = usePage()
 const csrfToken = page.props.csrf_token
+const personalisation = ref(page.props.personalisation)
 
 const props = defineProps({
     personalisation: {
@@ -28,9 +30,9 @@ const props = defineProps({
 })
 
 const form = useForm({
-    app_logo: props.personalisation?.app_logo || null,
+    app_logo: personalisation.value.appLogo,
     app_name: props.personalisation?.app_name || null,
-    favicon: props.personalisation?.favicon || null,
+    favicon: personalisation.value.favicon,
     footer_text: props.personalisation?.footer_text || null,
     copyright_text: props.personalisation?.copyright_text || null,
     timezone: props.personalisation?.timezone || 'UTC',
@@ -82,7 +84,11 @@ const handleProcessedFile = (error, file, name) => {
 
 const handleFileRemoved = (error, file, name) => {
     if (!error) {
-        form[name] = null;
+        form[name] = null
+        axios.post(route('admin.personalisation.removeFile'), { field: name })
+            .then(() => {
+                personalisation.value[name] = null
+            })
     }
 }
 
@@ -162,7 +168,7 @@ const submit = () => {
 
                         <!-- Favicon Upload -->
                         <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..." id="favicon"
-                            :accepted-file-types="['image/jpeg', 'application/pdf']" :server="uploadConfig"
+                            :accepted-file-types="['image/png']" :server="uploadConfig"
                             :files="getInitialFiles('favicon')"
                             @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
                             @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />

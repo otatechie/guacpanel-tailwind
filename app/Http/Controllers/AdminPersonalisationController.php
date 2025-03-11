@@ -84,6 +84,26 @@ class AdminPersonalisationController extends Controller
     }
 
 
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'field' => ['required', 'string', 'in:app_logo,favicon'],
+        ]);
+
+        $field = $request->input('field');
+        $personalisation = Personalisation::first();
+
+        if ($personalisation && $personalisation->$field) {
+            if (Storage::disk('public')->exists($personalisation->$field)) {
+                Storage::disk('public')->delete($personalisation->$field);
+            }
+            $personalisation->update([$field => null]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+
     private function getTimezones()
     {
         $timezones = timezone_identifiers_list();
