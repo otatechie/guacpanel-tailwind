@@ -6,6 +6,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
 import FilePondPluginPdfPreview from 'filepond-plugin-pdf-preview'
+import 'filepond-plugin-pdf-preview/dist/filepond-plugin-pdf-preview.min.css'
 
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
@@ -29,7 +30,7 @@ const props = defineProps({
     },
     acceptedFileTypes: {
         type: Array,
-        default: () => ['image/jpeg', 'image/png']
+        default: () => ['image/jpeg', 'image/png', 'application/pdf']
     },
     maxFileSize: {
         type: String,
@@ -72,7 +73,8 @@ const emit = defineEmits(['processfile', 'removefile'])
 
         <file-pond :name="name" :label-idle="labelIdle" :allow-multiple="allowMultiple" :max-files="maxFiles"
             :accepted-file-types="acceptedFileTypes" :max-file-size="maxFileSize" :server="server" :files="files"
-            :credits="null" class="bg-white dark:bg-gray-800 rounded-lg"
+            :credits="null" :allow-pdf-preview="true" :pdf-preview-height="320"
+            :pdf-component-extra-params="'toolbar=0'" class="bg-white dark:bg-gray-800 rounded-lg"
             @processfile="(error, file) => $emit('processfile', error, file)"
             @removefile="(error, file) => $emit('removefile', error, file)" />
     </div>

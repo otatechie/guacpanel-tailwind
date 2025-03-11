@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: 'FormInput', // Changed from FloatingLabelInput to match the import name
+    name: 'FormInput',
     props: {
         modelValue: {
             type: [String, Number],
@@ -12,7 +12,7 @@ export default {
         },
         id: {
             type: String,
-            required: true
+            default: null
         },
         type: {
             type: String,
@@ -39,6 +39,9 @@ export default {
     computed: {
         inputPlaceholder() {
             return this.placeholder || this.label
+        },
+        inputId() {
+            return this.id || this.label.toLowerCase().replace(/\s+/g, '-');
         }
     },
     emits: ['update:modelValue']
@@ -47,8 +50,8 @@ export default {
 
 <template>
     <fieldset class="space-y-1">
-        <label :for="id" class="relative block">
-            <input :type="showPassword ? 'text' : type" :id="id" :value="modelValue" :required="required"
+        <label :for="inputId" class="relative block">
+            <input :type="showPassword ? 'text' : type" :id="inputId" :value="modelValue" :required="required"
                 @input="$emit('update:modelValue', $event.target.value)"
                 class="w-full peer border rounded-md bg-white placeholder-transparent px-3 py-2 transition-shadow duration-150 ease-in-out focus:outline-none dark:bg-gray-800 dark:text-white"
                 :class="[
@@ -56,7 +59,7 @@ export default {
                         ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:shadow focus:shadow-red-300/50 dark:focus:ring-red-900'
                         : 'border-gray-300 dark:border-gray-600 focus:border-purple-400 focus:ring-1 focus:ring-purple-500 focus:shadow focus:shadow-purple-300/50 dark:focus:ring-purple-500'
                 ]" :placeholder="inputPlaceholder" :aria-invalid="!!error"
-                :aria-describedby="error ? `${id}-error` : undefined" />
+                :aria-describedby="error ? `${inputId}-error` : undefined" />
             <span
                 class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white dark:bg-gray-800 px-1 text-xs text-gray-700 dark:text-gray-400 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
                 {{ label }}{{ required ? ' *' : '' }}
@@ -79,7 +82,7 @@ export default {
                 </svg>
             </button>
         </label>
-        <p v-if="error" :id="`${id}-error`" role="alert" class="text-red-500 dark:text-red-400 text-xs">
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="text-red-500 dark:text-red-400 text-xs">
             {{ error }}
         </p>
     </fieldset>

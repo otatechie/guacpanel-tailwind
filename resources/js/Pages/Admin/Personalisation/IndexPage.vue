@@ -4,7 +4,6 @@ import Default from '../../../Layouts/Default.vue'
 import { computed } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import FilePondUploader from '@/Components/FilePondUploader.vue'
-import Switch from '@/Components/Switch.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
 import PageHeader from '@/Components/PageHeader.vue'
@@ -163,7 +162,7 @@ const submit = () => {
 
                         <!-- Favicon Upload -->
                         <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..." id="favicon"
-                            :accepted-file-types="['image/jpeg', 'application/png']" :server="uploadConfig"
+                            :accepted-file-types="['image/jpeg', 'application/pdf']" :server="uploadConfig"
                             :files="getInitialFiles('favicon')"
                             @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
                             @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />

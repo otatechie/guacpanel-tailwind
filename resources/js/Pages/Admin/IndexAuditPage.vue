@@ -41,7 +41,8 @@ const columns = [
             ariaLabel: 'Activity timestamp'
         }
     }),
-    columnHelper.accessor('user.name', {
+    columnHelper.accessor(row => row.user?.name, {
+        id: 'user.name',
         header: 'User',
         cell: info => h('span', {
             'aria-label': `Action performed by: ${info.getValue() || 'System'}`
@@ -94,33 +95,22 @@ watch(pagination, newPagination => {
 </script>
 
 <template>
+
     <Head title="Audit Log" />
 
-    <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
+    <main class="max-w-5xl mx-auto" role="main">
         <section class="container-border overflow-hidden">
-            <PageHeader
-                id="page-title"
-                title="Audit Log"
-                description="View and monitor system activities"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('home') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Audit Log' }
-                ]"
-            />
+            <PageHeader title="Audit Log" description="View and monitor system activities" :breadcrumbs="[
+                { label: 'Dashboard', href: route('home') },
+                { label: 'Settings', href: route('admin.setting.index') },
+                { label: 'Audit Log' }
+            ]" />
 
             <section class="p-6 dark:bg-gray-900">
-                <Datatable
-                    :data="audits.data"
-                    :columns="columns"
-                    :loading="loading"
-                    :pagination="pagination"
+                <Datatable :data="audits.data" :columns="columns" :loading="loading" :pagination="pagination"
                     :search-fields="['user.name', 'event', 'auditable_type', 'created_at']"
-                    empty-message="No audit records found"
-                    empty-description="System activities will appear here"
-                    export-file-name="activity_log"
-                    @update:pagination="pagination = $event"
-                >
+                    empty-message="No audit records found" empty-description="System activities will appear here"
+                    export-file-name="activity_log" @update:pagination="pagination = $event">
                     <template #loading>
                         <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
                             Loading audit history...

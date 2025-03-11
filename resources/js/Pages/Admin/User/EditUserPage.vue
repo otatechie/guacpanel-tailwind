@@ -80,33 +80,17 @@ const deleteUser = () => {
                 <nav class="px-6 bg-gray-50 dark:bg-gray-800" aria-label="User tabs">
                     <ul class="flex -mb-px" role="tablist">
                         <li v-for="tab in tabs" :key="tab.key" class="mr-2" role="presentation">
-                            <button
-                                type="button"
-                                @click="activeTab = tab.key"
-                                :class="[
-                                    'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
-                                    activeTab === tab.key
-                                        ? 'border-b-2 border-blue-500 text-blue-600 bg-white dark:bg-gray-700 dark:text-blue-400'
-                                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
-                                ]"
-                                :aria-selected="activeTab === tab.key"
-                                :aria-controls="`${tab.key}-panel`"
-                                role="tab"
-                            >
-                                <svg
-                                    class="w-4 h-4"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    aria-hidden="true"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        :d="tab.icon"
-                                    />
+                            <button type="button" @click="activeTab = tab.key" :class="[
+                                'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
+                                activeTab === tab.key
+                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white dark:bg-gray-700 dark:text-blue-400'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
+                            ]" :aria-selected="activeTab === tab.key" :aria-controls="`${tab.key}-panel`"
+                                role="tab">
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        :d="tab.icon" />
                                 </svg>
                                 {{ tab.label }}
                             </button>
@@ -124,17 +108,12 @@ const deleteUser = () => {
                                 :error="form.errors.email" />
                         </div>
                         <div>
-                            <FormSelect
-                                v-model="form.role"
-                                :options="roles.data"
-                                option-label="name"
-                                option-value="id"
-                                label="Assigned role"
-                                :error="form.errors.role"
-                            />
+                            <FormSelect v-model="form.role" :options="roles.data" option-label="name" option-value="id"
+                                name="role" label="Assigned role" :error="form.errors.role" />
                         </div>
                         <div class="space-y-6">
-                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div
+                                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                 <div>
                                     <h3 class="font-medium text-gray-800 dark:text-white">Account Status</h3>
                                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -144,7 +123,8 @@ const deleteUser = () => {
                                 <Switch v-model="form.disable_account" />
                             </div>
 
-                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div
+                                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                 <div>
                                     <h3 class="font-medium text-gray-800 dark:text-white">Force Password Reset</h3>
                                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">

@@ -9,16 +9,15 @@ defineOptions({
 </script>
 
 <template>
+
     <Head title="Settings" />
 
-    <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
-        <section class="container-border overflow-hidden bg-white dark:bg-gray-800 shadow-sm rounded-xl">
-            <PageHeader id="page-title" title="Settings" description="Manage system-wide settings and configurations"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('home') },
-                    { label: 'Settings' }
-                ]" />
-
+    <main class="max-w-5xl mx-auto" role="main">
+        <section class="container-border overflow-hidden">
+            <PageHeader title="Settings" description="Manage system-wide settings and configurations" :breadcrumbs="[
+                { label: 'Dashboard', href: route('home') },
+                { label: 'Settings' },
+            ]" />
             <div class="p-6 bg-gray-50 dark:bg-gray-700">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     <Link :href="route('admin.audit.index')"
@@ -184,22 +183,22 @@ defineOptions({
 
                     <Link :href="route('health')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 h-1 w-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="flex items-center gap-4 mb-3">
                         <div
-                            class="absolute top-0 left-0 h-1 w-full bg-pink-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            class="p-3 bg-pink-50 dark:bg-pink-900/30 rounded-xl border border-pink-100 dark:border-pink-800 group-hover:bg-pink-100 dark:group-hover:bg-pink-900/50 transition-colors">
+                            <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                            </svg>
                         </div>
-                        <div class="flex items-center gap-4 mb-3">
-                            <div
-                                class="p-3 bg-pink-50 dark:bg-pink-900/30 rounded-xl border border-pink-100 dark:border-pink-800 group-hover:bg-pink-100 dark:group-hover:bg-pink-900/50 transition-colors">
-                                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">System Health</h3>
-                        </div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Monitor application performance, services,
-                            and system diagnostics.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">System Health</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Monitor application performance, services,
+                        and system diagnostics.</p>
                     </Link>
                 </div>
             </div>

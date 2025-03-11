@@ -58,7 +58,7 @@ const submit = () => {
                         class="absolute left-1/2 -translate-x-1/2 px-2 bg-white dark:bg-gray-800 text-gray-500 text-sm">OR</span>
                 </div>
 
-                <Link :href="route('magic.register.create')"
+                <Link :href="route('magic.create')"
                     class="w-full flex items-center justify-center gap-2 btn-secondary dark:hover:bg-gray-800 dark:text-gray-200 dark:hover:text-purple-400 transition-colors cursor-pointer"
                     role="button" aria-label="Create account with magic link">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"

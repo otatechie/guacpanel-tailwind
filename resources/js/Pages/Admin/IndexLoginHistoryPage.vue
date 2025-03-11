@@ -102,9 +102,9 @@ watch(pagination, newPagination => {
 
     <Head title="Login History" />
 
-    <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
+    <main class="max-w-5xl mx-auto" role="main">
         <section class="container-border overflow-hidden">
-            <PageHeader id="page-title" title="Login History" description="View and monitor login history" :breadcrumbs="[
+            <PageHeader title="Login History" description="View and monitor login history" :breadcrumbs="[
                 { label: 'Dashboard', href: route('home') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'Login History' }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
     modelValue: {
@@ -20,7 +20,7 @@ const props = defineProps({
     },
     id: {
         type: String,
-        required: true
+        default: null
     },
     error: {
         type: String,
@@ -29,6 +29,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 
 const updateValue = (e) => {
     if (Array.isArray(props.modelValue)) {
@@ -50,16 +52,16 @@ const updateValue = (e) => {
 
 <template>
     <fieldset class="flex items-start">
-        <label :for="id" class="flex items-start cursor-pointer">
+        <label :for="inputId" class="flex items-start cursor-pointer">
             <span class="flex items-center h-5">
-                <input type="checkbox" :id="id" :name="name" :value="value"
+                <input type="checkbox" :id="inputId" :name="name" :value="value"
                     :checked="Array.isArray(modelValue) ? modelValue.includes(value) : modelValue" @change="updateValue"
-                    :aria-describedby="error ? `${id}-error` : undefined" :aria-invalid="!!error"
+                    :aria-describedby="error ? `${inputId}-error` : undefined" :aria-invalid="!!error"
                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
             </span>
             <span class="ml-3 text-sm">
                 <span class="font-medium text-gray-700 dark:text-gray-300">{{ label }}</span>
-                <p v-if="error" :id="`${id}-error`" role="alert" class="mt-1 text-sm text-red-600">
+                <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1 text-sm text-red-600">
                     {{ error }}
                 </p>
             </span>

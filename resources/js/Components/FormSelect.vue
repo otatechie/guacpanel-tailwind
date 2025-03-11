@@ -16,7 +16,7 @@ export default {
         },
         id: {
             type: String,
-            required: true
+            default: null
         },
         required: {
             type: Boolean,
@@ -47,6 +47,9 @@ export default {
         }
     },
     computed: {
+        inputId() {
+            return this.id || this.label.toLowerCase().replace(/\s+/g, '-');
+        },
         filteredOptions() {
             const query = this.searchQuery.toLowerCase()
             return this.options.filter(option =>
@@ -90,11 +93,11 @@ export default {
 
 <template>
     <fieldset class="space-y-1">
-        <label :for="id" class="relative block" @click.stop="toggleDropdown">
+        <label :for="inputId" class="relative block" @click.stop="toggleDropdown">
             <!-- Combobox input -->
-            <input :id="id" type="text" readonly :value="displayValue" role="combobox" :aria-expanded="isOpen"
-                :aria-controls="`${id}-listbox`"
-                :aria-activedescendant="modelValue ? `${id}-option-${modelValue}` : undefined"
+            <input :id="inputId" type="text" readonly :value="displayValue" role="combobox" :aria-expanded="isOpen"
+                :aria-controls="`${inputId}-listbox`"
+                :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
                 class="w-full peer border rounded-md bg-white px-3 py-2 appearance-none
                 transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer dark:bg-gray-800 dark:text-white" :class="[
                     error
@@ -103,7 +106,7 @@ export default {
                 ]" @keydown.arrow-down="isOpen = true" @keydown.enter.prevent="isOpen = !isOpen">
 
             <!-- Listbox -->
-            <section v-show="isOpen" :id="`${id}-listbox`" role="listbox"
+            <section v-show="isOpen" :id="`${inputId}-listbox`" role="listbox"
                 class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-hidden">
                 <header class="p-2 border-b border-gray-300 dark:border-gray-600">
                     <input type="search" :aria-label="'Search ' + label" v-model="searchQuery" placeholder="Search..."
@@ -113,7 +116,7 @@ export default {
 
                 <ul class="overflow-y-auto max-h-52">
                     <li v-for="option in filteredOptions" :key="option[optionValue]"
-                        :id="`${id}-option-${option[optionValue]}`" role="option"
+                        :id="`${inputId}-option-${option[optionValue]}`" role="option"
                         :aria-selected="isOptionSelected(option)" @click="selectOption(option)"
                         class="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700 dark:text-white"
                         :class="{ 'bg-blue-50 dark:bg-gray-700': isOptionSelected(option) }">

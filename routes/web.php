@@ -88,8 +88,8 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
 
             // Permissions & Roles Routes
             Route::get('permissions/roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role.index');
-            Route::resource('roles', AdminRoleController::class)->except('show')->names('role.index');
-            Route::resource('permissions', AdminPermissionController::class)->except('show')->names('permission.index');
+            Route::resource('roles', AdminRoleController::class)->except('show')->names('role');
+            Route::resource('permissions', AdminPermissionController::class)->except('show')->names('permission');
 
             // Personalization Routes
             Route::prefix('personalization')->name('personalization.')->group(function () {
@@ -128,12 +128,12 @@ Route::prefix('documentation')->name('documentation.')->group(function () {
 
 // Magic Link Authentication Routes
 Route::middleware(['guest', 'web'])->group(function () {
-    Route::prefix('magic-link')->name('magic.')->group(function () {
+    Route::prefix('magic')->name('magic.')->group(function () {
         Route::controller(MagicLinkController::class)->group(function () {
-            Route::get('/register', 'create')->name('register.create');
-            Route::post('/register', 'store')->name('register.store');
-            Route::post('/login', 'login')->name('login.request');
-            Route::get('/{token}', 'authenticate')->name('login.authenticate');
+            Route::get('/register', 'create')->name('create');
+            Route::post('/register', 'store')->name('store');
+            Route::post('/login', 'login')->name('login');
+            Route::get('/{token}', 'authenticate')->name('authenticate');
         });
     });
 });

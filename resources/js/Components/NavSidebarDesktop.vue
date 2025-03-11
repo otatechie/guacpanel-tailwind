@@ -108,7 +108,7 @@ navigationSections.forEach(section => {
                             <button @click="toggleDropdown(item)" :class="[
                                 'w-full flex items-center justify-between px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out cursor-pointer',
                                 isParentActive(item.children)
-                                    ? ' dark:bg-purple-900/50 text-purple-600 dark:text-purple-400'
+                                    ? '  text-purple-600 dark:text-purple-400'
                                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                             ]" :aria-expanded="item.isOpen">
                                 <div class="flex items-center">
@@ -132,7 +132,7 @@ navigationSections.forEach(section => {
                                     <Link :href="child.href" :class="[
                                         'flex items-center px-1.5 py-1.5 rounded-lg transition-all duration-200 ease-in-out',
                                         isActive(child.href)
-                                            ? ' dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 font-medium'
+                                            ? '  text-purple-600 dark:text-purple-400 font-medium'
                                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                     ]">
                                     <span class="text-sm">{{ child.name }}</span>

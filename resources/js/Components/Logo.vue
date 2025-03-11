@@ -4,23 +4,14 @@ import { usePage } from '@inertiajs/vue3'
 
 const page = usePage()
 const logoUrl = computed(() => {
-    return page.props.personalisation?.appLogo
-})
-const appName = computed(() => {
-    return page.props.personalisation?.appName || ''
+    return page.props.personalisation?.appLogo || null
 })
 </script>
 
 <template>
-    <header class="flex justify-center">
+    <header class="flex justify-center items-center">
         <figure v-if="logoUrl" class="flex justify-center">
-            <img class="h-10 my-2 w-auto object-contain"
-                :src="logoUrl"
-                :alt="`${appName} logo`" />
+            <img class="h-10 my-2 w-auto object-contain" :src="logoUrl" alt="Logo" />
         </figure>
-        <h1 v-else class="text-3xl font-bold">
-            {{ appName }}
-        </h1>
     </header>
 </template>
- 

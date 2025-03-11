@@ -84,7 +84,7 @@ const submitPasswordForm = () => {
                     </div>
                 </section>
 
-                <footer class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
                     <button type="submit" class="btn-primary inline-flex items-center gap-2"
                         :disabled="profileForm.processing" :aria-busy="profileForm.processing">
                         <svg v-if="profileForm.processing" class="animate-spin h-4 w-4"
@@ -95,7 +95,7 @@ const submitPasswordForm = () => {
                         </svg>
                         {{ profileForm.processing ? 'Saving...' : 'Save changes' }}
                     </button>
-                </footer>
+                </div>
             </form>
         </section>
 
@@ -135,7 +135,7 @@ const submitPasswordForm = () => {
                     </div>
                 </section>
 
-                <footer class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
                     <button type="submit" class="btn-primary inline-flex items-center gap-2"
                         :disabled="passwordForm.processing" :aria-busy="passwordForm.processing">
                         <svg v-if="passwordForm.processing" class="animate-spin h-4 w-4"
@@ -146,7 +146,7 @@ const submitPasswordForm = () => {
                         </svg>
                         {{ passwordForm.processing ? 'Updating...' : 'Update password' }}
                     </button>
-                </footer>
+                </div>
             </form>
         </section>
     </main>

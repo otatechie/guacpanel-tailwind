@@ -17,7 +17,7 @@ class AdminSettingController extends Controller
 
     public function show()
     {
-        $settings = Setting::first();
+        $settings = Setting::first() ?? new Setting();
 
         return Inertia::render('Admin/IndexManageSettingPage', [
             'settings' => $settings
@@ -37,5 +37,4 @@ class AdminSettingController extends Controller
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }
-
 }

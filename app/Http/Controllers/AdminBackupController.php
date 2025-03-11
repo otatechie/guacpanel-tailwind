@@ -19,7 +19,7 @@ class AdminBackupController extends Controller
     public function index()
     {
         return Inertia::render('Admin/IndexBackupPage', [
-            'backupInfo' => $this->getBackupInfo(),
+            'backupInfo' => $this->fetchBackupInfo(),
         ]);
     }
 

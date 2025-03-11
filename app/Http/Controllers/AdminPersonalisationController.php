@@ -23,19 +23,19 @@ class AdminPersonalisationController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'app_logo' => ['nullable'],
-            'favicon' => ['nullable'],
+            'app_logo' => ['nullable', 'image', 'max:2048'],
+            'favicon' => ['nullable', 'image', 'max:2048'],
         ]);
 
         if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
             $field = $request->hasFile('app_logo') ? 'app_logo' : 'favicon';
 
             $file = $request->file($field);
-            $sanitizedName = preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+            $fileName = time() . '_' . $file->getClientOriginalName();
 
             $path = $request->file($field)->storeAs(
                 'personalisation',
-                time() . '_' . $sanitizedName,
+                $fileName,
                 'public'
             );
 
@@ -49,7 +49,7 @@ class AdminPersonalisationController extends Controller
 
             $personalisation->update([$field => $path]);
 
-            return response()->json(['path' => $path]);
+            return response()->json(['path' => Storage::url($path)]);
         }
         return response()->json(['error' => 'No file uploaded'], 400);
     }
@@ -70,9 +70,11 @@ class AdminPersonalisationController extends Controller
 
         // Only delete files if they're being removed
         foreach (['app_logo', 'favicon'] as $field) {
-            if (isset($validated[$field]) && $validated[$field] === null && $personalisation->$field) {
+            if (array_key_exists($field, $validated) && $validated[$field] === null && $personalisation->$field) {
                 Storage::disk('public')->delete($personalisation->$field);
                 $validated[$field] = null; // Ensure null is saved for removed files
+            } else {
+                unset($validated[$field]); // Do not update the field if it's not being removed
             }
         }
 
