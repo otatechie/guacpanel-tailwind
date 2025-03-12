@@ -103,7 +103,7 @@ watch(pagination, newPagination => {
     <Head title="Login History" />
 
     <main class="max-w-5xl mx-auto" role="main">
-        <section class="container-border overflow-hidden">
+        <div class="container-border overflow-hidden">
             <PageHeader title="Login History" description="View and monitor login history" :breadcrumbs="[
                 { label: 'Dashboard', href: route('home') },
                 { label: 'Settings', href: route('admin.setting.index') },
@@ -122,6 +122,6 @@ watch(pagination, newPagination => {
                     </template>
                 </Datatable>
             </section>
-        </section>
+        </div>
     </main>
 </template>

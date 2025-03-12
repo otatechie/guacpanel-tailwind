@@ -33,7 +33,6 @@ const form = useForm({
     app_logo: personalisation.value.appLogo,
     app_name: props.personalisation?.app_name || null,
     favicon: personalisation.value.favicon,
-    footer_text: props.personalisation?.footer_text || null,
     copyright_text: props.personalisation?.copyright_text || null,
     timezone: props.personalisation?.timezone || 'UTC',
 })
@@ -103,10 +102,8 @@ const submit = () => {
 
     <Head title="Personalization Settings" />
 
-    <main class="max-w-5xl mx-auto" aria-labelledby="personalization-settings">
-        <h1 class="sr-only" id="personalization-settings">Personalization Settings</h1>
-
-        <article class="container-border overflow-hidden">
+    <main class="max-w-5xl mx-auto" role="main">
+        <div class="container-border overflow-hidden">
             <PageHeader title="Personalization Settings"
                 description="Configure your application's appearance and settings" :breadcrumbs="[
                     { label: 'Dashboard', href: '/' },
@@ -115,7 +112,6 @@ const submit = () => {
                 ]" />
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200 dark:divide-gray-700">
-                <!-- Basic Information Section -->
                 <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="basic-info">
                     <header class="flex items-center gap-3 mb-4">
                         <span class="p-2 bg-indigo-50 dark:bg-indigo-900/50 rounded-lg" aria-hidden="true">
@@ -130,21 +126,16 @@ const submit = () => {
                     </header>
                     <div class="w-full md:w-2/3">
                         <div class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                            <fieldset class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <FormInput v-model="form.app_name" label="Application Name" id="app_name"
                                     placeholder="Enter your application name" :error="form.errors.app_name" />
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <FormInput v-model="form.footer_text" label="Footer text" id="footer_text"
-                                        placeholder="Enter footer text" :error="form.errors.footer_text" />
-                                    <FormInput v-model="form.copyright_text" label="Copyright text" id="copyright_text"
-                                        placeholder="Enter copyright text" :error="form.errors.copyright_text" />
-                                </div>
-                            </fieldset>
+                                <FormInput v-model="form.copyright_text" label="Copyright text" id="copyright_text"
+                                    placeholder="Enter copyright text" :error="form.errors.copyright_text" />
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Media Section -->
                 <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="media-section">
                     <header class="flex items-center gap-3 mb-4">
                         <span class="p-2 bg-emerald-50 dark:bg-emerald-900/50 rounded-lg" aria-hidden="true">
@@ -175,8 +166,6 @@ const submit = () => {
                     </div>
                 </section>
 
-
-                <!-- Localization Section -->
                 <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="localization-section">
                     <header class="flex items-center gap-3 mb-4">
                         <span class="p-2 bg-purple-50 dark:bg-purple-900/50 rounded-lg" aria-hidden="true">
@@ -206,6 +195,6 @@ const submit = () => {
                     </button>
                 </div>
             </form>
-        </article>
+        </div>
     </main>
 </template>

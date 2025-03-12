@@ -167,37 +167,26 @@ watch(pagination, newPagination => {
 </script>
 
 <template>
+
     <Head title="Users" />
 
-    <main class="max-w-5xl mx-auto">
-        <section class="container-border overflow-hidden">
-            <PageHeader
-                title="Users"
-                description="Manage system users and their access"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: '/' },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Users' }
-                ]"
-            />
+    <main class="max-w-5xl mx-auto" role="main">
+        <div class="container-border overflow-hidden">
+            <PageHeader title="Users" description="Manage system users and their access" :breadcrumbs="[
+                { label: 'Dashboard', href: '/' },
+                { label: 'Settings', href: route('admin.setting.index') },
+                { label: 'Users' }
+            ]" />
 
             <div class="p-6 dark:bg-gray-900">
-                <DataTable
-                    :data="users.data"
-                    :columns="columns"
-                    :loading="loading"
-                    :pagination="pagination"
-                    :search-fields="['name', 'email', 'created_at']"
-                    empty-message="No users found"
-                    empty-description="Users will appear here once created"
-                    export-file-name="users"
-                    @update:pagination="pagination = $event"
-                />
+                <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
+                    :search-fields="['name', 'email', 'created_at']" empty-message="No users found"
+                    empty-description="Users will appear here once created" export-file-name="users"
+                    @update:pagination="pagination = $event" />
             </div>
-        </section>
+        </div>
     </main>
 
-    <!-- Add Delete Confirmation Modal -->
     <Modal :show="showDeleteModal" @close="closeModal" size="md">
         <template #title>
             <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
@@ -214,9 +203,11 @@ watch(pagination, newPagination => {
                 <p class="text-sm text-gray-500 dark:text-gray-400">
                     Are you sure you want to delete this user? This action cannot be undone.
                 </p>
-                <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                <div
+                    class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
                     <div class="flex gap-2">
-                        <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd" />
@@ -226,7 +217,8 @@ watch(pagination, newPagination => {
                         </p>
                     </div>
                 </div>
-                <div v-if="userToDelete" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div v-if="userToDelete"
+                    class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                     <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">User details:</h4>
                     <dl class="space-y-1">
                         <div class="flex gap-2">
@@ -244,15 +236,11 @@ watch(pagination, newPagination => {
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal"
-                    type="button"
+                <button @click="closeModal" type="button"
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
                     Cancel
                 </button>
-                <button @click="deleteUser"
-                    type="button"
-                    class="btn-danger"
-                    :disabled="false">
+                <button @click="deleteUser" type="button" class="btn-danger" :disabled="false">
                     Yes, delete user
                 </button>
             </div>

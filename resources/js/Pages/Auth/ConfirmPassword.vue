@@ -21,7 +21,7 @@ const submit = () => {
 
     <Head title="Confirm password" />
 
-    <main class="max-w-[384px] mx-auto px-8">
+    <main class="max-w-[384px] mx-auto px-8" role="main">
         <h1 class="main-heading text-center dark:text-white">
             Confirm access
         </h1>

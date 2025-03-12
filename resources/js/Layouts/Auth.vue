@@ -17,7 +17,7 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
     <div class="min-h-screen flex flex-col">
         <main class="flex-grow bg-gray-50 dark:bg-gray-800 pb-16">
             <header>
-                <Logo :class="{ 'mb-4': !hasCustomBranding }" />
+                <Logo :class="{ 'mb-2': !hasCustomBranding }" />
             </header>
             <FlashMessage />
             <article>

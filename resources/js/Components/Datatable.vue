@@ -168,7 +168,8 @@ watch(() => props.data, () => {
 
 <template>
     <section class="relative">
-        <div v-if="error" role="alert" class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
+        <div v-if="error" role="alert"
+            class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
             {{ error }}
         </div>
 
@@ -199,8 +200,7 @@ watch(() => props.data, () => {
                     <input type="search" :id="'table-search'" v-model="searchQuery" placeholder="Search"
                         class="w-48 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md transition-shadow duration-150 ease-in-out focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 text-sm dark:bg-gray-800 dark:text-gray-200" />
                     <button v-if="searchQuery" @click="searchQuery = ''"
-                        class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
-                        aria-label="Clear search">
+                        class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600" aria-label="Clear search">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />

@@ -115,28 +115,19 @@ const getStats = (info) => {
 </script>
 
 <template>
+
     <Head title="System Backups" />
 
-    <main class="max-w-5xl mx-auto" aria-labelledby="backup-settings">
-        <h1 class="sr-only" id="backup-settings">Backup Management</h1>
-
-        <section class="container-border overflow-hidden">
-            <PageHeader
-                title="System Backups"
-                description="Manage system backups and restore points"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('home') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Backups' }
-                ]"
-            >
+    <main class="max-w-5xl mx-auto" role="main">
+        <div class="container-border overflow-hidden">
+            <PageHeader title="System Backups" description="Manage system backups and restore points" :breadcrumbs="[
+                { label: 'Dashboard', href: route('home') },
+                { label: 'Settings', href: route('admin.setting.index') },
+                { label: 'Backups' }
+            ]">
                 <template #actions>
-                    <button
-                        @click="runBackup"
-                        class="btn-primary inline-flex items-center gap-2"
-                        :disabled="isBackupRunning"
-                        :aria-busy="isBackupRunning"
-                    >
+                    <button @click="runBackup" class="btn-primary inline-flex items-center gap-2"
+                        :disabled="isBackupRunning" :aria-busy="isBackupRunning">
                         <svg v-if="isBackupRunning" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24" aria-hidden="true">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -149,12 +140,16 @@ const getStats = (info) => {
             </PageHeader>
 
             <section class="p-6 space-y-6 dark:bg-gray-900">
-                <p class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-4 text-sm text-amber-700 dark:text-amber-400 font-medium flex items-center gap-2">
+                <p
+                    class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-4 text-sm text-amber-700 dark:text-amber-400 font-medium flex items-center gap-2">
                     <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
                     </svg>
                     If backup fails through the interface, try running
-                    <code class="bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 rounded select-all">php artisan backup:run</code>
+                    <code
+                        class="bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 rounded select-all">php artisan backup:run</code>
                     in console
                 </p>
 
@@ -205,7 +200,8 @@ const getStats = (info) => {
                         </article>
                     </div>
 
-                    <table v-if="info.backups?.length > 0" class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden divide-y divide-gray-200 dark:divide-gray-700 md:table hidden">
+                    <table v-if="info.backups?.length > 0"
+                        class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden divide-y divide-gray-200 dark:divide-gray-700 md:table hidden">
                         <thead class="bg-gray-50 dark:bg-gray-800/50">
                             <tr>
                                 <th scope="col"
@@ -225,8 +221,7 @@ const getStats = (info) => {
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                             <tr v-for="backup in info.backups" :key="backup.path"
                                 class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <td
-                                    class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                     {{
                                         backup.date }}</td>
                                 <td
@@ -242,8 +237,7 @@ const getStats = (info) => {
                                         <span class="sr-only">Download backup</span>
                                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
                                     </button>
@@ -253,8 +247,7 @@ const getStats = (info) => {
                                         <span class="sr-only">Delete backup</span>
                                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
@@ -263,7 +256,8 @@ const getStats = (info) => {
                         </tbody>
                     </table>
 
-                    <div v-if="info.backups?.length > 0" class="md:hidden divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div v-if="info.backups?.length > 0"
+                        class="md:hidden divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                         <div v-for="backup in info.backups" :key="backup.path"
                             class="p-4 space-y-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                             <div class="flex justify-between items-start">
@@ -290,15 +284,15 @@ const getStats = (info) => {
                         </div>
                     </div>
 
-                    <p v-else class="text-center p-8 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
+                    <p v-else
+                        class="text-center p-8 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
                         No backups found in this storage location
                     </p>
                 </section>
             </section>
-        </section>
+        </div>
     </main>
 
-    <!-- Delete Confirmation Modal -->
     <Modal :show="showDeleteModal" @close="closeDeleteModal" size="md">
         <template #title>
             <div class="flex items-center gap-2 text-red-600">

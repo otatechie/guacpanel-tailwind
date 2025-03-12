@@ -25,6 +25,7 @@ const submit = () => {
 </script>
 
 <template>
+
     <Head title="Reset password" />
 
     <main class="max-w-[384px] mx-auto px-8" role="main">
@@ -32,8 +33,7 @@ const submit = () => {
             Change your password
         </h1>
 
-        <form @submit.prevent="submit"
-            class="mt-6 container-border p-5 space-y-6"
+        <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6"
             aria-labelledby="change-password-form">
             <section class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md" aria-labelledby="password-requirements">
                 <h2 id="password-requirements" class="text-gray-400 dark:text-gray-400 text-sm mb-2">
@@ -47,30 +47,13 @@ const submit = () => {
                 </ul>
             </section>
 
-            <FormInput
-                v-model="form.password"
-                label="Password"
-                id="password"
-                type="password"
-                required
-                autocomplete="new-password"
-                :error="form.errors.password"
-                aria-describedby="password-requirements" />
+            <FormInput v-model="form.password" label="Password" id="password" type="password" required
+                autocomplete="new-password" :error="form.errors.password" aria-describedby="password-requirements" />
 
-            <FormInput
-                v-model="form.password_confirmation"
-                label="Confirm password"
-                id="password_confirmation"
-                type="password"
-                required
-                autocomplete="new-password"
-                :error="form.errors.password_confirmation" />
+            <FormInput v-model="form.password_confirmation" label="Confirm password" id="password_confirmation"
+                type="password" required autocomplete="new-password" :error="form.errors.password_confirmation" />
 
-            <button
-                type="submit"
-                class="w-full btn-primary"
-                :disabled="form.processing"
-                :aria-busy="form.processing">
+            <button type="submit" class="w-full btn-primary" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Please wait...' : 'Change password' }}
             </button>
         </form>

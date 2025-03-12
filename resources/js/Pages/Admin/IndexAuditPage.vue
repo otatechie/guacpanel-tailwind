@@ -99,7 +99,7 @@ watch(pagination, newPagination => {
     <Head title="Audit Log" />
 
     <main class="max-w-5xl mx-auto" role="main">
-        <section class="container-border overflow-hidden">
+        <div class="container-border overflow-hidden">
             <PageHeader title="Audit Log" description="View and monitor system activities" :breadcrumbs="[
                 { label: 'Dashboard', href: route('home') },
                 { label: 'Settings', href: route('admin.setting.index') },
@@ -118,6 +118,6 @@ watch(pagination, newPagination => {
                     </template>
                 </Datatable>
             </section>
-        </section>
+        </div>
     </main>
 </template>

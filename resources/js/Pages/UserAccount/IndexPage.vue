@@ -50,7 +50,7 @@ const submitPasswordForm = () => {
         <section class="container-border overflow-hidden" aria-labelledby="profile-info">
             <PageHeader title="Basic Information" description="Update your personal information and email address"
                 :breadcrumbs="[
-                    { label: 'Dashboard', href: '/home' },
+                    { label: 'Dashboard', href: '/' },
                     { label: 'Account' },
                     { label: 'Basic Information' }
                 ]" />

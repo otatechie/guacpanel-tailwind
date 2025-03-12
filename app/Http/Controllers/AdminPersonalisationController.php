@@ -62,19 +62,17 @@ class AdminPersonalisationController extends Controller
             'app_name' => ['nullable', 'string', 'max:100'],
             'favicon' => ['nullable', 'string'],
             'timezone' => ['required', 'string', 'in:' . implode(',', timezone_identifiers_list())],
-            'footer_text' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z0-9\s\.,\'"\-&]+$/'],
             'copyright_text' => ['nullable', 'string', 'max:50'],
         ]);
 
         $personalisation = Personalisation::firstOrCreate();
 
-        // Only delete files if they're being removed
         foreach (['app_logo', 'favicon'] as $field) {
             if (array_key_exists($field, $validated) && $validated[$field] === null && $personalisation->$field) {
                 Storage::disk('public')->delete($personalisation->$field);
-                $validated[$field] = null; // Ensure null is saved for removed files
+                $validated[$field] = null;
             } else {
-                unset($validated[$field]); // Do not update the field if it's not being removed
+                unset($validated[$field]);
             }
         }
 

@@ -13,7 +13,7 @@ defineOptions({
     <Head title="Settings" />
 
     <main class="max-w-5xl mx-auto" role="main">
-        <section class="container-border overflow-hidden">
+        <div class="container-border overflow-hidden">
             <PageHeader title="Settings" description="Manage system-wide settings and configurations" :breadcrumbs="[
                 { label: 'Dashboard', href: route('home') },
                 { label: 'Settings' },
@@ -162,25 +162,6 @@ defineOptions({
                         protection measures.</p>
                     </Link>
 
-                    <Link :href="route('admin.setting.show')"
-                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
-                    <div
-                        class="absolute top-0 left-0 h-1 w-full bg-teal-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    </div>
-                    <div class="flex items-center gap-4 mb-3">
-                        <div
-                            class="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-xl border border-teal-100 dark:border-teal-800 group-hover:bg-teal-100 dark:group-hover:bg-teal-900/50 transition-colors">
-                            <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Schedule Monitoring</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Monitor scheduled tasks in a Laravel app</p>
-                    </Link>
-
                     <Link :href="route('health')"
                         class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
                     <div
@@ -202,6 +183,6 @@ defineOptions({
                     </Link>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 </template>

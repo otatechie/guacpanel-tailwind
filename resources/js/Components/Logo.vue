@@ -4,7 +4,7 @@ import { usePage } from '@inertiajs/vue3'
 
 const page = usePage()
 const logoUrl = computed(() => {
-    return page.props.personalisation?.appLogo || null
+    return page.props.personalisation?.app_logo || null
 })
 </script>
 

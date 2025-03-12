@@ -94,7 +94,6 @@ export default {
 <template>
     <fieldset class="space-y-1">
         <label :for="inputId" class="relative block" @click.stop="toggleDropdown">
-            <!-- Combobox input -->
             <input :id="inputId" type="text" readonly :value="displayValue" role="combobox" :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
                 :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
@@ -105,7 +104,6 @@ export default {
                         : 'border-gray-300 dark:border-gray-600 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-500'
                 ]" @keydown.arrow-down="isOpen = true" @keydown.enter.prevent="isOpen = !isOpen">
 
-            <!-- Listbox -->
             <section v-show="isOpen" :id="`${inputId}-listbox`" role="listbox"
                 class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-hidden">
                 <header class="p-2 border-b border-gray-300 dark:border-gray-600">

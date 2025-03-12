@@ -35,9 +35,8 @@ const activeTab = ref('roles')
     <Head title="Permissions & Roles" />
 
     <main class="max-w-5xl mx-auto" aria-labelledby="permissions-roles-title">
-        <h1 class="sr-only" id="permissions-roles-title">User Access Management</h1>
 
-        <article class="container-border overflow-hidden">
+        <div class="container-border overflow-hidden">
             <PageHeader title="User Access Management" description="Manage user roles and permissions" :breadcrumbs="[
                 { label: 'Dashboard', href: '/' },
                 { label: 'Settings', href: route('admin.setting.index') },
@@ -77,6 +76,6 @@ const activeTab = ref('roles')
                 <PermissionsTab v-if="activeTab === 'permissions'" :permissions="permissions" role="tabpanel"
                     id="permissions-panel" aria-labelledby="permissions-tab" />
             </section>
-        </article>
+        </div>
     </main>
 </template>

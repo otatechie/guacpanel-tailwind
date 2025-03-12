@@ -34,9 +34,8 @@ const submit = () => {
 
     <Head title="Security & Authentication Settings" />
 
-    <main class="max-w-5xl mx-auto" role="main" aria-labelledby="page-title">
-        <section
-            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+    <main class="max-w-5xl mx-auto" role="main">
+        <div class="container-border overflow-hidden">
             <PageHeader title="Security & Authentication"
                 description="Configure system-wide security policies and authentication requirements" :breadcrumbs="[
                     { label: 'Dashboard', href: route('home') },
@@ -45,7 +44,6 @@ const submit = () => {
                 ]" />
 
             <form @submit.prevent="submit" class="divide-y divide-gray-200 dark:divide-gray-700">
-                <!-- Password Security Section -->
                 <section class="p-6 space-y-6">
                     <header class="flex items-center gap-3">
                         <div class="p-2 bg-blue-50 dark:bg-blue-900/50 rounded-lg">
@@ -58,7 +56,6 @@ const submit = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-white">Password Security</h2>
                     </header>
 
-                    <!-- Password Expiration -->
                     <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between gap-4">
                             <div class="flex-1">
@@ -84,7 +81,6 @@ const submit = () => {
                     </div>
                 </section>
 
-                <!-- Authentication Methods Section -->
                 <section class="p-6 space-y-6">
                     <header class="flex items-center gap-3">
                         <div class="p-2 bg-purple-50 dark:bg-purple-900/50 rounded-lg">
@@ -97,7 +93,6 @@ const submit = () => {
                         <h2 class="text-lg font-medium text-gray-800 dark:text-white">Authentication Methods</h2>
                     </header>
 
-                    <!-- Two-Factor Authentication -->
                     <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between gap-4">
                             <div class="flex-1">
@@ -111,7 +106,6 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <!-- Passwordless Login -->
                     <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between gap-4">
                             <div class="flex-1">
@@ -125,7 +119,6 @@ const submit = () => {
                     </div>
                 </section>
 
-                <!-- Form Actions -->
                 <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex items-center justify-end gap-3">
                     <button type="submit" class="btn-primary inline-flex items-center gap-2" :disabled="form.processing"
                         :aria-busy="form.processing">
@@ -139,6 +132,6 @@ const submit = () => {
                     </button>
                 </div>
             </form>
-        </section>
+        </div>
     </main>
 </template>

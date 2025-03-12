@@ -34,11 +34,9 @@ onUnmounted(() => {
 <template>
     <Transition name="modal">
         <div v-if="show" class="fixed inset-0 z-[999]">
-            <!-- Backdrop -->
             <div class="fixed inset-0 grid h-screen w-screen place-items-center bg-black/30 backdrop-blur-[1px] dark:bg-black/50"
                 @click="$emit('close')" aria-hidden="true"></div>
 
-            <!-- Modal Dialog -->
             <main class="fixed inset-0 z-10 grid h-screen w-screen place-items-center p-4" @keydown.esc="$emit('close')"
                 role="dialog" aria-modal="true" :aria-labelledby="titleId">
                 <article class="relative w-full rounded-xl bg-white dark:bg-gray-800 shadow-2xl" :class="{

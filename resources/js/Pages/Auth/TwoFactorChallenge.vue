@@ -43,7 +43,7 @@ const submitRecovery = () => {
         <h1 class="main-heading text-center dark:text-white">
             Two-factor authentication
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 text-sm text-center font-medium mt-2" role="note">
+        <p class="text-gray-600 dark:text-gray-400 text-sm text-center font-medium mt-2">
             Please verify your identity to continue
         </p>
 

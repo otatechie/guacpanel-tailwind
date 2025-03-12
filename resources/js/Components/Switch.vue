@@ -1,29 +1,3 @@
-<template>
-    <label :class="[
-        'relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full',
-        disabled ? 'cursor-not-allowed opacity-50' : modelValue ? '' : 'hover:bg-gray-300',
-        modelValue ? 'bg-blue-500' : 'bg-gray-200'
-    ]">
-        <input
-            type="checkbox"
-            :checked="modelValue"
-            :disabled="disabled"
-            :aria-checked="modelValue"
-            :aria-label="label"
-            role="switch"
-            @change="$emit('update:modelValue', $event.target.checked)"
-            class="peer sr-only"
-        />
-        <span
-            :class="[
-                'inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-150 ease-in-out',
-                modelValue ? 'translate-x-[1.375rem]' : 'translate-x-0.5'
-            ]"
-            aria-hidden="true"
-        />
-    </label>
-</template>
-
 <script setup>
 const props = defineProps({
     modelValue: {
@@ -42,3 +16,17 @@ const props = defineProps({
 
 defineEmits(['update:modelValue'])
 </script>
+
+<template>
+    <label :class="[
+        'relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full',
+        disabled ? 'cursor-not-allowed opacity-50' : modelValue ? '' : 'hover:bg-gray-300',
+        modelValue ? 'bg-blue-500' : 'bg-gray-200']">
+        <input type="checkbox" :checked="modelValue" :disabled="disabled" :aria-checked="modelValue" :aria-label="label"
+            role="switch" @change="$emit('update:modelValue', $event.target.checked)" class="peer sr-only" />
+        <span :class="[
+            'inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-150 ease-in-out',
+            modelValue ? 'translate-x-[1.375rem]' : 'translate-x-0.5'
+        ]" aria-hidden="true" />
+    </label>
+</template>

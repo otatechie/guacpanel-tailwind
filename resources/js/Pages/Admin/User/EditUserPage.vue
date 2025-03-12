@@ -67,8 +67,8 @@ const deleteUser = () => {
 
     <Head :title="`Edit User - ${props.user.name}`" />
 
-    <main class="max-w-5xl mx-auto">
-        <section class="container-border overflow-hidden dark:bg-gray-800">
+    <main class="max-w-5xl mx-auto" role="main">
+        <div class="container-border overflow-hidden dark:bg-gray-800">
             <PageHeader :title="`Edit User - ${props.user.name}`" description="Manage user information and permissions"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: '/' },
@@ -83,10 +83,9 @@ const deleteUser = () => {
                             <button type="button" @click="activeTab = tab.key" :class="[
                                 'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
                                 activeTab === tab.key
-                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white dark:bg-gray-700 dark:text-blue-400'
+                                    ? 'border-b-2 border-purple-500 text-purple-600 bg-white dark:bg-gray-700 dark:text-purple-400'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
-                            ]" :aria-selected="activeTab === tab.key" :aria-controls="`${tab.key}-panel`"
-                                role="tab">
+                            ]" :aria-selected="activeTab === tab.key" :aria-controls="`${tab.key}-panel`" role="tab">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -137,7 +136,7 @@ const deleteUser = () => {
                     </div>
 
                     <div class="space-y-6">
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-3 pt-6">
                             <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
                                 <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -148,7 +147,7 @@ const deleteUser = () => {
                         </div>
                         <div
                             class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 border border-red-200 dark:border-red-800">
-                            <h3 class="font-medium text-gray-800 dark:text-white">Force Password Reset</h3>
+                            <h3 class="font-medium text-gray-800 dark:text-white">Delete Account</h3>
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400 mb-4">
                                 Permanently delete this user account and all associated data
                             </p>
@@ -196,7 +195,8 @@ const deleteUser = () => {
                     </div>
                 </div>
 
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex items-center justify-end gap-3">
+                <div
+                    class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex items-center justify-end gap-3 border-t border-gray-200 dark:border-gray-700">
                     <button type="submit" class="btn-primary inline-flex items-center gap-2"
                         :disabled="form.processing">
                         <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +209,7 @@ const deleteUser = () => {
                     </button>
                 </div>
             </form>
-        </section>
+        </div>
     </main>
 
     <Modal :show="showDeleteModal" @close="closeModal" size="sm">

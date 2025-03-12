@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('app_name')->nullable();
             $table->string('app_logo')->nullable();
             $table->string('favicon')->nullable();
-            $table->string('footer_text')->nullable();
             $table->string('copyright_text')->nullable();
             $table->string('timezone')->nullable();
             $table->timestamps();
