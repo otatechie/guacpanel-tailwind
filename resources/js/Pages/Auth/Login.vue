@@ -87,7 +87,7 @@ const sendMagicLink = () => {
             </template>
         </form>
 
-        <p class="mt-6 text-center text-sm text-gray-800 dark:text-gray-200">
+        <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-200">
             Don't have an account?
             <Link :href="route('register')" class="link hover:underline ml-1" aria-label="Go to registration page">
             Sign up
@@ -106,7 +106,7 @@ const sendMagicLink = () => {
                 <FormInput v-model="magicLinkForm.email" id="magic-link-email" label="Email address"
                     name="magic-link-email" type="email" required :error="magicLinkForm.errors.email"
                     autocomplete="email" />
-                <p class="text-sm text-gray-500" role="note">
+                <p class="text-sm text-gray-500">
                     We'll send a secure login link to your email address.
                 </p>
             </form>

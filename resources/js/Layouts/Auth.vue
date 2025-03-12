@@ -9,7 +9,7 @@ const page = usePage()
 
 const personalisation = page.props.personalisation || {}
 
-const hasCustomBranding = computed(() => personalisation.appName || personalisation.appLogo)
+const hasCustomBranding = computed(() => personalisation.appLogo)
 
 </script>
 
@@ -17,11 +17,7 @@ const hasCustomBranding = computed(() => personalisation.appName || personalisat
     <div class="min-h-screen flex flex-col">
         <main class="flex-grow bg-gray-50 dark:bg-gray-800 pb-16">
             <header>
-                <Logo :class="{ 'mb-8': !hasCustomBranding }" />
-                <h1 v-if="personalisation.appName"
-                    class="text-3xl font-extrabold text-gray-900 dark:text-white text-center mb-2">
-                    {{ personalisation.appName }}
-                </h1>
+                <Logo :class="{ 'mb-4': !hasCustomBranding }" />
             </header>
             <FlashMessage />
             <article>

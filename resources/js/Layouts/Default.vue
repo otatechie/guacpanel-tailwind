@@ -48,6 +48,10 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', handleClickAway)
 })
+
+const logoUrl = computed(() => {
+    return page.props.personalisation?.appLogo || null
+})
 </script>
 
 <template>
@@ -65,8 +69,9 @@ onUnmounted(() => {
                 class="fixed w-full top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-40">
                 <nav class="flex h-16 items-center px-4 gap-4">
                     <section class="flex items-center gap-4">
-                        <Link href="/" class="text-xl font-semibold text-gray-900">
-                        Your Logo
+                        <Link href="/" class="text-xl font-semibold text-gray-800 dark:text-white">
+                        <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="h-8 w-auto object-contain" />
+                        <span v-else>Your Logo</span>
                         </Link>
                         <button type="button"
                             class="rounded-lg p-2 text-gray-500 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 cursor-pointer"

@@ -27,7 +27,7 @@ const submit = () => {
         </h1>
 
         <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6" aria-labelledby="reset-form">
-            <p class="text-gray-800 dark:text-white text-sm" role="note">
+            <p class="text-gray-600 dark:text-white text-sm" role="note">
                 Enter your email to receive a password reset link
             </p>
 
@@ -39,7 +39,7 @@ const submit = () => {
             </button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-gray-800 dark:text-white">
+        <p class="mt-8 text-center text-sm text-gray-600 dark:text-white">
             Back to
             <Link :href="route('login')" class="text-sm link" aria-label="Return to login page">
             login
