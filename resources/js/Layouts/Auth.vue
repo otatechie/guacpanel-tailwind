@@ -15,7 +15,7 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
 
 <template>
     <div class="min-h-screen flex flex-col">
-        <main class="flex-grow bg-gray-50 dark:bg-gray-800 pb-16">
+        <main class="flex-grow bg-gray-50 dark:bg-gray-800 py-8">
             <header>
                 <Logo :class="{ 'mb-2': !hasCustomBranding }" />
             </header>
@@ -48,8 +48,8 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
                 </nav>
 
                 <p class="text-center text-xs text-gray-500 dark:text-gray-300 md:order-1">
-                    {{ personalisation.footerText }}
-                    {{ personalisation.copyrightText || '© 2024 All rights reserved.' }}
+                    {{ personalisation.app_name }}
+                    {{ personalisation.copyright_text || '© 2024 All rights reserved.' }}
                 </p>
             </section>
         </footer>

@@ -13,7 +13,7 @@ const footerText = computed(() => {
 })
 
 const copyrightText = computed(() => {
-    return page.props.personalisation?.copyright_text || `© ${new Date().getFullYear()}`
+    return page.props.personalisation?.copyright_text || `© ${new Date().getFullYear()} All rights reserved `
 })
 </script>
 
@@ -24,9 +24,6 @@ const copyrightText = computed(() => {
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-6 text-xs">
                     <p>{{ appName }}</p>
-                </div>
-                <div class="text-xs" v-if="footerText">
-                    {{ footerText }}
                 </div>
                 <div class="text-xs">
                     {{ copyrightText }}

@@ -8,11 +8,9 @@ import bash from 'highlight.js/lib/languages/bash'
 import php from 'highlight.js/lib/languages/php'
 import 'highlight.js/styles/github-dark.css'
 
-// Register languages
 hljs.registerLanguage('bash', bash)
 hljs.registerLanguage('php', php)
 
-// Highlight.js directive
 const vHighlight = {
     mounted(el) {
         hljs.highlightElement(el)
@@ -47,7 +45,6 @@ const filteredSections = computed(() => {
     })).filter(section => section.items.length > 0)
 })
 
-// Function to apply syntax highlighting
 const applyHighlighting = () => {
     nextTick(() => {
         document.querySelectorAll('pre code').forEach((block) => {
@@ -80,7 +77,8 @@ onMounted(() => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Getting Started</h1>
                 </div>
                 <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
-                    Get started with our Laravel Vue Starter Kit in minutes. Follow this step-by-step guide to set up your
+                    Get started with our Laravel Vue Starter Kit in minutes. Follow this step-by-step guide to set up
+                    your
                     development environment and begin building powerful admin interfaces.
                 </p>
                 <div class="flex flex-wrap gap-4">
@@ -90,7 +88,7 @@ onMounted(() => {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        Installation Guide
+                        Installation guide
                     </a>
                     <a href="https://github.com/otatechie/starter" target="_blank"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-purple-500 text-white hover:bg-purple-400 transition-colors font-medium">
@@ -110,8 +108,10 @@ onMounted(() => {
 
         <section id="prerequisites" class="mb-12 scroll-mt-16">
             <div class="flex items-center mb-6">
-                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div
+                    class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
+                    <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -139,7 +139,8 @@ onMounted(() => {
         <section id="installation" class="space-y-6 mb-12 scroll-mt-16">
             <div class="flex items-center mb-6">
                 <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
@@ -151,8 +152,10 @@ onMounted(() => {
                 <div class="space-y-6">
                     <div>
                         <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div class="w-8 h-8 bg-blue-100 dark:bg-blue-800/50 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div
+                                class="w-8 h-8 bg-blue-100 dark:bg-blue-800/50 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                                 </svg>
@@ -174,8 +177,10 @@ cd starter</code></pre>
 
                     <div>
                         <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div class="w-8 h-8 bg-purple-100 dark:bg-purple-800/50 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div
+                                class="w-8 h-8 bg-purple-100 dark:bg-purple-800/50 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
@@ -197,8 +202,10 @@ npm install</code></pre>
 
                     <div>
                         <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div class="w-8 h-8 bg-green-100 dark:bg-green-800/50 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div
+                                class="w-8 h-8 bg-green-100 dark:bg-green-800/50 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                 </svg>
@@ -216,14 +223,17 @@ npm install</code></pre>
                             <pre><code v-highlight class="language-bash">cp .env.example .env
 php artisan key:generate</code></pre>
                         </div>
-                        <p class="mt-2 text-gray-600 dark:text-gray-400">Configure your database and other settings in
+                        <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm">Configure your database and other
+                            settings in
                             the .env file</p>
                     </div>
 
                     <div>
                         <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div class="w-8 h-8 bg-yellow-100 dark:bg-yellow-800/50 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div
+                                class="w-8 h-8 bg-yellow-100 dark:bg-yellow-800/50 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
@@ -248,10 +258,11 @@ php artisan serve</code></pre>
 
         <section id="after-installation" class="mb-12 scroll-mt-16">
             <div class="flex items-center mb-6">
-                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 13l4 4L19 7" />
+                <div
+                    class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-4">
+                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-white">After Installation</h2>
@@ -287,8 +298,8 @@ DB_PASSWORD=your_password</code></pre>
                     <div class="space-y-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
                         <div class="flex items-start gap-3">
                             <div class="p-2 bg-yellow-100 dark:bg-yellow-800/50 rounded-lg">
-                                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
@@ -353,4 +364,3 @@ npm install</code></pre>
         <ArticleNavigation :links="articleLinks" />
     </div>
 </template>
-

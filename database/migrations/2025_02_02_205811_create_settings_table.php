@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->boolean('password_expiry')->default(0);
-            $table->boolean('passwordless_login')->default(1);
+            $table->boolean('passwordless_login')->default(0);
             $table->boolean('two_factor_authentication')->default(0);
             $table->timestamps();
         });

@@ -8,11 +8,9 @@ import javascript from 'highlight.js/lib/languages/javascript'
 import bash from 'highlight.js/lib/languages/bash'
 import 'highlight.js/styles/github-dark.css'
 
-// Register languages
 hljs.registerLanguage('javascript', javascript)
 hljs.registerLanguage('bash', bash)
 
-// Highlight.js directive
 const vHighlight = {
     mounted(el) {
         hljs.highlightElement(el)
@@ -244,15 +242,12 @@ const articleLinks = [
     { text: 'Activity Tracking', href: '#auditing' }
 ]
 
-// Fixed the language mappings for highlight.js
 const fixHighlightLanguages = () => {
-    // Map language-vue to language-html/xml since highlight.js doesn't have a Vue mode
     document.querySelectorAll('pre code.language-vue').forEach((block) => {
         block.className = 'language-xml'
     })
 }
 
-// Function to apply syntax highlighting
 const applyHighlighting = () => {
     nextTick(() => {
         fixHighlightLanguages()
@@ -268,7 +263,6 @@ onMounted(() => {
     })
 })
 
-// Watch for changes in any code blocks and reapply highlighting
 watch([
     routeConfigCode, featureToggleCode, magicLinkCode, authProcessCode,
     accountDisablingCode, passwordExpiryCode, forcePasswordCode,
@@ -277,27 +271,13 @@ watch([
 ], () => {
     applyHighlighting()
 }, { deep: true })
-
-// Handle edit clicks
-const handleEdit = (user) => {
-    router.get(route('users.edit', user.id))
-}
-
-// Handle delete clicks (you can implement this as needed)
-const handleDelete = (user) => {
-    // Implementation for delete functionality
-    console.log('Delete user:', user)
-}
-
-// ... rest of your existing code ...
 </script>
 
 <template>
 
-    <Head title="Features - Obomaa" />
+    <Head title="Features - Obomadash" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <!-- Hero Section -->
         <div
             class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900">
             <div class="relative z-10 p-8 md:p-12">
@@ -311,8 +291,10 @@ const handleDelete = (user) => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Core Features</h1>
                 </div>
                 <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
-                    Explore Obomaa's powerful built-in features including authentication, permissions, security middleware, backup systems,
-                    data tables, and activity tracking. Each feature is designed to help you build secure and scalable admin interfaces.
+                    Explore Obomadash's powerful built-in features including authentication, permissions, security
+                    middleware, backup systems,
+                    data tables, and activity tracking. Each feature is designed to help you build secure and scalable
+                    admin interfaces.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#authentication"
@@ -341,9 +323,7 @@ const handleDelete = (user) => {
         <div class="flex flex-col space-y-8 mb-8">
             <ArticleNavigation :links="articleLinks" />
 
-            <!-- Main Content Sections -->
             <div class="space-y-16">
-            <!-- Authentication Section -->
                 <section id="authentication" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -357,35 +337,33 @@ const handleDelete = (user) => {
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Authentication</h2>
                     </div>
 
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                    <!-- Introduction -->
-                    <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-2">
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-2">
                                 Laravel Fortify automatically scaffolds the login, two-factor login, registration,
                                 password
                                 reset, and email verification features for your project, allowing you to start building
                                 the
-                            features you care about instead of worrying about the nitty-gritty details of user
-                            authentication.
-                        </p>
-                        <p class="text-gray-600 dark:text-gray-400 mb-4">
-                            <a href="https://laravel.com/docs/fortify" target="_blank"
-                                class="border-b-2 border-purple-500 dark:border-purple-400">Learn more about Laravel
-                                Fortify</a>
-                        </p>
-                    </div>
+                                features you care about instead of worrying about the nitty-gritty details of user
+                                authentication.
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                <a href="https://laravel.com/docs/fortify" target="_blank"
+                                    class="border-b-2 border-purple-500 dark:border-purple-400">Learn more about Laravel
+                                    Fortify</a>
+                            </p>
+                        </div>
 
-                    <!-- Passwordless Login -->
-                    <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 Passwordless authentication allows users to sign in securely using email-based magic
                                 links
-                            instead of traditional passwords. This modern approach enhances security by eliminating
-                            password-related vulnerabilities while providing a smoother user experience.
-                        </p>
+                                instead of traditional passwords. This modern approach enhances security by eliminating
+                                password-related vulnerabilities while providing a smoother user experience.
+                            </p>
 
                             <div
                                 class="mt-6 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
@@ -394,44 +372,39 @@ const handleDelete = (user) => {
                                     <span><strong>Pro Tip:</strong> Passwordless login is perfect for non-technical
                                         users -
                                         no more forgotten passwords or security concerns!</span>
-                            </p>
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Implementation -->
-                    <div class="space-y-8">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
-                        <div class="grid gap-8">
-                            <!-- Route Configuration -->
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                        <div class="space-y-8">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
+                            <div class="grid gap-8">
+                                <div
+                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5
                                         class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">1.</span> Route Configuration
-                                </h5>
+                                    </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
                                         First, set up the routes for magic link authentication:
                                     </p>
 
                                     <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                             @click="navigator.clipboard.writeText(routeConfigCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
                                         <pre><code class="language-php">{{ routeConfigCode }}</code></pre>
                                     </div>
                                 </div>
-
-                                <!-- Rest of authentication content... -->
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Permissions & Roles Section -->
                 <section id="permissions-roles" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -447,11 +420,10 @@ const handleDelete = (user) => {
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa provides a robust permissions and roles system built on top of Spatie's
+                                Obomadash provides a robust permissions and roles system built on top of Spatie's
                                 Laravel-Permission package. This system allows you to control access to different parts
                                 of your application with granular precision.
                             </p>
@@ -462,7 +434,6 @@ const handleDelete = (user) => {
                             </p>
                         </div>
 
-                        <!-- Key Concepts -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Key Concepts</h3>
 
@@ -489,7 +460,6 @@ const handleDelete = (user) => {
                     </div>
                 </section>
 
-                <!-- Security Middleware Section -->
                 <section id="middleware" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -505,22 +475,19 @@ const handleDelete = (user) => {
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa includes several middleware components that enhance security and user management.
+                                Obomadash includes several middleware components that enhance security and user
+                                management.
                                 These middleware classes intercept HTTP requests before they reach your controllers,
                                 allowing you to implement security checks, enforce policies, and manage user sessions.
                             </p>
                         </div>
 
-                        <!-- Key Middleware Components -->
                         <div class="space-y-8">
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Key Middleware
                                 Components</h3>
-
-                            <!-- Account Disabling Middleware -->
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -550,7 +517,6 @@ const handleDelete = (user) => {
                                 </div>
                             </div>
 
-                            <!-- Password Expiry Middleware -->
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -580,7 +546,6 @@ const handleDelete = (user) => {
                                 </div>
                             </div>
 
-                            <!-- Force Password Change Middleware -->
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -609,7 +574,6 @@ const handleDelete = (user) => {
                                 </div>
                             </div>
 
-                            <!-- Two-Factor Authentication Middleware -->
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -644,7 +608,6 @@ const handleDelete = (user) => {
                     </div>
                 </section>
 
-                <!-- Backup System Section -->
                 <section id="backup-system" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -660,11 +623,10 @@ const handleDelete = (user) => {
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa includes a powerful backup system built on <a
+                                Obomadash includes a powerful backup system built on <a
                                     href="https://spatie.be/docs/laravel-backup" target="_blank"
                                     class="border-b-2 border-emerald-500 dark:border-emerald-400">Spatie's Laravel
                                     Backup package</a>. This system enables you to:
@@ -678,7 +640,6 @@ const handleDelete = (user) => {
                             </ul>
                         </div>
 
-                        <!-- Backup UI Features -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Backup UI</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -714,8 +675,8 @@ const handleDelete = (user) => {
                                     <p class="text-emerald-700 dark:text-emerald-400 text-sm">
                                         Download, delete, or restore backups through a user-friendly interface with
                                         clear status indicators.
-                                        </p>
-                                    </div>
+                                    </p>
+                                </div>
 
                                 <div
                                     class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
@@ -731,7 +692,6 @@ const handleDelete = (user) => {
                     </div>
                 </section>
 
-                <!-- Data Tables Section -->
                 <section id="datatables" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -747,11 +707,10 @@ const handleDelete = (user) => {
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Introduction -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa includes a powerful data tables component built on top of <a
+                                Obomadash includes a powerful data tables component built on top of <a
                                     href="https://tanstack.com/table/v8" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. These
                                 tables provide a rich interactive experience with features like:
@@ -766,12 +725,10 @@ const handleDelete = (user) => {
                             </ul>
                         </div>
 
-                        <!-- Implementation -->
                         <div class="space-y-8">
                             <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
 
                             <div class="grid gap-8">
-                                <!-- Table Setup -->
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5
@@ -791,7 +748,7 @@ const handleDelete = (user) => {
                                             </svg>
                                         </button>
                                         <pre><code class="language-javascript">{{ tableExampleCode }}</code></pre>
-                            </div>
+                                    </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                                         <p><strong>What this does:</strong> Creates a table configuration with two
@@ -799,7 +756,6 @@ const handleDelete = (user) => {
                                     </div>
                                 </div>
 
-                                <!-- Action Buttons -->
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5
@@ -828,7 +784,6 @@ const handleDelete = (user) => {
                                     </div>
                                 </div>
 
-                                <!-- Table Component -->
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5
@@ -856,7 +811,6 @@ const handleDelete = (user) => {
                                     </div>
                                 </div>
 
-                                <!-- Backend Integration -->
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5
@@ -888,7 +842,6 @@ const handleDelete = (user) => {
                     </div>
                 </section>
 
-                <!-- Activity Tracking Section -->
                 <section id="auditing" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -904,16 +857,16 @@ const handleDelete = (user) => {
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <!-- Auditing content... -->
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Model Auditing</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomaa integrates <a href="https://github.com/owen-it/laravel-auditing" target="_blank"
+                                Obomadash integrates <a href="https://github.com/owen-it/laravel-auditing"
+                                    target="_blank"
                                     class="border-b-2 border-purple-500 dark:border-purple-400">owen-it/laravel-auditing</a>
                                 package
                                 for comprehensive model auditing and activity tracking. While the core auditing
                                 functionality is
-                                handled by the package, Obomaa provides:
+                                handled by the package, Obomadash provides:
                             </p>
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
                                 <li>User-friendly interface to view audit logs</li>
@@ -930,17 +883,16 @@ const handleDelete = (user) => {
                                             class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">Auditable</code>
                                         interface on critical models to track important changes automatically.</span>
                                 </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
             </div>
         </div>
     </div>
 
     <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-            <!-- Previous Page -->
             <a href="/documentation/getting-started"
                 class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
                 <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400"
@@ -955,7 +907,6 @@ const handleDelete = (user) => {
                 </div>
             </a>
 
-            <!-- Next Page -->
             <a href="/documentation/advanced-features"
                 class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
                 <div class="text-right">

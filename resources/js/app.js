@@ -1,5 +1,4 @@
 import { createApp, h } from "vue";
-import { createPinia } from 'pinia';
 import { createInertiaApp, Link, router } from "@inertiajs/vue3";
 import { ZiggyVue } from "ziggy-js";
 import NProgress from "nprogress";
@@ -14,8 +13,6 @@ import Public from "./Layouts/Public.vue";
 router.on("start", () => NProgress.start());
 router.on("finish", () => NProgress.done());
 router.on("error", () => NProgress.done());
-
-const pinia = createPinia();
 
 createInertiaApp({
     progress: {
@@ -35,15 +32,13 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) });
 
-        app.use(plugin)
-            .use(pinia)
-            .use(ZiggyVue);
+        app.use(plugin).use(ZiggyVue);
 
         const globalComponents = {
             Link,
             Default,
             Auth,
-            Public
+            Public,
         };
 
         Object.entries(globalComponents).forEach(([name, component]) => {

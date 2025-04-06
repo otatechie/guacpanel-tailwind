@@ -29,6 +29,7 @@ const submit = () => {
 
     <div class="max-w-[384px] mx-auto px-8" role="main">
         <h1 class="main-heading text-center dark:text-white">Create account</h1>
+
         <form @submit.prevent="submit" class="container-border p-5 space-y-6 mt-6" aria-labelledby="registration-form">
             <FormInput v-model="form.name" label="Legal name" name="name" id="name" required :error="form.errors.name"
                 autocomplete="name" />

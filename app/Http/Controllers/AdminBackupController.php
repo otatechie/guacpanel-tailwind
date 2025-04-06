@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class AdminBackupController extends Controller
 {
@@ -59,10 +61,21 @@ class AdminBackupController extends Controller
 
         $totalSize = array_reduce($backups, fn($carry, $backup) => $carry + $disk->size($backup['path']), 0);
 
+        // Determine storage type more safely
+        $storageType = 'other';
+        try {
+            $diskConfig = config('filesystems.disks.local.driver');
+            if ($diskConfig === 'local') {
+                $storageType = 'local';
+            }
+        } catch (\Exception $e) {
+            // If we can't determine the adapter, just use the default value
+        }
+
         return [[
             'name' => $backupName,
-            'disk' => config('backup.backup.destination.disks')[0],
-            'storageType' => $disk->getAdapter() instanceof LocalFilesystemAdapter ? 'local' : 'other',
+            'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
+            'storageType' => $storageType,
             'reachable' => true,
             'healthy' => true,
             'count' => count($backups),
@@ -75,31 +88,58 @@ class AdminBackupController extends Controller
     public function download(string $path)
     {
         $disk = $this->getDisk();
-        $backupPath = $path;
+        $path = urldecode($path);
 
-        if (!$disk->exists($backupPath)) {
+        if (!$disk->exists($path)) {
             session()->flash('error', 'Unable to locate backup file');
             return redirect()->back();
         }
 
-        return $disk->download($path);
+        return response()->streamDownload(function() use ($disk, $path) {
+            echo $disk->get($path);
+        }, basename($path));
     }
 
 
     public function delete(string $path)
     {
-        $disk = $this->getDisk();
-        $backupPath = $path;
-
-        if (!$disk->exists($backupPath)) {
-            session()->flash('error', 'Unable to locate backup file');
+        try {
+            $disk = $this->getDisk();
+            $path = urldecode($path);
+            
+            if (!$disk->exists($path)) {
+                return response()->json(['message' => 'Backup file not found'], 404);
+            }
+            
+            $disk->delete($path);
+            session()->flash('success', 'Backup deleted successfully');
+            
             return redirect()->back();
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json(['message' => 'Failed to delete: ' . $e->getMessage()], 500);
         }
+    }
 
-        $disk->delete($backupPath);
-        session()->flash('success', 'Backup deleted successfully');
 
-        return redirect()->back();
+    public function destroy(string $path)
+    {
+        try {
+            $disk = $this->getDisk();
+            $path = urldecode($path);
+            
+            if (!$disk->exists($path)) {
+                return response()->json(['message' => 'Backup file not found'], 404);
+            }
+                    
+            $disk->delete($path);
+            session()->flash('success', 'Backup deleted successfully');
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json(['message' => 'Failed to delete backup'], 500);
+        }
     }
 
 

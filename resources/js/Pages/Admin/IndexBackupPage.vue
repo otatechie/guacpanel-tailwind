@@ -34,7 +34,7 @@ const runBackup = () => {
     if (isBackupRunning.value) return;
 
     isBackupRunning.value = true;
-    form.post(route('backup.run'), {
+    form.post(route('backup.create'), {
         preserveScroll: true,
         onError: () => {
             isBackupRunning.value = false;
@@ -66,12 +66,13 @@ const closeDeleteModal = () => {
 const deleteBackup = () => {
     if (!selectedBackup.value?.path) return;
 
-    form.delete(route('backup.delete', { path: selectedBackup.value.path.trim() }), {
+    const encodedPath = encodeURIComponent(selectedBackup.value.path.trim());
+    form.delete(route('backup.destroy', { path: encodedPath }), {
         preserveScroll: true,
         onSuccess: () => {
             closeDeleteModal();
         },
-        onError: () => {
+        onError: (errors) => {
             closeDeleteModal();
         }
     });

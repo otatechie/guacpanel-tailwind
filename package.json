@@ -32,7 +32,6 @@
         "highlight.js": "^11.11.1",
         "nprogress": "^0.2.0",
         "path": "^0.12.7",
-        "pinia": "^2.3.0",
         "vue": "^3.0.0",
         "vue-filepond": "^7.0.4",
         "ziggy-js": "^2.3.0"

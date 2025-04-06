@@ -16,11 +16,13 @@ const props = defineProps({
     },
     qrCodeSvg: {
         type: String,
-        required: true
+        required: false,
+        default: null
     },
     recoveryCodes: {
         type: Array,
-        required: true
+        required: false,
+        default: () => []
     }
 })
 
@@ -115,7 +117,6 @@ const benefits = [
 
             <!-- 2FA Management Section -->
             <div v-else class="divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-700">
-                <!-- Setup Instructions -->
                 <section class="p-6 space-y-6" aria-labelledby="setup-instructions">
                     <header class="flex items-center gap-3">
                         <span class="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
@@ -130,7 +131,6 @@ const benefits = [
                     </header>
 
                     <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Instructions -->
                         <div class="space-y-8">
                             <div class="space-y-4">
                                 <div class="flex items-center gap-3">
@@ -235,7 +235,6 @@ const benefits = [
                     </div>
                 </section>
 
-                <!-- Danger Zone -->
                 <section class="p-6 space-y-6" aria-labelledby="danger-zone">
                     <header class="flex items-center gap-3">
                         <span class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -267,7 +266,7 @@ const benefits = [
         </article>
     </main>
 
-    <!-- Disable 2FA Confirmation Modal -->
+  
     <Modal :show="showDisableModal" @close="closeModal" size="md">
         <template #title>
             <div class="flex items-center gap-2 text-red-600 dark:text-red-400">

@@ -9,7 +9,7 @@ const navigationSections = ref([
         items: [
             {
                 name: 'Introduction',
-                href: route('documentation'),
+                href: route('documentation.index'),
                 icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />'
             },
             {
@@ -17,7 +17,7 @@ const navigationSections = ref([
             },
             {
                 name: 'Installation',
-                href: route('documentation.intro'),
+                href: route('documentation.installation'),
                 icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
             },
             {
@@ -91,4 +91,3 @@ const isActive = (href) => {
         </footer>
     </aside>
 </template>
-

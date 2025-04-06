@@ -107,8 +107,8 @@ Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->
             Route::controller(AdminBackupController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::post('/', 'createBackup')->name('create');
-                Route::get('/download/{path}', 'download')->name('download');
-                Route::delete('/{path}', 'destroy')->name('destroy');
+                Route::get('/download/{path}', 'download')->name('download')->where('path', '.*');
+                Route::delete('/{path}', 'destroy')->name('destroy')->where('path', '.*');
             });
         });
 
@@ -134,7 +134,7 @@ Route::middleware(['guest', 'web'])->group(function () {
             Route::get('/register', 'create')->name('create');
             Route::post('/register', 'store')->name('store');
             Route::post('/login', 'login')->name('login');
-            Route::get('/{token}', 'authenticate')->name('authenticate');
+            Route::get('/{token}', 'authenticate')->name('login.authenticate');
         });
     });
 });

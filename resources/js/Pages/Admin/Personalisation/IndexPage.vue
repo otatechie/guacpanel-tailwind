@@ -30,9 +30,9 @@ const props = defineProps({
 })
 
 const form = useForm({
-    app_logo: personalisation.value.appLogo,
+    app_logo: personalisation.value?.appLogo || null,
     app_name: props.personalisation?.app_name || null,
-    favicon: personalisation.value.favicon,
+    favicon: personalisation.value?.favicon || null,
     copyright_text: props.personalisation?.copyright_text || null,
     timezone: props.personalisation?.timezone || 'UTC',
 })

@@ -26,13 +26,11 @@ class MagicLinkController extends Controller
         }
     }
 
-
     public function create()
     {
         $this->checkPasswordlessEnabled();
         return Inertia::render('Auth/RegisterMagicLink');
     }
-
 
     public function store(Request $request)
     {
@@ -55,7 +53,6 @@ class MagicLinkController extends Controller
             'success' => 'Account created! Check your email for the login link.'
         ]);
     }
-
 
     public function login(Request $request)
     {
@@ -80,23 +77,21 @@ class MagicLinkController extends Controller
         ]);
     }
 
-
     protected function sendLoginLink(User $user)
     {
         $this->checkPasswordlessEnabled();
 
         $token = Str::random(40);
-        Cache::put("magic_link:{$user->id}", $token, now()->addMinutes(10));
+        Cache::put("magic_link:{$token}", $user->id, now()->addMinutes(10));
 
         $url = URL::temporarySignedRoute(
-            'magic.login',
+            'magic.login.authenticate',
             now()->addMinutes(10),
             ['token' => $token]
         );
 
         Mail::to($user)->send(new MagicLoginLink($url));
     }
-
 
     public function authenticate(Request $request)
     {
@@ -107,7 +102,14 @@ class MagicLinkController extends Controller
                 ->with('error', 'This magic link has expired. Please request a new one.');
         }
 
-        $user = User::where('id', Cache::get("magic_link:{$request->token}"))->firstOrFail();
+        $userId = Cache::get("magic_link:{$request->token}");
+
+        if (!$userId) {
+            return redirect()->route('login')
+                ->with('error', 'This magic link has expired or is invalid. Please request a new one.');
+        }
+
+        $user = User::findOrFail($userId);
 
         auth()->guard('web')->login($user);
         $request->session()->regenerate();
