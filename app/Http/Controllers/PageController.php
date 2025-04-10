@@ -8,8 +8,8 @@ use Inertia\Inertia;
 class PageController extends Controller
 {
 
-    public function help()
+    public function indexFlight()
     {
-        return Inertia::render('IndexHelpPage', []);
+        return Inertia::render('IndexFlight', []);
     }
 }

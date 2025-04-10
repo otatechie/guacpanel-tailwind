@@ -21,6 +21,8 @@ use App\Http\Controllers\AdminPersonalisationController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 
+Route::get('/flight', [PageController::class, 'indexFlight'])->name('flight');
+
 // Authenticated Routes
 Route::middleware(['web', 'auth', 'disable.account', 'force.password.change'])->group(function () {
     // Home Route

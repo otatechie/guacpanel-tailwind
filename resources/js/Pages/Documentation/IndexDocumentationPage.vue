@@ -8,7 +8,7 @@ defineOptions({
     layout: Public
 })
 
-// Core features data
+
 const features = {
     core: [
         {
@@ -18,7 +18,8 @@ const features = {
                 { name: 'Passwordless Login', description: 'Streamlined authentication without password' },
                 { name: 'Role-based Permissions', description: 'Control access with customizable roles' },
                 { name: 'Password Security Policies', description: 'Configure password expiry and changes' },
-                { name: 'Authentication Logs', description: 'Track login attempts and sessions' }
+                { name: 'Authentication Logs', description: 'Track login attempts and sessions' },
+                { name: 'Activity Logs', description: 'Monitor user actions and system changes' }
             ]
         },
         {
@@ -47,7 +48,6 @@ const articleLinks = [
     { text: 'Interface & Layout', href: '#interface' },
     { text: 'Data Management', href: '#data-management' },
     { text: 'Technologies & Packages', href: '#technologies' },
-    { text: 'Contributing', href: '#contributing' }
 ]
 
 const showBackToTop = ref(false)
@@ -71,7 +71,7 @@ onUnmounted(() => {
 
 <template>
 
-    <Head title="Introduction - Obomadash" />
+    <Head title="Introduction - OboDash" />
 
     <div id="introduction" class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
@@ -87,7 +87,7 @@ onUnmounted(() => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Introduction</h1>
                 </div>
                 <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
-                    Transform your Laravel development workflow with Obomadash - a VILT stack starter kit that
+                    Transform your Laravel development workflow with OboDash - a VILT stack starter kit that
                     accelerates app development with pre-configured authentication, UI components, and developer tools.
                 </p>
                 <div class="flex flex-wrap gap-4">
@@ -99,7 +99,7 @@ onUnmounted(() => {
                         </svg>
                         Start building now
                     </a>
-                    <a href="https://github.com/otatechie/starter" target="_blank"
+                    <a href="https://github.com/otatechie/obodash-tailwind" target="_blank"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-purple-500 text-white hover:bg-purple-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
@@ -118,9 +118,9 @@ onUnmounted(() => {
         <div class="border-t border-gray-200 py-2"></div>
 
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-2">Features</h2>
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Features</h2>
             <p class="text-gray-600 dark:text-gray-400">
-                Obomaa provides a solid foundation for building admin interfaces with Laravel, Vue, Inertia, and
+                OboDash provides a solid foundation for building admin interfaces with Laravel, Vue, Inertia, and
                 Tailwind CSS:
             </p>
         </div>
@@ -148,7 +148,7 @@ onUnmounted(() => {
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                 </div>
                             </div>
@@ -258,6 +258,30 @@ onUnmounted(() => {
                             </div>
                         </div>
                     </div>
+
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
+                                    Activity Logs
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    Monitor user actions and system changes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -317,30 +341,6 @@ onUnmounted(() => {
                                 </h4>
                                 <p class="text-gray-600 dark:text-gray-400">
                                     Switch between themes for viewing
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
-                        <div class="flex items-start gap-6">
-                            <div class="flex-shrink-0 mt-1">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
-                                    Dashboard Overview
-                                </h4>
-                                <p class="text-gray-600 dark:text-gray-400">
-                                    Customizable home page
                                 </p>
                             </div>
                         </div>
@@ -488,10 +488,8 @@ onUnmounted(() => {
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                                    class="w-8 h-8">
-                                                    <path fill="#FF2D20"
-                                                        d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z" />
+                                                <svg viewBox="0 0 50 52" xmlns="http://www.w3.org/2000/svg" class="w-8 h-8">
+                                                    <path d="M49.626 11.564a.809.809 0 0 1 .028.209v10.972a.8.8 0 0 1-.402.694l-9.209 5.302V39.25c0 .286-.152.55-.4.694L20.42 51.01c-.044.025-.092.041-.14.058-.018.006-.035.017-.054.022a.805.805 0 0 1-.41 0c-.022-.006-.042-.018-.063-.026-.044-.016-.09-.03-.132-.054L.402 39.944A.801.801 0 0 1 0 39.25V6.334c0-.072.01-.142.028-.21.006-.023.02-.044.028-.067.015-.042.029-.085.051-.124.015-.026.037-.047.055-.071.023-.032.044-.065.071-.093.023-.023.053-.04.079-.06.029-.024.055-.05.088-.069h.001l9.61-5.533a.802.802 0 0 1 .8 0l9.61 5.533h.002c.032.02.059.045.088.068.026.02.055.038.078.06.028.029.048.062.072.094.017.024.04.045.054.071.023.04.036.082.052.124.008.023.022.044.028.068a.809.809 0 0 1 .028.209v20.559l8.008-4.611v-10.51c0-.07.01-.141.028-.208.007-.024.02-.045.028-.068.016-.042.03-.085.052-.124.015-.026.037-.047.054-.071.024-.032.044-.065.072-.093.023-.023.052-.04.078-.06.03-.024.056-.05.088-.069h.001l9.611-5.533a.801.801 0 0 1 .8 0l9.61 5.533c.034.02.06.045.09.068.025.02.054.038.077.06.028.029.048.062.072.094.018.024.04.045.054.071.023.039.036.082.052.124.009.023.022.044.028.068zm-1.574 10.718v-9.124l-3.363 1.936-4.646 2.675v9.124l8.01-4.611zm-9.61 16.505v-9.13l-4.57 2.61-13.05 7.448v9.216l17.62-10.144zM1.602 7.719v31.068L19.22 48.93v-9.214l-9.204-5.209-.003-.002-.004-.002c-.031-.018-.057-.044-.086-.066-.025-.02-.054-.036-.076-.058l-.002-.003c-.026-.025-.044-.056-.066-.084-.02-.027-.044-.05-.06-.078l-.001-.003c-.018-.03-.029-.066-.042-.1-.013-.03-.03-.058-.038-.09v-.001c-.01-.038-.012-.078-.016-.117-.004-.03-.012-.06-.012-.09V12.33L4.965 9.654 1.602 7.72zm8.81-5.994L2.405 6.334l8.005 4.609 8.006-4.61-8.006-4.608zm4.164 28.764l4.645-2.674V7.719l-3.363 1.936-4.646 2.675v20.096l3.364-1.937zM39.243 7.164l-8.006 4.609 8.006 4.609 8.005-4.61-8.005-4.608zm-.801 10.605l-4.646-2.675-3.363-1.936v9.124l4.645 2.674 3.364 1.937v-9.124zM20.02 38.33l11.743-6.704 5.87-3.35-8-4.606-9.211 5.303-8.395 4.833 7.993 4.524z" fill="#FF2D20" fill-rule="evenodd"/>
                                                 </svg>
                                             </div>
                                         </div>
@@ -513,9 +511,9 @@ onUnmounted(() => {
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                                                <svg viewBox="0 0 32 32" class="w-8 h-8">
-                                                    <path fill="#38bdf8"
-                                                        d="M13.5 16.5c-.3-2.1-1.5-4-3.2-5.2 1.6-1.6 3.9-2.5 6.2-2.5 4.6 0 8.4 3.7 8.4 8.4 0 1.9-.7 3.7-1.8 5.1 1.7-.3 3.3-1.1 4.6-2.2-.6 4-3.9 7.1-8 7.1-3.9 0-7.2-2.8-7.9-6.5-.5.5-1.2.8-1.9.8C8.1 21.5 7 20.4 7 19s1.1-2.5 2.5-2.5h4z" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 261.76 226.69" class="w-8 h-8">
+                                                    <path d="M161.096.001l-30.225 52.351L100.647.001H-.005l130.877 226.688L261.749.001z" fill="#41b883"/>
+                                                    <path d="M161.096.001l-30.225 52.351L100.647.001H52.346l78.526 136.01L209.398.001z" fill="#34495e"/>
                                                 </svg>
                                             </div>
                                         </div>
@@ -536,11 +534,11 @@ onUnmounted(() => {
                                     class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
-                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                    class="w-8 h-8">
-                                                    <path fill="#9553E9"
-                                                        d="M12 0C5.375 0 0 5.375 0 12c0 6.627 5.375 12 12 12 6.627 0 12-5.373 12-12 0-6.625-5.373-12-12-12zm.001 2.247c5.405 0 9.756 4.351 9.756 9.756 0 5.405-4.351 9.756-9.756 9.756-5.405 0-9.756-4.351-9.756-9.756 0-5.405 4.351-9.756 9.756-9.756zM8.999 7v10h6v-2h-4V7h-2z" />
+                                            <div class="w-12 h-12 rounded-lg flex items-center justify-center">
+                                                <svg class="w-16 h-16 text-purple-600" viewBox="0 0 275.3 50.5" fill="currentColor">
+                                                    <path d="M231.2 16.1h-17.8l17.2 17.2-17.2 17.2h17.8l17.2-17.2z"></path>
+                                                    <path d="M258.1 16.1h-17.8l17.2 17.2-17.2 17.2h17.8l17.2-17.2z"></path>
+                                                    <path d="M6 15.3h10.3l-6 34.2H0l6-34.2zm.6-9.1C7.2 2.9 10.3 0 13.7 0s5.7 2.8 5.2 6.2c-.5 3.4-3.7 6.2-7.2 6.2s-5.6-3-5.1-6.2zM54.3 28.5l-3.7 21H40.4L43.8 30c.8-4.4-1.6-6.2-4.9-6.2-3.4 0-6.5 2-7.5 6.6L28 49.5H17.8l6-34.2h10.3l-1.1 6.2c2.3-2.6 6.2-4.2 10.1-4.2 6.9.1 12.2 5.1 10.6 14.2zM94.5 32.4c-.1.8-.5 2.7-1.1 4.1H68.9c.6 3.8 3.8 4.8 7 4.8 2.9 0 5.2-.8 7.2-2.7l7.2 5.9c-4 4-8.7 6-15 6-11.8 0-18-8.5-16.3-18.7a20.7 20.7 0 0 1 20.5-17.4c9.8 0 16.9 7.6 15 18zm-9.7-3.7c-.3-3.8-3-5.3-6.2-5.3a8.9 8.9 0 0 0-8.3 5.3h14.5zM123.9 14.6l-2 11.6c-4-.6-10.5.8-11.7 7.8l.1-.4-2.8 15.9H97.3l6-34.2h10.3l-1.1 6.2c2.1-4.7 6.6-6.9 11.4-6.9zM137.8 37.3c-.5 3.1 2 3.3 6.6 2.9l-1.6 9.3c-12.3 1.4-16.9-2.7-15.2-12.2l2.1-12.1h-5.5l1.8-9.9h5.4l1.2-6.5 10.8-3.1-1.7 9.6h7.1l-1.8 9.9h-7l-2.2 12.1zM155.3 15.3h10.3l-6 34.2h-10.3l6-34.2zm.6-9.1c.5-3.3 3.7-6.2 7.1-6.2s5.7 2.8 5.2 6.2c-.5 3.4-3.7 6.2-7.2 6.2s-5.7-3-5.1-6.2zM208.1 15.3l-6 34.2h-10.3l.4-2.3a15.5 15.5 0 0 1-10.3 3.3c-11.1 0-15.3-9.6-13.5-18.9 1.6-8.8 8.6-17.2 19.2-17.2 4.5 0 7.7 1.8 9.6 4.6l.6-3.6h10.3zm-13.2 17.2c.9-5.2-1.9-8.4-6.6-8.4a9.5 9.5 0 0 0-9.5 8.3c-.9 5.1 1.8 8.3 6.6 8.3 4.6.1 8.6-3.1 9.5-8.2z"></path>
                                                 </svg>
                                             </div>
                                         </div>
@@ -549,6 +547,9 @@ onUnmounted(() => {
                                                 Inertia.js <span class="text-sm text-gray-500">v2.x</span></h4>
                                             <p class="text-gray-600 dark:text-gray-400">The glue between Laravel and Vue
                                                 for modern SPAs</p>
+                                                <a href="https://inertiajs.com/" target="_blank"
+                                                class="text-purple-600 hover:text-purple-500 text-sm mt-2 inline-block">Official
+                                                Docs →</a>
                                         </div>
                                     </div>
                                 </div>
@@ -558,9 +559,15 @@ onUnmounted(() => {
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
-                                                <svg viewBox="0 0 32 32" class="w-8 h-8">
-                                                    <path fill="#38bdf8"
-                                                        d="M13.5 16.5c-.3-2.1-1.5-4-3.2-5.2 1.6-1.6 3.9-2.5 6.2-2.5 4.6 0 8.4 3.7 8.4 8.4 0 1.9-.7 3.7-1.8 5.1 1.7-.3 3.3-1.1 4.6-2.2-.6 4-3.9 7.1-8 7.1-3.9 0-7.2-2.8-7.9-6.5-.5.5-1.2.8-1.9.8C8.1 21.5 7 20.4 7 19s1.1-2.5 2.5-2.5h4z" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 54 33" class="w-8 h-8">
+                                                    <g clip-path="url(#prefix__clip0)">
+                                                        <path fill="#06B6D4" fill-rule="evenodd" d="M27 0c-7.2 0-11.7 3.6-13.5 10.8 2.7-3.6 5.85-4.95 9.45-4.05 2.054.513 3.522 2.004 5.147 3.653C30.744 13.09 33.808 16.2 40.5 16.2c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C36.756 3.11 33.692 0 27 0zM13.5 16.2C6.3 16.2 1.8 19.8 0 27c2.7-3.6 5.85-4.95 9.45-4.05 2.054.514 3.522 2.004 5.147 3.653C17.244 29.29 20.308 32.4 27 32.4c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C23.256 19.31 20.192 16.2 13.5 16.2z" clip-rule="evenodd"/>
+                                                    </g>
+                                                    <defs>
+                                                        <clipPath id="prefix__clip0">
+                                                            <path fill="#fff" d="M0 0h54v32.4H0z"/>
+                                                        </clipPath>
+                                                    </defs>
                                                 </svg>
                                             </div>
                                         </div>
@@ -569,6 +576,9 @@ onUnmounted(() => {
                                                 Tailwind CSS <span class="text-sm text-gray-500">v4.x</span></h4>
                                             <p class="text-gray-600 dark:text-gray-400">Utility-first CSS framework for
                                                 custom designs</p>
+                                                <a href="https://tailwindcss.com/docs/installation/using-vite" target="_blank"
+                                                class="text-purple-600 hover:text-purple-500 text-sm mt-2 inline-block">Official
+                                                Docs →</a>
                                         </div>
                                     </div>
                                 </div>
@@ -585,24 +595,29 @@ onUnmounted(() => {
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Fortify -
                                     <span class="text-gray-500 dark:text-gray-400">Backend authentication
                                         scaffolding</span>
+                                    <a href="https://laravel.com/docs/fortify" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
                                 </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Chart.js - <span
-                                        class="text-gray-500 dark:text-gray-400">JavaScript charting library</span></h5>
+                                        class="text-gray-500 dark:text-gray-400">JavaScript charting library</span>
+                                    <a href="https://www.chartjs.org/docs/latest/" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
+                                </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">TanStack Table -
                                     <span class="text-gray-500 dark:text-gray-400">Powerful table and datagrid
                                         system</span>
+                                    <a href="https://tanstack.com/table/v8/docs/guide/introduction" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
                                 </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">FilePond - <span
                                         class="text-gray-500 dark:text-gray-400">Advanced file upload interface</span>
+                                    <a href="https://pqina.nl/filepond/docs/" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
                                 </h5>
                             </div>
 
@@ -610,93 +625,39 @@ onUnmounted(() => {
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Backup -
                                     <span class="text-gray-500 dark:text-gray-400">Automated database and file
                                         backups</span>
+                                    <a href="https://spatie.be/docs/laravel-backup/v8/introduction" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
                                 </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Google
                                     Fonts - <span class="text-gray-500 dark:text-gray-400">Self-hosted font
-                                        integration</span></h5>
+                                        integration</span>
+                                    <a href="https://github.com/spatie/laravel-google-fonts" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
+                                </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravolt Avatar -
                                     <span class="text-gray-500 dark:text-gray-400">Name-based avatar generator</span>
+                                    <a href="https://github.com/laravolt/avatar" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
                                 </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Auditing -
                                     <span class="text-gray-500 dark:text-gray-400">Model and activity tracking</span>
+                                    <a href="https://laravel-auditing.com/guide/getting-started.html" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
                                 </h5>
                             </div>
 
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Spatie Permission
                                     - <span class="text-gray-500 dark:text-gray-400">Role and permission
-                                        management</span></h5>
+                                        management</span>
+                                    <a href="https://spatie.be/docs/laravel-permission/v5/introduction" target="_blank" class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs →</a>
+                                </h5>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="contributing" class="scroll-mt-16">
-                <div class="flex items-center mb-6">
-                    <div
-                        class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Contributing</h2>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-                    <div class="prose dark:prose-invert max-w-none">
-                        <p class="text-gray-600 dark:text-gray-400 mb-4">
-                            We welcome contributions from the community! Here's how you can help make Obomaa better:
-                        </p>
-                        <ul class="space-y-2 text-gray-600 dark:text-gray-400">
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Report bugs and submit feature requests through GitHub issues</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Submit pull requests with bug fixes and improvements</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Help improve documentation and write tutorials</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Share your experience and help others in the community</span>
-                            </li>
-                        </ul>
-                        <div class="mt-6">
-                            <a href="https://github.com/otatechie/starter/blob/main/CONTRIBUTING.md" target="_blank"
-                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                                View contributing guidelines
-                            </a>
                         </div>
                     </div>
                 </div>
