@@ -1,6 +1,6 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
 import Public from '@/Layouts/Public.vue'
 import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
 import hljs from 'highlight.js/lib/core'
@@ -235,11 +235,12 @@ const actionButtonsCode = ref(`columnHelper.display({
 
 const articleLinks = [
     { text: 'Authentication', href: '#authentication' },
-    { text: 'Permissions & Roles', href: '#permissions-roles' },
     { text: 'Security Middleware', href: '#middleware' },
     { text: 'Backup System', href: '#backup-system' },
-    { text: 'Data Tables', href: '#datatables' },
-    { text: 'Activity Tracking', href: '#auditing' }
+    { text: 'Data Tables', href: '#data-tables' },
+    { text: 'Activity Logs', href: '#activity-logs' },
+    { text: 'Activity Tracking', href: '#activity-tracking' },
+    { text: 'File Uploads', href: '#file-uploads' }
 ]
 
 const fixHighlightLanguages = () => {
@@ -257,10 +258,23 @@ const applyHighlighting = () => {
     })
 }
 
+const showBackToTop = ref(false)
+
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const handleScroll = () => {
+    showBackToTop.value = window.scrollY > 500
+}
+
 onMounted(() => {
-    document.querySelectorAll('pre code').forEach((block) => {
-        hljs.highlightElement(block)
-    })
+    window.addEventListener('scroll', handleScroll)
+    applyHighlighting()
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
 })
 
 watch([
@@ -275,7 +289,7 @@ watch([
 
 <template>
 
-    <Head title="Features - Obomadash" />
+    <Head title="Features - OboDash" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
@@ -291,7 +305,7 @@ watch([
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Core Features</h1>
                 </div>
                 <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
-                    Explore Obomadash's powerful built-in features including authentication, permissions, security
+                    Explore OboDash's powerful built-in features including authentication, permissions, security
                     middleware, backup systems,
                     data tables, and activity tracking. Each feature is designed to help you build secure and scalable
                     admin interfaces.
@@ -340,24 +354,21 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-2">
-                                Laravel Fortify automatically scaffolds the login, two-factor login, registration,
+                                <a href="https://laravel.com/docs/fortify" target="_blank"
+                                    class="border-b-2 border-purple-500 dark:border-purple-400">Laravel Fortify</a>
+                                automatically scaffolds the login, two-factor login, registration,
                                 password
                                 reset, and email verification features for your project, allowing you to start building
                                 the
                                 features you care about instead of worrying about the nitty-gritty details of user
                                 authentication.
                             </p>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                <a href="https://laravel.com/docs/fortify" target="_blank"
-                                    class="border-b-2 border-purple-500 dark:border-purple-400">Learn more about Laravel
-                                    Fortify</a>
-                            </p>
                         </div>
 
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Passwordless Login</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 Passwordless authentication allows users to sign in securely using email-based magic
                                 links
@@ -377,12 +388,11 @@ watch([
                         </div>
 
                         <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Implementation</h3>
                             <div class="grid gap-8">
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">1.</span> Route Configuration
                                     </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -397,7 +407,8 @@ watch([
                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </button>
-                                        <pre><code class="language-php">{{ routeConfigCode }}</code></pre>
+                                        <pre
+                                            class="text-sm"><code class="language-php">{{ routeConfigCode }}</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -421,26 +432,24 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomadash provides a robust permissions and roles system built on top of Spatie's
-                                Laravel-Permission package. This system allows you to control access to different parts
+                                OboDash provides a robust permissions and roles system built on top of <a
+                                    href="https://spatie.be/docs/laravel-permission" target="_blank"
+                                    class="border-b-2 border-amber-500 dark:border-amber-400">Spatie's
+                                    Laravel-Permission</a> package. This system allows you to control access to
+                                different parts
                                 of your application with granular precision.
-                            </p>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                <a href="https://spatie.be/docs/laravel-permission" target="_blank"
-                                    class="border-b-2 border-amber-500 dark:border-amber-400">Learn more about
-                                    Laravel-Permission</a>
                             </p>
                         </div>
 
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Key Concepts</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Key Concepts</h3>
 
                             <div class="grid md:grid-cols-2 gap-6">
                                 <div
                                     class="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
-                                    <h4 class="font-semibold text-amber-800 dark:text-amber-300 mb-2">Permissions</h4>
+                                    <h4 class="font-bold text-amber-800 dark:text-amber-300 mb-2">Permissions</h4>
                                     <p class="text-amber-700 dark:text-amber-400 text-sm">
                                         Granular access controls that define what actions a user can perform. Examples:
                                         <code>create-user</code>, <code>edit-post</code>, <code>delete-comment</code>.
@@ -449,7 +458,7 @@ watch([
 
                                 <div
                                     class="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
-                                    <h4 class="font-semibold text-amber-800 dark:text-amber-300 mb-2">Roles</h4>
+                                    <h4 class="font-bold text-amber-800 dark:text-amber-300 mb-2">Roles</h4>
                                     <p class="text-amber-700 dark:text-amber-400 text-sm">
                                         Collections of permissions that can be assigned to users. Examples:
                                         <code>admin</code>, <code>editor</code>, <code>subscriber</code>.
@@ -476,9 +485,9 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomadash includes several middleware components that enhance security and user
+                                OboDash includes several middleware components that enhance security and user
                                 management.
                                 These middleware classes intercept HTTP requests before they reach your controllers,
                                 allowing you to implement security checks, enforce policies, and manage user sessions.
@@ -486,11 +495,11 @@ watch([
                         </div>
 
                         <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Key Middleware
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Key Middleware
                                 Components</h3>
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                     <span class="mr-3">1.</span> Account Disabling
                                 </h5>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -505,21 +514,29 @@ watch([
                                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                     </button>
-                                    <pre><code class="language-php">{{ accountDisablingCode }}</code></pre>
+                                    <pre
+                                        class="text-sm"><code class="language-php">{{ accountDisablingCode }}</code></pre>
                                 </div>
 
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">disable.account</code>
-                                        checks
-                                        if the authenticated user has been disabled. If so, it logs them out and
-                                        redirects to the login page with an error message.</p>
+                                    <div
+                                        class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                        <p
+                                            class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                            <span class="flex-shrink-0 text-xl">💡</span>
+                                            <span><strong>Pro Tip:</strong> The <code
+                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">disable.account</code>
+                                                middleware checks if the authenticated user has been disabled. If so, it
+                                                logs them out and redirects to the login page with an error
+                                                message.</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                     <span class="mr-3">2.</span> Password Expiry
                                 </h5>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -534,21 +551,30 @@ watch([
                                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                     </button>
-                                    <pre><code class="language-php">{{ passwordExpiryCode }}</code></pre>
+                                    <pre
+                                        class="text-sm"><code class="language-php">{{ passwordExpiryCode }}</code></pre>
                                 </div>
 
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">password.expired</code>
-                                        checks
-                                        if the authenticated user's password has expired based on the system settings.
-                                        If expired, redirects to a password change page.</p>
+                                    <div
+                                        class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                        <p
+                                            class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                            <span class="flex-shrink-0 text-xl">💡</span>
+                                            <span><strong>Pro Tip:</strong> The <code
+                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">password.expired</code>
+                                                middleware checks if the authenticated user's password has expired based
+                                                on the system settings. If expired, redirects to a password change
+                                                page. By default, passwords expire after 90 days. You can change this period in the User model's <code
+                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">isPasswordExpired</code> method.</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                     <span class="mr-3">3.</span> Force Password Change
                                 </h5>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -563,20 +589,27 @@ watch([
                                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                     </button>
-                                    <pre><code class="language-php">{{ forcePasswordCode }}</code></pre>
+                                    <pre class="text-sm"><code class="language-php">{{ forcePasswordCode }}</code></pre>
                                 </div>
 
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">force.password.change</code>
-                                        checks if the user is flagged for a mandatory password change. If so, redirects
-                                        to the password change page.</p>
+                                    <div
+                                        class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                        <p
+                                            class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                            <span class="flex-shrink-0 text-xl">💡</span>
+                                            <span><strong>Pro Tip:</strong> The <code
+                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">force.password.change</code>
+                                                middleware checks if the user is flagged for a mandatory password
+                                                change. If so, redirects to the password change page.</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div
                                 class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                     <span class="mr-3">4.</span> Two-Factor Authentication
                                 </h5>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -591,17 +624,22 @@ watch([
                                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                     </button>
-                                    <pre><code class="language-php">{{ twoFactorCode }}</code></pre>
+                                    <pre class="text-sm"><code class="language-php">{{ twoFactorCode }}</code></pre>
                                 </div>
 
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <p><strong>What this does:</strong> The
-                                        <code
-                                            class="bg-gray-200 dark:bg-teal-900/30 px-2 py-1 rounded text-gray-900 dark:text-teal-300 text-xs font-mono">require.two.factor</code>
-                                        checks if two-factor
-                                        authentication is enabled in system settings. If so and the user hasn't
-                                        configured 2FA, redirects to the setup page.
-                                    </p>
+                                    <div
+                                        class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                        <p
+                                            class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                            <span class="flex-shrink-0 text-xl">💡</span>
+                                            <span><strong>Pro Tip:</strong> The <code
+                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">require.two.factor</code>
+                                                middleware checks if two-factor authentication is enabled in system
+                                                settings. If so and the user hasn't configured 2FA, redirects to the
+                                                setup page.</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -624,9 +662,9 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomadash includes a powerful backup system built on <a
+                                OboDash includes a powerful backup system built on <a
                                     href="https://spatie.be/docs/laravel-backup" target="_blank"
                                     class="border-b-2 border-emerald-500 dark:border-emerald-400">Spatie's Laravel
                                     Backup package</a>. This system enables you to:
@@ -641,53 +679,22 @@ watch([
                         </div>
 
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Backup UI</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Backup UI</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 The backup interface provides an intuitive way to manage your system backups directly
                                 from the admin panel, letting you create, download, and manage backups with ease.
                             </p>
 
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Backup
-                                        Dashboard</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        View backup history, disk usage statistics, and system health indicators at a
-                                        glance.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">One-Click
-                                        Backups</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        Create manual backups instantly with a single click, without needing command
-                                        line access.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Backup
-                                        Management</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        Download, delete, or restore backups through a user-friendly interface with
-                                        clear status indicators.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                                    <h4 class="font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Health
-                                        Monitoring</h4>
-                                    <p class="text-emerald-700 dark:text-emerald-400 text-sm">
-                                        Receive notifications about backup status and potential issues through the admin
-                                        dashboard.
-                                    </p>
-                                </div>
-                            </div>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                <li><span class="font-semibold">Backup Dashboard:</span> View backup history, disk usage
+                                    statistics, and system health indicators at a glance.</li>
+                                <li><span class="font-semibold">One-Click Backups:</span> Create manual backups
+                                    instantly with a single click, without needing command line access.</li>
+                                <li><span class="font-semibold">Backup Management:</span> Download, delete, or restore
+                                    backups through a user-friendly interface with clear status indicators.</li>
+                                <li><span class="font-semibold">Health Monitoring:</span> Receive notifications about
+                                    backup status and potential issues through the admin dashboard.</li>
+                            </ul>
                         </div>
                     </div>
                 </section>
@@ -708,9 +715,9 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomadash includes a powerful data tables component built on top of <a
+                                OboDash includes a powerful data tables component built on top of <a
                                     href="https://tanstack.com/table/v8" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. These
                                 tables provide a rich interactive experience with features like:
@@ -718,21 +725,19 @@ watch([
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
                                 <li>Column sorting and filtering</li>
                                 <li>Pagination with server-side support</li>
-                                <li>Data export (CSV, Excel, PDF)</li>
+                                <li>Data export (CSV, Excel)</li>
                                 <li>Responsive design for all screen sizes</li>
                                 <li>Customizable columns and cell rendering</li>
-                                <li>Search functionality across multiple fields</li>
                             </ul>
                         </div>
 
                         <div class="space-y-8">
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Implementation</h3>
 
                             <div class="grid gap-8">
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">1.</span> Table Configuration
                                     </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -747,19 +752,26 @@ watch([
                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </button>
-                                        <pre><code class="language-javascript">{{ tableExampleCode }}</code></pre>
+                                        <pre
+                                            class="text-sm"><code class="language-javascript">{{ tableExampleCode }}</code></pre>
                                     </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Creates a table configuration with two
-                                            columns (Name and Status) and sets up pagination state.</p>
+                                        <div
+                                            class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                            <p
+                                                class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                                <span class="flex-shrink-0 text-xl">💡</span>
+                                                <span><strong>Pro Tip:</strong> Creates a table configuration with two
+                                                    columns (Name and Status) and sets up pagination state.</span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">2.</span> Adding Action Buttons
                                     </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -774,20 +786,27 @@ watch([
                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </button>
-                                        <pre><code class="language-javascript">{{ actionButtonsCode }}</code></pre>
+                                        <pre
+                                            class="text-sm"><code class="language-javascript">{{ actionButtonsCode }}</code></pre>
                                     </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Adds Edit and Delete action buttons to your
-                                            table. These buttons call the handleEdit and handleDelete functions when
-                                            clicked.</p>
+                                        <div
+                                            class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                            <p
+                                                class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                                <span class="flex-shrink-0 text-xl">💡</span>
+                                                <span><strong>Pro Tip:</strong> Adds Edit and Delete action buttons to
+                                                    your table. These buttons call the handleEdit and handleDelete
+                                                    functions when clicked.</span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">3.</span> Using the Datatable Component
                                     </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -802,19 +821,26 @@ watch([
                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </button>
-                                        <pre><code v-highlight class="language-html">{{ templateExampleCode }}</code></pre>
+                                        <pre
+                                            class="text-sm"><code v-highlight class="language-html">{{ templateExampleCode }}</code></pre>
                                     </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> Renders the datatable component with your
-                                            configuration and binds the necessary props and events.</p>
+                                        <div
+                                            class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                            <p
+                                                class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                                <span class="flex-shrink-0 text-xl">💡</span>
+                                                <span><strong>Pro Tip:</strong> Renders the datatable component with
+                                                    your configuration and binds the necessary props and events.</span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5
-                                        class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
                                         <span class="mr-3">4.</span> Backend Integration
                                     </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
@@ -829,13 +855,116 @@ watch([
                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
                                         </button>
-                                        <pre><code class="language-php">{{ backendCode }}</code></pre>
+                                        <pre class="text-sm"><code class="language-php">{{ backendCode }}</code></pre>
                                     </div>
 
                                     <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <p><strong>What this does:</strong> The controller returns paginated data to
-                                            your frontend, with eager-loaded relationships for better performance.</p>
+                                        <div
+                                            class="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                            <p
+                                                class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                                <span class="flex-shrink-0 text-xl">💡</span>
+                                                <span><strong>Pro Tip:</strong> The controller returns paginated data to
+                                                    your frontend, with eager-loaded relationships for better
+                                                    performance.</span>
+                                            </p>
+                                        </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="activity-logs" class="space-y-6 scroll-mt-16">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Authentication Logs</h2>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <div class="space-y-4">
+                            <div class="prose dark:prose-invert max-w-none">
+                                <p>OboDash includes comprehensive authentication logging that tracks all login attempts,
+                                    both successful and failed. The system automatically logs:</p>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                <div class="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg">
+                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800 dark:text-white">Tracked Information</h4>
+                                    <ul
+                                        class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                        <li>User ID and type</li>
+                                        <li>Login timestamp</li>
+                                        <li>IP address</li>
+                                        <li>User agent (browser/device information)</li>
+                                        <li>Login success status</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                <div class="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg">
+                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800 dark:text-white">Implementation</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">The system uses Laravel's
+                                        event system to automatically log authentication attempts:</p>
+                                    <ul
+                                        class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                        <li>Successful logins are logged via the <code
+                                                class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">LogSuccessfulLogin</code>
+                                            listener</li>
+                                        <li>Failed login attempts are tracked by the <code
+                                                class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">LogFailedLogin</code>
+                                            listener</li>
+                                        <li>All logs are stored in the <code
+                                                class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">login_histories</code>
+                                            table</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                <div class="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-lg">
+                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800 dark:text-white">Viewing Logs</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Authentication logs can be
+                                        viewed in the admin dashboard under the Authentication Logs section. You can
+                                        filter logs by:</p>
+                                    <ul
+                                        class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                        <li>Date range</li>
+                                        <li>User</li>
+                                        <li>Login status (success/failure)</li>
+                                        <li>IP address</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -858,19 +987,15 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Model Auditing</h3>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Model Auditing</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                Obomadash integrates <a href="https://github.com/owen-it/laravel-auditing"
-                                    target="_blank"
+                                OboDash integrates <a href="https://github.com/owen-it/laravel-auditing" target="_blank"
                                     class="border-b-2 border-purple-500 dark:border-purple-400">owen-it/laravel-auditing</a>
-                                package
-                                for comprehensive model auditing and activity tracking. While the core auditing
-                                functionality is
-                                handled by the package, Obomadash provides:
+                                package for comprehensive model auditing and activity tracking. While the core auditing
+                                functionality is handled by the package, OboDash provides:
                             </p>
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
                                 <li>User-friendly interface to view audit logs</li>
-                                <li>Activity timeline visualization</li>
                                 <li>Filtering and search capabilities for audits</li>
                                 <li>User activity tracking dashboard</li>
                             </ul>
@@ -887,13 +1012,92 @@ watch([
                         </div>
                     </div>
                 </section>
+
+                <section id="file-uploads" class="mb-12 scroll-mt-16">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">File Uploads</h2>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <div class="prose dark:prose-invert max-w-none">
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                OboDash includes a powerful file upload component built on top of <a
+                                    href="https://pqina.nl/filepond/" target="_blank"
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">FilePond</a>. This component provides a
+                                modern, drag-and-drop interface for file uploads with the following features:
+                            </p>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                <li>Drag and drop file uploads</li>
+                                <li>Image and PDF preview support</li>
+                                <li>File type validation</li>
+                                <li>File size limits</li>
+                                <li>Multiple file upload support</li>
+                                <li>Progress indicators</li>
+                            </ul>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Configuration Options</h3>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-js">{
+    name: String, // Required: Field name
+    label: String, // Required: Field label
+    labelIdle: String, // Default: 'Drop files here...'
+    acceptedFileTypes: Array, // Default: ['image/jpeg', 'image/png', 'application/pdf']
+    maxFileSize: String, // Default: '5MB'
+    allowMultiple: Boolean, // Default: false
+    maxFiles: Number, // Default: 1
+    server: Object, // Required: Server configuration
+    required: Boolean, // Default: false
+    files: Array // Default: []
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Usage Example</h3>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-html">&lt;FilePondUploader
+    name="document"
+    label="Upload Document"
+    :acceptedFileTypes="['application/pdf']"
+    maxFileSize="10MB"
+    :server="{
+        url: '/upload',
+        process: {
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        }
+    }"
+    @processfile="handleFileUpload"
+    @removefile="handleFileRemove"
+/&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Events</h3>
+                                <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                    <li><code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@processfile</code> - Emitted when a file is uploaded</li>
+                                    <li><code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@removefile</code> - Emitted when a file is removed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
 
     <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-            <a href="/documentation/getting-started"
+            <a href="/documentation/installation"
                 class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
                 <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -903,17 +1107,17 @@ watch([
                     <div class="text-sm text-gray-500 dark:text-gray-400">Previous</div>
                     <div
                         class="font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                        Getting Started</div>
+                        Installation</div>
                 </div>
             </a>
 
-            <a href="/documentation/advanced-features"
+            <a href="/documentation/components"
                 class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
-                <div class="text-right">
+                <div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">Next</div>
                     <div
                         class="font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                        Advanced Features</div>
+                        Components</div>
                 </div>
                 <svg class="w-5 h-5 ml-3 text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -922,4 +1126,12 @@ watch([
             </a>
         </div>
     </div>
+
+    <button v-show="showBackToTop" @click="scrollToTop"
+        class="fixed bottom-8 right-8 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+        aria-label="Back to top">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
 </template>
