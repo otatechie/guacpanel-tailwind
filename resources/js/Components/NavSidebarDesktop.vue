@@ -91,29 +91,29 @@ navigationSections.forEach(section => {
 </script>
 
 <template>
-    <aside data-sidebar-content
-        class="h-full flex flex-col bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 ease-in-out"
-        @click.stop>
+    <aside data-sidebar-content class="nav-sidebar" @click.stop>
         <nav class="flex-1 overflow-y-auto py-2 px-2" aria-labelledby="nav-heading">
             <ul class="space-y-1">
                 <template v-for="(section, sectionIndex) in navigationSections" :key="sectionIndex">
                     <li v-if="sectionIndex > 0" class="my-1.5 px-2" role="separator">
-                        <div class="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
+                        <div class="nav-divider"></div>
                     </li>
                     <template v-for="(item, itemIndex) in section.items" :key="itemIndex">
                         <li v-if="item.type === 'divider'" class="my-1.5 px-2" role="separator">
-                            <div class="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
+                            <div class="nav-divider"></div>
                         </li>
                         <li v-else-if="item.children">
-                            <button @click="toggleDropdown(item)" :class="[
-                                'w-full flex items-center justify-between px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out cursor-pointer',
-                                isParentActive(item.children)
-                                    ? '  text-purple-600 dark:text-purple-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                            ]" :aria-expanded="item.isOpen">
+                            <button @click="toggleDropdown(item)" 
+                                :class="[
+                                    'nav-dropdown',
+                                    isParentActive(item.children) ? 'nav-dropdown-active' : 'nav-dropdown-default'
+                                ]" 
+                                :aria-expanded="item.isOpen">
                                 <div class="flex items-center">
-                                    <svg class="w-[18px] h-[18px] mr-2.5"
-                                        :class="isParentActive(item.children) ? 'text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-500'"
+                                    <svg :class="[
+                                            'nav-icon',
+                                            isParentActive(item.children) ? 'nav-icon-active' : 'nav-icon-default'
+                                        ]"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" aria-hidden="true" v-html="item.icon">
                                     </svg>
@@ -129,29 +129,29 @@ navigationSections.forEach(section => {
                             </button>
                             <ul v-show="item.isOpen" class="pl-9 space-y-1">
                                 <li v-for="child in item.children" :key="child.name">
-                                    <Link :href="child.href" :class="[
-                                        'flex items-center px-1.5 py-1.5 rounded-lg transition-all duration-200 ease-in-out',
-                                        isActive(child.href)
-                                            ? '  text-purple-600 dark:text-purple-400 font-medium'
-                                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                                    ]">
-                                    <span class="text-sm">{{ child.name }}</span>
+                                    <Link :href="child.href" 
+                                        :class="[
+                                            'nav-child-item',
+                                            isActive(child.href) ? 'nav-child-item-active' : 'nav-child-item-default'
+                                        ]">
+                                        <span class="text-sm">{{ child.name }}</span>
                                     </Link>
                                 </li>
                             </ul>
                         </li>
                         <li v-else>
-                            <Link :href="item.href" :class="[
-                                'flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out',
-                                isActive(item.href)
-                                    ? 'text-purple-600 dark:text-purple-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                            ]">
-                            <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200"
-                                :class="isActive(item.href) ? 'text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-500'"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" aria-hidden="true" v-html="item.icon"></svg>
-                            <span class="text-sm font-medium">{{ item.name }}</span>
+                            <Link :href="item.href" 
+                                :class="[
+                                    'nav-item',
+                                    isActive(item.href) ? 'nav-item-active' : 'nav-item-default'
+                                ]">
+                                <svg :class="[
+                                        'nav-icon',
+                                        isActive(item.href) ? 'nav-icon-active' : 'nav-icon-default'
+                                    ]"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" aria-hidden="true" v-html="item.icon"></svg>
+                                <span class="text-sm font-medium">{{ item.name }}</span>
                             </Link>
                         </li>
                     </template>
@@ -159,7 +159,7 @@ navigationSections.forEach(section => {
             </ul>
         </nav>
 
-        <footer class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <footer class="nav-footer">
             <div class="flex items-center gap-2.5 ml-2">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin Panel</p>

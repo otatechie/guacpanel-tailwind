@@ -6,6 +6,7 @@ import NavProfile from '../Components/NavProfile.vue'
 import Notification from '../Components/Notification.vue'
 import FlashMessage from '../Components/FlashMessage.vue'
 import Footer from '../Shared/Public/Footer.vue'
+import ColorThemeSwitcher from '../Components/ColorThemeSwitcher.vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
@@ -88,6 +89,7 @@ const logoUrl = computed(() => {
                     </section>
 
                     <section class="flex flex-1 items-center justify-end gap-4">
+                        <ColorThemeSwitcher />
                         <Notification v-if="user" :user="user" />
                         <NavProfile v-if="user" :user="user" />
                         <Link v-else href="/login" class="text-sm font-medium text-gray-700 hover:text-gray-900">

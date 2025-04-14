@@ -4,6 +4,11 @@
 /* Theme Configuration */
 @theme {
     --font-sans: "Instrument Sans", "sans-serif";
+    --primary-gradient-from: #a855f7;
+    --primary-gradient-to: #c084fc;
+    --primary-color: #a855f7;
+    --primary-hover: #9333ea;
+    --primary-color-rgb: 168, 85, 247;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -11,7 +16,7 @@
 /* Base Styles */
 textarea:focus,
 input:focus {
-    outline: none !important;
+    outline: none;
 }
 
 .filepond--drop-label {
@@ -32,8 +37,13 @@ input:focus {
     @apply bg-white border border-gray-300 rounded shadow-sm p-0.5;
 }
 
-.link {
-    @apply hover:text-purple-400 text-purple-500 underline font-medium;
+/* Table Styles */
+.table-header {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.pagination-btn {
+    @apply inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white cursor-pointer;
 }
 
 /* Form Elements */
@@ -45,16 +55,83 @@ input:focus {
     @apply rounded border-gray-300 text-purple-500 focus:ring-purple-500;
 }
 
-/* Table Styles */
-.table-header {
-    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+/* Link Styles */
+.link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transition: color 0.2s ease-in-out;
 }
 
-.pagination-btn {
-    @apply inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white cursor-pointer;
+.link:hover {
+    color: var(--primary-hover);
+}
+
+.dark .link {
+    color: rgb(203 213 225);
+}
+
+.dark .link:hover {
+    color: rgb(241 245 249);
+}
+
+/* Form Input States */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 0;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.15);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+    outline: 0;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.15);
+}
+
+/* Form Input Error States */
+.error {
+    @apply border-red-500 transition-shadow duration-150 ease-in-out;
+}
+
+.error:focus {
+    @apply outline-none border-red-500 ring-1 ring-red-500 shadow shadow-red-300/50;
+}
+
+.dark .error {
+    @apply border-red-500;
+}
+
+.dark .error:focus {
+    @apply outline-none border-red-500 ring-1 ring-red-900 shadow shadow-red-300/50;
+}
+
+/* Autofill Styles */
+input:-webkit-autofill {
+    -webkit-text-fill-color: inherit !important;
+    background-color: white !important;
+    box-shadow: inset 0 0 0 9999px white !important;
+}
+
+.dark input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+    background-color: rgb(31, 41, 55) !important;
+    box-shadow: inset 0 0 0 9999px rgb(31, 41, 55) !important;
+}
+
+/* Code Block Styles */
+pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-words;
+    max-width: 100%;
 }
 
 @layer components {
+    /* Button Styles */
     .btn-primary {
         display: inline-flex;
         align-items: center;
@@ -71,10 +148,19 @@ input:focus {
         transition-property: all;
         transition-duration: 300ms;
         transition-timing-function: ease-in-out;
-        background-image: linear-gradient(to right, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
-        --tw-gradient-from: #a855f7;
-        --tw-gradient-to: #c084fc;
+        background-color: var(--primary-color);
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-primary.btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     }
 
     .btn-primary-outline {
@@ -93,176 +179,118 @@ input:focus {
         transition-duration: 300ms;
         transition-timing-function: ease-in-out;
         background-color: white;
-        color: #a855f7;
-        border: 2px solid #a855f7;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    }
-
-    .btn-danger {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        letter-spacing: 0.025em;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        color: white;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition-property: all;
-        transition-duration: 300ms;
-        transition-timing-function: ease-in-out;
-        background-image: linear-gradient(to right, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
-        --tw-gradient-from: #dc2626;
-        --tw-gradient-to: #ef4444;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    }
-
-    .btn-danger-outline {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        letter-spacing: 0.025em;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition-property: all;
-        transition-duration: 300ms;
-        transition-timing-function: ease-in-out;
-        background-color: white;
-        color: #dc2626;
-        border: 2px solid #dc2626;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    }
-
-    /* Hover states */
-    .btn-primary:hover,
-    .btn-danger:hover {
-        transform: scale(1.02);
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    }
-
-    .btn-primary:hover {
-        --tw-gradient-from: #9333ea;
-        --tw-gradient-to: #a855f7;
-    }
-
-    .btn-danger:hover {
-        --tw-gradient-from: #b91c1c;
-        --tw-gradient-to: #dc2626;
     }
 
     .btn-primary-outline:hover {
-        background-color: #f5f3ff;
+        background-color: var(--primary-color);
+        color: white;
         transform: scale(1.02);
         box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     }
 
-    .btn-danger-outline:hover {
-        background-color: #fef2f2;
-        transform: scale(1.02);
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    .dark .btn-primary {
+        background-color: var(--primary-color);
+        color: rgb(241 245 249);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     }
 
-    /* Active states */
-    .btn-primary:active,
-    .btn-primary-outline:active,
-    .btn-danger:active,
-    .btn-danger-outline:active {
-        transform: scale(0.98);
-        box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    .dark .btn-primary:hover {
+        background-color: var(--primary-hover);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
-    /* Focus states */
-    .btn-primary:focus,
-    .btn-primary-outline:focus {
-        outline: none;
-        --tw-ring-color: rgb(59 130 246 / 0.5);
-        --tw-ring-offset-width: 2px;
-        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000);
+    .dark .btn-primary-outline {
+        background-color: rgb(15 23 42);
+        color: rgb(203 213 225);
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     }
 
-    .btn-danger:focus,
-    .btn-danger-outline:focus {
-        outline: none;
-        --tw-ring-color: rgb(239 68 68 / 0.5);
-        --tw-ring-offset-width: 2px;
-        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000);
-    }
-
-    /* Disabled states */
-    .btn-primary:disabled,
-    .btn-primary-outline:disabled,
-    .btn-danger:disabled,
-    .btn-danger-outline:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Dark mode */
-    @media (prefers-color-scheme: dark) {
-
-        .btn-primary-outline,
-        .btn-danger-outline {
-            background-color: rgb(31 41 55);
-            color: #c084fc;
-        }
-
-        .btn-primary-outline:hover {
-            background-color: rgb(55 65 81);
-        }
-
-        .btn-danger-outline:hover {
-            background-color: rgb(55 65 81);
-        }
-
-        .btn-primary {
-            --tw-gradient-from: #c084fc;
-            --tw-gradient-to: #d8b4fe;
-        }
-
-        .btn-primary:hover {
-            --tw-gradient-from: #a855f7;
-            --tw-gradient-to: #c084fc;
-        }
-
-        .btn-danger {
-            --tw-gradient-from: #ef4444;
-            --tw-gradient-to: #f87171;
-        }
-
-        .btn-danger:hover {
-            --tw-gradient-from: #dc2626;
-            --tw-gradient-to: #ef4444;
-        }
+    .dark .btn-primary-outline:hover {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 }
 
-/* Autofill styles */
-input:-webkit-autofill {
-    -webkit-text-fill-color: inherit !important;
-    background-color: white !important;
-    box-shadow: inset 0 0 0 9999px white !important;
+/* Navigation Styles */
+.nav-sidebar {
+    @apply h-full flex flex-col bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 ease-in-out;
 }
 
-.dark input:-webkit-autofill {
-    -webkit-text-fill-color: white !important;
-    background-color: rgb(31, 41, 55) !important;
-    box-shadow: inset 0 0 0 9999px rgb(31, 41, 55) !important;
+.nav-item {
+    @apply flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out;
 }
 
-/* Add this to your CSS file */
-pre {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-words;
-    max-width: 100%;
+.nav-item-active {
+    color: var(--primary-color);
+}
+
+.dark .nav-item-active {
+    color: var(--primary-color);
+}
+
+.nav-item-default {
+    @apply text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white;
+}
+
+.nav-icon {
+    @apply w-[18px] h-[18px] mr-2.5 transition-colors duration-200;
+}
+
+.nav-icon-active {
+    color: var(--primary-color);
+}
+
+.dark .nav-icon-active {
+    color: var(--primary-color);
+}
+
+.nav-icon-default {
+    @apply text-gray-600 dark:text-gray-500;
+}
+
+.nav-dropdown {
+    @apply w-full flex items-center justify-between px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out cursor-pointer;
+}
+
+.nav-dropdown-active {
+    color: var(--primary-color);
+}
+
+.dark .nav-dropdown-active {
+    color: var(--primary-color);
+}
+
+.nav-dropdown-default {
+    @apply text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white;
+}
+
+.nav-child-item {
+    @apply flex items-center px-1.5 py-1.5 rounded-lg transition-all duration-200 ease-in-out;
+}
+
+.nav-child-item-active {
+    color: var(--primary-color);
+    @apply font-medium;
+}
+
+.dark .nav-child-item-active {
+    color: var(--primary-color);
+}
+
+.nav-child-item-default {
+    @apply text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white;
+}
+
+.nav-divider {
+    @apply h-px w-full bg-gray-100 dark:bg-gray-700;
+}
+
+.nav-footer {
+    @apply px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800;
 }

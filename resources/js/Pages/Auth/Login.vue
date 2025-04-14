@@ -40,11 +40,11 @@ const sendMagicLink = () => {
 </script>
 
 <template>
-
     <Head title="Login" />
 
     <main class="max-w-[384px] mx-auto px-8" role="main">
         <h1 class="main-heading text-center dark:text-white">Login</h1>
+
         <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6" aria-labelledby="login-form">
             <FormInput v-model="form.email" label="Email address" name="email" id="email" type="email" required
                 autocomplete="email" :error="form.errors.email" />
