@@ -158,6 +158,23 @@ const columns = [
     })
 ]
 
+// Handle row actions
+const handleEdit = (row) => {
+    router.visit(route('users.edit', { user: row.id }))
+}
+
+const handleDelete = (row) => {
+    if (confirm('Are you sure you want to delete this user?')) {
+        router.delete(route('users.destroy', { user: row.id }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Show success message
+                flash('User deleted successfully', 'success')
+            }
+        })
+    }
+}
+
 // Handle pagination changes
 watch(pagination, newPagination => {
     loading.value = true
@@ -191,9 +208,9 @@ const backendCode = ref(`public function index(Request $request)
 {
     return Inertia::render('Admin/User/IndexUserPage', [
         'users' => User::query()
-            ->with(['roles', 'permissions'])  // Eager load relationships
-            ->latest()                        // Order by newest first
-            ->paginate($request->input('per_page', 10))  // Get paginated results
+            ->with(['roles', 'permissions']) 
+            ->latest()                       
+            ->paginate($request->input('per_page', 10)) //Paginated results
     ]);
 }`)
 
@@ -238,7 +255,7 @@ const articleLinks = [
     { text: 'Security Middleware', href: '#middleware' },
     { text: 'Backup System', href: '#backup-system' },
     { text: 'Data Tables', href: '#data-tables' },
-    { text: 'Activity Logs', href: '#activity-logs' },
+    { text: 'Authentication Logs', href: '#activity-logs' },
     { text: 'Activity Tracking', href: '#activity-tracking' },
     { text: 'File Uploads', href: '#file-uploads' }
 ]
@@ -565,8 +582,10 @@ watch([
                                                     class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">password.expired</code>
                                                 middleware checks if the authenticated user's password has expired based
                                                 on the system settings. If expired, redirects to a password change
-                                                page. By default, passwords expire after 90 days. You can change this period in the User model's <code
-                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">isPasswordExpired</code> method.</span>
+                                                page. By default, passwords expire after 90 days. You can change this
+                                                period in the User model's <code
+                                                    class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">isPasswordExpired</code>
+                                                method.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -699,7 +718,7 @@ watch([
                     </div>
                 </section>
 
-                <section id="datatables" class="space-y-6 scroll-mt-16">
+                <section id="data-tables" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
                             class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
@@ -797,7 +816,11 @@ watch([
                                                 class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
                                                 <span class="flex-shrink-0 text-xl">💡</span>
                                                 <span><strong>Pro Tip:</strong> Adds Edit and Delete action buttons to
-                                                    your table. These buttons call the handleEdit and handleDelete
+                                                    your table. These buttons call the <code
+                                                        class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">handleEdit</code>
+                                                    and
+                                                    <code
+                                                        class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">handleDelete</code>
                                                     functions when clicked.</span>
                                             </p>
                                         </div>
@@ -971,7 +994,7 @@ watch([
                     </div>
                 </section>
 
-                <section id="auditing" class="space-y-6 scroll-mt-16">
+                <section id="activity-tracking" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
                             class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-4">
@@ -1024,12 +1047,14 @@ watch([
                         </div>
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">File Uploads</h2>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="prose dark:prose-invert max-w-none">
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 OboDash includes a powerful file upload component built on top of <a
                                     href="https://pqina.nl/filepond/" target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">FilePond</a>. This component provides a
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">FilePond</a>. This component
+                                provides a
                                 modern, drag-and-drop interface for file uploads with the following features:
                             </p>
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
@@ -1042,19 +1067,20 @@ watch([
                             </ul>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Configuration Options</h3>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Configuration
+                                    Options</h3>
                                 <div class="bg-gray-800 rounded-lg p-4">
                                     <pre class="text-sm"><code v-highlight class="language-js">{
-    name: String, // Required: Field name
-    label: String, // Required: Field label
-    labelIdle: String, // Default: 'Drop files here...'
-    acceptedFileTypes: Array, // Default: ['image/jpeg', 'image/png', 'application/pdf']
-    maxFileSize: String, // Default: '5MB'
-    allowMultiple: Boolean, // Default: false
-    maxFiles: Number, // Default: 1
-    server: Object, // Required: Server configuration
-    required: Boolean, // Default: false
-    files: Array // Default: []
+    name: String, 
+    label: String, 
+    labelIdle: String, 
+    acceptedFileTypes: Array, ['image/jpeg', 'image/png', 'application/pdf']
+    maxFileSize: String,
+    allowMultiple: Boolean, 
+    maxFiles: Number, 
+    server: Object, 
+    required: Boolean, 
+    files: Array
 }</code></pre>
                                 </div>
                             </div>
@@ -1084,8 +1110,12 @@ watch([
                             <div class="mt-6">
                                 <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Events</h3>
                                 <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                    <li><code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@processfile</code> - Emitted when a file is uploaded</li>
-                                    <li><code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@removefile</code> - Emitted when a file is removed</li>
+                                    <li><code
+                                            class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@processfile</code>
+                                        - Emitted when a file is uploaded</li>
+                                    <li><code
+                                            class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@removefile</code>
+                                        - Emitted when a file is removed</li>
                                 </ul>
                             </div>
                         </div>

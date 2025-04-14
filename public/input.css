@@ -1,0 +1,70 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
+/* PageHeader Color Themes */
+.page-header-purple {
+    --page-header-bg: theme('colors.purple.600');
+    --page-header-hover: theme('colors.purple.700');
+    --page-header-text: theme('colors.white');
+}
+
+.page-header-blue {
+    --page-header-bg: theme('colors.blue.600');
+    --page-header-hover: theme('colors.blue.700');
+    --page-header-text: theme('colors.white');
+}
+
+.page-header-green {
+    --page-header-bg: theme('colors.green.600');
+    --page-header-hover: theme('colors.green.700');
+    --page-header-text: theme('colors.white');
+}
+
+.page-header-red {
+    --page-header-bg: theme('colors.red.600');
+    --page-header-hover: theme('colors.red.700');
+    --page-header-text: theme('colors.white');
+}
+
+.page-header-yellow {
+    --page-header-bg: theme('colors.yellow.600');
+    --page-header-hover: theme('colors.yellow.700');
+    --page-header-text: theme('colors.white');
+}
+
+.page-header-indigo {
+    --page-header-bg: theme('colors.indigo.600');
+    --page-header-hover: theme('colors.indigo.700');
+    --page-header-text: theme('colors.white');
+}
+
+/* Dark mode overrides */
+.dark .page-header-purple {
+    --page-header-bg: theme('colors.purple.900');
+    --page-header-hover: theme('colors.purple.800');
+}
+
+.dark .page-header-blue {
+    --page-header-bg: theme('colors.blue.900');
+    --page-header-hover: theme('colors.blue.800');
+}
+
+.dark .page-header-green {
+    --page-header-bg: theme('colors.green.900');
+    --page-header-hover: theme('colors.green.800');
+}
+
+.dark .page-header-red {
+    --page-header-bg: theme('colors.red.900');
+    --page-header-hover: theme('colors.red.800');
+}
+
+.dark .page-header-yellow {
+    --page-header-bg: theme('colors.yellow.900');
+    --page-header-hover: theme('colors.yellow.800');
+}
+
+.dark .page-header-indigo {
+    --page-header-bg: theme('colors.indigo.900');
+    --page-header-hover: theme('colors.indigo.800');
+}

@@ -18,19 +18,6 @@ import FlashMessage from '@/Components/FlashMessage.vue'
 defineOptions({
     layout: Public
 })
-const validationCode = ref(`FormInput
-    v-model="form.email"
-    label="Email Address"
-    :error="errors.email"
-    required;
-
-// In your component:
-const form = useForm({
-    email: ''
-})
-
-// Errors from Laravel will automatically be displayed
-form.post(route('user.update'));`)
 
 const articleLinks = [
     {
@@ -132,16 +119,17 @@ const modalCode = ref(`<Modal :show="isOpen" @close="isOpen = false" size="md">
 </Modal>`)
 
 const pageHeaderCode = ref(`<PageHeader
-    title="Users"
+    title="User Management"
     description="Manage user accounts and permissions"
     :breadcrumbs="[
         { label: 'Dashboard', href: '/dashboard' },
         { label: 'Users' }
     ]"
+    color="purple"
 >
     <template #actions>
         <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-            Add User
+            Add 
         </button>
     </template>
 </PageHeader>`)
@@ -287,13 +275,6 @@ public function store(Request $request)
                                     <li>ARIA attributes for accessibility (aria-invalid, aria-describedby)</li>
                                     <li>Integration with Laravel validation</li>
                                 </ul>
-
-                                <div class="mt-6 bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                                    <h5 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Example with
-                                        Laravel Validation</h5>
-                                    <pre class="text-sm"><code class="language-php">{{ validationCode }}</code></pre>
-                                </div>
-
                             </div>
                         </div>
 
@@ -860,16 +841,17 @@ public function store(Request $request)
                             <div class="space-y-4">
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
                                 <PageHeader
-                                    title="Users"
+                                    title="User Management"
                                     description="Manage user accounts and permissions"
                                     :breadcrumbs="[
                                         { label: 'Dashboard', href: '/dashboard' },
                                         { label: 'Users' }
                                     ]"
+                                    color="purple"
                                 >
                                     <template #actions>
                                         <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                                            Add
+                                            Add 
                                         </button>
                                     </template>
                                 </PageHeader>
@@ -926,6 +908,12 @@ public function store(Request $request)
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">[]</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of breadcrumb items with label and optional href</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">color</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'purple'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Color theme for the header (purple, blue, green, red, yellow, indigo)</td>
                                         </tr>
                                     </tbody>
                                 </table>
