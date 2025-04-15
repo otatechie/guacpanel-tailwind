@@ -2,6 +2,10 @@
 
 A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Tailwind CSS.
 
+![Dashboard Preview](https://via.placeholder.com/800x450?text=OboDash+Preview)
+
+[🔗 Live Demo](https://demo-url.com) | [📘 Official Documentation](https://obodash.com)
+
 ## Features
 
 - 🔐 **Authentication**
@@ -72,7 +76,7 @@ npm run dev
 php artisan serve
 ```
 
-Visit `http://localhost:8000` to see your application.
+Visit http://localhost:8000 to see your application.
 
 ## Tech Stack
 
@@ -81,11 +85,47 @@ Visit `http://localhost:8000` to see your application.
 - Inertia.js v2.x - Modern monolith
 - Tailwind CSS v4.x - Utility-first CSS
 
-## Common Issues
+## Deployment
 
-- **Permission issues**: Run `chmod -R 777 storage bootstrap/cache`
-- **Composer errors**: Try `composer install --ignore-platform-reqs`
-- **NPM issues**: Run `npm cache clean --force` then `npm install`
+### Production Server Requirements
+
+- PHP >= 8.2 with required extensions
+- MySQL 8.0+ or PostgreSQL 13+
+- HTTPS enabled (required for secure cookies)
+- Composer installed globally
+
+### Deployment Steps
+
+1. Set up your production environment variables
+```bash
+# Set environment to production
+APP_ENV=production
+APP_DEBUG=false
+
+# Configure secure cookie settings
+SESSION_SECURE_COOKIE=true
+```
+
+2. Build frontend assets
+```bash
+npm run build
+```
+
+3. Optimize Laravel for production
+```bash
+php artisan optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+## Additional Resources
+
+- [👉 Official OboDash Documentation](https://obodash.com) - Complete guides and tutorials
+- [Laravel Documentation](https://laravel.com/docs)
+- [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Inertia.js Documentation](https://inertiajs.com/)
 
 ## License
 
