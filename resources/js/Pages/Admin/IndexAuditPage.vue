@@ -80,7 +80,7 @@ const columns = [
 watch(pagination, newPagination => {
     loading.value = true
     router.get(
-        route('admin.audit'),
+        route('admin.audit.index'),
         {
             page: newPagination.current_page,
             per_page: Number(newPagination.per_page)
@@ -93,6 +93,7 @@ watch(pagination, newPagination => {
     )
 }, { deep: true })
 </script>
+
 
 <template>
 

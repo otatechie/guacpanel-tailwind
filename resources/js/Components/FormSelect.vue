@@ -1,111 +1,138 @@
-<script>
-export default {
-    name: 'SelectInput',
-    props: {
-        modelValue: {
-            type: [String, Number],
-            default: ''
-        },
-        label: {
-            type: String,
-            required: true
-        },
-        placeholder: {
-            type: String,
-            default: 'Select an option'
-        },
-        id: {
-            type: String,
-            default: null
-        },
-        required: {
-            type: Boolean,
-            default: false
-        },
-        error: {
-            type: String,
-            default: ''
-        },
-        options: {
-            type: Array,
-            default: () => []
-        },
-        optionLabel: {
-            type: String,
-            default: 'label'
-        },
-        optionValue: {
-            type: String,
-            default: 'value'
-        }
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+
+const props = defineProps({
+    
+    modelValue: {
+        type: [String, Number],
+        default: ''
     },
-    emits: ['update:modelValue'],
-    data() {
-        return {
-            isOpen: false,
-            searchQuery: '',
-        }
+    
+    label: {
+        type: String,
+        required: true
     },
-    computed: {
-        inputId() {
-            return this.id || this.label.toLowerCase().replace(/\s+/g, '-');
-        },
-        filteredOptions() {
-            const query = this.searchQuery.toLowerCase()
-            return this.options.filter(option =>
-                option[this.optionLabel].toLowerCase().includes(query)
-            )
-        },
-        displayValue() {
-            const selected = this.options.find(
-                option => option[this.optionValue] === this.modelValue
-            )
-            return selected ? selected[this.optionLabel] : this.placeholder
-        }
+
+    placeholder: {
+        type: String,
+        default: 'Select an option'
     },
-    methods: {
-        toggleDropdown() {
-            this.isOpen = !this.isOpen
-            if (this.isOpen) this.$nextTick(() => this.$el.querySelector('input[type="text"]')?.focus())
-        },
-        selectOption(option) {
-            this.$emit('update:modelValue', option[this.optionValue])
-            this.searchQuery = ''
-            this.isOpen = false
-        },
-        isOptionSelected(option) {
-            return option[this.optionValue] === this.modelValue
-        },
-        handleClickOutside(e) {
-            if (!this.$el.contains(e.target)) {
-                this.isOpen = false
-            }
-        }
+    
+    id: {
+        type: String,
+        default: null
     },
-    mounted() {
-        document.addEventListener('click', this.handleClickOutside)
+
+    required: {
+        type: Boolean,
+        default: false
     },
-    beforeDestroy() {
-        document.removeEventListener('click', this.handleClickOutside)
+
+    error: {
+        type: String,
+        default: ''
+    },
+
+    options: {
+        type: Array,
+        default: () => []
+    },
+
+    optionLabel: {
+        type: String,
+        default: 'label'
+    },
+    
+    optionValue: {
+        type: String,
+        default: 'value'
+    }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const isOpen = ref(false)
+const searchQuery = ref('')
+const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
+
+const filteredOptions = computed(() => {
+    const query = searchQuery.value.toLowerCase()
+    return props.options.filter(option =>
+        option[props.optionLabel].toLowerCase().includes(query)
+    )
+})
+
+const displayValue = computed(() => {
+    const selected = props.options.find(
+        option => option[props.optionValue] === props.modelValue
+    )
+    return selected ? selected[props.optionLabel] : props.placeholder
+})
+
+const selectClass = computed(() => {
+    const baseClasses = 'w-full peer border rounded-md bg-white px-3 py-2 appearance-none capitalize ' +
+                      'transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer ' +
+                      'dark:bg-gray-800 dark:text-white'
+    
+    const borderClasses = props.error 
+        ? 'error' 
+        : 'border-gray-300 dark:border-gray-600'
+        
+    return `${baseClasses} ${borderClasses}`
+})
+
+function toggleDropdown() {
+    isOpen.value = !isOpen.value
+    if (isOpen.value) nextTick(() => document.querySelector(`#${inputId.value}`)?.focus())
+}
+
+function selectOption(option) {
+    emit('update:modelValue', option[props.optionValue])
+    searchQuery.value = ''
+    isOpen.value = false
+}
+
+function isOptionSelected(option) {
+    return option[props.optionValue] === props.modelValue
+}
+
+function handleClickOutside(e) {
+    const fieldset = document.getElementById(inputId.value)?.closest('fieldset')
+    if (fieldset && !fieldset.contains(e.target)) {
+        isOpen.value = false
     }
 }
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside)
+})
 </script>
+
 
 <template>
     <fieldset class="space-y-1">
         <label :for="inputId" class="relative block" @click.stop="toggleDropdown">
-            <input :id="inputId" type="text" readonly :value="displayValue" role="combobox" :aria-expanded="isOpen"
+            <input 
+                :id="inputId" 
+                type="text" 
+                readonly 
+                :value="displayValue" 
+                role="combobox" 
+                :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
                 :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
-                class="w-full peer border rounded-md bg-white px-3 py-2 appearance-none capitalize
-                transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer dark:bg-gray-800 dark:text-white" :class="[
-                    error
-                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900'
-                        : 'border-gray-300 dark:border-gray-600 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-500'
-                ]" @keydown.arrow-down="isOpen = true" @keydown.enter.prevent="isOpen = !isOpen">
+                :class="selectClass"
+                @keydown.arrow-down="isOpen = true" 
+                @keydown.enter.prevent="isOpen = !isOpen"
+            >
 
             <section v-show="isOpen" :id="`${inputId}-listbox`" role="listbox"
                 class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-hidden">
+                
                 <header class="p-2 border-b border-gray-300 dark:border-gray-600">
                     <input type="search" :aria-label="'Search ' + label" v-model="searchQuery" placeholder="Search..."
                         class="w-full p-2 text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:focus:ring-gray-600"
@@ -138,6 +165,9 @@ export default {
                 {{ label }}{{ required ? ' *' : '' }}
             </span>
         </label>
-        <p v-if="error" role="alert" class="text-red-500 dark:text-red-400 text-xs">{{ error }}</p>
+        
+        <p v-if="error" role="alert" class="mt-1 text-red-600 text-sm">
+            {{ error }}
+        </p>
     </fieldset>
 </template>

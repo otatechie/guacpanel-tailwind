@@ -2,37 +2,37 @@
 import { ref, onMounted } from 'vue'
 
 const colors = [
-    { 
-        name: 'Purple', 
-        value: 'purple', 
-        gradientFrom: '#a855f7', 
+    {
+        name: 'Purple',
+        value: 'purple',
+        gradientFrom: '#a855f7',
         gradientTo: '#c084fc',
         primary: '#a855f7',
         hover: '#9333ea',
         rgb: '168, 85, 247'
     },
-    { 
-        name: 'Blue', 
-        value: 'blue', 
-        gradientFrom: '#3b82f6', 
+    {
+        name: 'Blue',
+        value: 'blue',
+        gradientFrom: '#3b82f6',
         gradientTo: '#60a5fa',
         primary: '#3b82f6',
         hover: '#2563eb',
         rgb: '59, 130, 246'
     },
-    { 
-        name: 'Green', 
-        value: 'green', 
-        gradientFrom: '#22c55e', 
+    {
+        name: 'Green',
+        value: 'green',
+        gradientFrom: '#22c55e',
         gradientTo: '#4ade80',
         primary: '#22c55e',
         hover: '#16a34a',
         rgb: '34, 197, 94'
     },
-    { 
-        name: 'Orange', 
-        value: 'orange', 
-        gradientFrom: '#f97316', 
+    {
+        name: 'Orange',
+        value: 'orange',
+        gradientFrom: '#f97316',
         gradientTo: '#fb923c',
         primary: '#f97316',
         hover: '#ea580c',
@@ -47,11 +47,10 @@ const updateTheme = (color) => {
     selectedColor.value = color
     localStorage.setItem('theme-color', color)
     isOpen.value = false
-    
-    // Update CSS variables
+
     const root = document.documentElement
     const selectedColorObj = colors.find(c => c.value === color)
-    
+
     root.style.setProperty('--primary-gradient-from', selectedColorObj.gradientFrom)
     root.style.setProperty('--primary-gradient-to', selectedColorObj.gradientTo)
     root.style.setProperty('--primary-color', selectedColorObj.primary)
@@ -70,65 +69,42 @@ const closeDropdown = (event) => {
 }
 
 onMounted(() => {
-    // Apply saved theme on mount
     updateTheme(selectedColor.value)
-    // Add click event listener to close dropdown when clicking outside
     document.addEventListener('click', closeDropdown)
 })
 </script>
 
+
 <template>
     <div class="relative theme-dropdown">
-        <button 
-            @click="toggleDropdown"
-            class="inline-flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer"
-        >
+        <button @click="toggleDropdown"
+            class="inline-flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer">
             <span>Theme</span>
-            <svg 
-                class="w-3.5 h-3.5 ml-1 text-gray-500 dark:text-gray-400"
-                :class="{ 'transform rotate-180': isOpen }"
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 20 20" 
-                fill="currentColor"
-            >
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            <svg class="w-3.5 h-3.5 ml-1 text-gray-500 dark:text-gray-400" :class="{ 'transform rotate-180': isOpen }"
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
             </svg>
         </button>
 
-        <div 
-            v-if="isOpen"
-            class="absolute right-0 mt-1 w-44 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 py-1 z-50"
-        >
-            <button
-                v-for="color in colors"
-                :key="color.value"
-                @click="updateTheme(color.value)"
+        <div v-if="isOpen"
+            class="absolute right-0 mt-1 w-44 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 py-1 z-50">
+            <button v-for="color in colors" :key="color.value" @click="updateTheme(color.value)"
                 class="w-full flex items-center px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer"
-                :class="{ 'bg-gray-50 dark:bg-gray-700': selectedColor === color.value }"
-            >
+                :class="{ 'bg-gray-50 dark:bg-gray-700': selectedColor === color.value }">
                 <div class="flex items-center flex-1 min-w-0">
-                    <div 
-                        class="w-4 h-4 rounded-full mr-2.5"
-                        :style="{
-                            background: `linear-gradient(to right, ${color.gradientFrom}, ${color.gradientTo})`
-                        }"
-                    />
+                    <div class="w-4 h-4 rounded-full mr-2.5" :style="{
+                        background: `linear-gradient(to right, ${color.gradientFrom}, ${color.gradientTo})`
+                    }" />
                     <span>{{ color.name }}</span>
                 </div>
-                <svg 
-                    v-if="selectedColor === color.value"
-                    class="w-4 h-4 text-primary shrink-0"
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
+                <svg v-if="selectedColor === color.value" class="w-4 h-4 text-primary shrink-0"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                 </svg>
             </button>
         </div>
     </div>
-</template> 
+</template>

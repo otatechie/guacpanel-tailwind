@@ -61,6 +61,7 @@ const props = defineProps({
 const emit = defineEmits(['processfile', 'removefile'])
 </script>
 
+
 <template>
     <div class="space-y-2">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -71,11 +72,22 @@ const emit = defineEmits(['processfile', 'removefile'])
             </span>
         </label>
 
-        <file-pond :name="name" :label-idle="labelIdle" :allow-multiple="allowMultiple" :max-files="maxFiles"
-            :accepted-file-types="acceptedFileTypes" :max-file-size="maxFileSize" :server="server" :files="files"
-            :credits="null" :allow-pdf-preview="true" :pdf-preview-height="320"
-            :pdf-component-extra-params="'toolbar=0'" class="bg-white dark:bg-gray-800 rounded-lg"
+        <file-pond 
+            :name="name" 
+            :label-idle="labelIdle" 
+            :allow-multiple="allowMultiple" 
+            :max-files="maxFiles"
+            :accepted-file-types="acceptedFileTypes" 
+            :max-file-size="maxFileSize" 
+            :server="server" 
+            :files="files"
+            :credits="null" 
+            :allow-pdf-preview="true" 
+            :pdf-preview-height="320"
+            :pdf-component-extra-params="'toolbar=0'" 
+            class="bg-white dark:bg-gray-800 rounded-lg"
             @processfile="(error, file) => $emit('processfile', error, file)"
-            @removefile="(error, file) => $emit('removefile', error, file)" />
+            @removefile="(error, file) => $emit('removefile', error, file)" 
+        />
     </div>
 </template>

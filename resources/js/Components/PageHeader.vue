@@ -15,6 +15,7 @@ defineProps({
 })
 </script>
 
+
 <template>
     <nav class="bg-gray-50 px-6 py-3 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
         v-if="breadcrumbs.length" aria-label="Breadcrumbs">
@@ -27,7 +28,8 @@ defineProps({
                     </Link>
                     <span v-else class="text-gray-800 dark:text-gray-200">{{ crumb.label }}</span>
                 </li>
-                <li v-if="index < breadcrumbs.length - 1" class="text-gray-400 dark:text-gray-500" aria-hidden="true">/
+                <li v-if="index < breadcrumbs.length - 1" class="text-gray-400 dark:text-gray-500" aria-hidden="true">
+                    /
                 </li>
             </template>
         </ol>

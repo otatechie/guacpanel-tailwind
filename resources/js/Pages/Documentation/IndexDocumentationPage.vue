@@ -345,6 +345,30 @@ onUnmounted(() => {
                             </div>
                         </div>
                     </div>
+
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
+                                    Color Theme Switcher
+                                </h4>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    Customize your UI with different color themes
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 

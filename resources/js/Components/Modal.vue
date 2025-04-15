@@ -1,56 +1,76 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 
 const props = defineProps({
     show: Boolean,
-    size: {
-        type: String,
-        default: 'md',
-    }
+    size: { type: String, default: 'md' },
+    closeOnClickOutside: { type: Boolean, default: true }
 })
 
 const emit = defineEmits(['close'])
 const modalPanel = ref(null)
-const titleId = `modal-${Math.random().toString(36).substr(2, 9)}`
+const closeButton = ref(null)
+const previouslyFocused = ref(null)
+const modalId = `modal-${Math.random().toString(36).substr(2, 9)}`
+const sizeClasses = { 'sm': 'max-w-sm', 'md': 'max-w-md', 'lg': 'max-w-lg', 'xl': 'max-w-xl' }
 
 const handleKeyDown = (e) => {
-    if (e.key === 'Escape' && props.show) {
-        emit('close')
+    if (e.key === 'Escape' && props.show) emit('close')
+
+    if (e.key === 'Tab' && props.show && modalPanel.value) {
+        const focusableElements = modalPanel.value.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusableElements.length === 0) return
+
+        const firstElement = focusableElements[0]
+        const lastElement = focusableElements[focusableElements.length - 1]
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement.focus()
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement.focus()
+        }
     }
 }
 
-onMounted(() => {
-    document.addEventListener('keydown', handleKeyDown)
-    if (props.show) {
-        modalPanel.value?.focus()
-    }
-})
+const handleClickOutside = (e) => {
+    if (props.closeOnClickOutside && !modalPanel.value?.contains(e.target)) emit('close')
+}
 
-onUnmounted(() => {
-    document.removeEventListener('keydown', handleKeyDown)
-})
+watch(() => props.show, (newValue) => {
+    if (newValue) {
+        previouslyFocused.value = document.activeElement
+        nextTick(() => closeButton.value?.focus())
+    } else if (previouslyFocused.value) {
+        previouslyFocused.value.focus()
+    }
+}, { immediate: true })
+
+onMounted(() => document.addEventListener('keydown', handleKeyDown))
+onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
 </script>
+
 
 <template>
     <Transition name="modal">
-        <div v-if="show" class="fixed inset-0 z-[999]">
+        <div v-if="show" class="fixed inset-0 z-[999]" role="region" aria-labelledby="modalId">
             <div class="fixed inset-0 grid h-screen w-screen place-items-center bg-black/30 backdrop-blur-[1px] dark:bg-black/50"
-                @click="$emit('close')" aria-hidden="true"></div>
+                @click="handleClickOutside" aria-hidden="true"></div>
 
-            <main class="fixed inset-0 z-10 grid h-screen w-screen place-items-center p-4" @keydown.esc="$emit('close')"
-                role="dialog" aria-modal="true" :aria-labelledby="titleId">
-                <article class="relative w-full rounded-xl bg-white dark:bg-gray-800 shadow-2xl" :class="{
-                    'max-w-sm': size === 'sm',
-                    'max-w-md': size === 'md',
-                    'max-w-lg': size === 'lg',
-                    'max-w-xl': size === 'xl',
-                }" ref="modalPanel" tabindex="-1">
+            <main class="fixed inset-0 z-10 grid h-screen w-screen place-items-center p-4" role="dialog"
+                aria-modal="true" :aria-labelledby="modalId">
+                <article ref="modalPanel" tabindex="-1"
+                    class="relative w-full rounded-xl bg-white dark:bg-gray-800 shadow-2xl"
+                    :class="sizeClasses[size] || sizeClasses['md']">
                     <header
                         class="flex items-center justify-between p-6 pb-2 border-b border-gray-200 dark:border-gray-700">
-                        <h2 :id="titleId" class="text-xl font-semibold text-gray-800 dark:text-white">
+                        <h2 :id="modalId" class="text-xl font-semibold text-gray-800 dark:text-white">
                             <slot name="title"></slot>
                         </h2>
-                        <button @click="$emit('close')"
+                        <button ref="closeButton" @click="emit('close')"
                             class="rounded-lg p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 cursor-pointer"
                             aria-label="Close modal">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,8 +93,6 @@ onUnmounted(() => {
         </div>
     </Transition>
 </template>
-
-
 
 <style scoped>
 .modal-enter-active,

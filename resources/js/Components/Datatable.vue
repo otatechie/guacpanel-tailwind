@@ -9,13 +9,34 @@ import {
     getPaginationRowModel,
 } from '@tanstack/vue-table'
 
+const styles = {
+    input: "border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-opacity-50 focus:border-transparent",
+    button: "btn-primary-outline !p-2 focus:outline-none focus:ring-2 focus:ring-opacity-50",
+    tableCell: "px-6 py-4 text-sm text-gray-900 dark:text-gray-200",
+    tableHeader: "table-header",
+    sortableHeader: "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700",
+    rowEven: "bg-white dark:bg-gray-900",
+    rowOdd: "bg-gray-50 dark:bg-gray-800",
+    rowHover: "hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors",
+    focusRing: "focus:outline-none focus:ring-2 focus:ring-opacity-50"
+}
+
+const icons = {
+    clearSearch: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`,
+    export: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />`,
+    firstPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />`,
+    prevPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />`,
+    nextPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />`,
+    lastPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />`
+}
+
 const props = defineProps({
-    data: { type: Array, required: true, default: () => [] },
-    columns: { type: Array, required: true },
+    data: { type: Array, required: true, default: () => [], },
+    columns: { type: Array, required: true, },
     title: { type: String, default: 'Data Table' },
     enableSearch: { type: Boolean, default: true },
     enableExport: { type: Boolean, default: true },
-    searchFields: { type: Array, default: () => [] },
+    searchFields: { type: Array, default: () => [], },
     emptyMessage: { type: String, default: 'No data found' },
     emptyDescription: { type: String, default: 'Data will appear here' },
     exportFileName: { type: String, default: 'export' },
@@ -33,6 +54,7 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['update:pagination'])
 const sorting = ref([])
 const selectedRows = ref({})
 const searchQuery = ref('')
@@ -44,6 +66,7 @@ const pagination = ref({
 
 const filteredData = computed(() => {
     if (!searchQuery.value || !props.searchFields.length) return props.data
+
     const query = searchQuery.value.toLowerCase()
     return props.data.filter(item =>
         props.searchFields.some(field =>
@@ -52,17 +75,100 @@ const filteredData = computed(() => {
     )
 })
 
-const currentPage = computed(() => table.getState().pagination.pageIndex + 1)
-const totalRows = computed(() => props.pagination?.total || table.getFilteredRowModel().rows.length)
-const paginationStart = computed(() =>
-    ((props.pagination?.current_page || 1) - 1) * (props.pagination?.per_page || pageSize.value) + 1
-)
-const paginationEnd = computed(() =>
-    Math.min(
-        (props.pagination?.current_page || 1) * (props.pagination?.per_page || pageSize.value),
-        totalRows.value
-    )
-)
+const isServerPagination = computed(() => Boolean(props.pagination?.total))
+
+const paginationInfo = computed(() => {
+    const currentPage = isServerPagination.value
+        ? props.pagination.current_page
+        : table.getState().pagination.pageIndex + 1
+
+    const pageSize = isServerPagination.value
+        ? props.pagination.per_page
+        : pagination.value.pageSize
+
+    const total = isServerPagination.value
+        ? props.pagination.total
+        : table.getFilteredRowModel().rows.length
+
+    const start = (currentPage - 1) * pageSize + 1
+    const end = Math.min(currentPage * pageSize, total)
+    const pageCount = Math.ceil(total / pageSize)
+
+    return { currentPage, pageSize, total, start, end, pageCount }
+})
+
+const currentPage = computed(() => paginationInfo.value.currentPage)
+const paginationStart = computed(() => paginationInfo.value.start)
+const paginationEnd = computed(() => paginationInfo.value.end)
+const totalRows = computed(() => paginationInfo.value.total)
+const pageCount = computed(() => paginationInfo.value.pageCount)
+const isFirstPage = computed(() => currentPage.value <= 1)
+const isLastPage = computed(() => currentPage.value >= pageCount.value)
+const hasSelection = computed(() => Object.keys(selectedRows.value).length > 0)
+const selectionCount = computed(() => Object.keys(selectedRows.value).length)
+
+const goToPage = (pageNumber) => {
+    if (!isServerPagination.value) return
+    if (pageNumber < 1 || pageNumber > pageCount.value) return
+    updateServerPagination({ current_page: pageNumber })
+}
+
+const updateServerPagination = (updates) => {
+    if (!isServerPagination.value) return
+
+    emit('update:pagination', {
+        ...props.pagination,
+        ...updates
+    })
+}
+
+const handlePageChange = (e) => {
+    goToPage(Number(e.target.value))
+}
+
+const clearSearch = () => {
+    searchQuery.value = ''
+}
+
+const formatValueForCSV = (value) => {
+    if (value === null || value === undefined) return ''
+    return String(value).replace(/,/g, ';')
+}
+
+const exportToCSV = () => {
+    const rowsToExport = hasSelection.value
+        ? table.getSelectedRowModel().rows
+        : table.getRowModel().rows
+
+    const dataToExport = rowsToExport.map(row => {
+        const rowData = {}
+        props.columns.forEach(column => {
+            if (column.accessorKey) {
+                rowData[column.header] = formatValueForCSV(row.original[column.accessorKey])
+            }
+        })
+        return rowData
+    })
+
+    if (!dataToExport.length) return
+
+    const csvContent = [
+        Object.keys(dataToExport[0]).join(','),
+        ...dataToExport.map(row => Object.values(row).join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+
+    link.setAttribute('href', url)
+    link.setAttribute('download', `${props.exportFileName}_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+}
 
 const table = useVueTable({
     get data() { return filteredData.value },
@@ -71,7 +177,7 @@ const table = useVueTable({
         get sorting() { return sorting.value },
         get rowSelection() { return selectedRows.value },
         get pagination() {
-            if (props.pagination?.total) {
+            if (isServerPagination.value) {
                 return {
                     pageSize: props.pagination.per_page,
                     pageIndex: props.pagination.current_page - 1
@@ -98,67 +204,19 @@ const table = useVueTable({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: props.pagination?.total ? undefined : getPaginationRowModel(),
+    getPaginationRowModel: isServerPagination.value ? undefined : getPaginationRowModel(),
     enableRowSelection: true,
     enableMultiRowSelection: true,
     enableSubRowSelection: false,
     getRowId: (row) => row.id || row.ID || JSON.stringify(row),
 })
 
-const handlePageChange = (e) => {
-    if (!props.pagination?.total) return
-    const page = Number(e.target.value)
-    if (page < 1 || page > Math.ceil(props.pagination.total / props.pagination.per_page)) return
-    emit('update:pagination', {
-        ...props.pagination,
-        current_page: page
-    })
-}
-
-const exportToCSV = () => {
-    const rowsToExport = Object.keys(selectedRows.value).length > 0
-        ? table.getSelectedRowModel().rows
-        : table.getRowModel().rows
-
-    const dataToExport = rowsToExport.map(row => {
-        const rowData = {}
-        props.columns.forEach(column => {
-            if (column.accessorKey) {
-                rowData[column.header] = row.original[column.accessorKey]
-            }
-        })
-        return rowData
-    })
-
-    if (!dataToExport.length) return
-
-    const csvContent = [
-        Object.keys(dataToExport[0]).join(','),
-        ...dataToExport.map(row => Object.values(row).join(','))
-    ].join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    const url = URL.createObjectURL(blob)
-
-    link.setAttribute('href', url)
-    link.setAttribute('download', `${props.exportFileName}_${new Date().toISOString().split('T')[0]}.csv`)
-    link.style.visibility = 'hidden'
-
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-}
-
-const emit = defineEmits(['update:pagination'])
-
 watch(pageSize, (newSize) => {
-    const newPagination = {
-        ...props.pagination,
+    if (!isServerPagination.value) return
+    updateServerPagination({
         per_page: newSize,
         current_page: 1
-    }
-    emit('update:pagination', newPagination)
+    })
 })
 
 watch(() => props.data, () => {
@@ -166,74 +224,88 @@ watch(() => props.data, () => {
 }, { deep: true })
 </script>
 
+
 <template>
     <section class="relative">
+        <!-- Error Alert -->
         <div v-if="error" role="alert"
             class="mb-4 p-4 bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 rounded-md">
             {{ error }}
         </div>
 
+        <!-- Loading Overlay -->
         <div v-if="loading" role="status"
             class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
-            <span class="animate-spin rounded-full h-8 w-8 border-b-2" :style="{ borderColor: 'var(--primary-color)' }"></span>
+            <span class="animate-spin rounded-full h-8 w-8 border-b-2"
+                :style="{ borderColor: 'var(--primary-color)' }"></span>
         </div>
 
+        <!-- Table Controls -->
         <header class="flex justify-between items-center mb-4">
+            <!-- Left Controls: Page Size and Selection Count -->
             <div class="flex items-center gap-3">
                 <label class="sr-only" :for="'page-size-select'">Rows per page</label>
-                <select :id="'page-size-select'" v-model="pageSize"
-                    class="select-input">
+                <select :id="'page-size-select'" v-model="pageSize" 
+                    :class="['select-input', styles.focusRing]"
+                    :style="{ '--tw-ring-color': 'var(--primary-color)' }">
                     <option v-for="size in pageSizeOptions" :key="size" :value="size" class="dark:bg-gray-900">
                         {{ size }} rows per page
                     </option>
                 </select>
 
-                <span v-if="Object.keys(selectedRows).length" role="status"
-                    class="px-3 py-1.5 rounded-full text-sm font-medium" :style="{ color: 'var(--primary-color)' }">
-                    {{ Object.keys(selectedRows).length }} selected
+                <!-- Selection Count Badge -->
+                <span v-if="hasSelection" role="status" class="px-3 py-1.5 rounded-full text-sm font-medium"
+                    :style="{ color: 'var(--primary-color)' }">
+                    {{ selectionCount }} selected
                 </span>
             </div>
 
+            <!-- Right Controls: Search and Export -->
             <nav class="flex items-center gap-3">
+                <!-- Search Input -->
                 <div v-if="enableSearch" class="relative">
                     <label class="sr-only" :for="'table-search'">Search table</label>
                     <input type="search" :id="'table-search'" v-model="searchQuery" placeholder="Search"
-                        class="w-48 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200" />
-                    <button v-if="searchQuery" @click="searchQuery = ''"
-                        class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600" aria-label="Clear search">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        :class="[styles.input, styles.focusRing, 'w-48 px-4 py-2']" />
+                    <button v-if="searchQuery" @click="clearSearch"
+                        :class="[styles.focusRing, 'absolute right-3 top-2.5 text-gray-400 hover:text-gray-600']" 
+                        aria-label="Clear search">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+                            v-html="icons.clearSearch"></svg>
                     </button>
                 </div>
 
+                <!-- Export Button -->
                 <button v-if="enableExport" @click="exportToCSV"
-                    class="btn-primary btn-sm inline-flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
+                    :class="['btn-primary btn-sm inline-flex items-center gap-2', styles.focusRing]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+                        v-html="icons.export"></svg>
                     Export CSV
                 </button>
             </nav>
         </header>
 
+        <!-- Main Table -->
         <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" role="grid">
+                <!-- Table Header -->
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
+                        <!-- Select All Checkbox -->
                         <th class="w-10 px-6 py-3">
                             <input type="checkbox" :checked="table.getIsAllRowsSelected()"
                                 :indeterminate="table.getIsSomeRowsSelected()" @change="table.toggleAllRowsSelected()"
-                                class="checkbox-input" />
+                                :class="['checkbox-input', styles.focusRing]" />
                         </th>
+
+                        <!-- Column Headers -->
                         <th v-for="header in table.getHeaderGroups()[0].headers" :key="header.id" :class="[
-                            'table-header',
-                            header.column.getCanSort() ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700' : ''
+                            styles.tableHeader,
+                            header.column.getCanSort() ? styles.sortableHeader : ''
                         ]" @click="header.column.getToggleSortingHandler()?.($event)">
                             <div class="flex items-center gap-2">
                                 {{ header.column.columnDef.header }}
+                                <!-- Sort Indicator -->
                                 <span v-if="header.column.getIsSorted()" class="text-gray-900 dark:text-gray-200">
                                     {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                 </span>
@@ -242,23 +314,29 @@ watch(() => props.data, () => {
                     </tr>
                 </thead>
 
+                <!-- Table Body -->
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <!-- Empty State -->
+                    <tr v-if="!table.getRowModel().rows.length" :class="styles.rowHover">
                         <td :colspan="columns.length + 1" class="px-6 py-8 text-center">
                             <p class="text-gray-500 dark:text-gray-400 text-sm">{{ emptyMessage }}</p>
                             <p class="mt-1 text-gray-400 dark:text-gray-500 text-sm">{{ emptyDescription }}</p>
                         </td>
                     </tr>
+
+                    <!-- Data Rows -->
                     <tr v-for="(row, index) in table.getRowModel().rows" :key="row.id" :class="[
-                        'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors',
-                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'
+                        styles.rowHover,
+                        index % 2 === 0 ? styles.rowEven : styles.rowOdd
                     ]">
+                        <!-- Row Checkbox -->
                         <td class="px-6 py-4">
                             <input type="checkbox" :checked="row.getIsSelected()" @change="row.toggleSelected()"
-                                class="checkbox-input" />
+                                :class="['checkbox-input', styles.focusRing]" />
                         </td>
-                        <td v-for="cell in row.getVisibleCells()" :key="cell.id"
-                            class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">
+
+                        <!-- Cell Data -->
+                        <td v-for="cell in row.getVisibleCells()" :key="cell.id" :class="styles.tableCell">
                             <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                         </td>
                     </tr>
@@ -266,7 +344,9 @@ watch(() => props.data, () => {
             </table>
         </div>
 
+        <!-- Pagination Footer -->
         <footer class="flex items-center justify-between mt-6 px-1">
+            <!-- Results Count -->
             <p class="text-sm text-gray-700 dark:text-gray-300">
                 Showing
                 <span class="font-medium">{{ paginationStart }}</span>
@@ -276,41 +356,61 @@ watch(() => props.data, () => {
                 <span class="font-medium">{{ totalRows }}</span>
                 results
             </p>
+
+            <!-- Pagination Controls -->
             <nav class="flex items-center gap-2" aria-label="Pagination">
-                <button class="btn-primary-outline !p-2" :disabled="props.pagination?.current_page <= 1"
-                    @click="emit('update:pagination', { ...props.pagination, current_page: 1 })">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button class="btn-primary-outline !p-2" :disabled="props.pagination?.current_page <= 1"
-                    @click="emit('update:pagination', { ...props.pagination, current_page: props.pagination.current_page - 1 })">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <div class="flex items-center gap-1">
-                    <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
-                    <input type="number" :value="currentPage" @change="handlePageChange"
-                        class="w-16 px-3 py-2 text-center border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200" />
-                    <span class="text-sm text-gray-700 dark:text-gray-300">of {{ table.getPageCount() }}</span>
-                </div>
-                <button class="btn-primary-outline !p-2"
-                    :disabled="props.pagination?.current_page >= Math.ceil(props.pagination.total / props.pagination.per_page)"
-                    @click="emit('update:pagination', { ...props.pagination, current_page: props.pagination.current_page + 1 })">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-                <button class="btn-primary-outline !p-2"
-                    :disabled="props.pagination?.current_page >= Math.ceil(props.pagination.total / props.pagination.per_page)"
-                    @click="emit('update:pagination', { ...props.pagination, current_page: Math.ceil(props.pagination.total / props.pagination.per_page) })">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                    </svg>
-                </button>
+                <!-- Pagination Buttons -->
+                <template v-if="isServerPagination">
+                    <!-- First Page Button -->
+                    <button :class="[styles.button, styles.focusRing]" :disabled="isFirstPage" @click="goToPage(1)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            v-html="icons.firstPage"></svg>
+                    </button>
+
+                    <!-- Previous Page Button -->
+                    <button :class="[styles.button, styles.focusRing]" :disabled="isFirstPage" @click="goToPage(currentPage - 1)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            v-html="icons.prevPage"></svg>
+                    </button>
+
+                    <!-- Page Number Input -->
+                    <div class="flex items-center gap-1">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
+                        <input type="number" :value="currentPage" @change="handlePageChange"
+                            :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']" />
+                        <span class="text-sm text-gray-700 dark:text-gray-300">of {{ pageCount }}</span>
+                    </div>
+
+                    <!-- Next Page Button -->
+                    <button :class="[styles.button, styles.focusRing]" :disabled="isLastPage" @click="goToPage(currentPage + 1)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            v-html="icons.nextPage"></svg>
+                    </button>
+
+                    <!-- Last Page Button -->
+                    <button :class="[styles.button, styles.focusRing]" :disabled="isLastPage" @click="goToPage(pageCount)">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            v-html="icons.lastPage"></svg>
+                    </button>
+                </template>
+
+                <!-- Client-side pagination controls (when not using server pagination) -->
+                <template v-else>
+                    <button :class="[styles.button, styles.focusRing]" :disabled="!table.getCanPreviousPage()"
+                        @click="table.previousPage()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            v-html="icons.prevPage"></svg>
+                    </button>
+
+                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                        Page {{ table.getState().pagination.pageIndex + 1 }} of {{ table.getPageCount() }}
+                    </span>
+
+                    <button :class="[styles.button, styles.focusRing]" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            v-html="icons.nextPage"></svg>
+                    </button>
+                </template>
             </nav>
         </footer>
     </section>

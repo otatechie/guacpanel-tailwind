@@ -1,73 +1,61 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import { usePage, Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
-import { cycleTheme, getCurrentThemeState } from '@/darkMode';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { usePage, Link } from '@inertiajs/vue3'
+import { cycleTheme, getCurrentThemeState } from '@/darkMode'
 
-const page = usePage();
-const user = computed(() => page.props.auth.user);
-const menuOpen = ref(false);
-const menuWrapper = ref(null);
-const avatarUrl = computed(() => user.value?.avatar);
-
-const safeUserName = computed(() => {
-    return user.value?.name ? String(user.value.name).replace(/[<>]/g, '') : '';
-});
-
-const isDark = ref(document.documentElement.classList.contains('dark'));
-const themeState = ref(getCurrentThemeState());
+const page = usePage()
+const user = computed(() => page.props.auth.user)
+const menuOpen = ref(false)
+const menuWrapper = ref(null)
+const avatarUrl = computed(() => user.value?.avatar)
+const safeUserName = computed(() => user.value?.name ? String(user.value.name).replace(/[<>]/g, '') : '')
+const isDark = ref(document.documentElement.classList.contains('dark'))
+const themeState = ref(getCurrentThemeState())
 
 const handleThemeChange = () => {
-    themeState.value = cycleTheme();
-    closeMenu();
-};
-
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside);
-    document.addEventListener('keydown', handleEscapeKey);
-
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === 'class') {
-                isDark.value = document.documentElement.classList.contains('dark');
-            }
-        });
-    });
-
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-
-    onBeforeUnmount(() => {
-        observer.disconnect();
-        document.removeEventListener('click', handleClickOutside);
-        document.removeEventListener('keydown', handleEscapeKey);
-    });
-});
+    themeState.value = cycleTheme()
+    closeMenu()
+}
 
 const handleClickOutside = (event) => {
     if (menuWrapper.value &&
         !menuWrapper.value.contains(event.target) &&
         event.target.id !== 'user-menu-button') {
-        menuOpen.value = false;
+        menuOpen.value = false
     }
-};
+}
 
 const handleEscapeKey = (event) => {
-    if (event.key === 'Escape') {
-        menuOpen.value = false;
-    }
-};
+    if (event.key === 'Escape') menuOpen.value = false
+}
 
-const toggleMenu = () => {
-    menuOpen.value = !menuOpen.value;
-};
+const toggleMenu = () => menuOpen.value = !menuOpen.value
+const closeMenu = () => menuOpen.value = false
 
-const closeMenu = () => {
-    menuOpen.value = false;
-};
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+    document.addEventListener('keydown', handleEscapeKey)
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class')
+                isDark.value = document.documentElement.classList.contains('dark')
+        })
+    })
+
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+    })
+
+    onBeforeUnmount(() => {
+        observer.disconnect()
+        document.removeEventListener('click', handleClickOutside)
+        document.removeEventListener('keydown', handleEscapeKey)
+    })
+})
 </script>
+
 
 <template>
     <nav class="relative" ref="menuWrapper">
@@ -77,10 +65,10 @@ const closeMenu = () => {
             <img :src="avatarUrl" :alt="`${safeUserName}'s avatar`"
                 class="h-6 w-6 rounded-full ring-2 ring-white dark:ring-gray-800" />
             <svg class="ml-1 hidden h-3.5 w-3.5 text-gray-400 dark:text-gray-500 lg:block"
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 20 20" 
-                fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
             </svg>
         </button>
 

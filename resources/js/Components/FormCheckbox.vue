@@ -29,7 +29,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
-
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 
 const updateValue = (e) => {
@@ -49,6 +48,7 @@ const updateValue = (e) => {
     }
 }
 </script>
+
 
 <template>
     <fieldset class="flex items-start">
