@@ -97,7 +97,7 @@ export default {
             <input :id="inputId" type="text" readonly :value="displayValue" role="combobox" :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
                 :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
-                class="w-full peer border rounded-md bg-white px-3 py-2 appearance-none
+                class="w-full peer border rounded-md bg-white px-3 py-2 appearance-none capitalize
                 transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer dark:bg-gray-800 dark:text-white" :class="[
                     error
                         ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900'
@@ -116,7 +116,7 @@ export default {
                     <li v-for="option in filteredOptions" :key="option[optionValue]"
                         :id="`${inputId}-option-${option[optionValue]}`" role="option"
                         :aria-selected="isOptionSelected(option)" @click="selectOption(option)"
-                        class="px-3 py-2 text-sm cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700 dark:text-white"
+                        class="px-3 py-2 text-sm cursor-pointer capitalize hover:bg-blue-50 dark:hover:bg-gray-700 dark:text-white"
                         :class="{ 'bg-blue-50 dark:bg-gray-700': isOptionSelected(option) }">
                         {{ option[optionLabel] }}
                     </li>

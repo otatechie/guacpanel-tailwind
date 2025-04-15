@@ -76,9 +76,11 @@ const closeMenu = () => {
             id="user-menu-button" :aria-expanded="menuOpen.toString()" aria-haspopup="true" @click="toggleMenu">
             <img :src="avatarUrl" :alt="`${safeUserName}'s avatar`"
                 class="h-6 w-6 rounded-full ring-2 ring-white dark:ring-gray-800" />
-            <svg class="ml-1 hidden h-4 w-4 text-gray-400 dark:text-gray-500 lg:block" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            <svg class="ml-1 hidden h-3.5 w-3.5 text-gray-400 dark:text-gray-500 lg:block"
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 20 20" 
+                fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
         </button>
 

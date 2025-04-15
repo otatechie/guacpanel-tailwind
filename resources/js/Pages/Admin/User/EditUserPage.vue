@@ -49,7 +49,7 @@ const closeModal = () => {
 }
 
 const submit = () => {
-    form.post(route('admin.user.update', props.user.id), {
+    form.put(route('admin.user.update', props.user.id), {
         preserveScroll: true,
     })
 }
@@ -147,7 +147,6 @@ const deleteUser = () => {
                         </div>
                         <div
                             class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 border border-red-200 dark:border-red-800">
-                            <h3 class="font-medium text-gray-800 dark:text-white">Delete Account</h3>
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400 mb-4">
                                 Permanently delete this user account and all associated data
                             </p>
