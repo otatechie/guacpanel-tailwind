@@ -6,11 +6,8 @@ import FlashMessage from '@/Components/FlashMessage.vue'
 import { computed } from 'vue'
 
 const page = usePage()
-
 const personalisation = page.props.personalisation || {}
-
 const hasCustomBranding = computed(() => personalisation.appLogo)
-
 </script>
 
 <template>
@@ -33,20 +30,25 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
                         <li>
                             <Link :href="route('home')"
                                 class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                            Homepage</Link>
+                            Homepage
+                            </Link>
                         </li>
                         <li>
                             <a href="#"
-                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Privacy
-                                Policy</a>
+                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                                Privacy Policy
+                            </a>
                         </li>
                         <li>
                             <a href="#"
-                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">Terms</a>
+                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                                Terms
+                            </a>
                         </li>
                     </ul>
                 </nav>
 
+                <!-- Copyright -->
                 <p class="text-center text-xs text-gray-500 dark:text-gray-300 md:order-1">
                     {{ personalisation.app_name }}
                     {{ personalisation.copyright_text || '© 2024 All rights reserved.' }}
