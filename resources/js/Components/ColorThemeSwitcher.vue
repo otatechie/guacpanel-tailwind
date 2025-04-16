@@ -99,10 +99,19 @@ onMounted(() => {
                     }" />
                     <span>{{ color.name }}</span>
                 </div>
-                <svg v-if="selectedColor === color.value" class="w-4 h-4 text-primary shrink-0"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
+                <svg v-if="selectedColor === color.value" 
+                    class="w-4 h-4 shrink-0"
+                    :style="{ color: color.primary }"
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                    stroke-width="1.5">
+                    <path 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" 
+                    />
                 </svg>
             </button>
         </div>

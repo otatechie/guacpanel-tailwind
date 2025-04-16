@@ -9,6 +9,8 @@ import {
     getPaginationRowModel,
 } from '@tanstack/vue-table'
 
+const selectionColor = 'var(--selection-color)'
+
 const styles = {
     input: "border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-opacity-50 focus:border-transparent",
     button: "btn-primary-outline !p-2 focus:outline-none focus:ring-2 focus:ring-opacity-50",
@@ -18,6 +20,7 @@ const styles = {
     rowEven: "bg-white dark:bg-gray-900",
     rowOdd: "bg-gray-50 dark:bg-gray-800",
     rowHover: "hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors",
+    rowSelected: "bg-[var(--selection-color-light)] dark:bg-[var(--selection-color-dark)]",
     focusRing: "focus:outline-none focus:ring-2 focus:ring-opacity-50"
 }
 
@@ -244,18 +247,46 @@ watch(() => props.data, () => {
         <header class="flex justify-between items-center mb-4">
             <!-- Left Controls: Page Size and Selection Count -->
             <div class="flex items-center gap-3">
-                <label class="sr-only" :for="'page-size-select'">Rows per page</label>
-                <select :id="'page-size-select'" v-model="pageSize" 
-                    :class="['select-input', styles.focusRing]"
-                    :style="{ '--tw-ring-color': 'var(--primary-color)' }">
-                    <option v-for="size in pageSizeOptions" :key="size" :value="size" class="dark:bg-gray-900">
-                        {{ size }} rows per page
-                    </option>
-                </select>
+                <div class="flex space-x-2 items-center">
+                    <label class="text-sm text-gray-700 dark:text-gray-300">
+                        {{ table.options.meta?.showRowsSelectLabel || 'Rows per page:' }}
+                    </label>
+                    <select
+                        class="border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :value="table.getState().pagination.pageSize"
+                        @change="table.setPageSize(Number($event.target.value))"
+                    >
+                        <option v-for="pageSize in table.options.meta?.pageSizeOptions || [5, 10, 20, 30, 40, 50]" :key="pageSize" :value="pageSize">
+                            {{ pageSize }}
+                        </option>
+                    </select>
+                </div>
 
                 <!-- Selection Count Badge -->
-                <span v-if="hasSelection" role="status" class="px-3 py-1.5 rounded-full text-sm font-medium"
-                    :style="{ color: 'var(--primary-color)' }">
+                <span 
+                    v-if="hasSelection" 
+                    role="status" 
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+                    :style="{ 
+                        backgroundColor: 'var(--selection-color-light)', 
+                        color: 'var(--selection-color)'
+                    }"
+                >
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke-width="1.5" 
+                        stroke="currentColor" 
+                        class="w-4 h-4"
+                    >
+                        <path 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" 
+                        />
+                    </svg>
                     {{ selectionCount }} selected
                 </span>
             </div>
@@ -266,9 +297,11 @@ watch(() => props.data, () => {
                 <div v-if="enableSearch" class="relative">
                     <label class="sr-only" :for="'table-search'">Search table</label>
                     <input type="search" :id="'table-search'" v-model="searchQuery" placeholder="Search"
-                        :class="[styles.input, styles.focusRing, 'w-48 px-4 py-2']" />
+                        :class="[styles.input, styles.focusRing, 'w-48 px-4 py-2']" 
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
                     <button v-if="searchQuery" @click="clearSearch"
                         :class="[styles.focusRing, 'absolute right-3 top-2.5 text-gray-400 hover:text-gray-600']" 
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
                         aria-label="Clear search">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
                             v-html="icons.clearSearch"></svg>
@@ -293,9 +326,18 @@ watch(() => props.data, () => {
                     <tr>
                         <!-- Select All Checkbox -->
                         <th class="w-10 px-6 py-3">
-                            <input type="checkbox" :checked="table.getIsAllRowsSelected()"
-                                :indeterminate="table.getIsSomeRowsSelected()" @change="table.toggleAllRowsSelected()"
-                                :class="['checkbox-input', styles.focusRing]" />
+                            <div class="flex items-center">
+                                <label class="inline-flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        class="form-checkbox rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
+                                        :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
+                                        :checked="table.getIsAllRowsSelected()"
+                                        :indeterminate="table.getIsSomeRowsSelected()"
+                                        @change="table.toggleAllRowsSelected()"
+                                    />
+                                </label>
+                            </div>
                         </th>
 
                         <!-- Column Headers -->
@@ -306,7 +348,9 @@ watch(() => props.data, () => {
                             <div class="flex items-center gap-2">
                                 {{ header.column.columnDef.header }}
                                 <!-- Sort Indicator -->
-                                <span v-if="header.column.getIsSorted()" class="text-gray-900 dark:text-gray-200">
+                                <span v-if="header.column.getIsSorted()" 
+                                      :style="{ color: selectionColor }" 
+                                      class="text-gray-900 dark:text-gray-200">
                                     {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                 </span>
                             </div>
@@ -325,14 +369,24 @@ watch(() => props.data, () => {
                     </tr>
 
                     <!-- Data Rows -->
-                    <tr v-for="(row, index) in table.getRowModel().rows" :key="row.id" :class="[
-                        styles.rowHover,
-                        index % 2 === 0 ? styles.rowEven : styles.rowOdd
-                    ]">
+                    <tr v-for="(row, index) in table.getRowModel().rows" :key="row.id" 
+                        :class="[
+                            styles.rowHover,
+                            row.getIsSelected() ? styles.rowSelected : (index % 2 === 0 ? styles.rowEven : styles.rowOdd)
+                        ]">
                         <!-- Row Checkbox -->
                         <td class="px-6 py-4">
-                            <input type="checkbox" :checked="row.getIsSelected()" @change="row.toggleSelected()"
-                                :class="['checkbox-input', styles.focusRing]" />
+                            <div class="flex items-center">
+                                <label class="inline-flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        class="form-checkbox rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
+                                        :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
+                                        :checked="row.getIsSelected()"
+                                        @change="row.toggleSelected()"
+                                    />
+                                </label>
+                            </div>
                         </td>
 
                         <!-- Cell Data -->
@@ -362,43 +416,71 @@ watch(() => props.data, () => {
                 <!-- Pagination Buttons -->
                 <template v-if="isServerPagination">
                     <!-- First Page Button -->
-                    <button :class="[styles.button, styles.focusRing]" :disabled="isFirstPage" @click="goToPage(1)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <button 
+                        :class="[styles.button, styles.focusRing]" 
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :disabled="isFirstPage" 
+                        @click="goToPage(1)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.firstPage"></svg>
                     </button>
 
                     <!-- Previous Page Button -->
-                    <button :class="[styles.button, styles.focusRing]" :disabled="isFirstPage" @click="goToPage(currentPage - 1)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <button 
+                        :class="[styles.button, styles.focusRing]" 
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :disabled="isFirstPage" 
+                        @click="goToPage(currentPage - 1)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.prevPage"></svg>
                     </button>
 
                     <!-- Page Number Input -->
                     <div class="flex items-center gap-1">
                         <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
-                        <input type="number" :value="currentPage" @change="handlePageChange"
-                            :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']" />
+                        <input 
+                            type="number" 
+                            :value="currentPage" 
+                            @change="handlePageChange"
+                            :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']" 
+                            :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
                         <span class="text-sm text-gray-700 dark:text-gray-300">of {{ pageCount }}</span>
                     </div>
 
                     <!-- Next Page Button -->
-                    <button :class="[styles.button, styles.focusRing]" :disabled="isLastPage" @click="goToPage(currentPage + 1)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <button 
+                        :class="[styles.button, styles.focusRing]" 
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :disabled="isLastPage" 
+                        @click="goToPage(currentPage + 1)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.nextPage"></svg>
                     </button>
 
                     <!-- Last Page Button -->
-                    <button :class="[styles.button, styles.focusRing]" :disabled="isLastPage" @click="goToPage(pageCount)">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <button 
+                        :class="[styles.button, styles.focusRing]" 
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :disabled="isLastPage" 
+                        @click="goToPage(pageCount)">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.lastPage"></svg>
                     </button>
                 </template>
 
                 <!-- Client-side pagination controls (when not using server pagination) -->
                 <template v-else>
-                    <button :class="[styles.button, styles.focusRing]" :disabled="!table.getCanPreviousPage()"
-                        @click="table.previousPage()">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <button
+                        class="px-2 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        :class="[
+                            table.getCanPreviousPage() ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600',
+                            styles.focusRing
+                        ]"
+                        :style="table.getCanPreviousPage() ? { '--tw-ring-color': 'var(--primary-color)' } : {}"
+                        :disabled="!table.getCanPreviousPage()"
+                        @click="table.previousPage()"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.prevPage"></svg>
                     </button>
 
@@ -406,8 +488,17 @@ watch(() => props.data, () => {
                         Page {{ table.getState().pagination.pageIndex + 1 }} of {{ table.getPageCount() }}
                     </span>
 
-                    <button :class="[styles.button, styles.focusRing]" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <button
+                        class="px-2 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        :class="[
+                            table.getCanNextPage() ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600',
+                            styles.focusRing
+                        ]"
+                        :style="table.getCanNextPage() ? { '--tw-ring-color': 'var(--primary-color)' } : {}"
+                        :disabled="!table.getCanNextPage()"
+                        @click="table.nextPage()"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.nextPage"></svg>
                     </button>
                 </template>

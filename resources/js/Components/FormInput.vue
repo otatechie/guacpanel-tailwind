@@ -92,7 +92,7 @@ function togglePasswordVisibility() {
             </button>
         </label>
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1 text-red-600 text-sm">
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1 text-red-600 text-xs">
             {{ error }}
         </p>
     </div>

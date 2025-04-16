@@ -21,8 +21,8 @@ function handleError() {
                 :style="{ maxHeight: imageHeight }" @error="handleError" />
         </figure>
 
-        <h1 v-else class="text-xl font-semibold text-gray-800 dark:text-white">
-            {{ page.props.personalisation?.app_name || 'Application' }}
+        <h1 v-else class="text-3xl font-extrabold text-gray-800 dark:text-white">
+            {{ page.props.personalisation?.app_name || 'OboDash' }}
         </h1>
     </header>
 </template>

@@ -54,10 +54,21 @@ const updateValue = (e) => {
     <fieldset class="flex items-start">
         <label :for="inputId" class="flex items-start cursor-pointer">
             <span class="flex items-center h-5">
-                <input type="checkbox" :id="inputId" :name="name" :value="value"
-                    :checked="Array.isArray(modelValue) ? modelValue.includes(value) : modelValue" @change="updateValue"
-                    :aria-describedby="error ? `${inputId}-error` : undefined" :aria-invalid="!!error"
-                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                <input 
+                    type="checkbox" 
+                    :id="inputId" 
+                    :name="name" 
+                    :value="value"
+                    :checked="Array.isArray(modelValue) ? modelValue.includes(value) : modelValue" 
+                    @change="updateValue"
+                    :aria-describedby="error ? `${inputId}-error` : undefined" 
+                    :aria-invalid="!!error"
+                    class="rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
+                    :style="{ 
+                        '--tw-ring-color': 'var(--primary-color)', 
+                        'color': 'var(--selection-color)' 
+                    }"
+                />
             </span>
             <span class="ml-3 text-sm">
                 <span class="font-medium text-gray-700 dark:text-gray-300">{{ label }}</span>

@@ -10,6 +10,7 @@ const personalisation = page.props.personalisation || {}
 const hasCustomBranding = computed(() => personalisation.appLogo)
 </script>
 
+
 <template>
     <div class="min-h-screen flex flex-col">
         <main class="flex-grow bg-gray-50 dark:bg-gray-800 py-8">
