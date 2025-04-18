@@ -13,6 +13,7 @@ const showAddModal = ref(false)
 const editingRole = ref(null)
 const showDeleteModal = ref(false)
 const roleToDelete = ref(null)
+const expandedRoles = ref(new Set())
 
 const form = useForm({
     name: '',
@@ -62,7 +63,20 @@ const toggleAllPermissions = (e) => {
         ? props.permissions.data.map(p => p.id)
         : []
 }
+
+const toggleExpandRole = (roleId) => {
+    if (expandedRoles.value.has(roleId)) {
+        expandedRoles.value.delete(roleId)
+    } else {
+        expandedRoles.value.add(roleId)
+    }
+}
+
+const isRoleExpanded = (roleId) => {
+    return expandedRoles.value.has(roleId)
+}
 </script>
+
 
 <template>
     <section class="p-6 space-y-6">
@@ -119,18 +133,44 @@ const toggleAllPermissions = (e) => {
                             <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <figcaption class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ role.name }}</figcaption>
+                            <figcaption class="text-sm font-medium text-gray-800 dark:text-gray-200 capitalize">
+                                {{ role.name }}
+                                <span v-if="role.description" class="block text-xs text-gray-500 dark:text-gray-400 normal-case">
+                                    {{ role.description }}
+                                </span>
+                            </figcaption>
                         </figure>
                     </td>
                     <td class="px-6 py-4">
                         <ul v-if="role.permissions?.length" class="flex flex-wrap gap-2" role="list">
-                            <li v-for="permission in role.permissions.slice(0, 3)" :key="permission.id"
-                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
-                                {{ permission.name }}
-                            </li>
-                            <li v-if="role.permissions.length > 3" class="text-xs text-gray-500 dark:text-gray-400 px-2 py-0.5">
-                                +{{ role.permissions.length - 3 }} more
-                            </li>
+                            <template v-if="isRoleExpanded(role.id)">
+                                <li v-for="permission in role.permissions" :key="permission.id"
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                                    {{ permission.name }}
+                                </li>
+                                <li>
+                                    <button 
+                                        @click="toggleExpandRole(role.id)" 
+                                        class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2 py-0.5 cursor-pointer"
+                                    >
+                                        Show less
+                                    </button>
+                                </li>
+                            </template>
+                            <template v-else>
+                                <li v-for="permission in role.permissions.slice(0, 3)" :key="permission.id"
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                                    {{ permission.name }}
+                                </li>
+                                <li v-if="role.permissions.length > 3">
+                                    <button 
+                                        @click="toggleExpandRole(role.id)" 
+                                        class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2 py-0.5 cursor-pointer"
+                                    >
+                                        +{{ role.permissions.length - 3 }} more
+                                    </button>
+                                </li>
+                            </template>
                         </ul>
                         <p v-else class="text-xs text-gray-500 dark:text-gray-400">
                             No permissions assigned
@@ -177,7 +217,7 @@ const toggleAllPermissions = (e) => {
             </template>
 
             <template #default>
-                <form @submit.prevent="submitRole" class="space-y-6">
+                <form @submit.prevent="submitRole" class="space-y-6 capitalize">
                     <FormInput
                         label="Role name"
                         v-model="form.name"

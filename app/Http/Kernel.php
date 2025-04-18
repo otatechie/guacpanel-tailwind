@@ -74,5 +74,8 @@ class Kernel extends HttpKernel
         'require.two.factor' => \App\Http\Middleware\RequireTwoFactor::class,
         'disable.account' => \App\Http\Middleware\DisableAccount::class,
         'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 }

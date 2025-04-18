@@ -70,7 +70,7 @@ const displayValue = computed(() => {
 })
 
 const selectClass = computed(() => {
-    const baseClasses = 'w-full peer border rounded-md bg-white px-3 py-2 appearance-none capitalize ' +
+    const baseClasses = 'w-full peer border rounded-md bg-white px-3 py-2 appearance-none' +
                       'transition-shadow duration-150 ease-in-out focus:outline-none cursor-pointer ' +
                       'dark:bg-gray-800 dark:text-white'
     

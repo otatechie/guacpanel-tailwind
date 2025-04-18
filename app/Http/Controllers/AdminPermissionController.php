@@ -27,7 +27,7 @@ class AdminPermissionController extends Controller
     }
 
 
-    public function update(Request $request, string $id, Permission $permission)
+    public function update(Request $request, Permission $permission)
     {
         $validatedData = $request->validate([
             'name' => [

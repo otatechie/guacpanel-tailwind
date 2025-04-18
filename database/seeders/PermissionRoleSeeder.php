@@ -5,104 +5,87 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PermissionRoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $roles = [
-            [
-                'name' => 'admin',
-                'description' => 'Platform administrator with full access'
-            ],
-            [
-                'name' => 'seller',
-                'description' => 'A verified user who can list and sell second-hand gadgets on the platform.'
-            ],
-            [
-                'name' => 'moderator',
-                'description' => 'Platform guardian who ensures quality, safety, and trust in the marketplace.'
-            ]
-        ];
+        $permissions = $this->createPermissions();
+        $roles = $this->createRoles();
+        $this->assignPermissions($roles, $permissions);
+    }
 
-        $permissions = [
-            // Listing Management
-            [
-                'name' => 'create-listing',
-                'description' => 'Create new product listings'
-            ],
-            [
-                'name' => 'edit-own-listing',
-                'description' => 'Edit own product listings'
-            ],
-            [
-                'name' => 'delete-listing',
-                'description' => 'Remove listings from platform'
-            ],
-            [
-                'name' => 'manage-all-listings',
-                'description' => 'Manage all product listings'
-            ],
-
+    
+    private function createPermissions(): array
+    {
+        $permissionData = [
             // User Management
-            [
-                'name' => 'manage-users',
-                'description' => 'Manage user accounts'
-            ],
-            [
-                'name' => 'edit-profile',
-                'description' => 'Edit own profile'
-            ],
-            [
-                'name' => 'ban-users',
-                'description' => 'Ban/suspend user accounts'
-            ],
-
-            // Moderation
-            [
-                'name' => 'review-listings',
-                'description' => 'Review and verify listings'
-            ],
-            [
-                'name' => 'handle-reports',
-                'description' => 'Handle user reports'
-            ],
-            [
-                'name' => 'flag-content',
-                'description' => 'Flag suspicious content'
-            ],
-            [
-                'name' => 'verify-sellers',
-                'description' => 'Verify seller accounts'
-            ],
-
+            'manage-users' => 'Manage user accounts',
+            'edit-profile' => 'Edit own profile',
+            'ban-users' => 'Ban/suspend user accounts',
+            
             // System
-            [
-                'name' => 'access-dashboard',
-                'description' => 'Access admin dashboard'
-            ],
-            [
-                'name' => 'manage-settings',
-                'description' => 'Manage system settings'
-            ]
+            'access-dashboard' => 'Access admin dashboard',
+            'manage-settings' => 'Manage system settings',
+            
+            // Audit & Monitoring
+            'view-audits' => 'View system audit logs',
+            'view-login-history' => 'View user login history',
+            'view-health-checks' => 'View system health checks',
+            
+            // Backup Management
+            'manage-backups' => 'Create and manage system backups',
+            'download-backups' => 'Download system backups',
+            
+            // Personalization
+            'manage-personalization' => 'Manage system appearance and branding',
+            
+            // Roles & Permissions
+            'manage-roles' => 'Manage user roles',
+            'manage-permissions' => 'Manage permissions and assign to roles',
         ];
-
-        foreach ($roles as $role) {
-            Role::create([
-                'name' => $role['name'],
-                'description' => $role['description']
-            ]);
+        
+        $permissions = [];
+        
+        foreach ($permissionData as $name => $description) {
+            $permissions[$name] = Permission::firstOrCreate(
+                ['name' => $name],
+                ['description' => $description]
+            );
         }
+        
+        return $permissions;
+    }
 
-        foreach ($permissions as $permission) {
-            Permission::create([
-                'name' => $permission['name'],
-                'description' => $permission['description']
-            ]);
+    
+    private function createRoles(): array
+    {
+        $roleData = [
+            'superuser' => 'Superuser with full system access',
+            'user' => 'Standard user with limited permissions'
+        ];
+        
+        $roles = [];
+        
+        foreach ($roleData as $name => $description) {
+            $roles[$name] = Role::updateOrCreate(
+                ['name' => $name],
+                ['description' => $description]
+            );
         }
+        
+        return $roles;
+    }
+    
+    
+    private function assignPermissions(array $roles, array $permissions): void
+    {
+        // Superuser gets all permissions
+        $roles['superuser']->syncPermissions(array_values($permissions));
+        
+        // Regular user permissions
+        $roles['user']->syncPermissions([
+            $permissions['edit-profile'],
+        ]);
     }
 }

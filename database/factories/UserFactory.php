@@ -25,11 +25,18 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'user_slug' => 'user-' . Str::random(10),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'location' => fake()->city(),
+            'is_active' => true,
+            'force_password_change' => false,
+            'disable_account' => false,
+            'locale' => 'en',
+            'last_login_at' => now(),
+            'last_login_ip' => fake()->ipv4(),
             'remember_token' => Str::random(10),
-            'charity_affiliate' => $this->faker->boolean(),
         ];
     }
 

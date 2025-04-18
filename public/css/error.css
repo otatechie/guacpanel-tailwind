@@ -1,0 +1,235 @@
+/* Error page styling */
+:root {
+  --error-primary: #ff4b4b;
+  --error-primary-light: #ff6e6e;
+  --error-secondary: #4361ee;
+  --error-secondary-hover: #3a56d4;
+  --error-background: #f8fafc;
+  --error-foreground: #1e293b;
+  --error-muted: #64748b;
+  --error-card-bg: rgba(255, 255, 255, 0.9);
+  --error-card-border: rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --error-primary: #ff4b4b;
+    --error-primary-light: #ff6e6e;
+    --error-secondary: #4361ee;
+    --error-secondary-hover: #3a56d4;
+    --error-background: #0f172a;
+    --error-foreground: #f1f5f9;
+    --error-muted: #94a3b8;
+    --error-card-bg: rgba(30, 41, 59, 0.8);
+    --error-card-border: rgba(255, 255, 255, 0.1);
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--error-background);
+  color: var(--error-foreground);
+  line-height: 1.5;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.error-header {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.error-title {
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--error-primary);
+  margin-bottom: 1.5rem;
+  line-height: 0.9;
+  text-transform: lowercase;
+  letter-spacing: -1px;
+}
+
+.error-title .exclamation {
+  font-size: 4rem;
+  vertical-align: bottom;
+  color: var(--error-primary);
+}
+
+.error-subtitle {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--error-foreground);
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.error-message {
+  font-size: 1.25rem;
+  color: var(--error-muted);
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+}
+
+.error-card {
+  background: var(--error-card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid var(--error-card-border);
+  animation: fadeIn 0.6s ease-out;
+}
+
+.error-search {
+  margin-top: 2rem;
+  width: 100%;
+  position: relative;
+}
+
+.error-search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--error-muted);
+}
+
+.error-search-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--error-card-border);
+  background-color: transparent;
+  font-size: 1rem;
+  color: var(--error-foreground);
+  outline: none;
+}
+
+.error-search-input:focus {
+  border-color: var(--error-secondary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+}
+
+.error-search-input::placeholder {
+  color: var(--error-muted);
+  opacity: 0.7;
+}
+
+.error-button {
+  display: inline-block;
+  background-color: var(--error-secondary);
+  color: white;
+  font-weight: 600;
+  padding: 0.875rem 2.5rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-top: 2rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(67, 97, 238, 0.25);
+}
+
+.error-button:hover {
+  background-color: var(--error-secondary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+}
+
+.error-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--error-primary);
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.error-badge svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.error-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 10% 10%, rgba(255, 75, 75, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 90% 10%, rgba(67, 97, 238, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, rgba(255, 75, 75, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(67, 97, 238, 0.1) 0%, transparent 50%);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .error-title {
+    font-size: 3.5rem;
+  }
+  
+  .error-subtitle {
+    font-size: 1.75rem;
+  }
+  
+  .error-message {
+    font-size: 1rem;
+  }
+  
+  .error-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-title {
+    font-size: 2.5rem;
+  }
+  
+  .error-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .error-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 1rem;
+  }
+  
+  .error-card {
+    padding: 1.25rem;
+  }
+} 
