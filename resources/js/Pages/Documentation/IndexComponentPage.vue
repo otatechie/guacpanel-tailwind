@@ -14,6 +14,7 @@ import Modal from '@/Components/Modal.vue'
 import PageHeader from '@/Components/PageHeader.vue'
 import Switch from '@/Components/Switch.vue'
 import FlashMessage from '@/Components/FlashMessage.vue'
+import NavSidebarDesktop from '@/Components/NavSidebarDesktop.vue'
 
 defineOptions({
     layout: Public
@@ -25,6 +26,11 @@ const articleLinks = [
             { text: 'Form Input', href: '#form-input' },
             { text: 'Form Checkbox', href: '#form-checkbox' },
             { text: 'Form Select', href: '#form-select' }
+        ]
+    },
+    {
+        text: 'Navigation Component', href: '#navigation-components', children: [
+            { text: 'Navigation Sidebar', href: '#nav-sidebar' }
         ]
     },
     {
@@ -172,6 +178,35 @@ public function store(Request $request)
     // Or flash an info message
     return redirect()->back()->with('info', 'Your changes have been saved.');
 }`)
+
+const navSidebarCode = ref(`<NavSidebarDesktop />`)
+
+const navSidebarCodeUsage = ref(`// Add items to navigation sections
+const navigationSections = reactive([
+    {
+        items: [
+            {
+                name: 'Dashboard',
+                href: route('home'),
+                icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955..." />',
+                permission: 'dashboard-view' // Optional: Permission required to see this item
+            },
+            { type: 'divider' }, // Visual separator between navigation items
+        ]
+    },
+    {
+        items: [
+            {
+                name: 'Settings',
+                icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94..." />',
+                children: [
+                    { name: 'Users', href: route('admin.user.index'), permission: 'users-view' },
+                    // More child items...
+                ]
+            },
+        ]
+    }
+])`)
 
 </script>
 
@@ -513,6 +548,155 @@ public function store(Request $request)
                             </div>
                         </div>
 
+                    </div>
+                </section>
+
+                <!-- Navigation Components Section -->
+                <section id="navigation-components" class="space-y-6 scroll-mt-16">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Navigation Components</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">
+                        Navigation components help users move through your application efficiently. These components provide intuitive
+                        interfaces for menus, sidebars, and other navigation structures.
+                    </p>
+
+                    <!-- Navigation Sidebar -->
+                    <div id="nav-sidebar"
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Navigation Sidebar</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A versatile sidebar navigation component that supports multiple levels of navigation, permissions,
+                            dropdown menus, and dividers. Built with accessibility in mind and responds to the user's permissions.
+                        </p>
+
+                        <div class="grid md:grid-cols-1 gap-8">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Usage</h4>
+                                <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        @click="navigator.clipboard.writeText(navSidebarCode)">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+                                    <pre class="text-sm"><code class="language-vue">{{ navSidebarCode }}</code></pre>
+                                </div>
+                                
+                                <div class="bg-gray-800 rounded-lg p-4 relative group mt-6">
+                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                        @click="navigator.clipboard.writeText(navSidebarCodeUsage)">
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+                                    <pre class="text-sm"><code class="language-javascript">{{ navSidebarCodeUsage }}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Key Features</h4>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+                                <li>Support for nested navigation with dropdowns</li>
+                                <li>Permission-based visibility for menu items</li>
+                                <li>Visual indicators for active and parent-active states</li>
+                                <li>Divider support for visual separation of menu sections</li>
+                                <li>Dark mode compatible</li>
+                                <li>Accessible keyboard navigation</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Navigation Structure</h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                The navigation sidebar uses a structured configuration to define menu items. The structure follows these principles:
+                            </p>
+                            
+                            <div class="mb-6">
+                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Navigation Sections</h5>
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <pre class="text-sm"><code class="language-javascript">const navigationSections = reactive([
+  {
+    items: [ /* First section items */ ]
+  },
+  {
+    items: [ /* Second section items */ ]
+  }
+])</code></pre>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">
+                                    Navigation is organized into sections, each containing an array of items. Sections are visually separated in the UI.
+                                </p>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Item Types</h5>
+                                
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Regular Item</h6>
+                                    <pre class="text-sm"><code class="language-javascript">{
+  name: 'Dashboard',
+  href: route('home'),
+  icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955..." />',
+  permission: 'dashboard-view' // Optional: Permission required to see this item
+},
+{ type: 'divider' } // Visual separator between navigation items</code></pre>
+                                </div>
+                                
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                    <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Dropdown Menu</h6>
+                                    <pre class="text-sm"><code class="language-javascript">{
+  name: 'Settings',
+  icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94..." />',
+  isOpen: false, // Initial state of dropdown (closed)
+  children: [
+    { 
+      name: 'General', 
+      href: route('admin.setting.index'), 
+      permission: 'settings-general-view'  // Child permissions
+    },
+    { 
+      name: 'Users', 
+      href: route('admin.user.index'), 
+      permission: 'users-view' 
+    }
+  ]
+}</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Icons</h5>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    Icons use inline SVG paths from <a href="https://heroicons.com/" target="_blank" class="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300">Heroicons</a>. Only include the path data, not the entire SVG element.
+                                </p>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Permissions</h5>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    Add the <code>permission</code> property to any item to restrict visibility based on user permissions. If omitted, the item will be visible to all users.
+                                </p>
+                                
+                                <div class="mt-4 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+                                    <p class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                        <span class="flex-shrink-0 text-xl">💡</span>
+                                        <span><strong>Pro Tip:</strong> OboDash leverages <a href="https://spatie.be/docs/laravel-permission" target="_blank" class="border-b-2 border-amber-500 dark:border-amber-400">Spatie's Laravel-Permission</a> package for permission management. Use consistent permission naming like <code class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">settings-general-view</code>, <code class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">users-view</code> that directly map to your application's permission system.</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
