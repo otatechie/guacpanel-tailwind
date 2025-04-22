@@ -257,7 +257,8 @@ const articleLinks = [
     { text: 'Data Tables', href: '#data-tables' },
     { text: 'Authentication Logs', href: '#activity-logs' },
     { text: 'Activity Tracking', href: '#activity-tracking' },
-    { text: 'File Uploads', href: '#file-uploads' }
+    { text: 'File Uploads', href: '#file-uploads' },
+    { text: 'Google Fonts', href: '#google-fonts' }
 ]
 
 const fixHighlightLanguages = () => {
@@ -956,13 +957,13 @@ watch([
                                     <ul
                                         class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2">
                                         <li>Successful logins are logged via the <code
-                                                class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">LogSuccessfulLogin</code>
+                                                class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">LogSuccessfulLogin</code>
                                             listener</li>
                                         <li>Failed login attempts are tracked by the <code
-                                                class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">LogFailedLogin</code>
+                                                class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">LogFailedLogin</code>
                                             listener</li>
                                         <li>All logs are stored in the <code
-                                                class="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">login_histories</code>
+                                                class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">login_histories</code>
                                             table</li>
                                     </ul>
                                 </div>
@@ -1117,6 +1118,69 @@ watch([
                                             class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@removefile</code>
                                         - Emitted when a file is removed</li>
                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="google-fonts" class="mb-12 scroll-mt-16">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Google Fonts</h2>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <div class="prose dark:prose-invert max-w-none">
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                OboDash includes built-in support for Google Fonts with local caching for better performance. Here's how to configure and use Google Fonts in your project:
+                            </p>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 1: Configure Google Fonts</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                    Edit the <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">config/google-fonts.php</code> file to add your desired fonts:
+                                </p>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-php">'fonts' => [
+    'default' => 'https://fonts.googleapis.com/css2?family=Your+Font:wght@400;500;600;700&display=swap',
+],</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 2: Update CSS Configuration</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                    Edit <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">resources/css/app.css</code> to use your new font:
+                                </p>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-css">@theme {
+    --font-sans: "Your Font", "sans-serif";
+    // ... other theme variables
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 3: Fetch and Optimize Fonts</h3>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                    Run the following commands to fetch the fonts and optimize the application:
+                                </p>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-bash">php artisan google-fonts:fetch
+php artisan optimize</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                    For more information and advanced configuration options, visit the <a href="https://github.com/spatie/laravel-google-fonts" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">Spatie Laravel Google Fonts package repository</a>.
+                                </p>
                             </div>
                         </div>
                     </div>

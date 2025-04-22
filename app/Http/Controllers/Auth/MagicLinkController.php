@@ -22,62 +22,65 @@ class MagicLinkController extends Controller
         });
 
         if (!$passwordlessEnabled) {
-            abort(404);
+            abort(404, 'Passwordless login is disabled.');
         }
     }
+
 
     public function create()
     {
         $this->checkPasswordlessEnabled();
         return Inertia::render('Auth/RegisterMagicLink');
     }
+    
 
     public function store(Request $request)
     {
         $this->checkPasswordlessEnabled();
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'email_verified_at' => now(),
         ]);
 
-        $this->sendLoginLink($user);
+        $this->sendLoginLink($user, true);
 
-        return back()->with([
-            'success' => 'Account created! Check your email for the login link.'
-        ]);
+        session()->flash('success', 'Account created! Check your email for the login link.');
+        return back();
     }
+
 
     public function login(Request $request)
     {
         $this->checkPasswordlessEnabled();
 
-        $request->validate([
+        $validated = $request->validate([
             'email' => ['required', 'email'],
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated['email'])->first();
 
         if (!$user) {
+            session()->flash('error', 'We could not find a user with that email address.');
             return back()->withErrors([
                 'email' => 'We could not find a user with that email address.'
-            ])->with('error', 'We could not find a user with that email address.');
+            ]);
         }
 
-        $this->sendLoginLink($user);
+        $this->sendLoginLink($user, false);
 
-        return back()->with([
-            'success' => 'We have emailed you a magic link to login!'
-        ]);
+        session()->flash('success', 'We have emailed you a magic link to login!');
+        return back();
     }
 
-    protected function sendLoginLink(User $user)
+
+    protected function sendLoginLink(User $user, bool $isNewUser = false)
     {
         $this->checkPasswordlessEnabled();
 
@@ -90,8 +93,9 @@ class MagicLinkController extends Controller
             ['token' => $token]
         );
 
-        Mail::to($user)->send(new MagicLoginLink($url));
+        Mail::to($user)->send(new MagicLoginLink($url, $isNewUser));
     }
+
 
     public function authenticate(Request $request)
     {

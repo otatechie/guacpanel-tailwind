@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
@@ -11,7 +12,7 @@ class UserAccountController extends Controller
 {
     private function getAuthUser(): User
     {
-        return auth()->user();
+        return Auth::user();
     }
 
 
@@ -66,10 +67,11 @@ class UserAccountController extends Controller
             ]
         ]);
 
+        $now = now();
         $user->update([
             'password' => Hash::make($validatedData['password']),
-            'password_changed_at' => now(),
-            'password_expiry_at' => now()->addMonths(3),
+            'password_changed_at' => $now,
+            'password_expiry_at' => $now->copy()->addMonths(3),
         ]);
 
         session()->flash('success', 'Password has been updated successfully.');

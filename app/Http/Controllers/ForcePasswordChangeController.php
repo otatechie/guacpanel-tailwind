@@ -25,8 +25,8 @@ class ForcePasswordChangeController extends Controller
 
     public function update(Request $request)
     {
-        $key = 'user.force.password.change.update:' . $request->user()->id;
-        $maxAttempts = 5;
+        $key = 'user.password.change.update:' . $request->user()->id;
+        $maxAttempts = 3;
         $decaySeconds = 120;
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts, $decaySeconds)) {

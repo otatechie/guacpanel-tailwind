@@ -102,9 +102,9 @@ const deleteUser = () => {
                 <div v-show="activeTab === 'account'" class="p-6 space-y-6">
                     <div class="w-full md:w-2/3 space-y-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" />
+                            <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />
                             <FormInput v-model="form.email" label="Email address" type="email"
-                                :error="form.errors.email" />
+                                :error="form.errors.email" name="email" />
                         </div>
                         <div>
                             <FormSelect v-model="form.role" :options="roles.data" option-label="name" option-value="id"
@@ -180,7 +180,7 @@ const deleteUser = () => {
                             <div v-for="permission in permissions.data" :key="permission.id"
                                 class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                 <FormCheckbox v-model="form.permissions" :value="permission.id"
-                                    :label="permission.name" />
+                                    :label="permission.name" :name="`permission-${permission.id}`" />
                                 <p v-if="permission.description"
                                     class="mt-1 text-sm text-gray-500 dark:text-gray-400 ml-7">
                                     {{ permission.description }}

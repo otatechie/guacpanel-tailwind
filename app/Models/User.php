@@ -31,12 +31,17 @@ class User extends Authenticatable implements Auditable
         'email',
         'password',
         'email_verified_at',
+        'password_expiry_at',
+        'password_changed_at',
+        'force_password_change',
+        'disable_account',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'password_expiry_at' => 'datetime',
+        'password_changed_at' => 'datetime',
         'force_password_change' => 'boolean',
         'disable_account' => 'boolean',
     ];
@@ -60,7 +65,8 @@ class User extends Authenticatable implements Auditable
         if (!$this->password_expiry_at) {
             return false;
         }
-        return now()->gte(Carbon::parse($this->password_expiry_at));
+
+        return $this->password_expiry_at->isPast();
     }
 
 
