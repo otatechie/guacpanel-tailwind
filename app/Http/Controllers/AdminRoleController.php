@@ -7,11 +7,24 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-
+use Inertia\Inertia;
 
 class AdminRoleController extends Controller
 {
-    public function store(Request $request)
+    public function __construct()
+    {
+        $this->middleware(['auth', 'permission:manage roles']);
+    }
+    
+    public function index()
+    {
+        return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
+            'roles' => Role::with('permissions')->get(),
+            'permissions' => Permission::all()
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => [
@@ -33,11 +46,10 @@ class AdminRoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        session()->flash('success', 'Role created successfully.');
+        return redirect()->route('admin.role.index')->with('success', 'Role created successfully.');
     }
 
-
-    public function update(Request $request, Role $role)
+    public function update(Request $request, Role $role): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => [
@@ -59,15 +71,14 @@ class AdminRoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        session()->flash('success', 'Role updated successfully.');
+        return redirect()->route('admin.role.index')->with('success', 'Role updated successfully.');
     }
 
-
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
         $role = Role::findOrFail($id);
         $role->delete();
 
-        session()->flash('success', 'Role deleted successfully.');
+        return redirect()->route('admin.role.index')->with('success', 'Role deleted successfully.');
     }
 }

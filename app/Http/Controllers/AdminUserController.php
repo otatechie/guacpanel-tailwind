@@ -11,6 +11,12 @@ use Spatie\Permission\Models\Role;
 
 class AdminUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view users');
+    }
+    
+
     public function index(Request $request)
     {
         return Inertia::render('Admin/User/IndexUserPage', [
@@ -21,9 +27,10 @@ class AdminUserController extends Controller
         ]);
     }
 
-
     public function edit($id)
     {
+        $this->authorize('edit users');
+
         $user = User::with(['permissions', 'roles'])->findOrFail($id);
 
         return Inertia::render('Admin/User/EditUserPage', [
@@ -48,9 +55,10 @@ class AdminUserController extends Controller
         ]);
     }
 
-
     public function update(Request $request, $id)
     {
+        $this->authorize('edit users');
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
@@ -74,18 +82,24 @@ class AdminUserController extends Controller
             'disable_account' => $request->disable_account,
         ]);
 
-        $user->syncRoles([$request->role]);
-        $user->syncPermissions($request->permissions);
+        if (auth()->user()->can('manage user roles')) {
+            $user->syncRoles([$request->role]);
+        }
+
+        if (auth()->user()->can('manage user permissions')) {
+            $user->syncPermissions($request->permissions);
+        }
 
         return redirect()->back()->with('success', 'User account updated successfully');
     }
 
-
     public function destroy($id)
     {
+        $this->authorize('delete users');
+
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.user.index')->with('success', 'User deleted successfully');
     }
 }

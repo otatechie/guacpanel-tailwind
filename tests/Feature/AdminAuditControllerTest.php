@@ -5,18 +5,32 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Spatie\Permission\Models\Permission;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    Permission::firstOrCreate(['name' => 'view audit log']);
+
+    $this->adminUser = User::factory()->create();
+    $this->adminUser->givePermissionTo('view audit log');
+
+    $this->regularUser = User::factory()->create();
+});
 
 test('unauthenticated users cannot access audit page', function () {
     $this->get(route('admin.audit.index'))
         ->assertRedirect(route('login'));
 });
 
-test('authenticated users can view audit page', function () {
-    $user = User::factory()->create();
-    
-    $this->actingAs($user)
+test('users without audit permission cannot access audit page', function () {
+    $this->actingAs($this->regularUser)
+        ->get(route('admin.audit.index'))
+        ->assertForbidden();
+});
+
+test('users with audit permission can access audit page', function () {
+    $this->actingAs($this->adminUser)
         ->get(route('admin.audit.index'))
         ->assertStatus(200)
         ->assertInertia(fn (Assert $page) => $page

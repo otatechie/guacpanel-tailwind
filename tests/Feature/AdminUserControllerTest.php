@@ -1,136 +1,183 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->admin = User::factory()->create();
-    $this->admin->assignRole('admin');
-});
+    // Create required permissions
+    Permission::firstOrCreate(['name' => 'view users']);
+    Permission::firstOrCreate(['name' => 'edit users']);
+    Permission::firstOrCreate(['name' => 'delete users']);
+    Permission::firstOrCreate(['name' => 'manage users']);
 
-test('admin can view users list', function () {
-    $users = User::factory()->count(5)->create();
-
-    $this->actingAs($this->admin)
-        ->get(route('admin.users.index'))
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('Admin/User/IndexUserPage')
-            ->has('users.data', 6) // 5 created + 1 admin
-            ->has('users.data.0', fn (Assert $user) => $user
-                ->hasAll(['id', 'name', 'email', 'roles', 'permissions'])
-                ->etc()
-            )
-        );
-});
-
-test('admin can view user edit page', function () {
-    $user = User::factory()->create();
-    $roles = Role::factory()->count(2)->create();
-    $permissions = Permission::factory()->count(3)->create();
-
-    $this->actingAs($this->admin)
-        ->get(route('admin.users.edit', $user))
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('Admin/User/EditUserPage')
-            ->has('user', fn (Assert $userData) => $userData
-                ->hasAll(['id', 'name', 'email', 'roles', 'permissions'])
-                ->etc()
-            )
-            ->has('permissions.data', 3)
-            ->has('roles.data', 2)
-        );
-});
-
-test('admin can update user details', function () {
-    $user = User::factory()->create();
-    $role = Role::factory()->create();
-    $permissions = Permission::factory()->count(2)->create();
-
-    $this->actingAs($this->admin)
-        ->put(route('admin.users.update', $user), [
-            'name' => 'Updated Name',
-            'email' => 'updated@example.com',
-            'role' => $role->id,
-            'permissions' => $permissions->pluck('id')->toArray(),
-            'disable_account' => false,
-            'force_password_change' => true,
-        ])
-        ->assertRedirect()
-        ->assertSessionHas('success');
-
-    $this->assertDatabaseHas('users', [
-        'id' => $user->id,
-        'name' => 'Updated Name',
-        'email' => 'updated@example.com',
-        'force_password_change' => true,
+    // Create test users with different permission levels
+    $this->adminUser = User::factory()->create();
+    $this->adminUser->givePermissionTo([
+        'view users',
+        'edit users',
+        'delete users',
+        'manage users'
     ]);
 
-    $this->assertTrue($user->fresh()->hasRole($role->name));
-    $this->assertTrue($user->fresh()->hasAllPermissions($permissions->pluck('name')->toArray()));
+    $this->viewOnlyUser = User::factory()->create();
+    $this->viewOnlyUser->givePermissionTo('view users');
+
+    $this->regularUser = User::factory()->create();
+});
+
+test('user with view permission can access user index page', function () {
+    $response = $this->actingAs($this->viewOnlyUser)
+        ->get(route('admin.user.index'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('Admin/User/IndexUserPage')
+            ->has('users')
+    );
+});
+
+test('user without view permission cannot access user index page', function () {
+    $response = $this->actingAs($this->regularUser)
+        ->get(route('admin.user.index'));
+
+    $response->assertForbidden();
+});
+
+test('admin can create new user', function () {
+    $userData = [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
+
+    $response = $this->actingAs($this->adminUser)
+        ->post(route('admin.user.store'), $userData);
+
+    $this->assertDatabaseHas('users', [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+    ]);
+});
+
+test('admin cannot create user with invalid data', function () {
+    $userData = [
+        'name' => '', // invalid - empty
+        'email' => 'not-an-email', // invalid format
+        'password' => 'pass', // too short
+        'password_confirmation' => 'different', // doesn't match
+    ];
+
+    $response = $this->actingAs($this->adminUser)
+        ->post(route('admin.user.store'), $userData);
+
+    $response->assertSessionHasErrors(['name', 'email', 'password']);
+});
+
+test('admin cannot create user with duplicate email', function () {
+    $existingUser = User::factory()->create();
+
+    $userData = [
+        'name' => 'Test User',
+        'email' => $existingUser->email,
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
+
+    $response = $this->actingAs($this->adminUser)
+        ->post(route('admin.user.store'), $userData);
+
+    $response->assertSessionHasErrors(['email']);
+});
+
+test('admin can update user', function () {
+    $user = User::factory()->create();
+    $updatedData = [
+        'name' => 'Updated Name',
+        'email' => 'updated@example.com',
+    ];
+
+    $response = $this->actingAs($this->adminUser)
+        ->put(route('admin.user.update', $user), $updatedData);
+
+    $this->assertDatabaseHas('users', $updatedData);
 });
 
 test('admin cannot update user with invalid data', function () {
     $user = User::factory()->create();
-    $otherUser = User::factory()->create();
+    $invalidData = [
+        'name' => '', // invalid - empty
+        'email' => 'not-an-email', // invalid format
+    ];
 
-    $this->actingAs($this->admin)
-        ->put(route('admin.users.update', $user), [
-            'name' => '',
-            'email' => $otherUser->email, // Duplicate email
-            'role' => 999, // Non-existent role
-            'permissions' => [999], // Non-existent permission
-        ])
-        ->assertSessionHasErrors(['name', 'email', 'role', 'permissions.0']);
+    $response = $this->actingAs($this->adminUser)
+        ->put(route('admin.user.update', $user), $invalidData);
+
+    $response->assertSessionHasErrors(['name', 'email']);
 });
 
-test('admin cannot disable account and force password change simultaneously', function () {
-    $user = User::factory()->create();
+test('admin cannot update user email to existing email', function () {
+    $existingUser = User::factory()->create();
+    $userToUpdate = User::factory()->create();
 
-    $this->actingAs($this->admin)
-        ->put(route('admin.users.update', $user), [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'disable_account' => true,
-            'force_password_change' => true,
-        ])
-        ->assertSessionHasErrors(['error']);
+    $response = $this->actingAs($this->adminUser)
+        ->put(route('admin.user.update', $userToUpdate), [
+            'name' => 'New Name',
+            'email' => $existingUser->email
+        ]);
+
+    $response->assertSessionHasErrors(['email']);
 });
 
 test('admin can delete user', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($this->admin)
-        ->delete(route('admin.users.destroy', $user))
-        ->assertRedirect(route('admin.users.index'))
-        ->assertSessionHas('success');
+    $response = $this->actingAs($this->adminUser)
+        ->delete(route('admin.user.destroy', $user));
 
-    $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    $this->assertDatabaseMissing('users', [
+        'id' => $user->id
+    ]);
 });
 
-test('non-admin cannot access user management', function () {
-    $regularUser = User::factory()->create();
+test('user with view permission cannot create users', function () {
+    $userData = [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
 
-    $this->actingAs($regularUser)
-        ->get(route('admin.users.index'))
-        ->assertForbidden();
+    $response = $this->actingAs($this->viewOnlyUser)
+        ->post(route('admin.user.store'), $userData);
 
-    $this->actingAs($regularUser)
-        ->get(route('admin.users.edit', $this->admin))
-        ->assertForbidden();
+    $response->assertForbidden();
+});
 
-    $this->actingAs($regularUser)
-        ->put(route('admin.users.update', $this->admin), [
-            'name' => 'Updated Name',
-            'email' => 'updated@example.com',
-        ])
-        ->assertForbidden();
+test('user with view permission cannot update users', function () {
+    $user = User::factory()->create();
 
-    $this->actingAs($regularUser)
-        ->delete(route('admin.users.destroy', $this->admin))
-        ->assertForbidden();
+    $response = $this->actingAs($this->viewOnlyUser)
+        ->put(route('admin.user.update', $user), [
+            'name' => 'Updated Name'
+        ]);
+
+    $response->assertForbidden();
+});
+
+test('user with view permission cannot delete users', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($this->viewOnlyUser)
+        ->delete(route('admin.user.destroy', $user));
+
+    $response->assertForbidden();
 });

@@ -9,6 +9,12 @@ use Jenssegers\Agent\Agent;
 
 class AdminLoginHistoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view login history');
+    }
+    
+
     public function index(Request $request)
     {
         $loginHistory = LoginHistory::with('user')

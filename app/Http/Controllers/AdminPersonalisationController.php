@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminPersonalisationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view personalisation');
+    }
+    
+
     public function index()
     {
         $personalisation = Personalisation::first();
@@ -22,9 +28,11 @@ class AdminPersonalisationController extends Controller
 
     public function upload(Request $request)
     {
+        $this->authorize('upload personalisation files');
+
         $request->validate([
             'app_logo' => ['nullable', 'image', 'max:2048'],
-            'favicon' => ['nullable', 'image', 'max:2048'],
+            'favicon' => ['nullable', 'image', 'max:2048', 'dimensions:width=32,height=32'],
         ]);
 
         if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
@@ -57,6 +65,8 @@ class AdminPersonalisationController extends Controller
 
     public function update(Request $request)
     {
+        $this->authorize('update personalisation');
+
         $validated = $request->validate([
             'app_logo' => ['nullable', 'string'],
             'app_name' => ['nullable', 'string', 'max:100'],
@@ -84,6 +94,8 @@ class AdminPersonalisationController extends Controller
 
     public function delete(Request $request)
     {
+        $this->authorize('delete personalisation files');
+
         $request->validate([
             'field' => ['required', 'string', 'in:app_logo,favicon'],
         ]);

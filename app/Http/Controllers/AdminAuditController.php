@@ -10,6 +10,12 @@ use OwenIt\Auditing\Models\Audit;
 
 class AdminAuditController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view audit log');
+    }
+    
+
     public function index(Request $request)
     {
         return inertia('Admin/IndexAuditPage', [
