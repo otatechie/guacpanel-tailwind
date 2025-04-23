@@ -7,7 +7,6 @@ use Inertia\Inertia;
 
 class PageController extends Controller
 {
-
     public function indexFlight()
     {
         return Inertia::render('IndexFlight', []);

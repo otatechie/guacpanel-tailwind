@@ -10,6 +10,16 @@ use Inertia\Inertia;
 
 class UserAccountController extends Controller
 {
+    private const PASSWORD_RULES = [
+        'required',
+        'confirmed',
+        'min:8',
+        'regex:/[A-Z]/',
+        'regex:/[0-9]/',
+        'regex:/[^A-Za-z0-9]/',
+    ];
+
+
     private function getAuthUser(): User
     {
         return Auth::user();
@@ -19,6 +29,8 @@ class UserAccountController extends Controller
     public function index()
     {
         $user = $this->getAuthUser();
+
+        abort_if($user->id !== Auth::id(), 403, 'You are not authorized to access this profile.');
 
         return Inertia::render('UserAccount/IndexPage', [
             'user' => array_merge($user->only('name', 'email', 'location'), []),
@@ -57,14 +69,7 @@ class UserAccountController extends Controller
         $user = $this->getAuthUser();
 
         $validatedData = $request->validate([
-            'password' => [
-                'required',
-                'confirmed',
-                'min:8',
-                'regex:/[A-Z]/',
-                'regex:/[0-9]/',
-                'regex:/[^A-Za-z0-9]/',
-            ]
+            'password' => self::PASSWORD_RULES
         ]);
 
         $now = now();

@@ -15,7 +15,7 @@ class AdminUserController extends Controller
     {
         $this->middleware('permission:view users');
     }
-    
+
 
     public function index(Request $request)
     {
@@ -26,6 +26,7 @@ class AdminUserController extends Controller
                 ->paginate($request->input('per_page', 10))
         ]);
     }
+
 
     public function edit($id)
     {
@@ -55,6 +56,7 @@ class AdminUserController extends Controller
         ]);
     }
 
+
     public function update(Request $request, $id)
     {
         $this->authorize('edit users');
@@ -82,16 +84,12 @@ class AdminUserController extends Controller
             'disable_account' => $request->disable_account,
         ]);
 
-        if (auth()->user()->can('manage user roles')) {
-            $user->syncRoles([$request->role]);
-        }
-
-        if (auth()->user()->can('manage user permissions')) {
-            $user->syncPermissions($request->permissions);
-        }
+        $user->syncRoles([$request->role]);
+        $user->syncPermissions($request->permissions);
 
         return redirect()->back()->with('success', 'User account updated successfully');
     }
+
 
     public function destroy($id)
     {

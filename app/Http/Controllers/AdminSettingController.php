@@ -8,6 +8,12 @@ use Inertia\Inertia;
 
 class AdminSettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:manage settings');
+    }
+    
+
     public function index()
     {
         return Inertia::render('Admin/IndexSettingPage');

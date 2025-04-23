@@ -1,0 +1,162 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Setting;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    // Create permission
+    Permission::firstOrCreate(['name' => 'manage settings']);
+
+    // Create admin user with permission
+    $this->adminUser = User::factory()->create();
+    $this->adminUser->givePermissionTo('manage settings');
+
+    // Create regular user without permission
+    $this->regularUser = User::factory()->create();
+
+    // Create default settings
+    Setting::updateOrCreate([], [
+        'password_expiry' => false,
+        'passwordless_login' => false,
+        'two_factor_authentication' => false,
+    ]);
+
+    $this->testToken = 'test-token';
+});
+
+test('admin can access settings index page', function () {
+    $response = $this->actingAs($this->adminUser)
+        ->get(route('admin.setting.index'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(
+        fn($page) =>
+        $page->component('Admin/IndexSettingPage')
+    );
+});
+
+test('admin can access settings management page', function () {
+    $response = $this->actingAs($this->adminUser)
+        ->get(route('admin.setting.show'));
+
+    $response->assertStatus(200);
+    $response->assertInertia(
+        fn($page) =>
+        $page->component('Admin/IndexManageSettingPage')
+            ->has('settings')
+    );
+});
+
+test('admin can update settings', function () {
+    $response = $this->actingAs($this->adminUser)
+        ->withSession(['_token' => $this->testToken])
+        ->post(route('admin.setting.update'), [
+            '_token' => $this->testToken,
+            'password_expiry' => true,
+            'passwordless_login' => true,
+            'two_factor_authentication' => true,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    $this->assertDatabaseHas('settings', [
+        'password_expiry' => true,
+        'passwordless_login' => true,
+        'two_factor_authentication' => true,
+    ]);
+});
+
+test('admin can toggle settings individually', function () {
+    // Update password_expiry only
+    $this->actingAs($this->adminUser)
+        ->withSession(['_token' => $this->testToken])
+        ->post(route('admin.setting.update'), [
+            '_token' => $this->testToken,
+            'password_expiry' => true,
+            'passwordless_login' => false,
+            'two_factor_authentication' => false,
+        ]);
+
+    $this->assertDatabaseHas('settings', [
+        'password_expiry' => true,
+        'passwordless_login' => false,
+        'two_factor_authentication' => false,
+    ]);
+
+    // Update two_factor_authentication only
+    $this->actingAs($this->adminUser)
+        ->withSession(['_token' => $this->testToken])
+        ->post(route('admin.setting.update'), [
+            '_token' => $this->testToken,
+            'password_expiry' => false,
+            'passwordless_login' => false,
+            'two_factor_authentication' => true,
+        ]);
+
+    $this->assertDatabaseHas('settings', [
+        'password_expiry' => false,
+        'passwordless_login' => false,
+        'two_factor_authentication' => true,
+    ]);
+});
+
+test('user without permission cannot access settings pages', function () {
+    $response = $this->actingAs($this->regularUser)
+        ->get(route('admin.setting.index'));
+
+    $response->assertForbidden();
+
+    $response = $this->actingAs($this->regularUser)
+        ->get(route('admin.setting.show'));
+
+    $response->assertForbidden();
+});
+
+test('user without permission cannot update settings', function () {
+    $response = $this->actingAs($this->regularUser)
+        ->withSession(['_token' => $this->testToken])
+        ->post(route('admin.setting.update'), [
+            '_token' => $this->testToken,
+            'password_expiry' => true,
+        ]);
+
+    $response->assertForbidden();
+
+    $this->assertDatabaseHas('settings', [
+        'password_expiry' => false,
+    ]);
+});
+
+test('creates settings if none exist', function () {
+    Setting::query()->delete();
+    $this->assertDatabaseMissing('settings', []);
+
+    $response = $this->actingAs($this->adminUser)
+        ->get(route('admin.setting.show'));
+
+    $response->assertStatus(200);
+
+    $response = $this->actingAs($this->adminUser)
+        ->withSession(['_token' => $this->testToken])
+        ->post(route('admin.setting.update'), [
+            '_token' => $this->testToken,
+            'password_expiry' => true,
+            'passwordless_login' => true,
+            'two_factor_authentication' => true,
+        ]);
+
+    $response->assertRedirect();
+
+    $this->assertDatabaseHas('settings', [
+        'password_expiry' => true,
+        'passwordless_login' => true,
+        'two_factor_authentication' => true,
+    ]);
+});

@@ -15,6 +15,7 @@ class AdminRoleController extends Controller
     {
         $this->middleware(['auth', 'permission:manage roles']);
     }
+
     
     public function index()
     {
@@ -23,6 +24,7 @@ class AdminRoleController extends Controller
             'permissions' => Permission::all()
         ]);
     }
+
 
     public function store(Request $request): RedirectResponse
     {
@@ -49,6 +51,7 @@ class AdminRoleController extends Controller
         return redirect()->route('admin.role.index')->with('success', 'Role created successfully.');
     }
 
+
     public function update(Request $request, Role $role): RedirectResponse
     {
         $validatedData = $request->validate([
@@ -73,6 +76,7 @@ class AdminRoleController extends Controller
 
         return redirect()->route('admin.role.index')->with('success', 'Role updated successfully.');
     }
+    
 
     public function destroy(string $id): RedirectResponse
     {

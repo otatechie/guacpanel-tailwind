@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class AdminPermissionRoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:manage permissions and roles');
+    }
+    
+
     public function index()
     {
         $permissions = Permission::get();
