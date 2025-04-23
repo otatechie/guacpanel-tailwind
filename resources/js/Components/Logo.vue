@@ -6,7 +6,7 @@ const page = usePage()
 const logoUrl = computed(() => page.props.personalisation?.app_logo || null)
 
 const hasError = ref(false)
-const imageHeight = ref('2.5rem') 
+const imageHeight = ref('2.5rem')
 
 function handleError() {
     hasError.value = true

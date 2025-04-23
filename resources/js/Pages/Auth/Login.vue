@@ -39,7 +39,9 @@ const sendMagicLink = () => {
 }
 </script>
 
+
 <template>
+    
     <Head title="Login" />
 
     <main class="max-w-[384px] mx-auto px-8" role="main">

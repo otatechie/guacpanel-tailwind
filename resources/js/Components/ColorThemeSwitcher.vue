@@ -37,6 +37,42 @@ const colors = [
         primary: '#f97316',
         hover: '#ea580c',
         rgb: '249, 115, 22'
+    },
+    {
+        name: 'Yellow',
+        value: 'yellow',
+        gradientFrom: '#eab308',
+        gradientTo: '#facc15',
+        primary: '#eab308',
+        hover: '#ca8a04',
+        rgb: '234, 179, 8'
+    },
+    {
+        name: 'Teal',
+        value: 'teal',
+        gradientFrom: '#0d9488',
+        gradientTo: '#14b8a6',
+        primary: '#0d9488',
+        hover: '#0f766e',
+        rgb: '13, 148, 136'
+    },
+    {
+        name: 'Black',
+        value: 'black',
+        gradientFrom: '#1f2937',
+        gradientTo: '#111827',
+        primary: '#1f2937',
+        hover: '#111827',
+        rgb: '31, 41, 55'
+    },
+    {
+        name: 'Cyan',
+        value: 'cyan',
+        gradientFrom: '#06b6d4',
+        gradientTo: '#22d3ee',
+        primary: '#06b6d4',
+        hover: '#0891b2',
+        rgb: '6, 182, 212'
     }
 ]
 

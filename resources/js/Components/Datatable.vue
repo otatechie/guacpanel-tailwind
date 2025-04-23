@@ -255,37 +255,24 @@ watch(() => props.data, () => {
                         class="border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                         :style="{ '--tw-ring-color': 'var(--primary-color)' }"
                         :value="table.getState().pagination.pageSize"
-                        @change="table.setPageSize(Number($event.target.value))"
-                    >
-                        <option v-for="pageSize in table.options.meta?.pageSizeOptions || [5, 10, 20, 30, 40, 50]" :key="pageSize" :value="pageSize">
+                        @change="table.setPageSize(Number($event.target.value))">
+                        <option v-for="pageSize in table.options.meta?.pageSizeOptions || [5, 10, 20, 30, 40, 50]"
+                            :key="pageSize" :value="pageSize">
                             {{ pageSize }}
                         </option>
                     </select>
                 </div>
 
                 <!-- Selection Count Badge -->
-                <span 
-                    v-if="hasSelection" 
-                    role="status" 
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
-                    :style="{ 
-                        backgroundColor: 'var(--selection-color-light)', 
+                <span v-if="hasSelection" role="status"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium" :style="{
+                        backgroundColor: 'var(--selection-color-light)',
                         color: 'var(--selection-color)'
-                    }"
-                >
-                    <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke-width="1.5" 
-                        stroke="currentColor" 
-                        class="w-4 h-4"
-                    >
-                        <path 
-                            stroke-linecap="round" 
-                            stroke-linejoin="round" 
-                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" 
-                        />
+                    }">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                     {{ selectionCount }} selected
                 </span>
@@ -297,12 +284,11 @@ watch(() => props.data, () => {
                 <div v-if="enableSearch" class="relative">
                     <label class="sr-only" :for="'table-search'">Search table</label>
                     <input type="search" :id="'table-search'" v-model="searchQuery" placeholder="Search"
-                        :class="[styles.input, styles.focusRing, 'w-48 px-4 py-2']" 
+                        :class="[styles.input, styles.focusRing, 'w-48 px-4 py-2']"
                         :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
                     <button v-if="searchQuery" @click="clearSearch"
-                        :class="[styles.focusRing, 'absolute right-3 top-2.5 text-gray-400 hover:text-gray-600']" 
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        aria-label="Clear search">
+                        :class="[styles.focusRing, 'absolute right-3 top-2.5 text-gray-400 hover:text-gray-600']"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" aria-label="Clear search">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
                             v-html="icons.clearSearch"></svg>
                     </button>
@@ -328,14 +314,12 @@ watch(() => props.data, () => {
                         <th class="w-10 px-6 py-3">
                             <div class="flex items-center">
                                 <label class="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
+                                    <input type="checkbox"
                                         class="form-checkbox rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
                                         :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
                                         :checked="table.getIsAllRowsSelected()"
                                         :indeterminate="table.getIsSomeRowsSelected()"
-                                        @change="table.toggleAllRowsSelected()"
-                                    />
+                                        @change="table.toggleAllRowsSelected()" />
                                 </label>
                             </div>
                         </th>
@@ -348,9 +332,8 @@ watch(() => props.data, () => {
                             <div class="flex items-center gap-2">
                                 {{ header.column.columnDef.header }}
                                 <!-- Sort Indicator -->
-                                <span v-if="header.column.getIsSorted()" 
-                                      :style="{ color: selectionColor }" 
-                                      class="text-gray-900 dark:text-gray-200">
+                                <span v-if="header.column.getIsSorted()" :style="{ color: selectionColor }"
+                                    class="text-gray-900 dark:text-gray-200">
                                     {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                 </span>
                             </div>
@@ -369,22 +352,18 @@ watch(() => props.data, () => {
                     </tr>
 
                     <!-- Data Rows -->
-                    <tr v-for="(row, index) in table.getRowModel().rows" :key="row.id" 
-                        :class="[
-                            styles.rowHover,
-                            row.getIsSelected() ? styles.rowSelected : (index % 2 === 0 ? styles.rowEven : styles.rowOdd)
-                        ]">
+                    <tr v-for="(row, index) in table.getRowModel().rows" :key="row.id" :class="[
+                        styles.rowHover,
+                        row.getIsSelected() ? styles.rowSelected : (index % 2 === 0 ? styles.rowEven : styles.rowOdd)
+                    ]">
                         <!-- Row Checkbox -->
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <label class="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
+                                    <input type="checkbox"
                                         class="form-checkbox rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
                                         :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
-                                        :checked="row.getIsSelected()"
-                                        @change="row.toggleSelected()"
-                                    />
+                                        :checked="row.getIsSelected()" @change="row.toggleSelected()" />
                                 </label>
                             </div>
                         </td>
@@ -416,20 +395,16 @@ watch(() => props.data, () => {
                 <!-- Pagination Buttons -->
                 <template v-if="isServerPagination">
                     <!-- First Page Button -->
-                    <button 
-                        :class="[styles.button, styles.focusRing]" 
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        :disabled="isFirstPage" 
+                    <button :class="[styles.button, styles.focusRing]"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" :disabled="isFirstPage"
                         @click="goToPage(1)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.firstPage"></svg>
                     </button>
 
                     <!-- Previous Page Button -->
-                    <button 
-                        :class="[styles.button, styles.focusRing]" 
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        :disabled="isFirstPage" 
+                    <button :class="[styles.button, styles.focusRing]"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" :disabled="isFirstPage"
                         @click="goToPage(currentPage - 1)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.prevPage"></svg>
@@ -438,30 +413,23 @@ watch(() => props.data, () => {
                     <!-- Page Number Input -->
                     <div class="flex items-center gap-1">
                         <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
-                        <input 
-                            type="number" 
-                            :value="currentPage" 
-                            @change="handlePageChange"
-                            :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']" 
+                        <input type="number" :value="currentPage" @change="handlePageChange"
+                            :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']"
                             :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
                         <span class="text-sm text-gray-700 dark:text-gray-300">of {{ pageCount }}</span>
                     </div>
 
                     <!-- Next Page Button -->
-                    <button 
-                        :class="[styles.button, styles.focusRing]" 
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        :disabled="isLastPage" 
+                    <button :class="[styles.button, styles.focusRing]"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" :disabled="isLastPage"
                         @click="goToPage(currentPage + 1)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.nextPage"></svg>
                     </button>
 
                     <!-- Last Page Button -->
-                    <button 
-                        :class="[styles.button, styles.focusRing]" 
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        :disabled="isLastPage" 
+                    <button :class="[styles.button, styles.focusRing]"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" :disabled="isLastPage"
                         @click="goToPage(pageCount)">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.lastPage"></svg>
@@ -470,16 +438,11 @@ watch(() => props.data, () => {
 
                 <!-- Client-side pagination controls (when not using server pagination) -->
                 <template v-else>
-                    <button
-                        class="px-2 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                        :class="[
-                            table.getCanPreviousPage() ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600',
-                            styles.focusRing
-                        ]"
-                        :style="table.getCanPreviousPage() ? { '--tw-ring-color': 'var(--primary-color)' } : {}"
-                        :disabled="!table.getCanPreviousPage()"
-                        @click="table.previousPage()"
-                    >
+                    <button class="px-2 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" :class="[
+                        table.getCanPreviousPage() ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600',
+                        styles.focusRing
+                    ]" :style="table.getCanPreviousPage() ? { '--tw-ring-color': 'var(--primary-color)' } : {}"
+                        :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.prevPage"></svg>
                     </button>
@@ -488,16 +451,11 @@ watch(() => props.data, () => {
                         Page {{ table.getState().pagination.pageIndex + 1 }} of {{ table.getPageCount() }}
                     </span>
 
-                    <button
-                        class="px-2 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-                        :class="[
-                            table.getCanNextPage() ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600',
-                            styles.focusRing
-                        ]"
-                        :style="table.getCanNextPage() ? { '--tw-ring-color': 'var(--primary-color)' } : {}"
-                        :disabled="!table.getCanNextPage()"
-                        @click="table.nextPage()"
-                    >
+                    <button class="px-2 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" :class="[
+                        table.getCanNextPage() ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700' : 'text-gray-400 dark:text-gray-600',
+                        styles.focusRing
+                    ]" :style="table.getCanNextPage() ? { '--tw-ring-color': 'var(--primary-color)' } : {}"
+                        :disabled="!table.getCanNextPage()" @click="table.nextPage()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             v-html="icons.nextPage"></svg>
                     </button>

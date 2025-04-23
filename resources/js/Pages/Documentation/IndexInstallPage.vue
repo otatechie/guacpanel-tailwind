@@ -59,12 +59,12 @@ onMounted(() => {
 })
 </script>
 
+
 <template>
 
     <Head title="Installation - Starter Kit" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <!-- Hero Section -->
         <div
             class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900">
             <div class="relative z-10 p-8 md:p-12">

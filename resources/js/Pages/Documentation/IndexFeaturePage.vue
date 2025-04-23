@@ -305,6 +305,7 @@ watch([
 }, { deep: true })
 </script>
 
+
 <template>
 
     <Head title="Features - OboDash" />
@@ -1138,13 +1139,17 @@ watch([
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="prose dark:prose-invert max-w-none">
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes built-in support for Google Fonts with local caching for better performance. Here's how to configure and use Google Fonts in your project:
+                                OboDash includes built-in support for Google Fonts with local caching for better
+                                performance. Here's how to configure and use Google Fonts in your project:
                             </p>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 1: Configure Google Fonts</h3>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 1: Configure
+                                    Google Fonts</h3>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Edit the <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">config/google-fonts.php</code> file to add your desired fonts:
+                                    Edit the <code
+                                        class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">config/google-fonts.php</code>
+                                    file to add your desired fonts:
                                 </p>
                                 <div class="bg-gray-800 rounded-lg p-4">
                                     <pre class="text-sm"><code v-highlight class="language-php">'fonts' => [
@@ -1154,9 +1159,12 @@ watch([
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 2: Update CSS Configuration</h3>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 2: Update CSS
+                                    Configuration</h3>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Edit <code class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">resources/css/app.css</code> to use your new font:
+                                    Edit <code
+                                        class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">resources/css/app.css</code>
+                                    to use your new font:
                                 </p>
                                 <div class="bg-gray-800 rounded-lg p-4">
                                     <pre class="text-sm"><code v-highlight class="language-css">@theme {
@@ -1167,7 +1175,8 @@ watch([
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 3: Fetch and Optimize Fonts</h3>
+                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 3: Fetch and
+                                    Optimize Fonts</h3>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
                                     Run the following commands to fetch the fonts and optimize the application:
                                 </p>
@@ -1179,7 +1188,10 @@ php artisan optimize</code></pre>
 
                             <div class="mt-6">
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    For more information and advanced configuration options, visit the <a href="https://github.com/spatie/laravel-google-fonts" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">Spatie Laravel Google Fonts package repository</a>.
+                                    For more information and advanced configuration options, visit the <a
+                                        href="https://github.com/spatie/laravel-google-fonts" target="_blank"
+                                        class="text-blue-600 dark:text-blue-400 hover:underline">Spatie Laravel Google
+                                        Fonts package repository</a>.
                                 </p>
                             </div>
                         </div>

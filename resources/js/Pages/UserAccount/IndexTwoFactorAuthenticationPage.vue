@@ -64,6 +64,7 @@ const benefits = [
 ]
 </script>
 
+
 <template>
 
     <Head title="Two-Factor Authentication" />

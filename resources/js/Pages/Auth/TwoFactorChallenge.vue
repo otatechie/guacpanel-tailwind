@@ -35,6 +35,7 @@ const submitRecovery = () => {
 }
 </script>
 
+
 <template>
 
     <Head title="Two-factor challenge" />

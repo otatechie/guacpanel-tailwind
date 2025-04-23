@@ -98,6 +98,7 @@ watch(pagination, newPagination => {
 }, { deep: true })
 </script>
 
+
 <template>
 
     <Head title="Login History" />

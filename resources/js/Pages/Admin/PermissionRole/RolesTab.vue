@@ -79,31 +79,32 @@ const isRoleExpanded = (roleId) => {
 
 
 <template>
+
     <section class="p-6 space-y-6">
         <header class="flex justify-between items-center">
             <hgroup>
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Roles</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Define roles and their permissions</p>
             </hgroup>
-            <button
-                type="button"
-                @click="showAddModal = true"
-                class="btn-primary inline-flex items-center gap-2"
-            >
+            <button type="button" @click="showAddModal = true" class="btn-primary inline-flex items-center gap-2">
                 Add role
             </button>
         </header>
 
-        <table class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600" role="table">
+        <table class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600"
+            role="table">
             <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Role Name
                     </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Permissions
                     </th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[100px]">
+                    <th scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[100px]">
                         Actions
                     </th>
                 </tr>
@@ -112,15 +113,14 @@ const isRoleExpanded = (roleId) => {
                 <tr v-if="!roles.data.length" class="text-center">
                     <td colspan="3" class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
                         <figure class="flex flex-col items-center justify-center gap-2">
-                            <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             <figcaption>No roles found</figcaption>
-                            <button
-                                type="button"
-                                @click="showAddModal = true"
-                                class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer"
-                            >
+                            <button type="button" @click="showAddModal = true"
+                                class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer">
                                 Add your first role
                             </button>
                         </figure>
@@ -130,12 +130,15 @@ const isRoleExpanded = (roleId) => {
                     class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td class="px-6 py-4">
                         <figure class="flex items-center gap-3">
-                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             <figcaption class="text-sm font-medium text-gray-800 dark:text-gray-200 capitalize">
                                 {{ role.name }}
-                                <span v-if="role.description" class="block text-xs text-gray-500 dark:text-gray-400 normal-case">
+                                <span v-if="role.description"
+                                    class="block text-xs text-gray-500 dark:text-gray-400 normal-case">
                                     {{ role.description }}
                                 </span>
                             </figcaption>
@@ -149,10 +152,8 @@ const isRoleExpanded = (roleId) => {
                                     {{ permission.name }}
                                 </li>
                                 <li>
-                                    <button 
-                                        @click="toggleExpandRole(role.id)" 
-                                        class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2 py-0.5 cursor-pointer"
-                                    >
+                                    <button @click="toggleExpandRole(role.id)"
+                                        class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2 py-0.5 cursor-pointer">
                                         Show less
                                     </button>
                                 </li>
@@ -163,10 +164,8 @@ const isRoleExpanded = (roleId) => {
                                     {{ permission.name }}
                                 </li>
                                 <li v-if="role.permissions.length > 3">
-                                    <button 
-                                        @click="toggleExpandRole(role.id)" 
-                                        class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2 py-0.5 cursor-pointer"
-                                    >
+                                    <button @click="toggleExpandRole(role.id)"
+                                        class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-2 py-0.5 cursor-pointer">
                                         +{{ role.permissions.length - 3 }} more
                                     </button>
                                 </li>
@@ -180,21 +179,23 @@ const isRoleExpanded = (roleId) => {
                         <menu class="flex justify-end gap-2">
                             <li>
                                 <button type="button" @click="editRole(role)"
-                                    class="text-gray-400 hover:text-blue-600 transition-colors cursor-pointer" title="Edit role">
+                                    class="text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
+                                    title="Edit role">
                                     <span class="sr-only">Edit role</span>
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </button>
                             </li>
                             <li>
-                                <button type="button" 
-                                    @click="confirmDeleteRole(role)"
-                                    class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer" 
+                                <button type="button" @click="confirmDeleteRole(role)"
+                                    class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
                                     title="Delete role">
                                     <span class="sr-only">Delete role</span>
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -212,20 +213,15 @@ const isRoleExpanded = (roleId) => {
                     {{ editingRole ? 'Edit role' : 'Add new role' }}
                 </h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions' }}
+                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions'
+                    }}
                 </p>
             </template>
 
             <template #default>
                 <form @submit.prevent="submitRole" class="space-y-6 capitalize">
-                    <FormInput
-                        label="Role name"
-                        v-model="form.name"
-                        type="text"
-                        :error="form.errors.name"
-                        required
-                        placeholder="Enter role name"
-                    />
+                    <FormInput label="Role name" v-model="form.name" type="text" :error="form.errors.name" required
+                        placeholder="Enter role name" />
 
                     <fieldset>
                         <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -237,9 +233,9 @@ const isRoleExpanded = (roleId) => {
                                     <input type="checkbox"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600"
                                         :checked="form.permissions.length === permissions.data.length"
-                                        @change="toggleAllPermissions"
-                                    >
-                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Select all permissions</span>
+                                        @change="toggleAllPermissions">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Select all
+                                        permissions</span>
                                 </span>
                             </label>
 
@@ -247,16 +243,14 @@ const isRoleExpanded = (roleId) => {
                                 <div v-if="permissions.data?.length" class="space-y-1">
                                     <label v-for="permission in permissions.data" :key="permission.id"
                                         class="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer">
-                                        <input type="checkbox"
-                                            :value="permission.id"
-                                            v-model="form.permissions"
-                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600"
-                                        >
+                                        <input type="checkbox" :value="permission.id" v-model="form.permissions"
+                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600">
                                         <span>
                                             <span class="text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {{ permission.name }}
                                             </span>
-                                            <span v-if="permission.description" class="block text-xs text-gray-500 dark:text-gray-400">
+                                            <span v-if="permission.description"
+                                                class="block text-xs text-gray-500 dark:text-gray-400">
                                                 {{ permission.description }}
                                             </span>
                                         </span>
@@ -272,23 +266,20 @@ const isRoleExpanded = (roleId) => {
             </template>
 
             <template #footer>
-                <button
-                    type="button"
+                <button type="button"
                     class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                    @click="closeModal"
-                >
+                    @click="closeModal">
                     Cancel
                 </button>
-                <button
-                    @click="submitRole"
-                    type="button"
-                    class="btn-primary inline-flex items-center gap-2"
-                    :disabled="form.processing"
-                    :aria-busy="form.processing"
-                >
-                    <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <button @click="submitRole" type="button" class="btn-primary inline-flex items-center gap-2"
+                    :disabled="form.processing" :aria-busy="form.processing">
+                    <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
                     </svg>
                     {{ form.processing ? 'Saving...' : (editingRole ? 'Save changes' : 'Add role') }}
                 </button>
@@ -311,9 +302,11 @@ const isRoleExpanded = (roleId) => {
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         Are you sure you want to delete this role? This action cannot be undone.
                     </p>
-                    <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <div
+                        class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
                         <div class="flex gap-2">
-                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor"
+                                viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                                     clip-rule="evenodd" />
@@ -323,8 +316,10 @@ const isRoleExpanded = (roleId) => {
                             </p>
                         </div>
                     </div>
-                    <div v-if="roleToDelete?.permissions?.length" class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">This role has the following permissions:</h4>
+                    <div v-if="roleToDelete?.permissions?.length"
+                        class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">This role has the
+                            following permissions:</h4>
                         <ul class="flex flex-wrap gap-2">
                             <li v-for="permission in roleToDelete.permissions" :key="permission.id"
                                 class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
@@ -337,16 +332,12 @@ const isRoleExpanded = (roleId) => {
 
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button @click="closeModal"
-                        type="button"
+                    <button @click="closeModal" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="form.processing">
                         Cancel
                     </button>
-                    <button @click="deleteRole"
-                        type="button"
-                        class="btn-danger"
-                        :disabled="form.processing">
+                    <button @click="deleteRole" type="button" class="btn-danger" :disabled="form.processing">
                         {{ form.processing ? 'Deleting...' : 'Yes, delete role' }}
                     </button>
                 </div>

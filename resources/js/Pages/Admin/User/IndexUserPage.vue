@@ -166,6 +166,7 @@ watch(pagination, newPagination => {
 }, { deep: true })
 </script>
 
+
 <template>
 
     <Head title="Users" />

@@ -24,6 +24,7 @@ const submit = () => {
 }
 </script>
 
+
 <template>
 
     <Head title="Reset password" />

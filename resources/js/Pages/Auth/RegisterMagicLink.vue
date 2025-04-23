@@ -23,6 +23,7 @@ const submit = () => {
 }
 </script>
 
+
 <template>
 
     <Head title="Register with Magic Link" />

@@ -17,6 +17,7 @@ const submit = () => {
 }
 </script>
 
+
 <template>
 
     <Head title="Confirm password" />

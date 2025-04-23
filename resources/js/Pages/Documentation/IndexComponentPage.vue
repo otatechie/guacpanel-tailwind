@@ -46,15 +46,12 @@ const articleLinks = [
     }
 ]
 
-// Fixed the language mappings for highlight.js
 const fixHighlightLanguages = () => {
-    // Map language-vue to language-html/xml since highlight.js doesn't have a Vue mode
     document.querySelectorAll('pre code.language-vue').forEach((block) => {
         block.className = 'language-xml'
     })
 }
 
-// Function to apply syntax highlighting
 const applyHighlighting = () => {
     nextTick(() => {
         fixHighlightLanguages()
@@ -83,7 +80,6 @@ onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
 })
 
-// Demo data for examples
 const demoEmail = ref('')
 const demoIsChecked = ref(false)
 const demoIsOpen = ref(false)
@@ -207,15 +203,14 @@ const navigationSections = reactive([
         ]
     }
 ])`)
-
 </script>
+
 
 <template>
 
     <Head title="Components - OboDash" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-        <!-- Hero Section -->
         <div
             class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900">
             <div class="relative z-10 p-8 md:p-12">
@@ -251,10 +246,7 @@ const navigationSections = reactive([
 
         <div class="flex flex-col space-y-8 mb-8">
             <ArticleNavigation :links="articleLinks" />
-
-            <!-- Main Content Sections -->
             <div class="space-y-16">
-                <!-- Form Components Section -->
                 <section id="form-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -268,7 +260,6 @@ const navigationSections = reactive([
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Form Components</h2>
                     </div>
 
-                    <!-- Form Input -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Input</h3>
@@ -433,10 +424,8 @@ const navigationSections = reactive([
                                 </table>
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- Form Checkbox -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Checkbox</h3>
@@ -465,7 +454,6 @@ const navigationSections = reactive([
                         </div>
                     </div>
 
-                    <!-- Form Select -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Select</h3>
@@ -551,7 +539,6 @@ const navigationSections = reactive([
                     </div>
                 </section>
 
-                <!-- Navigation Components Section -->
                 <section id="navigation-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -565,17 +552,19 @@ const navigationSections = reactive([
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Navigation Components</h2>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 mb-6">
-                        Navigation components help users move through your application efficiently. These components provide intuitive
+                        Navigation components help users move through your application efficiently. These components
+                        provide intuitive
                         interfaces for menus, sidebars, and other navigation structures.
                     </p>
 
-                    <!-- Navigation Sidebar -->
                     <div id="nav-sidebar"
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Navigation Sidebar</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
-                            A versatile sidebar navigation component that supports multiple levels of navigation, permissions,
-                            dropdown menus, and dividers. Built with accessibility in mind and responds to the user's permissions.
+                            A versatile sidebar navigation component that supports multiple levels of navigation,
+                            permissions,
+                            dropdown menus, and dividers. Built with accessibility in mind and responds to the user's
+                            permissions.
                         </p>
 
                         <div class="grid md:grid-cols-1 gap-8">
@@ -591,7 +580,7 @@ const navigationSections = reactive([
                                     </button>
                                     <pre class="text-sm"><code class="language-vue">{{ navSidebarCode }}</code></pre>
                                 </div>
-                                
+
                                 <div class="bg-gray-800 rounded-lg p-4 relative group mt-6">
                                     <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                         @click="navigator.clipboard.writeText(navSidebarCodeUsage)">
@@ -600,7 +589,8 @@ const navigationSections = reactive([
                                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                     </button>
-                                    <pre class="text-sm"><code class="language-javascript">{{ navSidebarCodeUsage }}</code></pre>
+                                    <pre
+                                        class="text-sm"><code class="language-javascript">{{ navSidebarCodeUsage }}</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -620,11 +610,13 @@ const navigationSections = reactive([
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Navigation Structure</h4>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                The navigation sidebar uses a structured configuration to define menu items. The structure follows these principles:
+                                The navigation sidebar uses a structured configuration to define menu items. The
+                                structure follows these principles:
                             </p>
-                            
+
                             <div class="mb-6">
-                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Navigation Sections</h5>
+                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Navigation Sections
+                                </h5>
                                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
                                     <pre class="text-sm"><code class="language-javascript">const navigationSections = reactive([
   {
@@ -636,13 +628,14 @@ const navigationSections = reactive([
 ])</code></pre>
                                 </div>
                                 <p class="text-gray-600 dark:text-gray-400 mt-2">
-                                    Navigation is organized into sections, each containing an array of items. Sections are visually separated in the UI.
+                                    Navigation is organized into sections, each containing an array of items. Sections
+                                    are visually separated in the UI.
                                 </p>
                             </div>
-                            
+
                             <div class="space-y-6">
                                 <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Item Types</h5>
-                                
+
                                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
                                     <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Regular Item</h6>
                                     <pre class="text-sm"><code class="language-javascript">{
@@ -653,9 +646,10 @@ const navigationSections = reactive([
 },
 { type: 'divider' } // Visual separator between navigation items</code></pre>
                                 </div>
-                                
+
                                 <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                    <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Dropdown Menu</h6>
+                                    <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Dropdown Menu
+                                    </h6>
                                     <pre class="text-sm"><code class="language-javascript">{
   name: 'Settings',
   icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94..." />',
@@ -675,24 +669,36 @@ const navigationSections = reactive([
 }</code></pre>
                                 </div>
                             </div>
-                            
+
                             <div class="mt-6">
                                 <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Icons</h5>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    Icons use inline SVG paths from <a href="https://heroicons.com/" target="_blank" class="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300">Heroicons</a>. Only include the path data, not the entire SVG element.
+                                    Icons use inline SVG paths from <a href="https://heroicons.com/" target="_blank"
+                                        class="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300">Heroicons</a>.
+                                    Only include the path data, not the entire SVG element.
                                 </p>
                             </div>
-                            
+
                             <div class="mt-6">
                                 <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Permissions</h5>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    Add the <code>permission</code> property to any item to restrict visibility based on user permissions. If omitted, the item will be visible to all users.
+                                    Add the <code>permission</code> property to any item to restrict visibility based on
+                                    user permissions. If omitted, the item will be visible to all users.
                                 </p>
-                                
-                                <div class="mt-4 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
+
+                                <div
+                                    class="mt-4 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
                                     <p class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
                                         <span class="flex-shrink-0 text-xl">💡</span>
-                                        <span><strong>Pro Tip:</strong> OboDash leverages <a href="https://spatie.be/docs/laravel-permission" target="_blank" class="border-b-2 border-amber-500 dark:border-amber-400">Spatie's Laravel-Permission</a> package for permission management. Use consistent permission naming like <code class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">settings-general-view</code>, <code class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">users-view</code> that directly map to your application's permission system.</span>
+                                        <span><strong>Pro Tip:</strong> OboDash leverages <a
+                                                href="https://spatie.be/docs/laravel-permission" target="_blank"
+                                                class="border-b-2 border-amber-500 dark:border-amber-400">Spatie's
+                                                Laravel-Permission</a> package for permission management. Use consistent
+                                            permission naming like <code
+                                                class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">settings-general-view</code>,
+                                            <code
+                                                class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">users-view</code>
+                                            that directly map to your application's permission system.</span>
                                     </p>
                                 </div>
                             </div>
@@ -700,7 +706,6 @@ const navigationSections = reactive([
                     </div>
                 </section>
 
-                <!-- Feedback Components Section -->
                 <section id="feedback-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -714,10 +719,10 @@ const navigationSections = reactive([
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Feedback Components</h2>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 mb-6">
-                        Feedback components provide visual and interactive feedback to users about their actions and the application's state.
+                        Feedback components provide visual and interactive feedback to users about their actions and the
+                        application's state.
                         These components are essential for creating a responsive and user-friendly interface.
                     </p>
-                    <!-- Flash Message Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Flash Message</h3>
@@ -799,7 +804,8 @@ const navigationSections = reactive([
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Laravel Integration</h4>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                The FlashMessage component automatically handles Laravel's session flash messages. It supports the following flash keys:
+                                The FlashMessage component automatically handles Laravel's session flash messages. It
+                                supports the following flash keys:
                             </p>
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
                                 <li><code>success</code> - Success messages</li>
@@ -810,7 +816,6 @@ const navigationSections = reactive([
                         </div>
                     </div>
 
-                    <!-- Modal Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Modal</h3>
@@ -915,7 +920,6 @@ const navigationSections = reactive([
                     </div>
                 </section>
 
-                <!-- Utility Components Section -->
                 <section id="utility-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -931,10 +935,11 @@ const navigationSections = reactive([
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Utility Components</h2>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 mb-6">
-                        Utility components are reusable UI elements that provide common functionality across your application.
-                        These components are designed to be flexible, accessible, and easy to integrate into your projects.
+                        Utility components are reusable UI elements that provide common functionality across your
+                        application.
+                        These components are designed to be flexible, accessible, and easy to integrate into your
+                        projects.
                     </p>
-                    <!-- Switch Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Switch</h3>
@@ -1012,30 +1017,27 @@ const navigationSections = reactive([
                         </div>
                     </div>
 
-                    <!-- Page Header Component -->
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Page Header</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
-                            A flexible page header component that displays a title, description, and optional breadcrumbs.
+                            A flexible page header component that displays a title, description, and optional
+                            breadcrumbs.
                             Includes a slot for action buttons and supports dark mode.
                         </p>
 
                         <div class="grid md:grid-cols-2 gap-8">
                             <div class="space-y-4">
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
-                                <PageHeader
-                                    title="User Management"
-                                    description="Manage user accounts and permissions"
+                                <PageHeader title="User Management" description="Manage user accounts and permissions"
                                     :breadcrumbs="[
                                         { label: 'Dashboard', href: '/dashboard' },
                                         { label: 'Users' }
-                                    ]"
-                                    color="purple"
-                                >
+                                    ]" color="purple">
                                     <template #actions>
-                                        <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                                            Add 
+                                        <button
+                                            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                            Add
                                         </button>
                                     </template>
                                 </PageHeader>
@@ -1079,25 +1081,33 @@ const navigationSections = reactive([
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">title</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Required</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The main title of the page</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The main
+                                                title of the page
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">description</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">''</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Optional description text</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Optional
+                                                description text
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">breadcrumbs</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">[]</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of breadcrumb items with label and optional href</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of
+                                                breadcrumb items
+                                                with label and optional href</td>
                                         </tr>
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">color</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'purple'</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Color theme for the header (purple, blue, green, red, yellow, indigo)</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Color theme
+                                                for the header
+                                                (purple, blue, green, red, yellow, indigo)</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1122,7 +1132,9 @@ const navigationSections = reactive([
                                         class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">actions</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Slot for action buttons or controls</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Slot for
+                                                action buttons or
+                                                controls</td>
                                         </tr>
                                     </tbody>
                                 </table>

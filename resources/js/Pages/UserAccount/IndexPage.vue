@@ -39,6 +39,7 @@ const submitPasswordForm = () => {
 }
 </script>
 
+
 <template>
 
     <Head title="Profile Settings" />

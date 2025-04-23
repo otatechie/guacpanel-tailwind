@@ -98,6 +98,7 @@ const submit = () => {
 }
 </script>
 
+
 <template>
 
     <Head title="Personalization Settings" />
@@ -127,7 +128,7 @@ const submit = () => {
                     <div class="w-full md:w-2/3">
                         <div class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <FormInput v-model="form.app_name" label="Application Name" id="app_name"
+                                <FormInput v-model="form.app_name" label="Application name" id="app_name"
                                     placeholder="Enter your application name" :error="form.errors.app_name" />
                                 <FormInput v-model="form.copyright_text" label="Copyright text" id="copyright_text"
                                     placeholder="Enter copyright text" :error="form.errors.copyright_text" />
@@ -150,14 +151,12 @@ const submit = () => {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700"
                         role="group" aria-label="Media uploads">
-                        <!-- Application Logo Upload -->
                         <FilePondUploader name="app_logo" label="Application logo" label-idle="Drop logo here..."
                             id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
                             :files="getInitialFiles('app_logo')"
                             @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
                             @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
 
-                        <!-- Favicon Upload -->
                         <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..." id="favicon"
                             :accepted-file-types="['image/png']" :server="uploadConfig"
                             :files="getInitialFiles('favicon')"

@@ -70,6 +70,7 @@ const navigationSections = reactive([
 ])
 </script>
 
+
 <template>
     <aside data-sidebar-content class="nav-sidebar" @click.stop>
         <nav class="flex-1 overflow-y-auto py-2 px-2" aria-labelledby="nav-heading">

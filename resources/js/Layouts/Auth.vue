@@ -49,7 +49,6 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
                     </ul>
                 </nav>
 
-                <!-- Copyright -->
                 <p class="text-center text-xs text-gray-500 dark:text-gray-300 md:order-1">
                     {{ personalisation.app_name }}
                     {{ personalisation.copyright_text || '© 2024 All rights reserved.' }}
