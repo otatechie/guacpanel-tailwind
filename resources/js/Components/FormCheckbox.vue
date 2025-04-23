@@ -63,7 +63,7 @@ const updateValue = (e) => {
                     @change="updateValue"
                     :aria-describedby="error ? `${inputId}-error` : undefined" 
                     :aria-invalid="!!error"
-                    class="rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
+                    class="rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800 cursor-pointer"
                     :style="{ 
                         '--tw-ring-color': 'var(--primary-color)', 
                         'color': 'var(--selection-color)' 

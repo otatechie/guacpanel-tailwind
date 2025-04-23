@@ -267,7 +267,6 @@ const benefits = [
         </article>
     </main>
 
-  
     <Modal :show="showDisableModal" @close="closeModal" size="md">
         <template #title>
             <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
