@@ -125,14 +125,13 @@ onBeforeUnmount(() => {
                 :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
                 :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
-                :class="selectClass"
+                :class="[selectClass, 'capitalize']"
                 @keydown.arrow-down="isOpen = true" 
                 @keydown.enter.prevent="isOpen = !isOpen"
             >
 
             <section v-show="isOpen" :id="`${inputId}-listbox`" role="listbox"
                 class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-hidden">
-                
                 <header class="p-2 border-b border-gray-300 dark:border-gray-600">
                     <input type="search" :aria-label="'Search ' + label" v-model="searchQuery" placeholder="Search..."
                         class="w-full p-2 text-sm rounded-md focus:outline-none focus:ring-1 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:focus:ring-gray-600"

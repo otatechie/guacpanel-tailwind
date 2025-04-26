@@ -47,7 +47,6 @@ const submitPasswordForm = () => {
     <main class="max-w-5xl mx-auto space-y-8" aria-labelledby="profile-settings">
         <h1 class="sr-only" id="profile-settings">Profile Settings</h1>
 
-        <!-- Profile Information -->
         <section class="container-border overflow-hidden" aria-labelledby="profile-info">
             <PageHeader title="Basic Information" description="Update your personal information and email address"
                 :breadcrumbs="[

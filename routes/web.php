@@ -13,6 +13,7 @@ use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\Auth\MagicLinkController;
+use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionRoleController;
@@ -20,11 +21,10 @@ use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
-
 Route::get('/flight', [PageController::class, 'indexFlight'])->name('flight');
 
 // Authenticated Routes
-Route::middleware(['web', 'auth'])->group(function () {
+Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
     // Logout Route
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
@@ -60,6 +60,11 @@ Route::middleware(['web', 'auth'])->group(function () {
 
             // User Account Routes
             Route::get('account', [UserAccountController::class, 'index'])->name('index');
+           
+            // Browser Session Routes
+            Route::get('account/sessions', [BrowserSessionController::class, 'index'])->name('session.index');
+            Route::post('account/sessions/logout', [BrowserSessionController::class, 'logoutOtherDevices'])->name('session.logout');
+            Route::delete('account/sessions/{sessionId}', [BrowserSessionController::class, 'destroySession'])->name('session.destroy');
         });
 
         // Protected Routes requiring 2FA

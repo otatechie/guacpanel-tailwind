@@ -27,22 +27,22 @@ class PermissionRoleSeeder extends Seeder
             // System
             'access-dashboard' => 'Access admin dashboard',
             'manage-settings' => 'Manage system settings',
+            'manage-security-settings' => 'Manage system security settings',
             
             // Audit & Monitoring
             'view-audits' => 'View system audit logs',
-            'view-login-history' => 'View user login history',
             'view-health-checks' => 'View system health checks',
             
             // Backup Management
             'manage-backups' => 'Create and manage system backups',
-            'download-backups' => 'Download system backups',
-            
+              
             // Personalization
             'manage-personalization' => 'Manage system appearance and branding',
             
             // Roles & Permissions
-            'manage-roles' => 'Manage user roles',
-            'manage-permissions' => 'Manage permissions and assign to roles',
+            'manage-roles' => 'Manage user roles ',
+            'manage-permissions' => 'Manage user permissions',
+            'view-permissions-roles' => 'View permissions and roles',
         ];
         
         $permissions = [];

@@ -31,33 +31,46 @@ const alertConfigs = {
 
 const flashMessageTypes = [
     {
-        check: flash => flash['two-factor-authentication-enabled'],
+        check: flash => flash.status === 'two-factor-authentication-enabled',
         title: 'Two-Factor Authentication',
         getMessage: () => 'Two-factor authentication has been enabled.',
         type: 'success'
     },
     {
-        check: flash => flash['two-factor-authentication-disabled'],
+        check: flash => flash.status === 'two-factor-authentication-disabled',
         title: 'Two-Factor Authentication',
         getMessage: () => 'Two-factor authentication has been disabled.',
+        type: 'warning'
+    },
+    {
+        check: flash => flash.status === 'recovery-codes-generated',
+        title: 'Recovery Codes',
+        getMessage: () => 'Recovery codes have been successfully generated.',
         type: 'info'
     },
     {
-        check: flash => flash['recovery-codes-generated'],
-        title: 'Recovery Codes',
-        getMessage: () => 'Recovery codes have been successfully generated.',
-        type: 'success'
-    },
-    {
-        check: flash => flash['verification-link-sent'],
+        check: flash => flash.status === 'verification-link-sent',
         title: 'Verification Link',
         getMessage: () => 'A new email verification link has been emailed to you!',
         type: 'success'
     },
     {
-        check: flash => flash.success || flash.message || flash.status || flash['profile-information-updated'],
+        check: flash => flash.status === 'profile-information-updated',
+        title: 'Profile Updated',
+        getMessage: () => 'Your profile information has been updated.',
+        type: 'success'
+    },
+    {
+        check: flash => flash.success || flash.message || (flash.status && 
+                ![
+                    'two-factor-authentication-enabled',
+                    'two-factor-authentication-disabled',
+                    'recovery-codes-generated',
+                    'verification-link-sent',
+                    'profile-information-updated'
+                ].includes(flash.status)),
         title: 'Success',
-        getMessage: flash => flash.success || flash.message || flash.status || flash['profile-information-updated'],
+        getMessage: flash => flash.success || flash.message || flash.status,
         type: 'success'
     },
     {
@@ -118,10 +131,13 @@ watch(
     () => page.props.flash,
     (newFlash) => {
         if (!newFlash) return
+        
+        // Debug log
+        console.log('Flash data:', newFlash)
 
         const errors = page.props.errors || {}
         if (Object.keys(errors).length > 0) {
-            showAlert('Form Error', 'Please review the highlighted fields', 'warning')
+            showAlert('Form Error', 'Please review the highlighted fields.', 'warning')
             return
         }
 
@@ -154,8 +170,8 @@ watch(
         </div>
 
         <div class="ml-3 text-sm font-normal">
-            <h2 class="block font-medium">{{ alert.title }}</h2>
-            <p class="text-gray-700">{{ alert.message }}</p>
+            <h2 class="block font-medium uppercase">{{ alert.title }}</h2>
+            <p class="text-gray-700 mt-1">{{ alert.message }}</p>
         </div>
 
         <button @click="closeAlert" type="button"

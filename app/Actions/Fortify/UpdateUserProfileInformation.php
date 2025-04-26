@@ -37,7 +37,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'location' => $input['location'],
             ])->save();
 
-            session()->flash('success', 'Your profile has been updated successfully');
+            session()->flash('success', 'Your profile has been updated successfully.');
         }
     }
 

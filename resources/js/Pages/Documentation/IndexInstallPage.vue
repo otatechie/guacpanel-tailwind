@@ -297,6 +297,14 @@ DB_PASSWORD=your_password</code></pre>
                     <div class="bg-gray-800 rounded-lg p-4">
                         <pre class="text-sm"><code v-highlight class="language-bash">php artisan db:seed</code></pre>
                     </div>
+
+                    <div class="prose dark:prose-invert max-w-none">
+                        <p>Default superuser credentials:</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <pre class="text-sm"><code v-highlight class="language-bash">Email: ota@example.com
+Password: password</code></pre>
+                    </div>
                 </div>
             </div>
 

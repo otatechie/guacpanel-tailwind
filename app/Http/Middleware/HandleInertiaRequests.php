@@ -72,6 +72,12 @@ class HandleInertiaRequests extends Middleware
                     'warning' => fn() => $request->session()->get('warning'),
                     'info' => fn() => $request->session()->get('info'),
                     'danger' => fn() => $request->session()->get('danger'),
+                    'all' => fn() => $request->session()->get('_flash.old', []),
+                    'recovery-codes-generated' => fn() => $request->session()->get('recovery-codes-generated'),
+                    'two-factor-authentication-enabled' => fn() => $request->session()->get('two-factor-authentication-enabled'),
+                    'two-factor-authentication-disabled' => fn() => $request->session()->get('two-factor-authentication-disabled'),
+                    'verification-link-sent' => fn() => $request->session()->get('verification-link-sent'),
+                    'profile-information-updated' => fn() => $request->session()->get('profile-information-updated'),
                 ],
 
                 'personalisation' => [
