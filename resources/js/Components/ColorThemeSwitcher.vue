@@ -112,7 +112,7 @@ onMounted(() => {
 
 
 <template>
-    <div class="relative theme-dropdown">
+    <div class="relative theme-dropdown hidden lg:block">
         <button @click="toggleDropdown"
             class="inline-flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer">
             <span>Theme</span>

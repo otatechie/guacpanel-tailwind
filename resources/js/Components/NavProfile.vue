@@ -141,7 +141,7 @@ const icons = {
 <template>
     <nav class="relative" ref="menuWrapper">
         <button type="button"
-            class="relative flex items-center rounded-full text-sm focus:outline-none lg:rounded-md lg:p-2 lg:hover:bg-gray-50 dark:lg:hover:bg-gray-700 cursor-pointer"
+            class="relative flex items-center rounded-full text-sm focus:outline-none lg:rounded-md uppercase lg:p-2 lg:hover:bg-gray-50 dark:lg:hover:bg-gray-700 cursor-pointer"
             id="user-menu-button" :aria-expanded="menuOpen.toString()" @click="toggleMenu">
             <img :src="avatarUrl" :alt="`${safeUserName}'s avatar`"
                 class="h-6 w-6 rounded-full ring-2 ring-white dark:ring-gray-800" />
@@ -156,7 +156,7 @@ const icons = {
         <menu v-show="menuOpen"
             class="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-xl bg-white dark:bg-gray-800 py-2 shadow-md ring-1 ring-gray-300 dark:ring-gray-700 ring-opacity-5 transition-all duration-200 ease-in-out transform"
             :class="menuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'">
-            <li class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+            <li class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ safeUserName }}</div>
                     <div class="flex items-center space-x-2">

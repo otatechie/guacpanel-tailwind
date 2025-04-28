@@ -3,7 +3,7 @@
 
 /* Theme Configuration */
 @theme {
-    --font-sans: "Plus Jakarta Sans", "sans-serif";
+    --font-sans: "Noto Sans", "sans-serif";
     --primary-gradient-from: #a855f7;
     --primary-gradient-to: #c084fc;
     --primary-color: #a855f7;
