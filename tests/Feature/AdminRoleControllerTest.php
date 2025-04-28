@@ -26,18 +26,18 @@ beforeEach(function () {
     $this->regularUser = User::factory()->create();
 });
 
-test('unauthenticated user cannot access role management', function () {
+test('it redirects unauthenticated users to login page', function () {
     $response = $this->get(route('admin.role.index'));
     $response->assertRedirect(route('login'));
 });
 
-test('user without role management permission cannot access role management', function () {
+test('it denies access to users without role management permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->get(route('admin.role.index'));
     $response->assertForbidden();
 });
 
-test('user with role management permission can create roles', function () {
+test('it allows users with role management permission to create roles', function () {
     $roleData = [
         'name' => 'test-role',
         'permissions' => [],
@@ -52,7 +52,7 @@ test('user with role management permission can create roles', function () {
     $this->assertDatabaseHas('roles', ['name' => 'test-role']);
 });
 
-test('user with role management permission can update roles', function () {
+test('it allows users with role management permission to update roles', function () {
     $role = Role::create(['name' => 'test-role']);
     $updateData = [
         'name' => 'updated-role',
@@ -68,7 +68,7 @@ test('user with role management permission can update roles', function () {
     $this->assertDatabaseHas('roles', ['name' => 'updated-role']);
 });
 
-test('user with role management permission can delete roles', function () {
+test('it allows users with role management permission to delete roles', function () {
     $role = Role::create(['name' => 'test-role']);
 
     $response = $this->actingAs($this->adminUser)
@@ -79,7 +79,7 @@ test('user with role management permission can delete roles', function () {
     $this->assertDatabaseMissing('roles', ['name' => 'test-role']);
 });
 
-test('user without role management permission cannot create roles', function () {
+test('it denies role creation to users without role management permission', function () {
     $roleData = [
         'name' => 'test-role',
         'permissions' => [],
@@ -93,7 +93,7 @@ test('user without role management permission cannot create roles', function () 
     $response->assertForbidden();
 });
 
-test('user without role management permission cannot update roles', function () {
+test('it denies role update to users without role management permission', function () {
     $role = Role::create(['name' => 'test-role']);
     $updateData = [
         'name' => 'updated-role',
@@ -108,7 +108,7 @@ test('user without role management permission cannot update roles', function () 
     $response->assertForbidden();
 });
 
-test('user without role management permission cannot delete roles', function () {
+test('it denies role deletion to users without role management permission', function () {
     $role = Role::create(['name' => 'test-role']);
 
     $response = $this->actingAs($this->regularUser)

@@ -30,7 +30,7 @@ beforeEach(function () {
     $this->testToken = 'test-token';
 });
 
-test('admin can access settings index page', function () {
+test('it allows admin to access settings index page', function () {
     $response = $this->actingAs($this->adminUser)
         ->get(route('admin.setting.index'));
 
@@ -41,7 +41,7 @@ test('admin can access settings index page', function () {
     );
 });
 
-test('admin can access settings management page', function () {
+test('it allows admin to access settings management page', function () {
     $response = $this->actingAs($this->adminUser)
         ->get(route('admin.setting.show'));
 
@@ -53,7 +53,7 @@ test('admin can access settings management page', function () {
     );
 });
 
-test('admin can update settings', function () {
+test('it allows admin to update settings', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
@@ -73,7 +73,7 @@ test('admin can update settings', function () {
     ]);
 });
 
-test('admin can toggle settings individually', function () {
+test('it allows admin to toggle settings individually', function () {
     // Update password_expiry only
     $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
@@ -107,7 +107,7 @@ test('admin can toggle settings individually', function () {
     ]);
 });
 
-test('user without permission cannot access settings pages', function () {
+test('it denies access to users without permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->get(route('admin.setting.index'));
 
@@ -119,7 +119,7 @@ test('user without permission cannot access settings pages', function () {
     $response->assertForbidden();
 });
 
-test('user without permission cannot update settings', function () {
+test('it denies settings update to users without permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
@@ -134,7 +134,7 @@ test('user without permission cannot update settings', function () {
     ]);
 });
 
-test('creates settings if none exist', function () {
+test('it creates settings if none exist', function () {
     Setting::query()->delete();
     $this->assertDatabaseMissing('settings', []);
 

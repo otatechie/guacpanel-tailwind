@@ -30,7 +30,7 @@ beforeEach(function () {
     $this->testToken = 'test-token';
 });
 
-test('user with view permission can access user index page', function () {
+test('it allows users with view permission to access user index page', function () {
     $response = $this->actingAs($this->viewOnlyUser)
         ->get(route('admin.user.index'));
 
@@ -42,14 +42,14 @@ test('user with view permission can access user index page', function () {
     );
 });
 
-test('user without view permission cannot access user index page', function () {
+test('it denies access to users without view permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->get(route('admin.user.index'));
 
     $response->assertForbidden();
 });
 
-test('admin can view edit user page', function () {
+test('it allows admin to view edit user page', function () {
     $user = User::factory()->create();
     
     $response = $this->actingAs($this->adminUser)
@@ -65,7 +65,7 @@ test('admin can view edit user page', function () {
     );
 });
 
-test('user with view-only permission cannot access edit page', function () {
+test('it denies edit access to users with view-only permission', function () {
     $user = User::factory()->create();
     
     $response = $this->actingAs($this->viewOnlyUser)
@@ -74,7 +74,7 @@ test('user with view-only permission cannot access edit page', function () {
     $response->assertForbidden();
 });
 
-test('admin can update user', function () {
+test('it allows admin to update user', function () {
     $user = User::factory()->create();
     $updatedData = [
         'name' => 'Updated Name',
@@ -98,7 +98,7 @@ test('admin can update user', function () {
     ]);
 });
 
-test('admin cannot update user with invalid data', function () {
+test('it prevents user update with invalid data', function () {
     $user = User::factory()->create();
     $invalidData = [
         'name' => '',
@@ -114,7 +114,7 @@ test('admin cannot update user with invalid data', function () {
     $response->assertSessionHasErrors(['name', 'email']);
 });
 
-test('admin cannot update user email to existing email', function () {
+test('it prevents user email update to existing email', function () {
     $existingUser = User::factory()->create();
     $userToUpdate = User::factory()->create();
 
@@ -130,7 +130,7 @@ test('admin cannot update user email to existing email', function () {
     $response->assertSessionHasErrors(['email']);
 });
 
-test('admin can delete user', function () {
+test('it allows admin to delete user', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($this->adminUser)
@@ -147,7 +147,7 @@ test('admin can delete user', function () {
     ]);
 });
 
-test('user with view permission cannot update users', function () {
+test('it denies user update to users with view permission', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($this->viewOnlyUser)
@@ -160,7 +160,7 @@ test('user with view permission cannot update users', function () {
     $response->assertForbidden();
 });
 
-test('user with view permission cannot delete users', function () {
+test('it denies user deletion to users with view permission', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($this->viewOnlyUser)

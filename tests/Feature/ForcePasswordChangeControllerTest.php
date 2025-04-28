@@ -13,19 +13,19 @@ beforeEach(function () {
     ]);
 });
 
-test('unauthenticated user cannot access force password change page', function () {
+test('it redirects unauthenticated users to login page', function () {
     $response = $this->get(route('user.password.change'));
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated user with force_password_change false cannot access page', function () {
+test('it redirects users without force password change to home page', function () {
     $user = User::factory()->create(['force_password_change' => false]);
 
     $response = $this->actingAs($user)->get(route('user.password.change'));
     $response->assertRedirect(route('home'));
 });
 
-test('authenticated user with force_password_change true can access page', function () {
+test('it allows access to users with force password change required', function () {
     $response = $this->actingAs($this->user)->get(route('user.password.change'));
 
     $response->assertStatus(200);
@@ -36,7 +36,7 @@ test('authenticated user with force_password_change true can access page', funct
     );
 });
 
-test('user can update password with valid data', function () {
+test('it allows users to update password with valid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
@@ -53,7 +53,7 @@ test('user can update password with valid data', function () {
     $this->assertFalse($this->user->force_password_change);
 });
 
-test('user cannot update password with invalid data', function () {
+test('it prevents password update with invalid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
@@ -100,7 +100,7 @@ test('user cannot update password with invalid data', function () {
     $response->assertSessionHasErrors('password');
 });
 
-test('rate limiting works for password update attempts', function () {
+test('it enforces rate limiting for password update attempts', function () {
     $key = 'user.password.change.update:' . $this->user->id;
 
     for ($i = 0; $i < 3; $i++) {

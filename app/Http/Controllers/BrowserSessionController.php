@@ -81,13 +81,7 @@ class BrowserSessionController extends Controller
 
     public function destroySession(Request $request, $sessionId)
     {
-        if (config('session.driver') === 'database') {
-            DB::connection(config('session.connection'))
-                ->table(config('session.table', 'sessions'))
-                ->where('id', $sessionId)
-                ->where('user_id', $request->user()->getAuthIdentifier())
-                ->delete();
-        }
+        $this->deleteSessionFromDatabase($request);
 
         return back()->with('status', 'Session terminated successfully.');
     }

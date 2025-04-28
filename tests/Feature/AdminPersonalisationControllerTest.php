@@ -38,7 +38,7 @@ beforeEach(function () {
     ];
 });
 
-test('user with view permission can view personalisation page', function () {
+test('it allows users with view permission to access personalisation page', function () {
     $response = $this->actingAs($this->viewOnlyUser)
         ->get(route('admin.personalization.index'));
 
@@ -51,14 +51,14 @@ test('user with view permission can view personalisation page', function () {
     );
 });
 
-test('user without view permission cannot view personalisation page', function () {
+test('it denies access to users without view permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->get(route('admin.personalization.index'));
 
     $response->assertForbidden();
 });
 
-test('user with upload permission can upload app logo', function () {
+test('it allows users with upload permission to upload app logo', function () {
     Storage::fake('public');
     $file = UploadedFile::fake()->image('logo.jpg');
     
@@ -77,7 +77,7 @@ test('user with upload permission can upload app logo', function () {
     $this->assertTrue(Storage::disk('public')->exists($path));
 });
 
-test('user with upload permission can upload favicon', function () {
+test('it allows users with upload permission to upload favicon', function () {
     Storage::fake('public');
     $file = UploadedFile::fake()->image('favicon.png', 32, 32);
     
@@ -96,7 +96,7 @@ test('user with upload permission can upload favicon', function () {
     $this->assertTrue(Storage::disk('public')->exists($path));
 });
 
-test('user without upload permission cannot upload files', function () {
+test('it denies file upload to users without upload permission', function () {
     $file = UploadedFile::fake()->image('logo.jpg');
     
     $response = $this->actingAs($this->viewOnlyUser)
@@ -109,7 +109,7 @@ test('user without upload permission cannot upload files', function () {
     $response->assertForbidden();
 });
 
-test('user with delete permission can delete app logo', function () {
+test('it allows users with delete permission to delete app logo', function () {
     Storage::fake('public');
     $file = UploadedFile::fake()->image('logo.jpg');
     $path = 'personalisation/' . time() . '_logo.jpg';
@@ -132,7 +132,7 @@ test('user with delete permission can delete app logo', function () {
     $this->assertFalse(Storage::disk('public')->exists($path));
 });
 
-test('user with delete permission can delete favicon', function () {
+test('it allows users with delete permission to delete favicon', function () {
     Storage::fake('public');
     $file = UploadedFile::fake()->image('favicon.png', 32, 32);
     $path = 'personalisation/' . time() . '_favicon.png';
@@ -155,7 +155,7 @@ test('user with delete permission can delete favicon', function () {
     $this->assertFalse(Storage::disk('public')->exists($path));
 });
 
-test('user without delete permission cannot delete files', function () {
+test('it denies file deletion to users without delete permission', function () {
     $response = $this->actingAs($this->viewOnlyUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.personalization.delete'), [
@@ -166,7 +166,7 @@ test('user without delete permission cannot delete files', function () {
     $response->assertForbidden();
 });
 
-test('user with update permission can update personalisation settings', function () {
+test('it allows users with update permission to update personalisation settings', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.personalization.update'), $this->validData);
@@ -180,7 +180,7 @@ test('user with update permission can update personalisation settings', function
     $this->assertEquals($this->validData['copyright_text'], $this->personalisation->copyright_text);
 });
 
-test('user without update permission cannot update personalisation', function () {
+test('it denies settings update to users without update permission', function () {
     $response = $this->actingAs($this->viewOnlyUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.personalization.update'), $this->validData);

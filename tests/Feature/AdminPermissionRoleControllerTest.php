@@ -19,12 +19,12 @@ beforeEach(function () {
     $this->testToken = 'test-token';
 });
 
-test('unauthenticated user cannot access role management page', function () {
+test('it redirects unauthenticated users to login page', function () {
     $this->get(route('admin.permission.role.index'))
         ->assertRedirect(route('login'));
 });
 
-test('user with manage permissions and roles permission can access role management page', function () {
+test('it allows access to users with manage permissions and roles permission', function () {
     $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->get(route('admin.permission.role.index'))
@@ -34,7 +34,7 @@ test('user with manage permissions and roles permission can access role manageme
         );
 });
 
-test('user without manage permissions and roles permission cannot access role management page', function () {
+test('it denies access to users without manage permissions and roles permission', function () {
     $this->actingAs($this->regularUser)
         ->withSession(['_token' => $this->testToken])
         ->get(route('admin.permission.role.index'))

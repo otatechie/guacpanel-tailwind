@@ -15,7 +15,7 @@ beforeEach(function() {
     ]);
 });
 
-test('unauthenticated user cannot access account pages', function() {
+test('it redirects unauthenticated users to login page', function() {
     $response = $this->get(route('user.index'));
     $response->assertRedirect(route('login'));
 
@@ -26,7 +26,7 @@ test('unauthenticated user cannot access account pages', function() {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated user can access account page', function() {
+test('it allows authenticated users to access account page', function() {
     $response = $this->actingAs($this->user)
         ->get(route('user.index'));
 
@@ -41,7 +41,7 @@ test('authenticated user can access account page', function() {
     );
 });
 
-test('authenticated user can access two factor authentication page', function() {
+test('it allows authenticated users to access two factor authentication page', function() {
     $response = $this->actingAs($this->user)
         ->get(route('user.two.factor'));
 
@@ -54,7 +54,7 @@ test('authenticated user can access two factor authentication page', function() 
     );
 });
 
-test('user with expired password is redirected to password expired page', function() {
+test('it redirects users with expired password to password expired page', function() {
     Setting::first()->update([
         'password_expiry' => true
     ]);
@@ -69,7 +69,7 @@ test('user with expired password is redirected to password expired page', functi
     $response->assertRedirect(route('user.password.expired'));
 });
 
-test('user with valid password is not redirected to password expired page', function() {
+test('it redirects users with valid password away from password expired page', function() {
     $this->user->update([
         'password_expiry_at' => now()->addDays(30),
     ]);
@@ -80,7 +80,7 @@ test('user with valid password is not redirected to password expired page', func
     $response->assertRedirect(route('home'));
 });
 
-test('user can update expired password with valid data', function() {
+test('it allows users to update expired password with valid data', function() {
     Setting::first()->update([
         'password_expiry' => true
     ]);
@@ -106,7 +106,7 @@ test('user can update expired password with valid data', function() {
     $this->assertEquals(3, round(now()->diffInMonths($this->user->password_expiry_at)));
 });
 
-test('user cannot update password with invalid data', function() {
+test('it prevents password update with invalid data', function() {
     $this->user->update([
         'password_expiry_at' => now()->subDay(),
     ]);

@@ -30,7 +30,7 @@ beforeEach(function () {
     $this->testToken = 'test-token';
 });
 
-test('permission middleware works correctly', function () {
+test('it enforces permission middleware correctly', function () {
     $this->get(route('admin.permission.index'))
         ->assertRedirect(route('login'));
 
@@ -57,13 +57,13 @@ test('permission middleware works correctly', function () {
         ->get(route('admin.permission.index'));
 });
 
-test('csrf token is required', function () {
+test('it requires csrf token for all operations', function () {
     $this->actingAs($this->userWithFullPermissions)
         ->post(route('admin.permission.store'), ['name' => 'csrf-test-permission'])
         ->assertStatus(419);
 });
 
-test('authorized user can perform crud operations', function () {
+test('it allows authorized users to perform crud operations', function () {
     $createData = [
         'name' => 'test-permission',
         'description' => 'Test description',
@@ -107,7 +107,7 @@ test('authorized user can perform crud operations', function () {
     ]);
 });
 
-test('permission validation works', function () {
+test('it validates permission data correctly', function () {
     $invalidNameData = [
         'name' => 'invalid permission name',
         '_token' => $this->testToken

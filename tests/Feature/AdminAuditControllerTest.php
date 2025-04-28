@@ -18,18 +18,18 @@ beforeEach(function () {
     $this->regularUser = User::factory()->create();
 });
 
-test('unauthenticated users cannot access audit page', function () {
+test('it redirects unauthenticated users to login page', function () {
     $this->get(route('admin.audit.index'))
         ->assertRedirect(route('login'));
 });
 
-test('users without audit permission cannot access audit page', function () {
+test('it denies access to users without audit permission', function () {
     $this->actingAs($this->regularUser)
         ->get(route('admin.audit.index'))
         ->assertForbidden();
 });
 
-test('users with audit permission can access audit page', function () {
+test('it allows access to users with audit permission', function () {
     $this->actingAs($this->adminUser)
         ->get(route('admin.audit.index'))
         ->assertStatus(200)

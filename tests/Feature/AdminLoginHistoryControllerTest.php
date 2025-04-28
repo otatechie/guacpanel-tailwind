@@ -18,18 +18,18 @@ beforeEach(function () {
     $this->regularUser = User::factory()->create();
 });
 
-test('unauthenticated users cannot access login history page', function () {
+test('it redirects unauthenticated users to login page', function () {
     $this->get(route('admin.login.history.index'))
         ->assertRedirect(route('login'));
 });
 
-test('users without login history permission cannot access login history page', function () {
+test('it denies access to users without login history permission', function () {
     $this->actingAs($this->regularUser)
         ->get(route('admin.login.history.index'))
         ->assertForbidden();
 });
 
-test('users with login history permission can access login history page', function () {
+test('it allows access to users with login history permission', function () {
     $this->actingAs($this->adminUser)
         ->get(route('admin.login.history.index'))
         ->assertStatus(200)
