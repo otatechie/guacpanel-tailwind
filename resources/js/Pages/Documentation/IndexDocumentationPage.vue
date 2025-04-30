@@ -75,7 +75,7 @@ onUnmounted(() => {
 
     <div id="introduction" class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
-            class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900">
+            class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-teal-600 to-teal-700 dark:from-teal-900 dark:to-teal-800">
             <div class="relative z-10 p-8 md:p-12">
                 <div class="flex items-center mb-6">
                     <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mr-4">
@@ -86,13 +86,13 @@ onUnmounted(() => {
                     </div>
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Introduction</h1>
                 </div>
-                <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
+                <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
                     Transform your Laravel development workflow with OboDash - a VILT stack starter kit that
                     accelerates app development with pre-configured authentication, UI components, and developer tools.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#quick-start"
-                        class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-purple-600 hover:bg-purple-50 transition-colors font-medium">
+                        class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-teal-500 hover:bg-teal-50 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -100,7 +100,7 @@ onUnmounted(() => {
                         Start building now
                     </a>
                     <a href="https://github.com/otatechie/obodash-tailwind" target="_blank"
-                        class="inline-flex items-center px-6 py-3 rounded-lg bg-purple-500 text-white hover:bg-purple-400 transition-colors font-medium">
+                        class="inline-flex items-center px-6 py-3 rounded-lg bg-teal-500 text-white hover:bg-teal-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
                                 d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
@@ -111,7 +111,7 @@ onUnmounted(() => {
                 </div>
             </div>
             <div
-                class="absolute right-0 top-0 -mt-4 -mr-4 h-64 w-64 bg-gradient-to-br from-purple-400/30 to-indigo-400/30 blur-3xl rounded-full">
+                class="absolute right-0 top-0 -mt-4 -mr-4 h-64 w-64 bg-gradient-to-br from-teal-400/30 to-teal-500/30 blur-3xl rounded-full">
             </div>
         </div>
 
@@ -129,8 +129,8 @@ onUnmounted(() => {
             <section id="authentication" class="scroll-mt-16">
                 <div class="flex items-center mb-6">
                     <div
-                        class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                        class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-teal-500 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -140,11 +140,11 @@ onUnmounted(() => {
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -164,11 +164,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -188,11 +188,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -212,11 +212,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -236,11 +236,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -260,11 +260,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -288,8 +288,8 @@ onUnmounted(() => {
             <section id="interface" class="scroll-mt-16">
                 <div class="flex items-center mb-6">
                     <div
-                        class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24"
+                        class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-teal-500 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
@@ -299,11 +299,11 @@ onUnmounted(() => {
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -323,11 +323,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -347,11 +347,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -375,8 +375,8 @@ onUnmounted(() => {
             <section id="data-management" class="scroll-mt-16">
                 <div class="flex items-center mb-6">
                     <div
-                        class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-4">
-                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24"
+                        class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-teal-500 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7m5 4h6m-6 4h6m-6 4h6" />
@@ -386,11 +386,11 @@ onUnmounted(() => {
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -410,11 +410,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -434,11 +434,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -458,11 +458,11 @@ onUnmounted(() => {
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <div class="flex items-start gap-6">
                             <div class="flex-shrink-0 mt-1">
                                 <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -489,8 +489,8 @@ onUnmounted(() => {
                         <div class="flex items-center gap-4 mb-8">
                             <div class="flex-shrink-0">
                                 <div
-                                    class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/50 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none"
+                                    class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-900/50 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-teal-500 dark:text-teal-400" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -508,7 +508,7 @@ onUnmounted(() => {
                             <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Core Stack</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div
-                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
@@ -527,14 +527,14 @@ onUnmounted(() => {
                                             <p class="text-gray-600 dark:text-gray-400">PHP framework providing the
                                                 backend foundation</p>
                                             <a href="https://laravel.com/docs" target="_blank"
-                                                class="text-purple-600 hover:text-purple-500 text-sm mt-2 inline-block">Official
+                                                class="text-blue-500 hover:text-blue-500 text-sm mt-2 inline-block">Official
                                                 Docs →</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div
-                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
@@ -556,14 +556,14 @@ onUnmounted(() => {
                                             <p class="text-gray-600 dark:text-gray-400">Progressive JavaScript framework
                                                 for UI components</p>
                                             <a href="https://vuejs.org/guide/introduction.html" target="_blank"
-                                                class="text-purple-600 hover:text-purple-500 text-sm mt-2 inline-block">Official
+                                                class="text-blue-500 hover:text-blue-500 text-sm mt-2 inline-block">Official
                                                 Docs →</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div
-                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-12 h-12 rounded-lg flex items-center justify-center">
@@ -585,14 +585,14 @@ onUnmounted(() => {
                                             <p class="text-gray-600 dark:text-gray-400">The glue between Laravel and Vue
                                                 for modern SPAs</p>
                                             <a href="https://inertiajs.com/" target="_blank"
-                                                class="text-purple-600 hover:text-purple-500 text-sm mt-2 inline-block">Official
+                                                class="text-blue-500 hover:text-blue-500 text-sm mt-2 inline-block">Official
                                                 Docs →</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div
-                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300">
+                                    class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                                     <div class="flex items-start gap-6">
                                         <div class="flex-shrink-0 mt-1">
                                             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
@@ -618,7 +618,7 @@ onUnmounted(() => {
                                                 custom designs</p>
                                             <a href="https://tailwindcss.com/docs/installation/using-vite"
                                                 target="_blank"
-                                                class="text-purple-600 hover:text-purple-500 text-sm mt-2 inline-block">Official
+                                                class="text-blue-500 hover:text-blue-500 text-sm mt-2 inline-block">Official
                                                 Docs →</a>
                                         </div>
                                     </div>
@@ -637,7 +637,7 @@ onUnmounted(() => {
                                     <span class="text-gray-500 dark:text-gray-400">Backend authentication
                                         scaffolding</span>
                                     <a href="https://laravel.com/docs/fortify" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -646,7 +646,7 @@ onUnmounted(() => {
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Chart.js - <span
                                         class="text-gray-500 dark:text-gray-400">JavaScript charting library</span>
                                     <a href="https://www.chartjs.org/docs/latest/" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -656,7 +656,7 @@ onUnmounted(() => {
                                     <span class="text-gray-500 dark:text-gray-400">Powerful table and datagrid
                                         system</span>
                                     <a href="https://tanstack.com/table/v8/docs/guide/introduction" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -665,7 +665,7 @@ onUnmounted(() => {
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">FilePond - <span
                                         class="text-gray-500 dark:text-gray-400">Advanced file upload interface</span>
                                     <a href="https://pqina.nl/filepond/docs/" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -675,7 +675,7 @@ onUnmounted(() => {
                                     <span class="text-gray-500 dark:text-gray-400">Automated database and file
                                         backups</span>
                                     <a href="https://spatie.be/docs/laravel-backup/v8/introduction" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -685,7 +685,7 @@ onUnmounted(() => {
                                     Fonts - <span class="text-gray-500 dark:text-gray-400">Self-hosted font
                                         integration</span>
                                     <a href="https://github.com/spatie/laravel-google-fonts" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -694,7 +694,7 @@ onUnmounted(() => {
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravolt Avatar -
                                     <span class="text-gray-500 dark:text-gray-400">Name-based avatar generator</span>
                                     <a href="https://github.com/laravolt/avatar" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -703,7 +703,7 @@ onUnmounted(() => {
                                 <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Auditing -
                                     <span class="text-gray-500 dark:text-gray-400">Model and activity tracking</span>
                                     <a href="https://laravel-auditing.com/guide/getting-started.html" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -713,7 +713,7 @@ onUnmounted(() => {
                                     - <span class="text-gray-500 dark:text-gray-400">Role and permission
                                         management</span>
                                     <a href="https://spatie.be/docs/laravel-permission/v5/introduction" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 text-sm ml-2 inline-block">Docs
+                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
                                         →</a>
                                 </h5>
                             </div>
@@ -727,14 +727,14 @@ onUnmounted(() => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="flex justify-end">
             <a href="/documentation/installation"
-                class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
+                class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
                 <div class="text-right">
                     <div class="text-sm text-gray-500 dark:text-gray-400">Next</div>
                     <div
-                        class="font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                        class="font-medium text-gray-800 dark:text-white group-hover:text-blue-500 dark:group-hover:text-teal-400">
                         Installation Guide</div>
                 </div>
-                <svg class="w-5 h-5 ml-3 text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+                <svg class="w-5 h-5 ml-3 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-teal-400"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
@@ -743,7 +743,7 @@ onUnmounted(() => {
     </div>
 
     <button v-show="showBackToTop" @click="scrollToTop"
-        class="fixed bottom-8 right-8 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+        class="fixed bottom-8 right-8 bg-teal-600 text-white p-3 rounded-full shadow-lg hover:bg-teal-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
         aria-label="Back to top">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />

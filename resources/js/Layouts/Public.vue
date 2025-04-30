@@ -144,7 +144,7 @@ onMounted(() => {
 
                         <!-- Demo Link -->
                         <Link href="/demo"
-                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
                             aria-label="Try demo">
                         Demo
                         </Link>

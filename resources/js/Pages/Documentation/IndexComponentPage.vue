@@ -212,7 +212,7 @@ const navigationSections = reactive([
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
-            class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900">
+            class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-teal-600 to-teal-700 dark:from-teal-900 dark:to-teal-800">
             <div class="relative z-10 p-8 md:p-12">
                 <div class="flex items-center mb-6">
                     <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mr-4">
@@ -223,14 +223,14 @@ const navigationSections = reactive([
                     </div>
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Component Library</h1>
                 </div>
-                <p class="text-lg text-purple-100 dark:text-purple-200 max-w-3xl mb-8">
+                <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
                     Explore our collection of beautiful, accessible, and reusable components built with Vue 3 and
                     Tailwind CSS.
                     Each component is designed to be flexible, customizable, and easy to integrate into your projects.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#form-components"
-                        class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-purple-600 hover:bg-purple-50 transition-colors font-medium">
+                        class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-teal-600 hover:bg-teal-50 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -240,7 +240,7 @@ const navigationSections = reactive([
                 </div>
             </div>
             <div
-                class="absolute right-0 top-0 -mt-4 -mr-4 h-64 w-64 bg-gradient-to-br from-purple-400/30 to-indigo-400/30 blur-3xl rounded-full">
+                class="absolute right-0 top-0 -mt-4 -mr-4 h-64 w-64 bg-gradient-to-br from-teal-400/30 to-teal-500/30 blur-3xl rounded-full">
             </div>
         </div>
 
@@ -250,8 +250,8 @@ const navigationSections = reactive([
                 <section id="form-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
-                            class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -261,7 +261,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Input</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A flexible input component with floating label support, error handling, and password toggle
@@ -290,7 +290,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Error Handling</h4>
-                            <div class="prose prose-purple dark:prose-invert max-w-none">
+                            <div class="prose prose-teal dark:prose-invert max-w-none">
                                 <p class="text-gray-600 dark:text-gray-400">
                                     The FormInput component provides comprehensive error handling through the following
                                     features:
@@ -306,7 +306,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -427,7 +427,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Checkbox</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A customizable checkbox component that supports both single boolean values and arrays for
@@ -455,7 +455,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Select</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A searchable select component with support for custom option formatting and keyboard
@@ -483,7 +483,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -542,8 +542,8 @@ const navigationSections = reactive([
                 <section id="navigation-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
-                            class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 6h16M4 12h16m-7 6h7" />
@@ -558,7 +558,7 @@ const navigationSections = reactive([
                     </p>
 
                     <div id="nav-sidebar"
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Navigation Sidebar</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A versatile sidebar navigation component that supports multiple levels of navigation,
@@ -674,7 +674,7 @@ const navigationSections = reactive([
                                 <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Icons</h5>
                                 <p class="text-gray-600 dark:text-gray-400">
                                     Icons use inline SVG paths from <a href="https://heroicons.com/" target="_blank"
-                                        class="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300">Heroicons</a>.
+                                        class="text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300">Heroicons</a>.
                                     Only include the path data, not the entire SVG element.
                                 </p>
                             </div>
@@ -687,17 +687,17 @@ const navigationSections = reactive([
                                 </p>
 
                                 <div
-                                    class="mt-4 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-lg border border-yellow-400 dark:border-yellow-800/30">
-                                    <p class="text-sm text-yellow-800 dark:text-yellow-300 flex items-start space-x-2">
+                                    class="mt-4 p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
+                                    <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2 leading-6">
                                         <span class="flex-shrink-0 text-xl">💡</span>
                                         <span><strong>Pro Tip:</strong> OboDash leverages <a
                                                 href="https://spatie.be/docs/laravel-permission" target="_blank"
-                                                class="border-b-2 border-amber-500 dark:border-amber-400">Spatie's
+                                                class="border-b-2 border-blue-500 dark:border-teal-400">Spatie's
                                                 Laravel-Permission</a> package for permission management. Use consistent
                                             permission naming like <code
-                                                class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">settings-general-view</code>,
+                                                class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">settings-general-view</code>,
                                             <code
-                                                class="bg-yellow-100 dark:bg-yellow-900/40 px-1.5 py-0.5 rounded">users-view</code>
+                                                class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">users-view</code>
                                             that directly map to your application's permission system.</span>
                                     </p>
                                 </div>
@@ -709,8 +709,8 @@ const navigationSections = reactive([
                 <section id="feedback-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
-                            class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -724,7 +724,7 @@ const navigationSections = reactive([
                         These components are essential for creating a responsive and user-friendly interface.
                     </p>
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Flash Message</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A versatile toast notification component for displaying feedback messages. Supports multiple
@@ -754,7 +754,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -817,7 +817,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Modal</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A flexible modal dialog component built with Headless UI for accessibility and smooth
@@ -830,7 +830,7 @@ const navigationSections = reactive([
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
                                 <div class="space-y-4">
                                     <button @click="demoIsOpen = true"
-                                        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                        class="inline-flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500">
                                         Open Modal
                                     </button>
 
@@ -846,7 +846,7 @@ const navigationSections = reactive([
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                                    class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500">
                                                     Save Changes
                                                 </button>
                                             </div>
@@ -869,7 +869,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -923,8 +923,8 @@ const navigationSections = reactive([
                 <section id="utility-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
-                            class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -941,7 +941,7 @@ const navigationSections = reactive([
                         projects.
                     </p>
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Switch</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A toggle switch component for boolean values with support for labels and disabled states.
@@ -968,7 +968,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -1018,7 +1018,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Page Header</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A flexible page header component that displays a title, description, and optional
@@ -1036,7 +1036,7 @@ const navigationSections = reactive([
                                     ]" color="purple">
                                     <template #actions>
                                         <button
-                                            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                            class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500">
                                             Add
                                         </button>
                                     </template>
@@ -1057,7 +1057,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -1116,7 +1116,7 @@ const navigationSections = reactive([
 
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Slots</h4>
-                            <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
@@ -1149,15 +1149,15 @@ const navigationSections = reactive([
     <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
         <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
             <a href="/documentation/features"
-                class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors">
-                <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+                class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
+                <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
                 <div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">Previous</div>
                     <div
-                        class="font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                        class="font-medium text-gray-800 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400">
                         Features</div>
                 </div>
             </a>
@@ -1165,7 +1165,7 @@ const navigationSections = reactive([
     </div>
 
     <button v-show="showBackToTop" @click="scrollToTop"
-        class="fixed bottom-8 right-8 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+        class="fixed bottom-8 right-8 bg-teal-600 text-white p-3 rounded-full shadow-lg hover:bg-teal-500 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
         aria-label="Back to top">
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />

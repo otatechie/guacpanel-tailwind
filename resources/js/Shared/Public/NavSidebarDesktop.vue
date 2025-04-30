@@ -65,11 +65,11 @@ const isActive = (href) => {
                         <li v-else>
                             <Link :href="item.href" :class="{
                                 'flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out': true,
-                                'text-purple-600 dark:text-purple-400': isActive(item.href),
+                                'text-teal-600 dark:text-teal-400': isActive(item.href),
                                 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700/50': !isActive(item.href)
                             }">
                             <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200" :class="{
-                                'text-purple-600 dark:text-purple-400': isActive(item.href),
+                                'text-teal-600 dark:text-teal-400': isActive(item.href),
                                 'text-gray-400 dark:text-gray-500': !isActive(item.href)
                             }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" aria-hidden="true" v-html="item.icon"></svg>
@@ -80,14 +80,5 @@ const isActive = (href) => {
                 </template>
             </ul>
         </nav>
-
-        <footer class="px-3 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <div class="flex items-center gap-2.5 ml-2">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Admin Panel</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">v2.0.0</p>
-                </div>
-            </div>
-        </footer>
     </aside>
 </template>

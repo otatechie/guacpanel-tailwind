@@ -76,7 +76,7 @@ const colors = [
     }
 ]
 
-const selectedColor = ref(localStorage.getItem('theme-color') || 'purple')
+const selectedColor = ref(localStorage.getItem('theme-color') || 'teal')
 const isOpen = ref(false)
 
 const updateTheme = (color) => {

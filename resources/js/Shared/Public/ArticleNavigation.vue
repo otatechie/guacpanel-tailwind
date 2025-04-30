@@ -50,7 +50,7 @@ onUnmounted(() => {
                             class="block px-2 py-1 text-sm rounded-md transition-colors duration-200 ease-in-out"
                             :class="[
                                 link.href === activeSection
-                                    ? 'text-purple-600 dark:text-purple-400 font-medium bg-purple-50 dark:bg-purple-900/20'
+                                    ? 'text-teal-600 dark:text-teal-400 font-medium bg-teal-50 dark:bg-teal-900/20'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
                             ]">
                             {{ link.text }}
