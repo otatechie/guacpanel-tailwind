@@ -9,7 +9,7 @@
     <!-- Primary Meta Tags -->
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta name="title" content="Modern Admin Dashboard">
+    <meta name="title" content="GuacPanel">
     <meta name="description"
         content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
     <meta name="keywords" content="Laravel, Inertia.js, Vue.js, Tailwind CSS, Admin Dashboard, SaaS">
@@ -26,7 +26,7 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ config('app.url') }}">
-    <meta property="og:title" content="Modern Admin Dashboard">
+    <meta property="og:title" content="GuacPanel">
     <meta property="og:description"
         content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
@@ -34,7 +34,7 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ config('app.url') }}">
-    <meta property="twitter:title" content="Modern Admin Dashboard">
+    <meta property="twitter:title" content="GuacPanel">
     <meta property="twitter:description"
         content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
     <meta property="twitter:image" content="{{ asset('images/og-image.png') }}">

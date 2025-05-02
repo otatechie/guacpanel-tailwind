@@ -15,6 +15,7 @@ import PageHeader from '@/Components/PageHeader.vue'
 import Switch from '@/Components/Switch.vue'
 import FlashMessage from '@/Components/FlashMessage.vue'
 import NavSidebarDesktop from '@/Components/NavSidebarDesktop.vue'
+import Logo from '@/Components/Logo.vue'
 
 defineOptions({
     layout: Public
@@ -41,7 +42,8 @@ const articleLinks = [
     },
     {
         text: 'Utility Components', href: '#utility-components', children: [
-            { text: 'Switch', href: '#switch' }
+            { text: 'Switch', href: '#switch' },
+            { text: 'Logo', href: '#logo' }
         ]
     }
 ]
@@ -203,12 +205,14 @@ const navigationSections = reactive([
         ]
     }
 ])`)
+
+const logoCode = ref(`<Logo size="3.5rem" />`)
 </script>
 
 
 <template>
 
-    <Head title="Components - OboDash" />
+    <Head title="Components - GuacPanel" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
@@ -427,7 +431,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Checkbox</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A customizable checkbox component that supports both single boolean values and arrays for
@@ -455,7 +459,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Form Select</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A searchable select component with support for custom option formatting and keyboard
@@ -558,7 +562,7 @@ const navigationSections = reactive([
                     </p>
 
                     <div id="nav-sidebar"
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Navigation Sidebar</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A versatile sidebar navigation component that supports multiple levels of navigation,
@@ -688,9 +692,10 @@ const navigationSections = reactive([
 
                                 <div
                                     class="mt-4 p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                    <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2 leading-6">
+                                    <p
+                                        class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2 leading-6">
                                         <span class="flex-shrink-0 text-xl">💡</span>
-                                        <span><strong>Pro Tip:</strong> OboDash leverages <a
+                                        <span><strong>Pro Tip:</strong> GuacPanel leverages <a
                                                 href="https://spatie.be/docs/laravel-permission" target="_blank"
                                                 class="border-b-2 border-blue-500 dark:border-teal-400">Spatie's
                                                 Laravel-Permission</a> package for permission management. Use consistent
@@ -724,7 +729,7 @@ const navigationSections = reactive([
                         These components are essential for creating a responsive and user-friendly interface.
                     </p>
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Flash Message</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A versatile toast notification component for displaying feedback messages. Supports multiple
@@ -817,7 +822,7 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Modal</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A flexible modal dialog component built with Headless UI for accessibility and smooth
@@ -941,7 +946,7 @@ const navigationSections = reactive([
                         projects.
                     </p>
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Switch</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
                             A toggle switch component for boolean values with support for labels and disabled states.
@@ -1018,43 +1023,12 @@ const navigationSections = reactive([
                     </div>
 
                     <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Page Header</h3>
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Logo</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
-                            A flexible page header component that displays a title, description, and optional
-                            breadcrumbs.
-                            Includes a slot for action buttons and supports dark mode.
+                            A flexible logo component that displays either a custom logo image or a fallback text.
+                            Supports dynamic sizing and error handling.
                         </p>
-
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="space-y-4">
-                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
-                                <PageHeader title="User Management" description="Manage user accounts and permissions"
-                                    :breadcrumbs="[
-                                        { label: 'Dashboard', href: '/dashboard' },
-                                        { label: 'Users' }
-                                    ]" color="purple">
-                                    <template #actions>
-                                        <button
-                                            class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500">
-                                            Add
-                                        </button>
-                                    </template>
-                                </PageHeader>
-                            </div>
-
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(pageHeaderCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ pageHeaderCode }}</code></pre>
-                            </div>
-                        </div>
-
                         <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
                             <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
@@ -1078,36 +1052,14 @@ const navigationSections = reactive([
                                     <tbody
                                         class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         <tr>
-                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">title</td>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">size</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Required</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The main
-                                                title of the page
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'2.5rem'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Controls the
+                                                maximum height
+                                                of the logo. Can be set to any valid CSS size value (e.g., '2.5rem',
+                                                '40px', '3rem')
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">description</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">''</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Optional
-                                                description text
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">breadcrumbs</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">[]</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of
-                                                breadcrumb items
-                                                with label and optional href</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">color</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'purple'</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Color theme
-                                                for the header
-                                                (purple, blue, green, red, yellow, indigo)</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1115,30 +1067,11 @@ const navigationSections = reactive([
                         </div>
 
                         <div class="mt-8">
-                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Slots</h4>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
-                                        <tr>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                                Name</th>
-                                            <th
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                                Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody
-                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                        <tr>
-                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">actions</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Slot for
-                                                action buttons or
-                                                controls</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Features</h4>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+                                <li>Dynamic logo sizing through props</li>
+                                <li>Fallback to text if logo image fails to load</li>
+                            </ul>
                         </div>
                     </div>
                 </section>

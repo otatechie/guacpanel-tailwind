@@ -71,7 +71,7 @@ onUnmounted(() => {
 
 <template>
 
-    <Head title="Introduction - OboDash" />
+    <Head title="Introduction - GuacPanel" />
 
     <div id="introduction" class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
@@ -87,7 +87,7 @@ onUnmounted(() => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Introduction</h1>
                 </div>
                 <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
-                    Transform your Laravel development workflow with OboDash - a VILT stack starter kit that
+                    Transform your Laravel development workflow with GuacPanel - a VILT stack starter kit that
                     accelerates app development with pre-configured authentication, UI components, and developer tools.
                 </p>
                 <div class="flex flex-wrap gap-4">
@@ -120,7 +120,7 @@ onUnmounted(() => {
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Features</h2>
             <p class="text-gray-600 dark:text-gray-400">
-                OboDash provides a solid foundation for building admin interfaces with Laravel, Vue, Inertia, and
+                GuacPanel provides a solid foundation for building admin interfaces with Laravel, Vue, Inertia, and
                 Tailwind CSS:
             </p>
         </div>

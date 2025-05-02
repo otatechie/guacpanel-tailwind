@@ -309,7 +309,7 @@ watch([
 
 <template>
 
-    <Head title="Features - OboDash" />
+    <Head title="Features - GuacPanel" />
 
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
         <div
@@ -325,7 +325,7 @@ watch([
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Core Features</h1>
                 </div>
                 <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
-                    Explore OboDash's powerful built-in features including authentication, permissions, security
+                    Explore GuacPanel's powerful built-in features including authentication, permissions, security
                     middleware, backup systems,
                     data tables, and activity tracking. Each feature is designed to help you build secure and scalable
                     admin interfaces.
@@ -454,7 +454,7 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash provides a robust permissions and roles system built on top of <a
+                                GuacPanel provides a robust permissions and roles system built on top of <a
                                     href="https://spatie.be/docs/laravel-permission" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's
                                     Laravel-Permission</a> package. This system allows you to control access to
@@ -507,7 +507,7 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes several middleware components that enhance security and user
+                                GuacPanel includes several middleware components that enhance security and user
                                 management.
                                 These middleware classes intercept HTTP requests before they reach your controllers,
                                 allowing you to implement security checks, enforce policies, and manage user sessions.
@@ -541,8 +541,7 @@ watch([
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                                     <div
                                         class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                        <p
-                                            class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                                        <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">disable.account</code>
@@ -578,8 +577,7 @@ watch([
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                                     <div
                                         class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                        <p
-                                            class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                                        <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">password.expired</code>
@@ -617,8 +615,7 @@ watch([
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                                     <div
                                         class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                        <p
-                                            class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                                        <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">force.password.change</code>
@@ -652,8 +649,7 @@ watch([
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
                                     <div
                                         class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                        <p
-                                            class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                                        <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">require.two.factor</code>
@@ -686,7 +682,7 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes a powerful backup system built on <a
+                                GuacPanel includes a powerful backup system built on <a
                                     href="https://spatie.be/docs/laravel-backup" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's Laravel
                                     Backup package</a>. This system enables you to:
@@ -739,7 +735,7 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes a powerful data tables component built on top of <a
+                                GuacPanel includes a powerful data tables component built on top of <a
                                     href="https://tanstack.com/table/v8" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. These
                                 tables provide a rich interactive experience with features like:
@@ -919,7 +915,8 @@ watch([
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="space-y-4">
                             <div class="prose dark:prose-invert max-w-none">
-                                <p>OboDash includes comprehensive authentication logging that tracks all login attempts,
+                                <p>GuacPanel includes comprehensive authentication logging that tracks all login
+                                    attempts,
                                     both successful and failed. The system automatically logs:</p>
                             </div>
 
@@ -994,28 +991,17 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes a comprehensive browser session management system that allows users to view and manage their active sessions across different devices. This feature enhances security by enabling users to monitor and control their account access.
+                                GuacPanel includes a comprehensive browser session management system that allows users
+                                to view and manage their active sessions across different devices. This feature enhances
+                                security by enabling users to monitor and control their account access.
                             </p>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                <li>View and manage your active sessions across different devices.</li>
+                                <li>Each session shows the device type, browser, and last activity time.</li>
+                                <li>Log out from all other devices or terminate individual sessions with a single click.</li>
+                            </ul>
                         </div>
-
                         <div class="space-y-8">
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Key Features</h3>
-                            <div class="grid gap-6">
-                                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg dark:border-gray-700">
-                                    <h4 class="font-medium text-gray-800 dark:text-white mb-2">Session Overview</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">
-                                        View and manage your active sessions across different devices. Each session shows the device type, browser, and last activity time.
-                                    </p>
-                                </div>
-
-                                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg dark:border-gray-700">
-                                    <h4 class="font-medium text-gray-800 dark:text-white mb-2">Session Management</h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">
-                                        Log out from all other devices or terminate individual sessions with a single click.
-                                    </p>
-                                </div>
-                            </div>
-
                             <div class="mt-8">
                                 <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
                                 <div class="bg-gray-800 rounded-lg p-4">
@@ -1053,10 +1039,14 @@ watch([
                                 </div>
 
                                 <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <div class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
+                                    <div
+                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
                                         <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                             <span class="flex-shrink-0 text-xl">💡</span>
-                                            <span><strong>Pro Tip:</strong> The session management system uses Laravel's database session driver to track and manage user sessions. Make sure to configure your session driver in <code class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">config/session.php</code>.</span>
+                                            <span><strong>Pro Tip:</strong> The session management system uses Laravel's
+                                                database session driver to track and manage user sessions. Make sure to
+                                                configure your session driver in <code
+                                                    class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">config/session.php</code>.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -1083,10 +1073,11 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Model Auditing</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash integrates <a href="https://github.com/owen-it/laravel-auditing" target="_blank"
+                                GuacPanel integrates <a href="https://github.com/owen-it/laravel-auditing"
+                                    target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">owen-it/laravel-auditing</a>
                                 package for comprehensive model auditing and activity tracking. While the core auditing
-                                functionality is handled by the package, OboDash provides:
+                                functionality is handled by the package, GuacPanel provides:
                             </p>
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
                                 <li>User-friendly interface to view audit logs</li>
@@ -1110,8 +1101,9 @@ watch([
                 <section id="file-uploads" class="mb-12 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
@@ -1122,7 +1114,7 @@ watch([
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="prose dark:prose-invert max-w-none">
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes a powerful file upload component built on top of <a
+                                GuacPanel includes a powerful file upload component built on top of <a
                                     href="https://pqina.nl/filepond/" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">FilePond</a>. This component
                                 provides a
@@ -1196,8 +1188,9 @@ watch([
                 <section id="google-fonts" class="mb-12 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
                             </svg>
@@ -1208,7 +1201,7 @@ watch([
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="prose dark:prose-invert max-w-none">
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                OboDash includes built-in support for Google Fonts with local caching for better
+                                GuacPanel includes built-in support for Google Fonts with local caching for better
                                 performance. Here's how to configure and use Google Fonts in your project:
                             </p>
 

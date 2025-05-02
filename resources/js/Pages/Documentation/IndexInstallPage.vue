@@ -91,7 +91,7 @@ onMounted(() => {
                         </svg>
                         Installation guide
                     </a>
-                    <a href="https://github.com/otatechie/obodash-tailwind" target="_blank"
+                    <a href="https://github.com/otatechie/guacpanel-tailwind" target="_blank"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-teal-500 text-white hover:bg-teal-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
@@ -165,14 +165,14 @@ onMounted(() => {
                         </h3>
                         <div class="bg-gray-800 rounded-lg p-4 group relative">
                             <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                onclick="navigator.clipboard.writeText('git clone https://github.com/otatechie/obodash-tailwind.git\ncd obodash-tailwind')">
+                                onclick="navigator.clipboard.writeText('git clone https://github.com/otatechie/guacpanel-tailwind.git\ncd guacpanel-tailwind')">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                 </svg>
                             </button>
-                            <pre class="text-sm"><code v-highlight class="language-bash">git clone https://github.com/otatechie/obodash-tailwind.git
-cd obodash-tailwind</code></pre>
+                            <pre class="text-sm"><code v-highlight class="language-bash">git clone https://github.com/otatechie/guacpanel-tailwind.git
+cd guacpanel-tailwind</code></pre>
                         </div>
                     </div>
 
