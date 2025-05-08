@@ -110,13 +110,6 @@ php artisan serve
 - Vue.js v3.x - Frontend framework
 - Inertia.js v2.x - Modern monolith
 - Tailwind CSS v4.x - Utility-first CSS
-- TanStack Table v8.x - Data tables
-- FilePond - File uploads
-- Spatie Packages:
-  - Laravel Permission
-  - Laravel Backup
-  - Laravel Google Fonts
-  - Laravel Auditing
 
 ## Additional Resources
 
