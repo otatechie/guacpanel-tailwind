@@ -1,10 +1,10 @@
-# OboDash - Laravel Vue Admin Starter Kit
+# GuacPanel - Laravel Vue Admin Starter Kit
 
 A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Tailwind CSS.
 
-![Dashboard Preview](https://via.placeholder.com/800x450?text=OboDash+Preview)
+![Dashboard Preview](https://via.placeholder.com/800x450?text=GuacPanel+Preview)
 
-[🔗 Live Demo](https://demo-url.com) | [📘 Official Documentation](https://obodash.com)
+[🔗 Live Demo](https://demo-url.com) | [📘 Official Documentation](https://guacpanel.com)
 
 ## Features
 
@@ -66,8 +66,8 @@ A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Ta
 
 1. Clone the repository
 ```bash
-git clone https://github.com/otatechie/obodash-tailwind.git
-cd obodash-tailwind
+git clone https://github.com/otatechie/guacpanel-tailwind.git
+cd guacpanel-tailwind
 ```
 
 2. Install dependencies
@@ -104,8 +104,6 @@ npm run dev
 php artisan serve
 ```
 
-Visit http://localhost:8000 to see your application.
-
 ## Tech Stack
 
 - Laravel v11.x - PHP framework
@@ -120,43 +118,9 @@ Visit http://localhost:8000 to see your application.
   - Laravel Google Fonts
   - Laravel Auditing
 
-## Deployment
-
-### Production Server Requirements
-
-- PHP >= 8.2 with required extensions
-- MySQL 8.0+ or PostgreSQL 13+
-- HTTPS enabled (required for secure cookies)
-- Composer installed globally
-
-### Deployment Steps
-
-1. Set up your production environment variables
-```bash
-# Set environment to production
-APP_ENV=production
-APP_DEBUG=false
-
-# Configure secure cookie settings
-SESSION_SECURE_COOKIE=true
-```
-
-2. Build frontend assets
-```bash
-npm run build
-```
-
-3. Optimize Laravel for production
-```bash
-php artisan optimize
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
 ## Additional Resources
 
-- [👉 Official OboDash Documentation](https://obodash.com) - Complete guides and tutorials
+- [👉 Official GuacPanel Documentation](https://guacpanel.com) - Complete guides and tutorials
 - [Laravel Documentation](https://laravel.com/docs)
 - [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
