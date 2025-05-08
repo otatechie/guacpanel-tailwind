@@ -4,11 +4,11 @@
 /* Theme Configuration */
 @theme {
     --font-sans: "Inter", "sans-serif";
-    --primary-gradient-from: #a855f7;
-    --primary-gradient-to: #c084fc;
-    --primary-color: #a855f7;
-    --primary-hover: #9333ea;
-    --primary-color-rgb: 168, 85, 247;
+    --primary-gradient-from: #0d9488;
+    --primary-gradient-to: #14b8a6;
+    --primary-color: #0d9488;
+    --primary-hover: #0f766e;
+    --primary-color-rgb: 13, 148, 136;
     --selection-color: #3b82f6;
     --selection-color-hover: #2563eb;
     --selection-color-light: rgba(59, 130, 246, 0.1);

@@ -8,23 +8,51 @@ A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Ta
 
 ## Features
 
-- 🔐 **Authentication**
-  - Secure login with Laravel's authentication
-  - Passwordless login option
-  - Role-based permissions
+- 🔐 **Authentication & Security**
+  - Secure login with Laravel Fortify
+  - Passwordless magic link authentication
+  - Two-factor authentication (2FA)
+  - Role-based permissions system
   - Password security policies
-  - Authentication logs
+  - Password expiry enforcement
+  - Force password change capability
+  - Account disabling functionality
+  - Authentication logs tracking
+  - Browser session management
 
-- 🎨 **Interface**
+- 🎨 **Interface & Design**
   - Responsive mobile-friendly design
-  - Dark/Light mode
+  - Dark/Light mode support
   - Modern dashboard layout
+  - Google Fonts integration with local caching
+  - Customizable theme configuration
+  - Beautiful UI components
 
 - 📊 **Data Management**
-  - Interactive data tables
-  - Advanced filtering
-  - FilePond file uploads
-  - Automated backups
+  - Interactive data tables with TanStack Table
+  - Advanced filtering and sorting
+  - Server-side pagination
+  - Data export capabilities
+  - Customizable columns
+  - Action buttons integration
+
+- 📁 **File Management**
+  - FilePond integration for modern uploads
+  - Drag and drop file uploads
+  - Image and PDF preview support
+  - File type validation
+  - File size limits
+  - Multiple file upload support
+  - Progress indicators
+
+- 🔄 **System Features**
+  - Automated backup system
+  - Activity tracking and auditing
+  - Model change logging
+  - User activity dashboard
+  - Comprehensive audit logs
+  - Browser session tracking
+  - Security middleware
 
 ## Quick Start
 
@@ -84,6 +112,13 @@ Visit http://localhost:8000 to see your application.
 - Vue.js v3.x - Frontend framework
 - Inertia.js v2.x - Modern monolith
 - Tailwind CSS v4.x - Utility-first CSS
+- TanStack Table v8.x - Data tables
+- FilePond - File uploads
+- Spatie Packages:
+  - Laravel Permission
+  - Laravel Backup
+  - Laravel Google Fonts
+  - Laravel Auditing
 
 ## Deployment
 
@@ -126,6 +161,8 @@ php artisan view:cache
 - [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [Inertia.js Documentation](https://inertiajs.com/)
+- [TanStack Table Documentation](https://tanstack.com/table/v8)
+- [FilePond Documentation](https://pqina.nl/filepond/)
 
 ## License
 

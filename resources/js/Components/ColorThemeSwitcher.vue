@@ -105,7 +105,8 @@ const closeDropdown = (event) => {
 }
 
 onMounted(() => {
-    updateTheme(selectedColor.value)
+    const savedColor = localStorage.getItem('theme-color') || 'teal'
+    updateTheme(savedColor)
     document.addEventListener('click', closeDropdown)
 })
 </script>
