@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/css/app.css'
             ],
             refresh: true,
+            buildDirectory: "build",
         }),
         tailwindcss(),
         vue({
@@ -38,7 +39,15 @@ export default defineConfig({
         cors: true,
     },
     build: {
+        manifest: 'manifest.json',
         outDir: "public/build",
-        manifest: true,
+        assetsDir: "assets",
+        rollupOptions: {
+            output: {
+                entryFileNames: 'js/[name].js',
+                chunkFileNames: 'js/[name].js',
+                assetFileNames: 'assets/[name].[ext]',
+            },
+        },
     },
 });
