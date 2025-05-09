@@ -33,9 +33,9 @@ export default defineConfig({
     },
     server: {
         hmr: {
-            host: 'starter.test',
+            host: 'localhost',
         },
-        host: 'starter.test',
+        host: 'localhost',
         cors: true,
         watch: {
             usePolling: true,
@@ -50,6 +50,14 @@ export default defineConfig({
                 entryFileNames: 'js/[name].js',
                 chunkFileNames: 'js/[name].js',
                 assetFileNames: 'assets/[name].[ext]',
+            },
+        },
+        sourcemap: false,
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true,
             },
         },
     },
