@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Scripts and Styles -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/assets/app2.css') }}">
     <script src="{{ asset('build/js/app.js') }}" defer></script>
     <script src="{{ asset('build/js/darkMode.js') }}" defer></script>
     @inertiaHead
