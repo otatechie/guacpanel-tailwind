@@ -37,6 +37,9 @@ export default defineConfig({
         },
         host: 'starter.test',
         cors: true,
+        watch: {
+            usePolling: true,
+        },
     },
     build: {
         manifest: 'manifest.json',
