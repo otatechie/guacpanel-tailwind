@@ -46,8 +46,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Scripts and Styles -->
-    @vite(['resources/js/darkMode.js'])
-    @vite(['resources/js/app.js', 'resources/css/app.css'])
+    <link rel="stylesheet" href="{{ asset('build/assets/app-DB-qHrdc.css') }}">
+    <script src="{{ asset('build/assets/app-Cyd1xC-T.js') }}" defer></script>
+    <script src="{{ asset('build/assets/darkMode-rrmq4GDe.js') }}" defer></script>
     @inertiaHead
 </head>
 
