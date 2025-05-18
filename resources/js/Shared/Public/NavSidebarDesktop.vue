@@ -1,4 +1,4 @@
-<script setup>
+k<script setup>
 import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 

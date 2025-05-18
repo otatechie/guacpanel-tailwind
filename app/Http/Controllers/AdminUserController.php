@@ -23,8 +23,28 @@ class AdminUserController extends Controller
             'users' => User::query()
                 ->with(['roles', 'permissions'])
                 ->latest()
-                ->paginate($request->input('per_page', 10))
+                ->paginate($request->input('per_page', 10)),
+            'roles' => [
+                'data' => Role::select(['id', 'name'])->get()
+            ]
         ]);
+    }
+
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users'],
+            'role' => ['nullable', 'exists:roles,id'],
+            'force_password_change' => ['boolean'],
+        ]);
+
+        $user = User::create($validatedData);
+
+        $user->assignRole($request->role);
+
+        return redirect()->back()->with('success', 'New user account created successfully');
     }
 
 

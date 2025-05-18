@@ -1,11 +1,14 @@
 <script setup>
-import { Head, router, Link } from '@inertiajs/vue3'
+import { Head, useForm, router, Link } from '@inertiajs/vue3'
 import DataTable from '@/Components/Datatable.vue'
 import Default from '@/Layouts/Default.vue'
 import Modal from '@/Components/Modal.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
 import PageHeader from '@/Components/PageHeader.vue'
+import FormInput from '@/Components/FormInput.vue'
+import FormSelect from '@/Components/FormSelect.vue'
+import Switch from '@/Components/Switch.vue'
 
 defineOptions({
     layout: Default
@@ -13,6 +16,10 @@ defineOptions({
 
 const props = defineProps({
     users: {
+        type: Object,
+        required: true
+    },
+    roles: {
         type: Object,
         required: true
     }
@@ -28,15 +35,41 @@ const pagination = ref({
 
 const showDeleteModal = ref(false)
 const userToDelete = ref(null)
+const showCreateUserModal = ref(false)
+
+const form = useForm({
+    name: '',
+    email: '',
+    role: '',
+    force_password_change: false,
+})
 
 const closeModal = () => {
     showDeleteModal.value = false
     userToDelete.value = null
+    showCreateUserModal.value = false
+    form.reset()
 }
 
 const confirmDeleteUser = (user) => {
     userToDelete.value = user
     showDeleteModal.value = true
+}
+
+const openCreateModal = () => {
+    console.log('Opening modal with roles:', props.roles)
+    showCreateUserModal.value = true
+}
+
+const createUser = () => {
+    console.log('Creating user with form data:', form.data())
+    form.post(route('admin.user.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showCreateUserModal.value = false
+            form.reset()
+        }
+    })
 }
 
 const deleteUser = () => {
@@ -177,7 +210,13 @@ watch(pagination, newPagination => {
                 { label: 'Dashboard', href: '/' },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'Users' }
-            ]" />
+            ]">
+                <template #actions>
+                    <button @click="openCreateModal" class="px-4 py-2 btn-primary">
+                        Add User
+                    </button>
+                </template>
+            </PageHeader>
 
             <div class="p-6 dark:bg-gray-900">
                 <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
@@ -243,6 +282,52 @@ watch(pagination, newPagination => {
                 </button>
                 <button @click="deleteUser" type="button" class="btn-danger" :disabled="false">
                     Yes, delete user
+                </button>
+            </div>
+        </template>
+    </Modal>
+
+    <Modal :show="showCreateUserModal" @close="closeModal" size="xl">
+        <template #title>
+            <div class="flex items-center gap-2 text-gray-800 dark:text-gray-200">
+                Create New User
+            </div>
+        </template>
+
+        <template #default>
+            <div class="w-full space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />
+                    <FormInput v-model="form.email" label="Email address" type="email" :error="form.errors.email"
+                        name="email" />
+                </div>
+                <div>
+                    <FormSelect v-model="form.role" :options="props.roles?.data || []" option-label="name"
+                        option-value="id" name="role" label="Assigned role" :error="form.errors.role" />
+                </div>
+                <div class="space-y-6">
+                    <div
+                        class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <div>
+                            <h3 class="font-medium text-gray-800 dark:text-white">Force Password Reset</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Require new password on next login
+                            </p>
+                        </div>
+                        <Switch v-model="form.force_password_change" />
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template #footer>
+            <div class="flex justify-end gap-3">
+                <button @click="closeModal" type="button"
+                    class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
+                    Cancel
+                </button>
+                <button @click="createUser" type="button" class="btn-primary" :disabled="form.processing">
+                    Create User
                 </button>
             </div>
         </template>

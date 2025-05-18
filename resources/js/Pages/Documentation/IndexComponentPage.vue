@@ -43,7 +43,8 @@ const articleLinks = [
     {
         text: 'Utility Components', href: '#utility-components', children: [
             { text: 'Switch', href: '#switch' },
-            { text: 'Logo', href: '#logo' }
+            { text: 'Logo', href: '#logo' },
+            { text: 'Page Header', href: '#page-header' }
         ]
     }
 ]
@@ -129,11 +130,10 @@ const pageHeaderCode = ref(`<PageHeader
         { label: 'Dashboard', href: '/dashboard' },
         { label: 'Users' }
     ]"
-    color="purple"
 >
     <template #actions>
         <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-            Add 
+            Add User
         </button>
     </template>
 </PageHeader>`)
@@ -945,6 +945,113 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                         These components are designed to be flexible, accessible, and easy to integrate into your
                         projects.
                     </p>
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Page Header</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A consistent page header component that includes a title, optional description, breadcrumbs navigation,
+                            and a flexible actions slot. Perfect for creating uniform page layouts across your application.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <PageHeader
+                                    title="User Management"
+                                    description="Manage user accounts and permissions"
+                                    :breadcrumbs="[
+                                        { label: 'Dashboard', href: '/dashboard' },
+                                        { label: 'Users' }
+                                    ]"
+                                >
+                                    <template #actions>
+                                        <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500">
+                                            Add User
+                                        </button>
+                                    </template>
+                                </PageHeader>
+                            </div>
+
+                            <div class="bg-gray-800 rounded-lg p-4 relative group">
+                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
+                                    @click="navigator.clipboard.writeText(pageHeaderCode)">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <pre class="text-sm"><code class="language-vue">{{ pageHeaderCode }}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">title</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Required</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The main heading for the page</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">description</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">''</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Optional description text below the title</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">breadcrumbs</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">[]</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of breadcrumb objects with label and optional href properties</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Slots</h4>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">actions</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Content for the actions area in the header (typically buttons or other controls)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Features</h4>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+                                <li>Consistent page header styling across your application</li>
+                                <li>Built-in breadcrumb navigation with optional links</li>
+                                <li>Flexible actions slot for page-specific controls</li>
+                                <li>Dark mode support</li>
+                                <li>Responsive design</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div
                         class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Switch</h3>

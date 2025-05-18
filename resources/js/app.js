@@ -3,6 +3,7 @@ import { createInertiaApp, Link, router } from "@inertiajs/vue3";
 import { ZiggyVue } from "ziggy-js";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import "../css/app.css";
 import { initializeTheme } from "./utils/themeInit";
 
 // Initialize theme before Vue app starts

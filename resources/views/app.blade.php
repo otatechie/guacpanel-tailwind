@@ -25,7 +25,7 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ config('app.url') }}">
+    <meta property="og:url" content="http://localhost:8000">
     <meta property="og:title" content="GuacPanel">
     <meta property="og:description"
         content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
@@ -33,7 +33,7 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ config('app.url') }}">
+    <meta property="twitter:url" content="http://localhost:8000">
     <meta property="twitter:title" content="GuacPanel">
     <meta property="twitter:description"
         content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
@@ -46,9 +46,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Scripts and Styles -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app2.css') }}">
-    <script src="{{ asset('build/js/app.js') }}" defer></script>
-    <script src="{{ asset('build/js/darkMode.js') }}" defer></script>
+    @vite(['resources/js/app.js', 'resources/js/darkMode.js', 'resources/css/app.css'])
     @inertiaHead
 </head>
 
