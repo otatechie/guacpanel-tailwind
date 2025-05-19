@@ -43,9 +43,6 @@ class ForcePasswordChangeController extends Controller
                 'required',
                 'confirmed',
                 'min:8',
-                'regex:/[A-Z]/',
-                'regex:/[0-9]/',
-                'regex:/[^A-Za-z0-9]/'
             ]
         ]);
 

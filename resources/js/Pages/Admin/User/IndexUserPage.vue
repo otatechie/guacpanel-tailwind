@@ -40,6 +40,8 @@ const showCreateUserModal = ref(false)
 const form = useForm({
     name: '',
     email: '',
+    password: '',
+    password_confirmation: '',
     role: '',
     force_password_change: false,
 })
@@ -212,7 +214,7 @@ watch(pagination, newPagination => {
                 { label: 'Users' }
             ]">
                 <template #actions>
-                    <button @click="openCreateModal" class="px-4 py-2 btn-primary">
+                    <button @click="openCreateModal" class="px-4 py-2 btn-secondary">
                         Add User
                     </button>
                 </template>
@@ -300,6 +302,11 @@ watch(pagination, newPagination => {
                     <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />
                     <FormInput v-model="form.email" label="Email address" type="email" :error="form.errors.email"
                         name="email" />
+                    <FormInput v-model="form.password" label="Password" name="password" id="password" type="password"
+                        required :error="form.errors.password" autocomplete="new-password"/>
+                    <FormInput v-model="form.password_confirmation" label="Confirm password"
+                        name="password_confirmation" id="password_confirmation" type="password" required
+                        :error="form.errors.password_confirmation" autocomplete="new-password" />
                 </div>
                 <div>
                     <FormSelect v-model="form.role" :options="props.roles?.data || []" option-label="name"

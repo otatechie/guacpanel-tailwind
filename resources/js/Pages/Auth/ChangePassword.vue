@@ -18,7 +18,7 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.post(route('user.force.password.change.update'), {
+    form.post(route('user.password.change.update'), {
         preserveScroll: true
     })
 }
@@ -37,10 +37,10 @@ const submit = () => {
         <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6"
             aria-labelledby="change-password-form">
             <section class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md" aria-labelledby="password-requirements">
-                <h2 id="password-requirements" class="text-gray-400 dark:text-gray-400 text-sm mb-2">
+                <h2 id="password-requirements" class="text-gray-500 dark:text-gray-400 text-sm mb-2">
                     Password must include:
                 </h2>
-                <ul class="text-gray-400 dark:text-gray-400 space-y-1 list-disc pl-5 text-sm">
+                <ul class="text-gray-500 dark:text-gray-400 space-y-1 list-disc pl-5 text-sm">
                     <li>8+ characters</li>
                     <li>One uppercase letter</li>
                     <li>One number</li>

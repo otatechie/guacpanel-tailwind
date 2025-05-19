@@ -36,6 +36,7 @@ class AdminUserController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['nullable', 'exists:roles,id'],
             'force_password_change' => ['boolean'],
         ]);

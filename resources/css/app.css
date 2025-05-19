@@ -277,6 +277,50 @@ pre {
         box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     }
 
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        color: #4b5563;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-property: all;
+        transition-duration: 300ms;
+        transition-timing-function: ease-in-out;
+        background-color: #f3f4f6;
+        border: 1px solid #eff1f3;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .btn-secondary.btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-secondary:hover {
+        background-color: #e5e7eb;
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+
+    .dark .btn-secondary {
+        background-color: #374151;
+        color: #e5e7eb;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .btn-secondary:hover {
+        background-color: #4b5563;
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
     .btn-primary-outline {
         display: inline-flex;
         align-items: center;

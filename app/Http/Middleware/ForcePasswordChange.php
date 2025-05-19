@@ -12,7 +12,7 @@ class ForcePasswordChange
     {
         if (auth()->check() && auth()->user()->force_password_change) {
             session()->flash('warning', 'You must change your password before continuing.');
-            return redirect()->route('user.force.password.change');
+            return redirect()->route('user.password.change');
         }
 
         return $next($request);
