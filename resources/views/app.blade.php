@@ -33,7 +33,6 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="http://localhost:8000">
     <meta property="twitter:title" content="GuacPanel">
     <meta property="twitter:description"
         content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">

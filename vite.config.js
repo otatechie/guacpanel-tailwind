@@ -32,14 +32,7 @@ export default defineConfig({
         },
     },
     server: {
-        hmr: {
-            host: 'localhost',
-        },
-        host: 'localhost',
         cors: true,
-        watch: {
-            usePolling: true,
-        },
     },
     build: {
         manifest: 'manifest.json',

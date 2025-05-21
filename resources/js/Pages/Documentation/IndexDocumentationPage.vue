@@ -99,7 +99,7 @@ onUnmounted(() => {
                         </svg>
                         Start building now
                     </a>
-                    <a href="https://github.com/otatechie/obodash-tailwind" target="_blank"
+                    <a href="https://github.com/otatechie/guacpanel-tailwind" target="_blank"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-teal-500 text-white hover:bg-teal-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"

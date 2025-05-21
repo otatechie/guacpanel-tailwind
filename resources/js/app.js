@@ -27,7 +27,7 @@ createInertiaApp({
         showSpinner: true,
     },
 
-    title: (title) => `${title} - OboDash`,
+    title: (title) => `${title} - GuacPanel`,
 
     resolve: (name) => {
         const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
