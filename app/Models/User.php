@@ -13,10 +13,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
 
     use HasUlids;
 
@@ -44,6 +45,7 @@ class User extends Authenticatable implements Auditable
         'password_changed_at' => 'datetime',
         'force_password_change' => 'boolean',
         'disable_account' => 'boolean',
+        'deleted_at' => 'datetime',
     ];
 
 

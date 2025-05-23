@@ -1,10 +1,14 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
+import { ref } from 'vue'
 import Default from '@/Layouts/Default.vue'
+import Modal from '@/Components/Modal.vue'
 import FormInput from '@/Components/FormInput.vue'
 import PageHeader from '@/Components/PageHeader.vue'
 
-defineOptions({ layout: Default })
+defineOptions({
+    layout: Default
+})
 
 const props = defineProps({
     user: {
@@ -12,6 +16,11 @@ const props = defineProps({
         required: true
     },
 })
+
+const deactivateModal = ref(false)
+const deleteModal = ref(false)
+const deactivateForm = useForm({})
+const deleteForm = useForm({})
 
 const profileForm = useForm({
     name: props.user.name,
@@ -35,6 +44,34 @@ const submitPasswordForm = () => {
     passwordForm.put('/user/password', {
         preserveScroll: true,
         onSuccess: () => passwordForm.reset()
+    })
+}
+
+const confirmDeactivateAccount = () => {
+    deactivateModal.value = true
+}
+
+const confirmDeleteAccount = () => {
+    deleteModal.value = true
+}
+
+const deactivateAccount = () => {
+    deactivateForm.post(route('user.deactivate'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            deactivateModal.value = false
+            window.location.href = route('home')
+        }
+    })
+}
+
+const deleteAccount = () => {
+    deleteForm.post(route('user.delete'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            deleteModal.value = false
+            window.location.href = route('home')
+        }
     })
 }
 </script>
@@ -149,5 +186,120 @@ const submitPasswordForm = () => {
                 </div>
             </form>
         </section>
+
+        <section class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 space-y-6"
+            aria-labelledby="danger-zone">
+            <header class="flex items-center gap-3">
+                <span class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                    <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </span>
+                <h2 id="danger-zone" class="text-lg font-medium text-gray-800 dark:text-gray-200">
+                    Danger Zone
+                </h2>
+            </header>
+
+            <div
+                class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 border border-red-200 dark:border-red-800 space-y-6">
+                <div>
+                    <h3 class="text-base font-medium text-gray-900 dark:text-gray-100 mb-2">Deactivate Account</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        Hide your profile and data temporarily. You can reactivate your account anytime.
+                    </p>
+                    <button @click="confirmDeactivateAccount" class="btn-secondary inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                        Deactivate Account
+                    </button>
+                </div>
+
+                <div class="pt-6 border-t border-red-200 dark:border-red-800">
+                    <h3 class="text-base font-medium text-gray-900 dark:text-gray-100 mb-2">Delete Account Permanently
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        This action is permanent and cannot be undone. All your data will be permanently deleted.
+                    </p>
+                    <button @click="confirmDeleteAccount" class="btn-danger inline-flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Permanently Delete Account
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <Modal :show="deactivateModal" @close="deactivateModal = false" size="sm">
+            <template #title>
+                <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Deactivate Account
+                </div>
+            </template>
+
+            <template #default>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Are you sure you want to deactivate your account? This action cannot be undone.
+                    </p>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="flex justify-end gap-3">
+                    <button @click="deactivateModal = false" type="button"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
+                        :disabled="deactivateForm.processing">
+                        Cancel
+                    </button>
+                    <button @click="deactivateAccount" type="button" class="btn-danger"
+                        :disabled="deactivateForm.processing">
+                        {{ deactivateForm.processing ? 'Deactivating...' : 'Yes, deactivate' }}
+                    </button>
+                </div>
+            </template>
+        </Modal>
+
+        <Modal :show="deleteModal" @close="deleteModal = false" size="sm">
+            <template #title>
+                <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Delete Account
+                </div>
+            </template>
+
+            <template #default>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete your account? This action is permanent and cannot be undone.
+                    </p>
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="flex justify-end gap-3">
+                    <button @click="deleteModal = false" type="button"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
+                        :disabled="deleteForm.processing">
+                        Cancel
+                    </button>
+                    <button @click="deleteAccount" type="button" class="btn-danger" :disabled="deleteForm.processing">
+                        {{ deleteForm.processing ? 'Deleting...' : 'Yes, delete' }}
+                    </button>
+                </div>
+            </template>
+        </Modal>
     </main>
 </template>

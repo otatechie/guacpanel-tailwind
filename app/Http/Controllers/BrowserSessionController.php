@@ -17,7 +17,7 @@ class BrowserSessionController extends Controller
         return Auth::user();
     }
 
-    
+
     public function index(Request $request)
     {
         $user = $this->getAuthUser();

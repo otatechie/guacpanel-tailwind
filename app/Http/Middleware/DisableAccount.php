@@ -12,7 +12,7 @@ class DisableAccount
     {
         if (auth()->check() && auth()->user()->disable_account) {
             auth()->logout();
-            session()->flash('warning', 'Your account has been disabled. Please contact support for assistance.');
+            session()->flash('warning', 'Account disabled. Email <a href="mailto:support@example.com" class="underline hover:text-orange-800">support@example.com</a> for help.');
             return redirect()->route('login');
         }
 

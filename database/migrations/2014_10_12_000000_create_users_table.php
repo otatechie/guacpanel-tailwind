@@ -19,7 +19,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('location')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->boolean('force_password_change')->default(false);
             $table->boolean('disable_account')->default(false);
             $table->string('locale')->default('en');
@@ -28,6 +27,7 @@ return new class extends Migration
             $table->timestamp('password_changed_at')->nullable();
             $table->timestamp('password_expiry_at')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

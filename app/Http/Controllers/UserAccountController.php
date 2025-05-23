@@ -135,35 +135,21 @@ class UserAccountController extends Controller
     }
 
 
-    public function logoutOtherDevices(Request $request)
+    public function deactivateAccount()
     {
-        $request->validate([
-            'password' => 'required|current_password',
-        ]);
+        $user = $this->getAuthUser();
+        $user->update(['disable_account' => true]);
 
-        Auth::logoutOtherDevices($request->password);
-
-        $this->deleteSessionFromDatabase($request);
-
-        return back()->with('status', 'All other sessions have been terminated successfully.');
+        return redirect()->route('home')->with('info', 'Account has been deactivated successfully.');
     }
 
 
-    public function destroySession(Request $request, $sessionId)
+    public function deleteAccount()
     {
-        $this->deleteSessionFromDatabase($request);
+        $user = $this->getAuthUser();
+        $user->delete();
+        Auth::logout();
 
-        return back()->with('status', 'Session terminated successfully.');
-    }
-
-
-    private function deleteSessionFromDatabase(Request $request)
-    {
-        if (config('session.driver') === 'database') {
-            DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))
-                ->where('user_id', $request->user()->getAuthIdentifier())
-                ->where('id', '!=', $request->session()->getId())
-                ->delete();
-        }
+        session()->flash('info', 'Account has been deleted successfully.');
     }
 }

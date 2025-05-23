@@ -59,12 +59,18 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
             });
 
             // User Account Routes
-            Route::get('account', [UserAccountController::class, 'index'])->name('index');
-           
+            Route::controller(UserAccountController::class)->group(function () {
+                Route::get('account', 'index')->name('index');
+                Route::post('account/deactivate', 'deactivateAccount')->name('deactivate');
+                Route::post('account/delete', 'deleteAccount')->name('delete');
+            });
+
             // Browser Session Routes
-            Route::get('account/sessions', [BrowserSessionController::class, 'index'])->name('session.index');
-            Route::post('account/sessions/logout', [BrowserSessionController::class, 'logoutOtherDevices'])->name('session.logout');
-            Route::delete('account/sessions/{sessionId}', [BrowserSessionController::class, 'destroySession'])->name('session.destroy');
+            Route::controller(BrowserSessionController::class)->group(function () {
+                Route::get('account/sessions', 'index')->name('session.index');
+                Route::post('account/sessions/logout', 'logoutOtherDevices')->name('session.logout');
+                Route::delete('account/sessions/{sessionId}', 'destroySession')->name('session.destroy');
+            });
         });
 
         // Protected Routes requiring 2FA

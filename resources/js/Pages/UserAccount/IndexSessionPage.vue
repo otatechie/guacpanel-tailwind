@@ -92,7 +92,7 @@ const getDeviceIcon = (device) => {
         <article class="container-border overflow-hidden">
             <PageHeader title="Device Management" description="View and manage your active sessions" :breadcrumbs="[
                 { label: 'Dashboard', href: route('home') },
-                { label: 'Account' },
+                { label: 'Account', href: route('user.index') },
                 { label: 'Device Management' }
             ]" />
 
@@ -163,11 +163,11 @@ const getDeviceIcon = (device) => {
                                                     class="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center flex-wrap">
                                                     {{ session.device }}
                                                     <span v-if="session.isCurrent"
-                                                        class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                        class="ml-2 inline-flex items-center px-2 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                                         Current
                                                     </span>
                                                 </div>
-                                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                <div class="text-xs text-gray-500 dark:text-gray-400">f
                                                     {{ session.browser }}
                                                     <span v-if="session.platform" class="ml-1">({{ session.platform
                                                         }})</span>
@@ -218,7 +218,6 @@ const getDeviceIcon = (device) => {
 
                 <section class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 space-y-6"
                     aria-labelledby="danger-zone">
-                    <!-- Section Header -->
                     <header class="flex items-center gap-3">
                         <span class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
                             <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"

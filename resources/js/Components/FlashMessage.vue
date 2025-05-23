@@ -171,7 +171,7 @@ watch(
 
         <div class="ml-3 text-sm font-normal">
             <h2 class="block font-medium uppercase">{{ alert.title }}</h2>
-            <p class="text-gray-700 mt-1">{{ alert.message }}</p>
+            <p class="text-gray-700 mt-1" v-html="alert.message"></p>
         </div>
 
         <button @click="closeAlert" type="button"
