@@ -45,7 +45,7 @@ class AdminUserController extends Controller
 
         $user->assignRole($request->role);
 
-        return redirect()->back()->with('success', 'New user account created successfully');
+        return redirect()->back()->with('success', 'New user account created successfully.');
     }
 
 
@@ -93,7 +93,7 @@ class AdminUserController extends Controller
         ]);
 
         if ($request->force_password_change && $request->disable_account) {
-            return back()->withErrors(['error' => 'User cannot be both disabled and forced to change password']);
+            return back()->withErrors(['error' => 'User cannot be both disabled and forced to change password.']);
         }
 
         $user = User::findOrFail($id);
@@ -119,6 +119,6 @@ class AdminUserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('admin.user.index')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.user.index')->with('success', 'User deleted successfully.');
     }
 }

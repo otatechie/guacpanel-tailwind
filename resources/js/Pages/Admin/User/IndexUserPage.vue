@@ -102,34 +102,13 @@ const columns = [
             ariaLabel: 'User email address'
         }
     }),
-    columnHelper.accessor('created_at', {
+    columnHelper.accessor('created_at_formatted', {
         header: 'Created At',
         cell: info => h('span', {
-            'aria-label': `Account created on: ${new Date(info.getValue()).toLocaleString()}`
-        }, new Date(info.getValue()).toLocaleString()),
+            'aria-label': `Account created on: ${info.getValue()}`
+        }, info.getValue()),
         meta: {
             ariaLabel: 'Account creation date'
-        }
-    }),
-    columnHelper.accessor('status', {
-        header: 'Status',
-        cell: info => {
-            const status = info.getValue()
-            const formattedStatus = status?.charAt(0).toUpperCase() + status?.slice(1) || 'N/A'
-            const badgeClass = {
-                active: 'bg-green-50 text-green-700 border border-green-100 dark:bg-green-950 dark:text-green-400 dark:border-green-900',
-                inactive: 'bg-red-50 text-red-700 border border-red-100 dark:bg-red-950 dark:text-red-400 dark:border-red-900',
-                pending: 'bg-yellow-50 text-yellow-700 border border-yellow-100 dark:bg-yellow-950 dark:text-yellow-400 dark:border-yellow-900'
-            }[status?.toLowerCase()] || 'bg-gray-50 text-gray-700 border border-gray-100'
-
-            return h('span', {
-                class: `px-2 py-1 rounded-full text-xs font-medium ${badgeClass}`,
-                role: 'status',
-                'aria-label': `Account status: ${formattedStatus}`
-            }, formattedStatus)
-        },
-        meta: {
-            ariaLabel: 'User account status'
         }
     }),
     columnHelper.display({
@@ -222,7 +201,7 @@ watch(pagination, newPagination => {
 
             <div class="p-6 dark:bg-gray-900">
                 <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
-                    :search-fields="['name', 'email', 'created_at']" empty-message="No users found"
+                    :search-fields="['name', 'email', 'created_at_formatted']" empty-message="No users found"
                     empty-description="Users will appear here once created" export-file-name="users"
                     @update:pagination="pagination = $event" />
             </div>
@@ -303,7 +282,7 @@ watch(pagination, newPagination => {
                     <FormInput v-model="form.email" label="Email address" type="email" :error="form.errors.email"
                         name="email" />
                     <FormInput v-model="form.password" label="Password" name="password" id="password" type="password"
-                        required :error="form.errors.password" autocomplete="new-password"/>
+                        required :error="form.errors.password" autocomplete="new-password" />
                     <FormInput v-model="form.password_confirmation" label="Confirm password"
                         name="password_confirmation" id="password_confirmation" type="password" required
                         :error="form.errors.password_confirmation" autocomplete="new-password" />

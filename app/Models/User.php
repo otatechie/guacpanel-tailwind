@@ -48,6 +48,7 @@ class User extends Authenticatable implements Auditable
         'deleted_at' => 'datetime',
     ];
 
+    protected $appends = ['created_at_formatted'];
 
     protected static function boot()
     {
@@ -59,6 +60,52 @@ class User extends Authenticatable implements Auditable
                 $user->password = null;
             }
         });
+    }
+
+
+    /**
+     * Format date with relative time for recent dates
+     * - Within 24 hours: "2 hours ago", "Just now"
+     * - Yesterday: "Yesterday" 
+     * - This year: "May 6"
+     * - Other years: "May 6, 2020"
+     */
+    public function formatDateStyle(?Carbon $date = null): string
+    {
+        $date = $date ?? $this->created_at;
+
+        if (!$date) {
+            return '';
+        }
+
+        // Very recent (less than 5 minutes)
+        if ($date->diffInMinutes() < 5) {
+            return 'Just now';
+        }
+
+        // Within last 24 hours
+        if ($date->isToday()) {
+            return $date->diffForHumans(['short' => false, 'parts' => 1]);
+        }
+
+        // Yesterday
+        if ($date->isYesterday()) {
+            return 'Yesterday';
+        }
+
+        // This year (but not recent)
+        if ($date->isCurrentYear()) {
+            return $date->format('F j'); // "May 6"
+        }
+
+        // Different year - show full date
+        return $date->format('F j, Y'); // "May 6, 2020"
+    }
+
+
+    public function getCreatedAtFormattedAttribute(): string
+    {
+        return $this->formatDateStyle($this->created_at);
     }
 
 

@@ -34,9 +34,23 @@ const eventBadgeClasses = {
 const columns = [
     columnHelper.accessor('created_at', {
         header: 'Date',
-        cell: info => h('span', {
-            'aria-label': `Activity date: ${new Date(info.getValue()).toLocaleString()}`
-        }, new Date(info.getValue()).toLocaleString()),
+        cell: info => {
+            const date = new Date(info.getValue())
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            })
+            const formattedTime = date.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            })
+            const fullDateTime = `${formattedDate} @ ${formattedTime}`
+            return h('span', {
+                'aria-label': `Activity date: ${fullDateTime}`
+            }, fullDateTime)
+        },
         meta: {
             ariaLabel: 'Activity timestamp'
         }
@@ -67,7 +81,7 @@ const columns = [
         }
     }),
     columnHelper.accessor('auditable_type', {
-        header: 'Type',
+        header: 'Model',
         cell: info => h('span', {
             'aria-label': `Resource type: ${info.getValue().split('\\').pop()}`
         }, info.getValue().split('\\').pop()),
