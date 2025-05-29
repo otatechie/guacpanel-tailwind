@@ -21,7 +21,7 @@ use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
-Route::get('/flight', [PageController::class, 'indexFlight'])->name('flight');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 
 // Authenticated Routes
 Route::middleware(['web', 'auth', 'auth.session'])->group(function () {

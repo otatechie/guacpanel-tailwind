@@ -31,5 +31,13 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with('personalisation', $personalisation);
         });
+
+        // Share app version with Inertia
+        Inertia::share([
+            'app' => [
+                'version' => config('app.version'),
+                'name' => config('app.name'),
+            ]
+        ]);
     }
 }

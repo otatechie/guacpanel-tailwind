@@ -107,7 +107,7 @@ onMounted(() => {
                         <!-- Logo -->
                         <Link href="/" class="text-xl font-semibold text-gray-900 dark:text-white"
                             aria-label="Go to homepage">
-                        <Logo size="3rem" />
+                        <Logo size="2.5rem" />
                         </Link>
 
                         <!-- Mobile Menu Toggle -->

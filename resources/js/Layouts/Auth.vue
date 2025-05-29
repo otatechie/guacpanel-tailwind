@@ -30,19 +30,13 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
                     <ul class="flex justify-center gap-2 md:gap-4">
                         <li>
                             <Link :href="route('home')"
-                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white underline">
                             Homepage
                             </Link>
                         </li>
                         <li>
                             <a href="#"
-                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                Privacy Policy
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white underline">
                                 Terms
                             </a>
                         </li>

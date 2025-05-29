@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Beat;
 use Inertia\Inertia;
-
 class PageController extends Controller
 {
-    public function indexFlight()
+    public function terms()
     {
-        return Inertia::render('IndexFlight', []);
+        return Inertia::render('Terms');
     }
 }
