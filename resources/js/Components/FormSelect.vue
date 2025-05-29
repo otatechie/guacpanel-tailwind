@@ -58,7 +58,7 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
 const filteredOptions = computed(() => {
     const query = searchQuery.value.toLowerCase()
     return props.options.filter(option =>
-        option[props.optionLabel].toLowerCase().includes(query)
+        option[props.optionLabel]?.toLowerCase().includes(query) ?? false
     )
 })
 

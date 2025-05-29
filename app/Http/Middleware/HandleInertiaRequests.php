@@ -83,6 +83,7 @@ class HandleInertiaRequests extends Middleware
                 'personalisation' => [
                     'app_name' => $personalisation->app_name,
                     'app_logo' => $personalisation->app_logo,
+                    'app_logo_dark' => $personalisation->app_logo_dark,
                     'favicon' => $personalisation->favicon,
                     'footer_text' => $personalisation->footer_text,
                     'copyright_text' => $personalisation->copyright_text,

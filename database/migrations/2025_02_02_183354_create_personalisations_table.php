@@ -15,9 +15,9 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('app_name')->nullable();
             $table->string('app_logo')->nullable();
+            $table->string('app_logo_dark')->nullable();
             $table->string('favicon')->nullable();
             $table->string('copyright_text')->nullable();
-            $table->string('timezone')->nullable();
             $table->timestamps();
         });
     }

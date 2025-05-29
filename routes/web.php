@@ -112,8 +112,8 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                     Route::controller(AdminPersonalisationController::class)->group(function () {
                         Route::get('/', 'index')->name('index');
                         Route::post('/upload', 'upload')->name('upload');
-                        Route::post('/update', 'update')->name('update');
-                        Route::post('/delete', 'delete')->name('delete');
+                        Route::post('/delete', 'delete')->name('delete.file');
+                        Route::post('/update-info', 'updateInfo')->name('update.info');
                     });
                 });
             });

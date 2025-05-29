@@ -22,19 +22,15 @@ const props = defineProps({
         type: Object,
         required: false,
         default: () => ({})
-    },
-    timezones: {
-        type: Array,
-        required: true
-    },
+    }
 })
 
 const form = useForm({
-    app_logo: personalisation.value?.appLogo || null,
+    app_logo: personalisation.value?.app_logo || null,
     app_name: props.personalisation?.app_name || null,
+    app_logo_dark: personalisation.value?.app_logo_dark || null,
     favicon: personalisation.value?.favicon || null,
     copyright_text: props.personalisation?.copyright_text || null,
-    timezone: props.personalisation?.timezone || 'UTC',
 })
 
 const uploadConfig = {
@@ -84,7 +80,7 @@ const handleProcessedFile = (error, file, name) => {
 const handleFileRemoved = (error, file, name) => {
     if (!error) {
         form[name] = null
-        axios.post(route('admin.personalisation.removeFile'), { field: name })
+        axios.post(route('admin.personalization.delete.file'), { field: name })
             .then(() => {
                 personalisation.value[name] = null
             })
@@ -92,7 +88,7 @@ const handleFileRemoved = (error, file, name) => {
 }
 
 const submit = () => {
-    form.post(route('admin.personalization.update'), {
+    form.post(route('admin.personalization.update.info'), {
         preserveScroll: true
     });
 }
@@ -122,8 +118,8 @@ const submit = () => {
                                     d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             </svg>
                         </span>
-                        <h2 id="basic-info" class="text-lg font-medium text-gray-800 dark:text-gray-200">Basic
-                            Information</h2>
+                        <h2 id="basic-info" class="text-lg font-medium text-gray-800 dark:text-gray-200">Application
+                            Details</h2>
                     </header>
                     <div class="w-full md:w-2/3">
                         <div class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
@@ -134,6 +130,14 @@ const submit = () => {
                                     placeholder="Enter copyright text" :error="form.errors.copyright_text" />
                             </div>
                         </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="btn-primary inline-flex items-center gap-2"
+                            :disabled="form.processing" :aria-busy="form.processing">
+                            <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24" aria-hidden="true"></svg>
+                            {{ form.processing ? 'Saving...' : 'Save changes' }}
+                        </button>
                     </div>
                 </section>
 
@@ -149,50 +153,43 @@ const submit = () => {
                         <h2 id="media-section" class="text-lg font-medium text-gray-800 dark:text-gray-200">Media</h2>
                     </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700"
+                    <div class="grid grid-cols-1 md:grid-cols-1 gap-8 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700"
                         role="group" aria-label="Media uploads">
-                        <FilePondUploader name="app_logo" label="Application logo" label-idle="Drop logo here..."
-                            id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
-                            :files="getInitialFiles('app_logo')"
-                            @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
-                            @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
+                        <div class="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-1 gap-2">
+                            <FilePondUploader name="app_logo" label="Application logo" label-idle="Drop logo here..."
+                                id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                                :files="getInitialFiles('app_logo')"
+                                @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
+                                @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
+                            <div
+                                class="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                <div class="flex items-start gap-1">
+                                    <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div class="text-xs text-blue-800 dark:text-blue-200">
+                                        <p>Optional. For logos that work better on dark backgrounds.</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..." id="favicon"
-                            :accepted-file-types="['image/png']" :server="uploadConfig"
-                            :files="getInitialFiles('favicon')"
-                            @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
-                            @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />
+                            <FilePondUploader name="app_logo_dark" label="Application logo (dark mode)"
+                                label-idle="Drop logo here..." id="app_logo_dark"
+                                :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                                :files="getInitialFiles('app_logo_dark')"
+                                @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo_dark')"
+                                @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo_dark')" />
+
+                            <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
+                                id="favicon" :accepted-file-types="['image/png', 'image/x-icon']" :server="uploadConfig"
+                                :files="getInitialFiles('favicon')"
+                                @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
+                                @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />
+                        </div>
                     </div>
                 </section>
-
-                <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="localization-section">
-                    <header class="flex items-center gap-3 mb-4">
-                        <span class="p-2 bg-purple-50 dark:bg-purple-900/50 rounded-lg" aria-hidden="true">
-                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </span>
-                        <h2 id="localization-section" class="text-lg font-medium text-gray-800 dark:text-gray-200">
-                            Localization</h2>
-                    </header>
-
-                    <FormSelect v-model="form.timezone" label="Timezone" :options="timezones" id="timezone"
-                        class="dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700" />
-                </section>
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
-                    <button type="submit" class="btn-primary inline-flex items-center gap-2" :disabled="form.processing"
-                        :aria-busy="form.processing">
-                        <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                            fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        {{ form.processing ? 'Saving...' : 'Save changes' }}
-                    </button>
-                </div>
             </form>
         </div>
     </main>

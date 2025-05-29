@@ -86,6 +86,12 @@ const logoUrl = computed(() => {
         ? `/storage/${page.props.personalisation.app_logo}`
         : null
 })
+
+const darkLogoUrl = computed(() => {
+    return page.props.personalisation?.app_logo_dark
+        ? `/storage/${page.props.personalisation.app_logo_dark}`
+        : null
+})
 </script>
 
 
@@ -106,12 +112,14 @@ const logoUrl = computed(() => {
             <header role="banner"
                 class="fixed w-full top-0 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-40">
                 <nav class="flex h-16 items-center px-4 gap-4" role="navigation" aria-label="Primary navigation">
-                    <section class="flex items-center gap-4" aria-label="Site logo and menu controls">
+                    <section class="flex items-center gap-4" aria-label="GuacPanel logo and menu controls">
                         <!-- Logo -->
                         <Link href="/" class="text-xl font-semibold text-gray-800 dark:text-white"
                             aria-label="Go to homepage">
-                        <img v-if="logoUrl" :src="logoUrl" alt="Site logo" class="h-8 w-auto object-contain" />
-                        <span v-else>Your Logo</span>
+                        <img v-if="logoUrl && darkLogoUrl" :src="logoUrl" alt="GuacPanel logo" class="h-10 w-auto object-contain dark:hidden" />
+                        <img v-if="darkLogoUrl" :src="darkLogoUrl" alt="GuacPanel logo" class="h-10 w-auto object-contain hidden dark:block" />
+                        <img v-if="logoUrl && !darkLogoUrl" :src="logoUrl" alt="GuacPanel logo" class="h-10 w-auto object-contain" />
+                        <span v-if="!logoUrl && !darkLogoUrl">GuacPanel</span>
                         </Link>
 
                         <!-- Mobile Menu Toggle Button -->

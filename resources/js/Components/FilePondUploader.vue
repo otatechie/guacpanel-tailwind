@@ -30,7 +30,7 @@ const props = defineProps({
     },
     acceptedFileTypes: {
         type: Array,
-        default: () => ['image/jpeg', 'image/png', 'application/pdf']
+        default: () => ['image/jpeg', 'image/png', 'application/pdf', 'image/x-icon']
     },
     maxFileSize: {
         type: String,
@@ -64,7 +64,7 @@ const emit = defineEmits(['processfile', 'removefile'])
 
 <template>
     <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">
             {{ label }}
             <span class="text-xs text-gray-500 ml-2">
                 ({{acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ')}}

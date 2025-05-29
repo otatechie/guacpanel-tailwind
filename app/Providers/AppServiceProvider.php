@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Personalisation;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,17 +15,21 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
-        Inertia::share([
-            'timezone' => fn() => config('app.timezone'),
-        ]);
+        View::composer('*', function ($view) {
+            $personalisation = Personalisation::first() ?? new Personalisation();
+
+            if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
+                $personalisation->favicon = null;
+            }
+
+            $view->with('personalisation', $personalisation);
+        });
     }
 }

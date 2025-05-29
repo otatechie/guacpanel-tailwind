@@ -13,7 +13,7 @@ class AdminPersonalisationController extends Controller
     {
         $this->middleware('permission:view personalisation');
     }
-    
+
 
     public function index()
     {
@@ -21,7 +21,6 @@ class AdminPersonalisationController extends Controller
 
         return Inertia::render('Admin/Personalisation/IndexPage', [
             'personalisation' => $personalisation,
-            'timezones' => $this->getTimezones(),
         ]);
     }
 
@@ -32,11 +31,12 @@ class AdminPersonalisationController extends Controller
 
         $request->validate([
             'app_logo' => ['nullable', 'image', 'max:2048'],
-            'favicon' => ['nullable', 'image', 'max:2048', 'dimensions:width=32,height=32'],
+            'app_logo_dark' => ['nullable', 'image', 'max:2048'],
+            'favicon' => ['nullable', 'file', 'mimes:png,ico', 'max:2048'],
         ]);
 
-        if ($request->hasFile('app_logo') || $request->hasFile('favicon')) {
-            $field = $request->hasFile('app_logo') ? 'app_logo' : 'favicon';
+        if ($request->hasFile('app_logo') || $request->hasFile('app_logo_dark') || $request->hasFile('favicon')) {
+            $field = $request->hasFile('app_logo') ? 'app_logo' : ($request->hasFile('app_logo_dark') ? 'app_logo_dark' : 'favicon');
 
             $file = $request->file($field);
             $fileName = time() . '_' . $file->getClientOriginalName();
@@ -63,32 +63,20 @@ class AdminPersonalisationController extends Controller
     }
 
 
-    public function update(Request $request)
+    public function updateInfo(Request $request)
     {
         $this->authorize('update personalisation');
 
         $validated = $request->validate([
-            'app_logo' => ['nullable', 'string'],
             'app_name' => ['nullable', 'string', 'max:100'],
-            'favicon' => ['nullable', 'string'],
-            'timezone' => ['required', 'string', 'in:' . implode(',', timezone_identifiers_list())],
             'copyright_text' => ['nullable', 'string', 'max:50'],
         ]);
 
         $personalisation = Personalisation::firstOrCreate();
 
-        foreach (['app_logo', 'favicon'] as $field) {
-            if (array_key_exists($field, $validated) && $validated[$field] === null && $personalisation->$field) {
-                Storage::disk('public')->delete($personalisation->$field);
-                $validated[$field] = null;
-            } else {
-                unset($validated[$field]);
-            }
-        }
-
         $personalisation->update($validated);
 
-        return redirect()->back()->with('success', 'Settings updated successfully');
+        return redirect()->back()->with('success', 'Settings updated successfully.');
     }
 
 
@@ -97,7 +85,7 @@ class AdminPersonalisationController extends Controller
         $this->authorize('delete personalisation files');
 
         $request->validate([
-            'field' => ['required', 'string', 'in:app_logo,favicon'],
+            'field' => ['required', 'string', 'in:app_logo,app_logo_dark,favicon'],
         ]);
 
         $field = $request->input('field');
@@ -111,21 +99,5 @@ class AdminPersonalisationController extends Controller
         }
 
         return response()->json(['success' => true]);
-    }
-
-
-    private function getTimezones()
-    {
-        $timezones = timezone_identifiers_list();
-        $formatted = [];
-
-        foreach ($timezones as $timezone) {
-            $formatted[] = [
-                'value' => $timezone,
-                'label' => str_replace('_', ' ', $timezone)
-            ];
-        }
-
-        return $formatted;
     }
 }
