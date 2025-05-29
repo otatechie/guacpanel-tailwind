@@ -182,6 +182,8 @@ const submit = () => {
                                 @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo_dark')"
                                 @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo_dark')" />
 
+                            <hr class="my-4 border-gray-200 dark:border-gray-700">
+
                             <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
                                 id="favicon" :accepted-file-types="['image/png', 'image/x-icon']" :server="uploadConfig"
                                 :files="getInitialFiles('favicon')"
