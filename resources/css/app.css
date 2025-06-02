@@ -3,7 +3,7 @@
 
 /* Theme Configuration */
 @theme {
-    --font-sans: "Instrument Sans", "sans-serif";
+    --font-sans: "Instrument Sans", sans-serif;
     --primary-gradient-from: #0d9488;
     --primary-gradient-to: #14b8a6;
     --primary-color: #0d9488;

@@ -167,7 +167,7 @@ const getDeviceIcon = (device) => {
                                                         Current
                                                     </span>
                                                 </div>
-                                                <div class="text-xs text-gray-500 dark:text-gray-400">f
+                                                <div class="text-xs text-gray-500 dark:text-gray-400">
                                                     {{ session.browser }}
                                                     <span v-if="session.platform" class="ml-1">({{ session.platform
                                                         }})</span>

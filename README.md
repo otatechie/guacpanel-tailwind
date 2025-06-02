@@ -1,10 +1,26 @@
 # GuacPanel - Laravel Vue Admin Starter Kit
 
+[![Laravel](https://img.shields.io/badge/Laravel-v11.x-FF2D20?style=flat&logo=laravel)](https://laravel.com)
+[![Vue.js](https://img.shields.io/badge/Vue.js-v3.x-4FC08D?style=flat&logo=vue.js)](https://vuejs.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4.x-06B6D4?style=flat&logo=tailwind-css)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
+
 A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Tailwind CSS.
 
-![Dashboard Preview](https://via.placeholder.com/800x450?text=GuacPanel+Preview)
+## Screenshots
 
-[🔗 Live Demo](https://demo-url.com) | [📘 Official Documentation](https://guacpanel.com)
+### Dashboard Overview
+![Dashboard](https://via.placeholder.com/800x450/1f2937/ffffff?text=Dashboard+Preview)
+
+### Component Library
+![Components](https://via.placeholder.com/800x450/059669/ffffff?text=Interactive+Components)
+
+### Dark Mode
+![Dark Mode](https://via.placeholder.com/800x450/111827/ffffff?text=Dark+Mode+Support)
+
+[🔗 Live Demo](https://demo-url.com) | [📘 Documentation](#documentation)
+
+> **📖 Complete documentation is built into the application! After installation, visit `/documentation` in your app for detailed guides, component examples, and tutorials.**
 
 ## Features
 
@@ -104,6 +120,8 @@ npm run dev
 php artisan serve
 ```
 
+**🎉 That's it!** Visit `http://localhost:8000/documentation` for comprehensive guides and interactive component examples.
+
 ## Tech Stack
 
 - Laravel v11.x - PHP framework
@@ -111,15 +129,29 @@ php artisan serve
 - Inertia.js v2.x - Modern monolith
 - Tailwind CSS v4.x - Utility-first CSS
 
-## Additional Resources
+## Documentation
 
-- [👉 Official GuacPanel Documentation](https://guacpanel.com) - Complete guides and tutorials
+**📖 Built-in Documentation System**
+
+After installation, your app includes a complete documentation system accessible at `/documentation`:
+
+- **Introduction** - Overview of features and technologies
+- **Installation Guide** - Detailed setup instructions and troubleshooting
+- **Component Library** - Interactive examples of all UI components with code samples
+- **Features** - In-depth explanations of authentication, permissions, and more
+
+**🔗 External Resources**
+
 - [Laravel Documentation](https://laravel.com/docs)
 - [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [Inertia.js Documentation](https://inertiajs.com/)
 - [TanStack Table Documentation](https://tanstack.com/table/v8)
 - [FilePond Documentation](https://pqina.nl/filepond/)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## License
 
