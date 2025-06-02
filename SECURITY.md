@@ -15,12 +15,6 @@ When reporting a security vulnerability, please include:
 - Potential impact of the vulnerability
 - Any suggested fixes (if available)
 
-## Response Timeline
-
-- **Initial Response**: Within 24-48 hours
-- **Status Update**: Within 7 days
-- **Resolution**: Depends on complexity, but we aim for quick fixes
-
 ## Supported Versions
 
 We provide security updates for the latest version of GuacPanel. Please ensure you're using the most recent release.
