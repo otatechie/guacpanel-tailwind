@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d1256dda-6820-4e21-bcee-36c82ffab1fc" alt="GuacPanel Logo" width="200">
+</div>
+
 # GuacPanel - Laravel Vue Admin Starter Kit
 
 [![Laravel](https://img.shields.io/badge/Laravel-v11.x-FF2D20?style=flat&logo=laravel)](https://laravel.com)
