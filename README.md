@@ -9,18 +9,11 @@ A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Ta
 
 ## Screenshots
 
-### Dashboard Overview
-![Dashboard](https://github.com/user-attachments/assets/dashboard-overview.png)
+![Dashboard](https://github.com/user-attachments/assets/home.jpg)
 
-### Admin Settings Panel
-![Settings](https://github.com/user-attachments/assets/admin-settings.png)
+![Settings](https://github.com/user-attachments/assets/settings.jpg)
 
-### Personalization Settings
-![Personalization](https://github.com/user-attachments/assets/personalization-settings.png)
-
-[🔗 Live Demo](https://demo-url.com) | [📘 Documentation](#documentation)
-
-> **📖 Complete documentation is built into the application! After installation, visit `/documentation` in your app for detailed guides, component examples, and tutorials.**
+![Dark Mode](https://github.com/user-attachments/assets/login.jpg)
 
 ## Features
 
@@ -55,11 +48,6 @@ A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Ta
 - 📁 **File Management**
   - FilePond integration for modern uploads
   - Drag and drop file uploads
-  - Image and PDF preview support
-  - File type validation
-  - File size limits
-  - Multiple file upload support
-  - Progress indicators
 
 - 🔄 **System Features**
   - Automated backup system
@@ -120,25 +108,7 @@ npm run dev
 php artisan serve
 ```
 
-**🎉 That's it!** Visit `http://localhost:8000/documentation` for comprehensive guides and interactive component examples.
-
-## Tech Stack
-
-- Laravel v11.x - PHP framework
-- Vue.js v3.x - Frontend framework
-- Inertia.js v2.x - Modern monolith
-- Tailwind CSS v4.x - Utility-first CSS
-
-## Documentation
-
-**📖 Built-in Documentation System**
-
-After installation, your app includes a complete documentation system accessible at `/documentation`:
-
-- **Introduction** - Overview of features and technologies
-- **Installation Guide** - Detailed setup instructions and troubleshooting
-- **Component Library** - Interactive examples of all UI components with code samples
-- **Features** - In-depth explanations of authentication, permissions, and more
+**🎉 That's it!** Visit `http://localhost:8000` to see the app in action.
 
 **🔗 External Resources**
 
