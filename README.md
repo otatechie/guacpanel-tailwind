@@ -5,17 +5,21 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4.x-06B6D4?style=flat&logo=tailwind-css)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 
-A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Tailwind CSS.
+An opinionated Laravel starter kit with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications.
 
 ## Screenshots
 
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/fa319d6a-695f-4d6f-95ea-16b72d128647" alt="Dashboard" width="100%"></td>
+    <td><img src="https://github.com/user-attachments/assets/7e32de33-8001-425f-a2bb-b08399005335" alt="Dark Mode" width="100%"></td>
+  </tr>
+  <tr>
     <td><img src="https://github.com/user-attachments/assets/0bb0354f-b565-40f9-9cc8-9787ecd9a632" alt="Settings" width="100%"></td>
-    <td><img src="https://github.com/user-attachments/assets/e438b751-ad01-455a-93f4-04e37e1c9537" alt="Dark Mode" width="100%"></td>
+    <td><img src="https://github.com/user-attachments/assets/e438b751-ad01-455a-93f4-04e37e1c9537" alt="Personalization" width="100%"></td>
   </tr>
 </table>
+
 
 ## Features
 
