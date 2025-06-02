@@ -10,13 +10,13 @@ A modern admin dashboard starter kit built with Laravel, Vue.js, Inertia, and Ta
 ## Screenshots
 
 ### Dashboard Overview
-![Dashboard](https://via.placeholder.com/800x450/1f2937/ffffff?text=Dashboard+Preview)
+![Dashboard](https://github.com/user-attachments/assets/dashboard-overview.png)
 
-### Component Library
-![Components](https://via.placeholder.com/800x450/059669/ffffff?text=Interactive+Components)
+### Admin Settings Panel
+![Settings](https://github.com/user-attachments/assets/admin-settings.png)
 
-### Dark Mode
-![Dark Mode](https://via.placeholder.com/800x450/111827/ffffff?text=Dark+Mode+Support)
+### Personalization Settings
+![Personalization](https://github.com/user-attachments/assets/personalization-settings.png)
 
 [🔗 Live Demo](https://demo-url.com) | [📘 Documentation](#documentation)
 
