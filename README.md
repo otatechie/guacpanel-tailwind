@@ -122,12 +122,17 @@ php artisan serve
 
 **🔗 External Resources**
 
+- [GuacPanel Documentation](https://guacpanel.com)
 - [Laravel Documentation](https://laravel.com/docs)
 - [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [Inertia.js Documentation](https://inertiajs.com/)
 - [TanStack Table Documentation](https://tanstack.com/table/v8)
 - [FilePond Documentation](https://pqina.nl/filepond/)
+
+## 🚀 Live Demo
+
+**[👀 View Live Demo](https://guacpanel.com)**
 
 ## Contributing
 
