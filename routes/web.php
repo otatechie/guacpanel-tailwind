@@ -2,10 +2,10 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -22,15 +22,15 @@ use App\Http\Controllers\AdminPersonalisationController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+Route::get('/home', [PageController::class, 'home'])->name('home');
 
 // Authenticated Routes
 Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
     // Logout Route
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
-    // Home Route
     Route::middleware(['disable.account', 'force.password.change', 'password.expired'])->group(function () {
-        Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {

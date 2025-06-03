@@ -39,7 +39,7 @@ const submit = () => {
         <div class="container-border overflow-hidden">
             <PageHeader title="Security & Authentication"
                 description="Configure system-wide security policies and authentication requirements" :breadcrumbs="[
-                    { label: 'Dashboard', href: route('home') },
+                    { label: 'Dashboard', href: route('dashboard') },
                     { label: 'Settings', href: route('admin.setting.index') },
                     { label: 'Security Settings' }
                 ]" />

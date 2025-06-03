@@ -145,10 +145,10 @@ onMounted(() => {
                         </button>
 
                         <!-- Demo Link -->
-                        <Link href="/demo"
+                        <Link href="/login"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-                            aria-label="Try demo">
-                        Demo
+                            aria-label="View demo">
+                       Demo
                         </Link>
                     </section>
                 </nav>

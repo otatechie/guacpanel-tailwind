@@ -16,7 +16,7 @@ defineOptions({
     <main class="max-w-5xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Settings" description="Manage system-wide settings and configurations" :breadcrumbs="[
-                { label: 'Dashboard', href: route('home') },
+                { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings' },
             ]" />
             <div class="p-6 bg-gray-50 dark:bg-gray-700">

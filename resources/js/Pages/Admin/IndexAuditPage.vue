@@ -116,7 +116,7 @@ watch(pagination, newPagination => {
     <main class="max-w-5xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Audit Log" description="View and monitor system activities" :breadcrumbs="[
-                { label: 'Dashboard', href: route('home') },
+                { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'Audit Log' }
             ]" />

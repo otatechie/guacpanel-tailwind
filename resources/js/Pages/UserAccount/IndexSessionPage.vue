@@ -91,7 +91,7 @@ const getDeviceIcon = (device) => {
     <main class="max-w-5xl mx-auto" aria-labelledby="sessions-management">
         <article class="container-border overflow-hidden">
             <PageHeader title="Device Management" description="View and manage your active sessions" :breadcrumbs="[
-                { label: 'Dashboard', href: route('home') },
+                { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Account', href: route('user.index') },
                 { label: 'Device Management' }
             ]" />

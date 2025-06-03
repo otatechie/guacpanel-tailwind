@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Beat;
-
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class DashboardController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Home', []);
+        return Inertia::render('Dashboard');
     }
 }

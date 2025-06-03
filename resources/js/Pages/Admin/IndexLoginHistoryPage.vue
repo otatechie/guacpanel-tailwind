@@ -106,7 +106,7 @@ watch(pagination, newPagination => {
     <main class="max-w-5xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Login History" description="View and monitor login history" :breadcrumbs="[
-                { label: 'Dashboard', href: route('home') },
+                { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'Login History' }
             ]" />

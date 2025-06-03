@@ -188,7 +188,7 @@ watch(pagination, newPagination => {
     <main class="max-w-5xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Users" description="Manage system users and their access" :breadcrumbs="[
-                { label: 'Dashboard', href: '/' },
+                { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'Users' }
             ]">
