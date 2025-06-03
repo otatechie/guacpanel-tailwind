@@ -22,7 +22,7 @@ use App\Http\Controllers\AdminPersonalisationController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
-Route::get('/home', [PageController::class, 'home'])->name('home');
+Route::get('/', [PageController::class, 'home'])->name('home');
 
 // Authenticated Routes
 Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
@@ -30,7 +30,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
     Route::middleware(['disable.account', 'force.password.change', 'password.expired'])->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {
