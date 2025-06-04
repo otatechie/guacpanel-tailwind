@@ -12,29 +12,38 @@ use Tests\TestCase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    // Create required permissions
-    Permission::firstOrCreate(['name' => 'manage roles']);
+    Permission::firstOrCreate(['name' => 'manage-roles']);
 
-    // Create test roles
-    $this->adminRole = Role::firstOrCreate(['name' => 'admin']);
-    $this->editorRole = Role::firstOrCreate(['name' => 'editor']);
+    $this->superuserRole = Role::firstOrCreate(['name' => 'superuser']);
+    $this->userRole = Role::firstOrCreate(['name' => 'user']);
 
-    // Create users with different permission levels
     $this->adminUser = User::factory()->create();
-    $this->adminUser->givePermissionTo('manage roles');
+    $this->adminUser->givePermissionTo('manage-roles');
 
     $this->regularUser = User::factory()->create();
 });
 
 test('it redirects unauthenticated users to login page', function () {
-    $response = $this->get(route('admin.role.index'));
+    $response = $this->get(route('admin.permission.role.index'));
     $response->assertRedirect(route('login'));
 });
 
 test('it denies access to users without role management permission', function () {
     $response = $this->actingAs($this->regularUser)
-        ->get(route('admin.role.index'));
+        ->get(route('admin.permission.role.index'));
     $response->assertForbidden();
+});
+
+test('it allows users with role management permission to view the page', function () {
+    $response = $this->actingAs($this->adminUser)
+        ->get(route('admin.permission.role.index'));
+    
+    $response->assertInertia(fn ($assert) => $assert
+        ->component('Admin/PermissionRole/IndexPermissionRolePage')
+        ->has('permissions')
+        ->has('roles')
+        ->has('users')
+    );
 });
 
 test('it allows users with role management permission to create roles', function () {

@@ -9,21 +9,15 @@ use Spatie\Permission\Models\Permission;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'view users']);
-    Permission::firstOrCreate(['name' => 'edit users']);
-    Permission::firstOrCreate(['name' => 'delete users']);
-    Permission::firstOrCreate(['name' => 'manage users']);
+    Permission::firstOrCreate(['name' => 'manage-users']);
 
     $this->adminUser = User::factory()->create();
-    $this->adminUser->givePermissionTo([
-        'view users',
-        'edit users',
-        'delete users',
-        'manage users'
-    ]);
+    $this->adminUser->givePermissionTo('manage-users');
 
     $this->viewOnlyUser = User::factory()->create();
-    $this->viewOnlyUser->givePermissionTo('view users');
+    // Create a view-only permission for testing restricted access
+    Permission::firstOrCreate(['name' => 'view-users']);
+    $this->viewOnlyUser->givePermissionTo('view-users');
 
     $this->regularUser = User::factory()->create();
     
@@ -147,7 +141,7 @@ test('it allows admin to delete user', function () {
     ]);
 });
 
-test('it denies user update to users with view permission', function () {
+test('it denies user update to users without manage permission', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($this->viewOnlyUser)
@@ -160,7 +154,7 @@ test('it denies user update to users with view permission', function () {
     $response->assertForbidden();
 });
 
-test('it denies user deletion to users with view permission', function () {
+test('it denies user deletion to users without manage permission', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($this->viewOnlyUser)

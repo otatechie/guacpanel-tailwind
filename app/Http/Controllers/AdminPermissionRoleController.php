@@ -3,21 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Traits\HasProtectedRoles;
+use App\Traits\HasProtectedPermission;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class AdminPermissionRoleController extends Controller
 {
+    use HasProtectedRoles, HasProtectedPermission;
+    
+
     public function __construct()
     {
-        $this->middleware('permission:manage permissions and roles');
+        $this->middleware('permission:view-permissions-roles');
     }
     
 
     public function index()
     {
-        $permissions = Permission::get();
+        $permissions = Permission::get()->map(function ($permission) {
+            return [
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'description' => $permission->description,
+                'created_at' => $permission->created_at->diffForHumans(),
+                'is_protected' => $this->isProtectedPermission($permission->name)
+            ];
+        });
 
         $roles = Role::with(['permissions', 'users'])
             ->get()
@@ -27,7 +40,8 @@ class AdminPermissionRoleController extends Controller
                     'name' => $role->name,
                     'users_count' => $role->users->count(),
                     'permissions' => $role->permissions,
-                    'created_at' => $role->created_at->diffForHumans()
+                    'created_at' => $role->created_at->diffForHumans(),
+                    'is_protected' => $this->isProtectedRole($role->name)
                 ];
             });
 
@@ -41,13 +55,11 @@ class AdminPermissionRoleController extends Controller
         });
 
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'permissions' => [
-                'data' => $permissions
-            ],
-            'roles' => [
-                'data' => $roles
-            ],
+            'permissions' => $permissions,
+            'roles' => $roles,
             'users' => $users,
+            'protectedRoles' => $this->getProtectedRoles(),
+            'protectedPermissions' => $this->getProtectedPermissions(),
         ]);
     }
 }

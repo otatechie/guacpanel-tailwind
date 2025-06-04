@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
 import Default from '@/Layouts/Default.vue'
 import PageHeader from '@/Components/PageHeader.vue'
@@ -12,12 +12,22 @@ defineOptions({
 
 const props = defineProps({
     roles: {
-        type: Object,
-        required: true
+        type: Array,
+        required: true,
+        default: () => []
     },
     permissions: {
-        type: Object,
-        required: true
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    protectedRoles: {
+        type: Array,
+        default: () => []
+    },
+    protectedPermissions: {
+        type: Array,
+        default: () => []
     }
 })
 
@@ -39,7 +49,7 @@ const activeTab = ref('roles')
 
         <div class="container-border overflow-hidden">
             <PageHeader title="User Access Management" description="Manage user roles and permissions" :breadcrumbs="[
-                { label: 'Dashboard', href: '/' },
+                { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'User Access Management' }
             ]" />
@@ -74,8 +84,9 @@ const activeTab = ref('roles')
                 <RolesTab v-if="activeTab === 'roles'" :roles="roles" :permissions="permissions" role="tabpanel"
                     id="roles-panel" aria-labelledby="roles-tab" />
 
-                <PermissionsTab v-if="activeTab === 'permissions'" :permissions="permissions" role="tabpanel"
-                    id="permissions-panel" aria-labelledby="permissions-tab" />
+                <PermissionsTab v-if="activeTab === 'permissions'" :permissions="permissions"
+                    :protectedPermissions="protectedPermissions" role="tabpanel" id="permissions-panel"
+                    aria-labelledby="permissions-tab" />
             </section>
         </div>
     </main>

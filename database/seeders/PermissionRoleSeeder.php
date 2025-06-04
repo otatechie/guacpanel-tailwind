@@ -21,6 +21,7 @@ class PermissionRoleSeeder extends Seeder
         $permissionData = [
             // User Management
             'manage-users' => 'Manage user accounts',
+            'view-users' => 'View user accounts',
             'edit-profile' => 'Edit own profile',
             'ban-users' => 'Ban/suspend user accounts',
             
@@ -40,9 +41,12 @@ class PermissionRoleSeeder extends Seeder
             'manage-personalization' => 'Manage system appearance and branding',
             
             // Roles & Permissions
-            'manage-roles' => 'Manage user roles ',
+            'manage-roles' => 'Manage user roles',
             'manage-permissions' => 'Manage user permissions',
             'view-permissions-roles' => 'View permissions and roles',
+            
+            // Login History
+            'view-login-history' => 'View user login history',
         ];
         
         $permissions = [];

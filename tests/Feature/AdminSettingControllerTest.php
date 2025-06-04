@@ -11,16 +11,13 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Create permission
-    Permission::firstOrCreate(['name' => 'manage settings']);
+    Permission::firstOrCreate(['name' => 'manage-settings']);
 
-    // Create admin user with permission
     $this->adminUser = User::factory()->create();
-    $this->adminUser->givePermissionTo('manage settings');
+    $this->adminUser->givePermissionTo('manage-settings');
 
-    // Create regular user without permission
     $this->regularUser = User::factory()->create();
 
-    // Create default settings
     Setting::updateOrCreate([], [
         'password_expiry' => false,
         'passwordless_login' => false,

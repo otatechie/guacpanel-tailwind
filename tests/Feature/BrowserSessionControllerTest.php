@@ -14,7 +14,6 @@ beforeEach(function () {
     $this->user = User::factory()->create();
     config(['session.driver' => 'database']);
     
-    // Create and store the auth session by default
     $this->authSessionId = createAuthSession($this->user);
     $this->csrfToken = 'test-token';
 });

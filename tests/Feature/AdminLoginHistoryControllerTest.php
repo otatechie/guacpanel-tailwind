@@ -10,10 +10,10 @@ use Spatie\Permission\Models\Permission;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'view login history']);
+    Permission::firstOrCreate(['name' => 'view-login-history']);
 
     $this->adminUser = User::factory()->create();
-    $this->adminUser->givePermissionTo('view login history');
+    $this->adminUser->givePermissionTo('view-login-history');
 
     $this->regularUser = User::factory()->create();
 });

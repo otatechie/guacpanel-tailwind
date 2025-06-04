@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\HasProtectedRoles;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -11,9 +12,12 @@ use Inertia\Inertia;
 
 class AdminRoleController extends Controller
 {
+    use HasProtectedRoles;
+    
+
     public function __construct()
     {
-        $this->middleware(['auth', 'permission:manage roles']);
+        $this->middleware(['auth', 'permission:manage-roles']);
     }
 
     
@@ -35,7 +39,7 @@ class AdminRoleController extends Controller
                 'max:255',
                 'min:3',
                 Rule::unique('roles', 'name'),
-                'not_in:admin,superadmin', // Prevent reserved names
+                'not_in:' . $this->getProtectedRolesForValidation(),
                 'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/' // Must start with a letter
             ],
             'permissions' => ['nullable', 'array'],
@@ -54,6 +58,12 @@ class AdminRoleController extends Controller
 
     public function update(Request $request, Role $role): RedirectResponse
     {
+        // Prevent updating protected system roles
+        if ($this->isProtectedRole($role->name)) {
+            return redirect()->route('admin.role.index')
+                ->with('error', 'Cannot modify system role: ' . $role->name);
+        }
+
         $validatedData = $request->validate([
             'name' => [
                 'required',
@@ -61,7 +71,7 @@ class AdminRoleController extends Controller
                 'max:255',
                 'min:3',
                 Rule::unique('roles', 'name')->ignore($role->id),
-                'not_in:admin,superadmin',
+                'not_in:' . $this->getProtectedRolesForValidation(),
                 'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/' // Must start with a letter
             ],
             'permissions' => ['nullable', 'array'],
@@ -81,6 +91,13 @@ class AdminRoleController extends Controller
     public function destroy(string $id): RedirectResponse
     {
         $role = Role::findOrFail($id);
+
+        // Prevent deleting protected system roles
+        if ($this->isProtectedRole($role->name)) {
+            return redirect()->route('admin.role.index')
+                ->with('error', 'Cannot delete system role: ' . $role->name);
+        }
+
         $role->delete();
 
         return redirect()->route('admin.role.index')->with('success', 'Role deleted successfully.');

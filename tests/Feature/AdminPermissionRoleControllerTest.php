@@ -9,12 +9,12 @@ use Spatie\Permission\Models\Permission;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'manage permissions and roles']);
+    Permission::firstOrCreate(['name' => 'view-permissions-roles']);
     
-    $this->adminUser = User::factory()->create(['name' => 'Admin User']);
-    $this->adminUser->givePermissionTo('manage permissions and roles');
+    $this->adminUser = User::factory()->create();
+    $this->adminUser->givePermissionTo('view-permissions-roles');
     
-    $this->regularUser = User::factory()->create(['name' => 'Regular User']);
+    $this->regularUser = User::factory()->create();
     
     $this->testToken = 'test-token';
 });

@@ -5,8 +5,20 @@ import Modal from '@/Components/Modal.vue'
 import FormInput from '@/Components/FormInput.vue'
 
 const props = defineProps({
-    roles: Object,
-    permissions: Object
+    roles: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    permissions: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    protectedRoles: {
+        type: Array,
+        default: () => []
+    }
 })
 
 const showAddModal = ref(false)
@@ -17,6 +29,7 @@ const expandedRoles = ref(new Set())
 
 const form = useForm({
     name: '',
+    description: '',
     permissions: []
 })
 
@@ -28,11 +41,19 @@ const closeModal = () => {
     form.reset()
 }
 
+const isProtectedRole = (roleName) => {
+    return props.protectedRoles.includes(roleName.toLowerCase())
+}
+
 const editRole = (role) => {
-    editingRole.value = role;
-    form.name = role.name;
-    form.permissions = role.permissions.map(p => p.id);
-    showAddModal.value = true;
+    if (role.is_protected) {
+        return 
+    }
+    editingRole.value = role
+    form.name = role.name
+    form.description = role.description || ''
+    form.permissions = role.permissions ? role.permissions.map(p => p.id) : []
+    showAddModal.value = true
 }
 
 const submitRole = () => {
@@ -48,6 +69,9 @@ const submitRole = () => {
 }
 
 const confirmDeleteRole = (role) => {
+    if (role.is_protected) {
+        return 
+    }
     roleToDelete.value = role
     showDeleteModal.value = true
 }
@@ -60,7 +84,7 @@ const deleteRole = () => {
 
 const toggleAllPermissions = (e) => {
     form.permissions = e.target.checked
-        ? props.permissions.data.map(p => p.id)
+        ? props.permissions.map(p => p.id)
         : []
 }
 
@@ -77,9 +101,7 @@ const isRoleExpanded = (roleId) => {
 }
 </script>
 
-
 <template>
-
     <section class="p-6 space-y-6">
         <header class="flex justify-between items-center">
             <hgroup>
@@ -110,37 +132,49 @@ const isRoleExpanded = (roleId) => {
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr v-if="!roles.data.length" class="text-center">
+                <tr v-if="!roles?.length" class="text-center">
                     <td colspan="3" class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
                         <figure class="flex flex-col items-center justify-center gap-2">
-                            <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
                             <figcaption>No roles found</figcaption>
                             <button type="button" @click="showAddModal = true"
-                                class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer">
+                                class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer">
                                 Add your first role
                             </button>
                         </figure>
                     </td>
                 </tr>
-                <tr v-else v-for="role in roles.data" :key="role.id"
+                <tr v-else v-for="role in roles" :key="role.id"
                     class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td class="px-6 py-4">
                         <figure class="flex items-center gap-3">
                             <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
-                            <figcaption class="text-sm font-medium text-gray-800 dark:text-gray-200 capitalize">
-                                {{ role.name }}
-                                <span v-if="role.description"
-                                    class="block text-xs text-gray-500 dark:text-gray-400 normal-case">
+                            <figcaption class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200 capitalize">
+                                        {{ role.name }}
+                                    </p>
+                                    <span v-if="role.is_protected"
+                                        class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        System Role
+                                    </span>
+                                </div>
+                                <p v-if="role.description" class="text-xs text-gray-500 dark:text-gray-400 normal-case">
                                     {{ role.description }}
-                                </span>
+                                </p>
                             </figcaption>
                         </figure>
                     </td>
@@ -177,9 +211,9 @@ const isRoleExpanded = (roleId) => {
                     </td>
                     <td class="px-6 py-4">
                         <menu class="flex justify-end gap-2">
-                            <li>
+                            <li v-if="!role.is_protected">
                                 <button type="button" @click="editRole(role)"
-                                    class="text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
+                                    class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
                                     title="Edit role">
                                     <span class="sr-only">Edit role</span>
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -189,7 +223,7 @@ const isRoleExpanded = (roleId) => {
                                     </svg>
                                 </button>
                             </li>
-                            <li>
+                            <li v-if="!role.is_protected">
                                 <button type="button" @click="confirmDeleteRole(role)"
                                     class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
                                     title="Delete role">
@@ -200,6 +234,9 @@ const isRoleExpanded = (roleId) => {
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </button>
+                            </li>
+                            <li v-if="role.is_protected">
+                                <span class="text-xs text-gray-400 dark:text-gray-500">Protected</span>
                             </li>
                         </menu>
                     </td>
@@ -213,15 +250,17 @@ const isRoleExpanded = (roleId) => {
                     {{ editingRole ? 'Edit role' : 'Add new role' }}
                 </h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions'
-                    }}
+                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions' }}
                 </p>
             </template>
 
             <template #default>
-                <form @submit.prevent="submitRole" class="space-y-6 capitalize">
+                <form @submit.prevent="submitRole" class="space-y-6">
                     <FormInput label="Role name" v-model="form.name" type="text" :error="form.errors.name" required
                         placeholder="Enter role name" />
+
+                    <FormInput label="Description" v-model="form.description" type="text" :error="form.errors.description"
+                        placeholder="Enter role description" />
 
                     <fieldset>
                         <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -232,7 +271,7 @@ const isRoleExpanded = (roleId) => {
                                 <span class="flex items-center gap-2">
                                     <input type="checkbox"
                                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600"
-                                        :checked="form.permissions.length === permissions.data.length"
+                                        :checked="permissions?.length && form.permissions.length === permissions.length"
                                         @change="toggleAllPermissions">
                                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Select all
                                         permissions</span>
@@ -240,8 +279,8 @@ const isRoleExpanded = (roleId) => {
                             </label>
 
                             <div class="p-3 max-h-[240px] overflow-y-auto">
-                                <div v-if="permissions.data?.length" class="space-y-1">
-                                    <label v-for="permission in permissions.data" :key="permission.id"
+                                <div v-if="permissions?.length" class="space-y-1">
+                                    <label v-for="permission in permissions" :key="permission.id"
                                         class="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer">
                                         <input type="checkbox" :value="permission.id" v-model="form.permissions"
                                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-600">
@@ -302,6 +341,17 @@ const isRoleExpanded = (roleId) => {
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         Are you sure you want to delete this role? This action cannot be undone.
                     </p>
+                    <div v-if="roleToDelete?.permissions?.length"
+                        class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">This role has the
+                            following permissions:</h4>
+                        <ul class="flex flex-wrap gap-2">
+                            <li v-for="permission in roleToDelete.permissions" :key="permission.id"
+                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                                {{ permission.name }}
+                            </li>
+                        </ul>
+                    </div>
                     <div
                         class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
                         <div class="flex gap-2">
@@ -315,17 +365,6 @@ const isRoleExpanded = (roleId) => {
                                 Deleting this role will remove it from all users who currently have it assigned.
                             </p>
                         </div>
-                    </div>
-                    <div v-if="roleToDelete?.permissions?.length"
-                        class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">This role has the
-                            following permissions:</h4>
-                        <ul class="flex flex-wrap gap-2">
-                            <li v-for="permission in roleToDelete.permissions" :key="permission.id"
-                                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
-                                {{ permission.name }}
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </template>

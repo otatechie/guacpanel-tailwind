@@ -10,23 +10,13 @@ use Tests\TestCase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'view permissions']);
-    Permission::firstOrCreate(['name' => 'edit permissions']);
-    Permission::firstOrCreate(['name' => 'delete permissions']);
-    Permission::firstOrCreate(['name' => 'manage permissions']);
+    Permission::firstOrCreate(['name' => 'manage-permissions']);
 
     $this->userWithFullPermissions = User::factory()->create(['name' => 'Full Permissions User']);
-    $this->userWithFullPermissions->givePermissionTo([
-        'view permissions',
-        'edit permissions',
-        'delete permissions'
-    ]);
+    $this->userWithFullPermissions->givePermissionTo('manage-permissions');
 
-    $this->viewOnlyUser = User::factory()->create(['name' => 'View Only User']);
-    $this->viewOnlyUser->givePermissionTo('view permissions');
-
-    $this->regularUser = User::factory()->create(['name' => 'Regular User']);
-
+    $this->userWithoutPermissions = User::factory()->create(['name' => 'No Permissions User']);
+    
     $this->testToken = 'test-token';
 });
 
@@ -34,7 +24,7 @@ test('it enforces permission middleware correctly', function () {
     $this->get(route('admin.permission.index'))
         ->assertRedirect(route('login'));
 
-    $this->actingAs($this->regularUser)
+    $this->actingAs($this->userWithoutPermissions)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.permission.store'), ['name' => 'new-permission', '_token' => $this->testToken])
         ->assertForbidden();
@@ -43,12 +33,12 @@ test('it enforces permission middleware correctly', function () {
         ->get(route('admin.permission.index'));
 
     if ($indexResponse->status() >= 200 && $indexResponse->status() < 300) {
-        $this->actingAs($this->viewOnlyUser)
+        $this->actingAs($this->userWithoutPermissions)
             ->get(route('admin.permission.index'))
             ->assertStatus(200);
     }
 
-    $this->actingAs($this->viewOnlyUser)
+    $this->actingAs($this->userWithoutPermissions)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.permission.store'), ['name' => 'new-permission', '_token' => $this->testToken])
         ->assertForbidden();

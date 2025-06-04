@@ -6,8 +6,13 @@ import FormInput from '@/Components/FormInput.vue'
 
 const props = defineProps({
     permissions: {
-        type: Object,
-        required: true
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    protectedPermissions: {
+        type: Array,
+        default: () => []
     }
 })
 
@@ -30,6 +35,9 @@ const closeModal = () => {
 }
 
 const editPermission = (permission) => {
+    if (permission.is_protected) {
+        return 
+    }
     editingPermission.value = permission
     form.name = permission.name
     form.description = permission.description
@@ -49,6 +57,9 @@ const submitPermission = () => {
 }
 
 const confirmDeletePermission = (permission) => {
+    if (permission.is_protected) {
+        return 
+    }
     permissionToDelete.value = permission
     showDeleteModal.value = true
 }
@@ -89,7 +100,7 @@ const deletePermission = () => {
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr v-if="!permissions.data.length" class="text-center">
+                <tr v-if="!permissions?.length" class="text-center">
                     <td colspan="2" class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
                         <figure class="flex flex-col items-center justify-center gap-2">
                             <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +116,7 @@ const deletePermission = () => {
                         </figure>
                     </td>
                 </tr>
-                <tr v-else v-for="permission in permissions.data" :key="permission.id"
+                <tr v-else v-for="permission in permissions" :key="permission.id"
                     class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td class="px-6 py-4">
                         <figure class="flex items-center gap-3">
@@ -114,10 +125,21 @@ const deletePermission = () => {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                             </svg>
-                            <figcaption>
-                                <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
-                                    {{ permission.name }}
-                                </p>
+                            <figcaption class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                        {{ permission.name }}
+                                    </p>
+                                    <span v-if="permission.is_protected"
+                                        class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        System Permission
+                                    </span>
+                                </div>
                                 <p v-if="permission.description" class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ permission.description }}
                                 </p>
@@ -126,7 +148,7 @@ const deletePermission = () => {
                     </td>
                     <td class="px-6 py-4">
                         <menu class="flex justify-end gap-2">
-                            <li>
+                            <li v-if="!permission.is_protected">
                                 <button type="button" @click="editPermission(permission)"
                                     class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
                                     title="Edit permission">
@@ -138,7 +160,7 @@ const deletePermission = () => {
                                     </svg>
                                 </button>
                             </li>
-                            <li>
+                            <li v-if="!permission.is_protected">
                                 <button type="button" @click="confirmDeletePermission(permission)"
                                     class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
                                     title="Delete permission">
@@ -149,6 +171,9 @@ const deletePermission = () => {
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </button>
+                            </li>
+                            <li v-if="permission.is_protected">
+                                <span class="text-xs text-gray-400 dark:text-gray-500">Protected</span>
                             </li>
                         </menu>
                     </td>
