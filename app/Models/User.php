@@ -146,4 +146,28 @@ class User extends Authenticatable implements Auditable
     {
         return $this->latestLogin?->logout_at === null;
     }
+
+   
+    public function isSuperUser(): bool
+    {
+        return $this->hasRole('superuser');
+    }
+
+   
+    public function canBeDeleted(): bool
+    {
+        return !$this->isSuperUser();
+    }
+
+   
+    public function canChangeRole(): bool
+    {
+        return !$this->isSuperUser();
+    }
+
+    
+    public function canChangeAccountStatus(): bool
+    {
+        return !$this->isSuperUser();
+    }
 }

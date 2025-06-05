@@ -15,7 +15,7 @@ class AdminUserController extends Controller
     {
         $this->middleware('permission:view users');
     }
-
+    
 
     public function index(Request $request)
     {
@@ -49,7 +49,7 @@ class AdminUserController extends Controller
     }
 
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $this->authorize('edit users');
 
@@ -66,7 +66,8 @@ class AdminUserController extends Controller
                 'permissions' => $user->permissions->map(fn($permission) => [
                     'id' => $permission->id,
                     'name' => $permission->name,
-                ])
+                ]),
+                'is_superuser' => $user->isSuperUser()
             ],
             'permissions' => [
                 'data' => Permission::select(['id', 'name'])->get()
@@ -82,6 +83,18 @@ class AdminUserController extends Controller
     {
         $this->authorize('edit users');
 
+        $user = User::findOrFail($id);
+
+        // Protect superuser from account status and role changes
+        if ($user->isSuperUser()) {
+            $currentRoleId = $user->roles->first()?->id;
+            $isRoleBeingChanged = $request->role != $currentRoleId;
+            
+            if ($request->disable_account || $request->force_password_change || $isRoleBeingChanged) {
+                return redirect()->back()->with('error', 'Superuser account status and role cannot be modified.');
+            }
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
@@ -95,8 +108,6 @@ class AdminUserController extends Controller
         if ($request->force_password_change && $request->disable_account) {
             return back()->withErrors(['error' => 'User cannot be both disabled and forced to change password.']);
         }
-
-        $user = User::findOrFail($id);
 
         $user->update([
             'name' => $request->name,
@@ -117,6 +128,11 @@ class AdminUserController extends Controller
         $this->authorize('delete users');
 
         $user = User::findOrFail($id);
+
+        if (!$user->canBeDeleted()) {
+            return redirect()->back()->with('error', 'Superuser cannot be deleted.');
+        }
+
         $user->delete();
 
         return redirect()->route('admin.user.index')->with('success', 'User deleted successfully.');

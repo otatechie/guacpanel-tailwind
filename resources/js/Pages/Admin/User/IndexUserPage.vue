@@ -54,6 +54,10 @@ const closeModal = () => {
 }
 
 const confirmDeleteUser = (user) => {
+    // Prevent deleting super users
+    if (isSuperUser(user)) {
+        return
+    }
     userToDelete.value = user
     showDeleteModal.value = true
 }
@@ -81,6 +85,13 @@ const deleteUser = () => {
             showDeleteModal.value = false
         }
     })
+}
+
+// Add helper function to check if user is super admin
+const isSuperUser = (user) => {
+    // Check if user has superuser role
+    return user.role?.name?.toLowerCase() === 'superuser' || 
+           user.role?.slug?.toLowerCase() === 'superuser'
 }
 
 const columns = [
@@ -114,48 +125,60 @@ const columns = [
     columnHelper.display({
         id: 'actions',
         header: 'Actions',
-        cell: (info) => h('div', { class: 'flex items-center gap-2 justify-end' }, [
-            h('button', {
-                class: 'p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50',
-                onClick: () => handleEdit(info.row.original),
-                title: 'Edit user'
-            }, [
-                h('span', { class: 'sr-only' }, 'Edit user'),
-                h('svg', {
-                    class: 'w-4 h-4 cursor-pointer',
-                    fill: 'none',
-                    stroke: 'currentColor',
-                    viewBox: '0 0 24 24'
+        cell: (info) => {
+            const user = info.row.original
+            const isSuper = isSuperUser(user)
+            
+            return h('div', { class: 'flex items-center gap-2 justify-end' }, [
+                // Edit button - always enabled now
+                h('button', {
+                    class: 'p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50',
+                    onClick: () => handleEdit(user),
+                    title: 'Edit user'
                 }, [
-                    h('path', {
-                        'stroke-linecap': 'round',
-                        'stroke-linejoin': 'round',
-                        'stroke-width': '2',
-                        d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                    })
-                ])
-            ]),
-            h('button', {
-                class: 'p-2 text-gray-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50',
-                onClick: () => confirmDeleteUser(info.row.original),
-                title: 'Delete user'
-            }, [
-                h('span', { class: 'sr-only' }, 'Delete user'),
-                h('svg', {
-                    class: 'w-4 h-4 cursor-pointer',
-                    fill: 'none',
-                    stroke: 'currentColor',
-                    viewBox: '0 0 24 24'
+                    h('span', { class: 'sr-only' }, 'Edit user'),
+                    h('svg', {
+                        class: 'w-4 h-4',
+                        fill: 'none',
+                        stroke: 'currentColor',
+                        viewBox: '0 0 24 24'
+                    }, [
+                        h('path', {
+                            'stroke-linecap': 'round',
+                            'stroke-linejoin': 'round',
+                            'stroke-width': '2',
+                            d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                        })
+                    ])
+                ]),
+                // Delete button - disabled for superuser
+                h('button', {
+                    class: `p-2 transition-colors rounded-lg ${
+                        isSuper 
+                            ? 'text-gray-300 cursor-not-allowed' 
+                            : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                    }`,
+                    onClick: isSuper ? undefined : () => confirmDeleteUser(user),
+                    disabled: isSuper,
+                    title: isSuper ? 'Superuser cannot be deleted' : 'Delete user'
                 }, [
-                    h('path', {
-                        'stroke-linecap': 'round',
-                        'stroke-linejoin': 'round',
-                        'stroke-width': '2',
-                        d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                    })
+                    h('span', { class: 'sr-only' }, isSuper ? 'Superuser cannot be deleted' : 'Delete user'),
+                    h('svg', {
+                        class: 'w-4 h-4',
+                        fill: 'none',
+                        stroke: 'currentColor',
+                        viewBox: '0 0 24 24'
+                    }, [
+                        h('path', {
+                            'stroke-linecap': 'round',
+                            'stroke-linejoin': 'round',
+                            'stroke-width': '2',
+                            d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                        })
+                    ])
                 ])
             ])
-        ])
+        }
     })
 ]
 
@@ -276,6 +299,27 @@ watch(pagination, newPagination => {
         </template>
 
         <template #default>
+            <!-- Display form errors -->
+            <div v-if="Object.keys(form.errors).length > 0" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                            Please review the highlighted fields
+                        </h3>
+                        <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li v-for="(error, field) in form.errors" :key="field">
+                                    <span class="capitalize font-medium">{{ field.replace('_', ' ') }}:</span> {{ error }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="w-full space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />

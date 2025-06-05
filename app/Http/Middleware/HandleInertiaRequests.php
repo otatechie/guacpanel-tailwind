@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Discussion;
 use App\Models\Personalisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Middleware;
 use Laravolt\Avatar\Avatar;
 
@@ -82,9 +82,9 @@ class HandleInertiaRequests extends Middleware
 
                 'personalisation' => [
                     'app_name' => $personalisation->app_name,
-                    'app_logo' => $personalisation->app_logo,
-                    'app_logo_dark' => $personalisation->app_logo_dark,
-                    'favicon' => $personalisation->favicon,
+                    'app_logo' => $personalisation->app_logo ? Storage::url($personalisation->app_logo) : null,
+                    'app_logo_dark' => $personalisation->app_logo_dark ? Storage::url($personalisation->app_logo_dark) : null,
+                    'favicon' => $personalisation->favicon ? Storage::url($personalisation->favicon) : null,
                     'footer_text' => $personalisation->footer_text,
                     'copyright_text' => $personalisation->copyright_text,
                 ],

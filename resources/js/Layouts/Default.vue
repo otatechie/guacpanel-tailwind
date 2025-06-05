@@ -82,22 +82,17 @@ onUnmounted(() => {
 })
 
 const logoUrl = computed(() => {
-    return page.props.personalisation?.app_logo
-        ? `/storage/${page.props.personalisation.app_logo}`
-        : null
+    return page.props.personalisation?.app_logo || null
 })
 
 const darkLogoUrl = computed(() => {
-    return page.props.personalisation?.app_logo_dark
-        ? `/storage/${page.props.personalisation.app_logo_dark}`
-        : null
+    return page.props.personalisation?.app_logo_dark || null
 })
 </script>
 
 
 <template>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900" role="document">
-        <!-- Mobile Sidebar Overlay - Manages focus trap and keyboard interactions -->
         <div v-if="isSidebarOpen && isMobile()" class="fixed inset-0 bg-black/30 z-30" @click.stop="closeSidebar"
             role="dialog" aria-modal="true" aria-label="Mobile navigation menu" aria-hidden="true">
         </div>

@@ -36,7 +36,7 @@ const tabs = [
     },
     {
         key: 'permissions',
-        label: 'Permissions',
+        label: 'User Permissions',
         icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
     }
 ]
@@ -55,7 +55,7 @@ const submit = () => {
 }
 
 const deleteUser = () => {
-    form.delete(route('admin.users.destroy', props.user.id), {
+    form.delete(route('admin.user.destroy', props.user.id), {
         onSuccess: () => {
             showDeleteModal.value = false
         }
@@ -108,35 +108,51 @@ const deleteUser = () => {
                                 :error="form.errors.email" name="email" />
                         </div>
                         <div>
-                            <FormSelect v-model="form.role" :options="roles.data" option-label="name" option-value="id"
+                            <!-- Show read-only role for superuser -->
+                            <div v-if="props.user.is_superuser" class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Assigned role
+                                </label>
+                                <div class="px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-gray-100 capitalize">
+                                    {{ props.user.roles?.[0]?.name || 'No role assigned' }}
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Superuser role is protected and cannot be changed
+                                </p>
+                            </div>
+                            
+                            <!-- Show editable role select for regular users -->
+                            <FormSelect v-else v-model="form.role" :options="roles.data" option-label="name" option-value="id"
                                 name="role" label="Assigned role" :error="form.errors.role" />
                         </div>
                         <div class="space-y-6">
                             <div
-                                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                                :class="{ 'opacity-50': props.user.is_superuser }">
                                 <div>
                                     <h3 class="font-medium text-gray-800 dark:text-white">Account Status</h3>
                                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                        Enable or disable user access
+                                        {{ props.user.is_superuser ? 'Superuser account cannot be disabled' : 'Enable or disable user access' }}
                                     </p>
                                 </div>
-                                <Switch v-model="form.disable_account" />
+                                <Switch v-model="form.disable_account" :disabled="props.user.is_superuser" />
                             </div>
 
                             <div
-                                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                                :class="{ 'opacity-50': props.user.is_superuser }">
                                 <div>
                                     <h3 class="font-medium text-gray-800 dark:text-white">Force Password Reset</h3>
                                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                        Require new password on next login
+                                        {{ props.user.is_superuser ? 'Superuser cannot be forced to reset password' : 'Require new password on next login' }}
                                     </p>
                                 </div>
-                                <Switch v-model="form.force_password_change" />
+                                <Switch v-model="form.force_password_change" :disabled="props.user.is_superuser" />
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-6" v-if="!props.user.is_superuser">
                         <div class="flex items-center gap-3 pt-6">
                             <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
                                 <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
