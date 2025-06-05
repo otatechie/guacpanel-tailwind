@@ -11,7 +11,7 @@ class AdminLoginHistoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view login history');
+        $this->middleware('permission:view-login-history');
     }
     
 

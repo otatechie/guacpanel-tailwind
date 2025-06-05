@@ -12,7 +12,7 @@ class AdminAuditController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view audit log');
+        $this->middleware('permission:view-audits');
     }
     
 

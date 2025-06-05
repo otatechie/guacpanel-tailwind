@@ -11,7 +11,7 @@ class AdminPersonalisationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view personalisation');
+        $this->middleware('permission:view-personalisation');
     }
 
 
@@ -27,7 +27,7 @@ class AdminPersonalisationController extends Controller
 
     public function upload(Request $request)
     {
-        $this->authorize('upload personalisation files');
+        $this->authorize('upload-personalisation-files');
 
         $request->validate([
             'app_logo' => ['nullable', 'image', 'max:2048'],
@@ -65,7 +65,7 @@ class AdminPersonalisationController extends Controller
 
     public function updateInfo(Request $request)
     {
-        $this->authorize('update personalisation');
+        $this->authorize('update-personalisation');
 
         $validated = $request->validate([
             'app_name' => ['nullable', 'string', 'max:100'],
@@ -82,7 +82,7 @@ class AdminPersonalisationController extends Controller
 
     public function delete(Request $request)
     {
-        $this->authorize('delete personalisation files');
+        $this->authorize('delete-personalisation-files');
 
         $request->validate([
             'field' => ['required', 'string', 'in:app_logo,app_logo_dark,favicon'],

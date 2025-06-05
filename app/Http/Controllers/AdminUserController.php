@@ -13,7 +13,7 @@ class AdminUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view users');
+        $this->middleware('permission:view-users');
     }
     
 
@@ -51,7 +51,7 @@ class AdminUserController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $this->authorize('edit users');
+        $this->authorize('edit-users');
 
         $user = User::with(['permissions', 'roles'])->findOrFail($id);
 
@@ -81,7 +81,7 @@ class AdminUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->authorize('edit users');
+        $this->authorize('edit-users');
 
         $user = User::findOrFail($id);
 
@@ -125,7 +125,7 @@ class AdminUserController extends Controller
 
     public function destroy($id)
     {
-        $this->authorize('delete users');
+        $this->authorize('delete-users');
 
         $user = User::findOrFail($id);
 
