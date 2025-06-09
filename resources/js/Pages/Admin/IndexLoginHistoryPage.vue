@@ -84,7 +84,7 @@ const columns = [
 watch(pagination, newPagination => {
     loading.value = true
     router.get(
-        route('admin.audit'),
+        route('admin.login.history.index'),
         {
             page: newPagination.current_page,
             per_page: Number(newPagination.per_page)

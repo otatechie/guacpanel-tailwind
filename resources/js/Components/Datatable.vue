@@ -61,7 +61,6 @@ const emit = defineEmits(['update:pagination'])
 const sorting = ref([])
 const selectedRows = ref({})
 const searchQuery = ref('')
-const pageSize = ref(props.defaultPageSize)
 const pagination = ref({
     pageIndex: 0,
     pageSize: props.defaultPageSize,
@@ -186,7 +185,10 @@ const table = useVueTable({
                     pageIndex: props.pagination.current_page - 1
                 }
             }
-            return pagination.value
+            return {
+                pageIndex: pagination.value.pageIndex,
+                pageSize: pagination.value.pageSize
+            }
         }
     },
     onRowSelectionChange: updaterOrValue => {
@@ -200,9 +202,10 @@ const table = useVueTable({
             : updaterOrValue
     },
     onPaginationChange: updaterOrValue => {
-        pagination.value = typeof updaterOrValue === 'function'
+        const newPagination = typeof updaterOrValue === 'function'
             ? updaterOrValue(pagination.value)
             : updaterOrValue
+        pagination.value = newPagination
     },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -214,7 +217,7 @@ const table = useVueTable({
     getRowId: (row) => row.id || row.ID || JSON.stringify(row),
 })
 
-watch(pageSize, (newSize) => {
+watch(() => pagination.value.pageSize, (newSize) => {
     if (!isServerPagination.value) return
     updateServerPagination({
         per_page: newSize,
@@ -254,11 +257,21 @@ watch(() => props.data, () => {
                     <select
                         class="border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                         :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        :value="table.getState().pagination.pageSize"
-                        @change="table.setPageSize(Number($event.target.value))">
-                        <option v-for="pageSize in table.options.meta?.pageSizeOptions || [5, 10, 20, 30, 40, 50]"
-                            :key="pageSize" :value="pageSize">
-                            {{ pageSize }}
+                        :value="isServerPagination ? props.pagination.per_page : pagination.value.pageSize"
+                        @change="(e) => {
+                            const newSize = Number(e.target.value);
+                            if (isServerPagination) {
+                                updateServerPagination({ per_page: newSize, current_page: 1 });
+                            } else {
+                                pagination.value = {
+                                    ...pagination.value,
+                                    pageSize: newSize,
+                                    pageIndex: 0
+                                };
+                            }
+                        }">
+                        <option v-for="size in pageSizeOptions" :key="size" :value="size">
+                            {{ size }}
                         </option>
                     </select>
                 </div>
