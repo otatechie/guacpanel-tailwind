@@ -4,7 +4,6 @@ import { usePage, Link } from '@inertiajs/vue3'
 import NavSidebarDesktop from '@/Shared/Public/NavSidebarDesktop.vue'
 import Footer from '@/Shared/Public/Footer.vue'
 import { cycleTheme, getCurrentThemeState } from '@/darkMode'
-import Logo from '@/Components/Logo.vue'
 
 const sidebarStorageKey = 'sidebarOpen'
 const isMobile = () => window.innerWidth < 768
@@ -105,9 +104,10 @@ onMounted(() => {
                 <nav class="flex h-16 items-center px-4 gap-4" role="navigation" aria-label="Primary navigation">
                     <section class="flex items-center gap-4" aria-label="Site logo and menu controls">
                         <!-- Logo -->
-                        <Link href="/" class="text-xl font-semibold text-gray-900 dark:text-white"
+                        <Link href="/" class="text-xl font-semibold text-gray-900 dark:text-white flex items-center"
                             aria-label="Go to homepage">
-                        <Logo size="2.5rem" />
+                        <img src="/images/logo.png" class="h-10 w-auto block dark:hidden" alt="Logo" />
+                        <img src="/images/logo-dark.png" class="h-10 w-auto hidden dark:block" alt="Logo Dark" />
                         </Link>
 
                         <!-- Mobile Menu Toggle -->

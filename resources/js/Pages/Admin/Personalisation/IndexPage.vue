@@ -156,35 +156,11 @@ const submit = () => {
                     <div class="grid grid-cols-1 md:grid-cols-1 gap-8 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 w-full md:w-2/3 dark:border-gray-700"
                         role="group" aria-label="Media uploads">
                         <div class="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-1 gap-2">
-                            <!-- 
-                                Upload functionality is currently restricted. To re-enable:
-                                1. Remove the 'disabled' prop from FilePondUploader components
-                                2. Remove the overlay divs with class="absolute inset-0..."
-                                3. Or just delete everything between the UPLOAD_RESTRICTION_START and UPLOAD_RESTRICTION_END comments
-                            -->
-                            <div class="relative">
-                                <!-- UPLOAD_RESTRICTION_START -->
-                                <div
-                                    class="absolute inset-0 bg-white/10 dark:bg-gray-900/10 z-10 flex items-center justify-center">
-                                    <span
-                                        class="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 px-3 py-1 rounded text-sm font-medium">
-                                        <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                        Upload restricted
-                                    </span>
-                                </div>
-                                <!-- UPLOAD_RESTRICTION_END -->
-                                <FilePondUploader name="app_logo" label="Application logo"
-                                    label-idle="Drop logo here..." id="app_logo"
-                                    :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
-                                    :files="getInitialFiles('app_logo')"
-                                    @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
-                                    @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')"
-                                    disabled />
-                            </div>
+                            <FilePondUploader name="app_logo" label="Application logo" label-idle="Drop logo here..."
+                                id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                                :files="getInitialFiles('app_logo')"
+                                @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
+                                @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
                             <div
                                 class="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                                 <div class="flex items-start gap-1">
@@ -199,53 +175,20 @@ const submit = () => {
                                 </div>
                             </div>
 
-                            <div class="relative mt-2">
-                                <!-- UPLOAD_RESTRICTION_START -->
-                                <div
-                                    class="absolute inset-0 bg-white/10 dark:bg-gray-900/10 z-10 flex items-center justify-center">
-                                    <span
-                                        class="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 px-3 py-1 rounded text-sm font-medium">
-                                        <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                        Upload restricted
-                                    </span>
-                                </div>
-                                <!-- UPLOAD_RESTRICTION_END -->
-                                <FilePondUploader name="app_logo_dark" label="Application logo (dark mode)"
-                                    label-idle="Drop logo here..." id="app_logo_dark"
-                                    :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
-                                    :files="getInitialFiles('app_logo_dark')"
-                                    @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo_dark')"
-                                    @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo_dark')"
-                                    disabled />
-                            </div>
+                            <FilePondUploader name="app_logo_dark" label="Application logo (dark mode)"
+                                label-idle="Drop logo here..." id="app_logo_dark"
+                                :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                                :files="getInitialFiles('app_logo_dark')"
+                                @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo_dark')"
+                                @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo_dark')" />
 
                             <hr class="my-4 border-gray-200 dark:border-gray-700">
 
-                            <div class="relative">
-                                <!-- UPLOAD_RESTRICTION_START -->
-                                <div
-                                    class="absolute inset-0 bg-white/10 dark:bg-gray-900/10 z-10 flex items-center justify-center">
-                                    <span
-                                        class="bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 px-3 py-1 rounded text-sm font-medium">
-                                        <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
-                                        Upload restricted
-                                    </span>
-                                </div>
-                                <!-- UPLOAD_RESTRICTION_END -->
-                                <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
-                                    id="favicon" :accepted-file-types="['image/png', 'image/x-icon']"
-                                    :server="uploadConfig" :files="getInitialFiles('favicon')"
-                                    @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
-                                    @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" disabled />
-                            </div>
+                            <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
+                                id="favicon" :accepted-file-types="['image/png', 'image/x-icon']" :server="uploadConfig"
+                                :files="getInitialFiles('favicon')"
+                                @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
+                                @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />
                         </div>
                     </div>
                 </section>

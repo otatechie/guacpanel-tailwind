@@ -101,9 +101,17 @@ const submit = () => {
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                     Add an extra layer of security by making two-factor authentication mandatory
                                 </p>
+                                <!-- This feature is currently disabled in both frontend and backend -->
+                                <p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                                    <svg class="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    This feature is currently disabled
+                                </p>
                             </div>
                             <Switch v-model="form.two_factor_authentication"
-                                :aria-label="'Toggle two-factor authentication'" />
+                                :aria-label="'Toggle two-factor authentication'"
+                                :disabled="true" />
                         </div>
                     </div>
 

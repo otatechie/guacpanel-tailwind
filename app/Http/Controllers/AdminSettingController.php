@@ -38,6 +38,9 @@ class AdminSettingController extends Controller
             'two_factor_authentication' => ['boolean'],
         ]);
 
+        // Force 2FA to be disabled
+        $validatedData['two_factor_authentication'] = false;
+
         Setting::updateOrCreate([], $validatedData);
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
