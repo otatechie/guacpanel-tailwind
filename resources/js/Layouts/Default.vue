@@ -104,7 +104,7 @@ onUnmounted(() => {
                         <!-- Logo -->
                         <Link href="/" class="flex items-center text-xl font-semibold text-gray-800 dark:text-white"
                             aria-label="Go to homepage">
-                        <Logo size="2.5rem" class="!py-0 !justify-start" />
+                        <Logo size="2.5rem" />
                         </Link>
 
                         <!-- Mobile Menu Toggle Button -->

@@ -25,8 +25,31 @@ input:focus {
     outline: none;
 }
 
+/* FilePond Customizations */
 .filepond--drop-label {
     font-family: var(--font-sans);
+}
+
+/* Disable FilePond animations */
+.filepond--image-preview-overlay-idle {
+    animation: none !important;
+}
+
+.filepond--image-preview-overlay-success {
+    animation: none !important;
+}
+
+.filepond--image-preview {
+    background: none !important;
+}
+
+.filepond--image-preview-wrapper {
+    animation: none !important;
+}
+
+.filepond--image-preview-overlay {
+    animation: none !important;
+    opacity: 0 !important;
 }
 
 /* Utility Classes */
