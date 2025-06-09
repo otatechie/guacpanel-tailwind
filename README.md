@@ -28,45 +28,48 @@ An opinionated Laravel starter kit with Vue.js, Inertia.js, and Tailwind CSS inc
 ## Features
 
 - 🔐 **Authentication & Security**
-  - Secure login with Laravel Fortify
+  - Secure login with [Laravel Fortify](https://laravel.com/docs/fortify)
   - Passwordless magic link authentication
-  - Two-factor authentication (2FA)
-  - Role-based permissions system
-  - Password security policies
-  - Password expiry enforcement
-  - Force password change capability
-  - Account disabling functionality
-  - Authentication logs tracking
-  - Browser session management
+  - Two-factor authentication (2FA) via [Laravel Fortify](https://laravel.com/docs/fortify#two-factor-authentication)
+  - Role-based permissions with [Spatie Permission](https://spatie.be/docs/laravel-permission)
+    - Visual role and permission management
+    - User role assignment interface
+  - Session and security management
+    - Active sessions overview
+    - Login history tracking
+    - Password policies enforcement
 
 - 🎨 **Interface & Design**
-  - Responsive mobile-friendly design
-  - Dark/Light mode support
-  - Modern dashboard layout
-  - Google Fonts integration with local caching
-  - Customizable theme configuration
-  - Beautiful UI components
+  - Dark/Light mode with system preference detection
+  - Responsive design with [Tailwind CSS v4](https://tailwindcss.com/docs)
+  - Auto-generated avatars via [Laravel Avatar](https://github.com/laravolt/avatar)
+  - Local Google Fonts via [Spatie Laravel Google Fonts](https://github.com/spatie/laravel-google-fonts)
+  - Customizable theme settings
 
-- 📊 **Data Management**
-  - Interactive data tables with TanStack Table
-  - Advanced filtering and sorting
-  - Server-side pagination
-  - Data export capabilities
-  - Customizable columns
-  - Action buttons integration
+- 📊 **Data Tables**
+  - Modern tables with [@tanstack/vue-table v8](https://tanstack.com/table/v8/docs)
+    - Server-side pagination
+    - Column sorting
+    - Search functionality
+  - Data export with [Laravel Excel](https://docs.laravel-excel.com)
+  - Action buttons with confirmation dialogs
 
 - 📁 **File Management**
-  - FilePond integration for modern uploads
-  - Drag and drop file uploads
+  - Drag & drop uploads with [FilePond v4](https://pqina.nl/filepond/docs/)
+    - Image preview
+    - File type validation
+    - Size restrictions
+  - Multiple file selection
 
 - 🔄 **System Features**
-  - Automated backup system
-  - Activity tracking and auditing
-  - Model change logging
-  - User activity dashboard
-  - Comprehensive audit logs
-  - Browser session tracking
-  - Security middleware
+  - Backup management via [Spatie Backup](https://spatie.be/docs/laravel-backup)
+    - User-friendly dashboard
+    - One-click backup creation
+    - Backup download
+  - Activity logging with [Laravel Auditing](https://laravel-auditing.com)
+    - User action tracking
+    - Data change history
+  - Security event monitoring
 
 ## Quick Start
 
