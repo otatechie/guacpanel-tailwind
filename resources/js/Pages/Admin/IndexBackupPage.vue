@@ -34,7 +34,7 @@ const runBackup = () => {
     if (isBackupRunning.value) return;
 
     isBackupRunning.value = true;
-    form.post(route('backup.create'), {
+    form.post(route('admin.backup.create'), {
         preserveScroll: true,
         onError: () => {
             isBackupRunning.value = false;
@@ -48,9 +48,11 @@ const runBackup = () => {
 const downloadBackup = (fileName) => {
     if (!fileName || typeof fileName !== 'string') return;
 
-    const encodedPath = encodeURIComponent(fileName.trim());
-    if (!encodedPath.match(/\.(zip|gz|sql)$/i)) return;
-    window.open(route('backup.download', { path: encodedPath }));
+    const encodedPath = btoa(fileName.trim());
+    
+    if (!fileName.match(/\.(zip|gz|sql)$/i)) return;
+    
+    window.location.href = `/admin/backup/download/${encodedPath}`;
 };
 
 const confirmDelete = (backup) => {
@@ -66,8 +68,8 @@ const closeDeleteModal = () => {
 const deleteBackup = () => {
     if (!selectedBackup.value?.path) return;
 
-    const encodedPath = encodeURIComponent(selectedBackup.value.path.trim());
-    form.delete(route('backup.destroy', { path: encodedPath }), {
+    const encodedPath = btoa(selectedBackup.value.path.trim());
+    form.delete(route('admin.backup.destroy', { path: encodedPath }), {
         preserveScroll: true,
         onSuccess: () => {
             closeDeleteModal();

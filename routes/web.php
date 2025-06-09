@@ -117,7 +117,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                     });
                 });
 
-
                 // Backup Routes
                 Route::prefix('backup')->name('backup.')->group(function () {
                     Route::controller(AdminBackupController::class)->group(function () {

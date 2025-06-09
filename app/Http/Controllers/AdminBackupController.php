@@ -46,31 +46,19 @@ class AdminBackupController extends Controller
         $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
         $files = $disk->allFiles($backupName);
 
-        $backups = [];
-        foreach ($files as $file) {
-            if (substr($file, -4) === '.zip') {
-                $backups[] = [
-                    'path' => $file,
-                    'date' => date('M d, Y g:i A', $disk->lastModified($file)),
-                    'size' => $this->formatBytes($disk->size($file)),
-                ];
-            }
-        }
+        $backups = collect($files)
+            ->filter(fn($file) => str_ends_with($file, '.zip'))
+            ->map(fn($file) => [
+                'path' => $file,
+                'date' => date('M d, Y g:i A', $disk->lastModified($file)),
+                'size' => $this->formatBytes($disk->size($file)),
+            ])
+            ->sortByDesc(fn($backup) => strtotime($backup['date']))
+            ->values()
+            ->toArray();
 
-        usort($backups, fn($a, $b) => strtotime($b['date']) - strtotime($a['date']));
-
-        $totalSize = array_reduce($backups, fn($carry, $backup) => $carry + $disk->size($backup['path']), 0);
-
-        // Determine storage type more safely
-        $storageType = 'other';
-        try {
-            $diskConfig = config('filesystems.disks.local.driver');
-            if ($diskConfig === 'local') {
-                $storageType = 'local';
-            }
-        } catch (\Exception $e) {
-            // If we can't determine the adapter, just use the default value
-        }
+        $totalSize = collect($backups)->sum(fn($backup) => $disk->size($backup['path']));
+        $storageType = config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other';
 
         return [[
             'name' => $backupName,
@@ -85,39 +73,43 @@ class AdminBackupController extends Controller
     }
 
 
-    public function download(string $path)
+    private function handleBackupError(\Exception $e, string $action = 'process backup')
     {
-        $disk = $this->getDisk();
-        $path = urldecode($path);
-
-        if (!$disk->exists($path)) {
-            session()->flash('error', 'Unable to locate backup file');
-            return redirect()->back();
-        }
-
-        return response()->streamDownload(function() use ($disk, $path) {
-            echo $disk->get($path);
-        }, basename($path));
+        report($e);
+        session()->flash('error', "Failed to {$action}: " . $e->getMessage());
+        return redirect()->back();
     }
 
 
-    public function delete(string $path)
+    private function validateBackupExists(string $path, bool $isBase64 = false): ?string
+    {
+        $disk = $this->getDisk();
+        $decodedPath = $isBase64 ? base64_decode($path) : urldecode($path);
+        
+        return $disk->exists($decodedPath) ? $decodedPath : null;
+    }
+    
+
+    public function download(string $path)
     {
         try {
-            $disk = $this->getDisk();
-            $path = urldecode($path);
+            $decodedPath = $this->validateBackupExists($path, true);
             
-            if (!$disk->exists($path)) {
-                return response()->json(['message' => 'Backup file not found'], 404);
+            if (!$decodedPath) {
+                session()->flash('error', 'Unable to locate backup file.');
+                return redirect()->back();
             }
+
+            $filePath = storage_path('app/' . $decodedPath);
             
-            $disk->delete($path);
-            session()->flash('success', 'Backup deleted successfully');
-            
-            return redirect()->back();
+            if (!file_exists($filePath)) {
+                session()->flash('error', 'Backup file not found on disk.');
+                return redirect()->back();
+            }
+
+            return response()->download($filePath, basename($decodedPath));
         } catch (\Exception $e) {
-            report($e);
-            return response()->json(['message' => 'Failed to delete: ' . $e->getMessage()], 500);
+            return $this->handleBackupError($e, 'download backup');
         }
     }
 
@@ -125,38 +117,31 @@ class AdminBackupController extends Controller
     public function destroy(string $path)
     {
         try {
-            $disk = $this->getDisk();
-            $path = urldecode($path);
+            $decodedPath = $this->validateBackupExists($path, true);
             
-            if (!$disk->exists($path)) {
-                return response()->json(['message' => 'Backup file not found'], 404);
+            if (!$decodedPath) {
+                session()->flash('error', 'Backup file not found.');
+                return redirect()->back();
             }
-                    
-            $disk->delete($path);
-            session()->flash('success', 'Backup deleted successfully');
-
+            
+            $this->getDisk()->delete($decodedPath);
+            session()->flash('warning', 'Backup deleted successfully.');
+            
             return redirect()->back();
         } catch (\Exception $e) {
-            report($e);
-            return response()->json(['message' => 'Failed to delete backup'], 500);
+            return $this->handleBackupError($e, 'delete backup');
         }
     }
 
 
     private function formatBytes($bytes)
     {
-        if ($bytes >= 1073741824) {
-            return number_format($bytes / 1073741824, 2) . ' GB';
-        } elseif ($bytes >= 1048576) {
-            return number_format($bytes / 1048576, 2) . ' MB';
-        } elseif ($bytes >= 1024) {
-            return number_format($bytes / 1024, 2) . ' KB';
-        } elseif ($bytes > 1) {
-            return $bytes . ' bytes';
-        } elseif ($bytes == 1) {
-            return $bytes . ' byte';
-        } else {
-            return '0 bytes';
-        }
+        $units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= (1 << (10 * $pow));
+        
+        return round($bytes, 2) . ' ' . $units[$pow];
     }
 }
