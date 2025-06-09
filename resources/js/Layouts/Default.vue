@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePage, Link } from '@inertiajs/vue3'
-import NavSidebarDesktop from '../Components/NavSidebarDesktop.vue'
+import NavSidebarDesktop from '@/Components/NavSidebarDesktop.vue'
 import NavProfile from '../Components/NavProfile.vue'
 import Notification from '../Components/Notification.vue'
 import FlashMessage from '../Components/FlashMessage.vue'
