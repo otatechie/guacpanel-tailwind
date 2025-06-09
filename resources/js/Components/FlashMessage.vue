@@ -132,9 +132,6 @@ watch(
     (newFlash) => {
         if (!newFlash) return
         
-        // Debug log
-        console.log('Flash data:', newFlash)
-
         const errors = page.props.errors || {}
         if (Object.keys(errors).length > 0) {
             showAlert('Form Error', 'Please review the highlighted fields.', 'warning')
