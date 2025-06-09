@@ -87,11 +87,10 @@ onUnmounted(() => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Introduction</h1>
                 </div>
                 <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
-                    Transform your Laravel development workflow with GuacPanel - a VILT stack starter kit that
-                    accelerates app development with pre-configured authentication, UI components, and developer tools.
+                    Jumpstart your Laravel projects with GuacPanel - a modern VILT stack kit featuring Fortify authentication, Spatie's powerful trio (Permissions, Backup, Auditing), and TanStack Table integration.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="#quick-start"
+                    <a href="/documentation/installation#installation"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-white text-teal-500 hover:bg-teal-50 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -154,10 +153,10 @@ onUnmounted(() => {
                             </div>
                             <div>
                                 <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
-                                    Secure Login
+                                    Laravel Fortify
                                 </h4>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    Based on Laravel's authentication
+                                    Secure authentication scaffolding with 2FA support
                                 </p>
                             </div>
                         </div>
@@ -202,10 +201,10 @@ onUnmounted(() => {
                             </div>
                             <div>
                                 <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
-                                    Role-based Permissions
+                                    Spatie Permissions
                                 </h4>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    Control access with customizable roles
+                                    Role-based access control with visual management
                                 </p>
                             </div>
                         </div>
@@ -400,34 +399,10 @@ onUnmounted(() => {
                             </div>
                             <div>
                                 <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
-                                    Data Tables
+                                    TanStack Table
                                 </h4>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    Interactive tables with sorting
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
-                        <div class="flex items-start gap-6">
-                            <div class="flex-shrink-0 mt-1">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
-                                    Advanced Filtering
-                                </h4>
-                                <p class="text-gray-600 dark:text-gray-400">
-                                    Find exactly what you need quickly
+                                    Advanced data tables with sorting and filtering
                                 </p>
                             </div>
                         </div>
@@ -472,10 +447,10 @@ onUnmounted(() => {
                             </div>
                             <div>
                                 <h4 class="text-lg font-semibold text-gray-700 dark:text-white mb-2">
-                                    Backup System
+                                    Spatie Backup
                                 </h4>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    Automated backup functionality
+                                    Database & file backups with UI management
                                 </p>
                             </div>
                         </div>
@@ -633,89 +608,48 @@ onUnmounted(() => {
                     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                         <div class="space-y-4">
                             <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Fortify -
-                                    <span class="text-gray-500 dark:text-gray-400">Backend authentication
-                                        scaffolding</span>
-                                    <a href="https://laravel.com/docs/fortify" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
+                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Authentication & Security</h5>
+                                <div class="ml-4 space-y-2 mt-2">
+                                    <p class="text-gray-600 dark:text-gray-400">Laravel Fortify - <span class="text-gray-500">Authentication scaffolding with 2FA</span>
+                                        <a href="https://laravel.com/docs/fortify" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400">Spatie Permission - <span class="text-gray-500">Role and permission management</span>
+                                        <a href="https://spatie.be/docs/laravel-permission" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                </div>
                             </div>
 
                             <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Chart.js - <span
-                                        class="text-gray-500 dark:text-gray-400">JavaScript charting library</span>
-                                    <a href="https://www.chartjs.org/docs/latest/" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
+                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Data & System</h5>
+                                <div class="ml-4 space-y-2 mt-2">
+                                    <p class="text-gray-600 dark:text-gray-400">TanStack Table - <span class="text-gray-500">Advanced data tables with server-side features</span>
+                                        <a href="https://tanstack.com/table/v8/docs" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400">Laravel Excel - <span class="text-gray-500">Data export functionality</span>
+                                        <a href="https://docs.laravel-excel.com" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400">Spatie Backup - <span class="text-gray-500">Database and file backup system</span>
+                                        <a href="https://spatie.be/docs/laravel-backup" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400">Laravel Auditing - <span class="text-gray-500">Model and activity tracking</span>
+                                        <a href="https://laravel-auditing.com" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                </div>
                             </div>
 
                             <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">TanStack Table -
-                                    <span class="text-gray-500 dark:text-gray-400">Powerful table and datagrid
-                                        system</span>
-                                    <a href="https://tanstack.com/table/v8/docs/guide/introduction" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
-                            </div>
-
-                            <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">FilePond - <span
-                                        class="text-gray-500 dark:text-gray-400">Advanced file upload interface</span>
-                                    <a href="https://pqina.nl/filepond/docs/" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
-                            </div>
-
-                            <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Backup -
-                                    <span class="text-gray-500 dark:text-gray-400">Automated database and file
-                                        backups</span>
-                                    <a href="https://spatie.be/docs/laravel-backup/v8/introduction" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
-                            </div>
-
-                            <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Google
-                                    Fonts - <span class="text-gray-500 dark:text-gray-400">Self-hosted font
-                                        integration</span>
-                                    <a href="https://github.com/spatie/laravel-google-fonts" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
-                            </div>
-
-                            <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravolt Avatar -
-                                    <span class="text-gray-500 dark:text-gray-400">Name-based avatar generator</span>
-                                    <a href="https://github.com/laravolt/avatar" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
-                            </div>
-
-                            <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Laravel Auditing -
-                                    <span class="text-gray-500 dark:text-gray-400">Model and activity tracking</span>
-                                    <a href="https://laravel-auditing.com/guide/getting-started.html" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
-                            </div>
-
-                            <div>
-                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">Spatie Permission
-                                    - <span class="text-gray-500 dark:text-gray-400">Role and permission
-                                        management</span>
-                                    <a href="https://spatie.be/docs/laravel-permission/v5/introduction" target="_blank"
-                                        class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs
-                                        →</a>
-                                </h5>
+                                <h5 class="font-medium text-gray-800 dark:text-white leading-relaxed">UI & Design</h5>
+                                <div class="ml-4 space-y-2 mt-2">
+                                    <p class="text-gray-600 dark:text-gray-400">FilePond - <span class="text-gray-500">Advanced file upload interface</span>
+                                        <a href="https://pqina.nl/filepond/docs/" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400">Laravel Avatar - <span class="text-gray-500">Auto-generated user avatars</span>
+                                        <a href="https://github.com/laravolt/avatar" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400">Spatie Laravel Google Fonts - <span class="text-gray-500">Self-hosted Google Fonts</span>
+                                        <a href="https://github.com/spatie/laravel-google-fonts" target="_blank" class="text-blue-500 hover:text-blue-500 text-sm ml-2 inline-block">Docs →</a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

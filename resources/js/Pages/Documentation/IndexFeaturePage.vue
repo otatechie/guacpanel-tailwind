@@ -450,7 +450,7 @@ php artisan optimize`
                         </svg>
                         Authentication
                     </a>
-                    <a href="#datatables"
+                    <a href="#data-tables"
                         class="inline-flex items-center px-6 py-3 rounded-lg bg-teal-500 text-white hover:bg-teal-400 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -800,7 +800,7 @@ php artisan optimize`
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 GuacPanel provides a powerful data table interface built on <a
-                                    href="https://tanstack.com/table/v8" target="_blank"
+                                    href="https://tanstack.com/table/latest" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. Our
                                 <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Datatable</code>
                                 component offers a complete solution for data management.

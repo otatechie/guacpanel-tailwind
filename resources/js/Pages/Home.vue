@@ -4,8 +4,8 @@ import { ref } from 'vue'
 
 const code = `git clone https://github.com/otatechie/guacpanel-tailwind
 cd guacpanel-tailwind && composer install
-npm install && npm run dev
-php artisan migrate --seed`
+php artisan migrate --seed
+npm install && npm run dev`
 
 const copied = ref(false)
 function copyCode() {
@@ -88,7 +88,7 @@ function copyCode() {
                 </h1>
 
                 <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-2xl mx-auto">
-                    Build amazing Laravel applications with ease. GuacPanel accelerates your development workflow.
+                    Build amazing Laravel applications with ease. GuacPanel provides ready-to-use features like authentication, permissions, backup management, and auditing - all with beautiful UI components.
                     <span aria-hidden="true" class="inline-block animate-bounce">🚀</span>
                 </p>
 
@@ -219,7 +219,8 @@ function copyCode() {
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">TanStack Table</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Powerful table features using
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Powerful table features
+                            using
                             TanStack Table for data management.</p>
                     </div>
 
@@ -249,8 +250,9 @@ function copyCode() {
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Spatie Backup</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Integrated Laravel backup system with
-                            multi-disk storage support.</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Integrated Laravel backup
+                            system with
+                            UI management interface.</p>
                     </div>
 
 
@@ -265,8 +267,9 @@ function copyCode() {
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Laravel Auditing</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Model changes and user actions tracked
-                            using Owen-IT's Laravel Auditing.</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Model changes and user
+                            actions tracked
+                            using Laravel Auditing.</p>
                     </div>
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-pink-100 dark:hover:border-pink-900 transition-all duration-300"
@@ -295,8 +298,9 @@ function copyCode() {
                             </svg>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Spatie Permissions</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Role-based access control using
-                            Spatie's Laravel-permission.</p>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Role-based access control
+                            using
+                            Spatie's Laravel-permission with UI management interface.</p>
                     </div>
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-rose-100 dark:hover:border-rose-900 transition-all duration-300"

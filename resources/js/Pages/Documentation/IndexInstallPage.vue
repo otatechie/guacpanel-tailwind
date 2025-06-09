@@ -78,9 +78,7 @@ onMounted(() => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Getting Started</h1>
                 </div>
                 <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
-                    Get started with our Laravel Vue Starter Kit in minutes. Follow this step-by-step guide to set up
-                    your
-                    development environment and begin building powerful admin interfaces.
+                    Set up GuacPanel in minutes with this step-by-step guide. Build your Laravel admin interface with authentication, permissions, and modern UI components ready to go.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#installation"
@@ -253,6 +251,24 @@ php artisan key:generate</code></pre>
 php artisan serve</code></pre>
                         </div>
                     </div>
+
+                    <div>
+                        <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                            <div
+                                class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-white" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            Install and compile frontend assets
+                        </h3>
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <pre class="text-sm"><code v-highlight class="language-bash">npm install
+npm run dev</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -296,6 +312,14 @@ DB_PASSWORD=your_password</code></pre>
                     </div>
                     <div class="bg-gray-800 rounded-lg p-4">
                         <pre class="text-sm"><code v-highlight class="language-bash">php artisan db:seed</code></pre>
+                    </div>
+
+                    <div class="prose dark:prose-invert max-w-none">
+                        <p>4. Install and compile frontend assets:</p>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4">
+                        <pre class="text-sm"><code v-highlight class="language-bash">npm install
+npm run dev</code></pre>
                     </div>
 
                     <div class="prose dark:prose-invert max-w-none">
@@ -368,6 +392,40 @@ Password: password</code></pre>
                                     <pre class="text-sm"><code v-highlight class="language-bash">npm cache clean --force
 npm install</code></pre>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg">
+                                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7m5 4h6m-6 4h6m-6 4h6" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800 dark:text-white">MySQL Database Backup</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Configure mysqldump path in your .env file:</p>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-bash">DB_DUMP_PATH=your path</code></pre>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">Alternatively, you can set the path in config/database.php:</p>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre class="text-sm"><code v-highlight class="language-php">'mysql' => [
+    // ...other mysql configuration
+    'dump' => [
+        'dump_binary_path' => '/usr/bin/mysqldump',  // Adjust your path
+    ],
+],</code></pre>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">If you get "Command not found (exitcode 127)" error:</p>
+                                <ol class="list-decimal list-inside text-sm text-gray-600 dark:text-gray-400 ml-4 mb-2">
+                                    <li>Verify mysqldump is installed</li>
+                                    <li>Find mysqldump location: <code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">which mysqldump</code> (Linux/Mac) or search in MySQL installation folder (Windows)</li>
+                                    <li>Update the path in either .env or config/database.php</li>
+                                </ol>                               
                             </div>
                         </div>
                     </div>
