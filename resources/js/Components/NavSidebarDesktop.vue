@@ -49,7 +49,7 @@ const navigationSections = reactive([
                 isOpen: false,
                 children: [
                     { name: 'General', route: 'admin.setting.index', permission: 'manage-settings' },
-                    { name: 'Backups', route: 'backup.index', permission: 'manage-backups' },
+                    { name: 'Backups', route: 'admin.backup.index', permission: 'manage-backups' },
                     { name: 'Login History', route: 'admin.login.history.index', permission: 'view-audits' },
                     { name: 'Personalisation', route: 'admin.personalization.index', permission: 'manage-personalization' },
                     { name: 'Permissions & Roles', route: 'admin.permission.role.index', permission: 'view-permissions-roles' },

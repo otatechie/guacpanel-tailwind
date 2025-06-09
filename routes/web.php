@@ -18,7 +18,8 @@ use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionRoleController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
-use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+
+use App\Http\Controllers\AdminBackupController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -115,12 +116,18 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                         Route::post('/update-info', 'updateInfo')->name('update.info');
                     });
                 });
+
+
+                // Backup Routes
+                Route::prefix('backup')->name('backup.')->group(function () {
+                    Route::controller(AdminBackupController::class)->group(function () {
+                        Route::get('/', 'index')->name('index');
+                        Route::post('/create', 'createBackup')->name('create');
+                        Route::get('/download/{path}', 'download')->name('download');
+                        Route::delete('/{path}', 'destroy')->name('destroy');
+                    });
+                });
             });
-
-
-
-            // Health Check Route
-            Route::get('health', HealthCheckResultsController::class)->name('health');
         });
     });
 });

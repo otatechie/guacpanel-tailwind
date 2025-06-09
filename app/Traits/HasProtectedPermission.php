@@ -13,7 +13,6 @@ trait HasProtectedPermission
             'manage-settings',
             'manage-security-settings',
             'view-audits',
-            'view-health-checks',
             'manage-backups',
             'manage-personalization',
             'manage-roles',
