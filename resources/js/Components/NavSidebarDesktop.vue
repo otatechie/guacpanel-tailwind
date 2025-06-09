@@ -8,7 +8,15 @@ const user = computed(() => page.props.auth?.user)
 const hasPermission = permissionName =>
     !permissionName || (user.value?.permissions?.includes(permissionName) ?? false)
 
-const isActive = href => href && page.url === new URL(href).pathname
+const isActive = href => {
+    if (!href) return false
+    try {
+        const fullUrl = new URL(href, window.location.origin)
+        return page.url === fullUrl.pathname
+    } catch (e) {
+        return false
+    }
+}
 
 const isParentActive = children =>
     children?.some?.(child => isActive(child.href)) ?? false
