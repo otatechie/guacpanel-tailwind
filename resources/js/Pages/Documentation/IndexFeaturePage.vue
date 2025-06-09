@@ -124,73 +124,57 @@ const twoFactorCode = ref(`public function handle(Request $request, Closure $nex
 }`)
 
 const tableExampleCode = ref(`// Import required dependencies
-import { createColumnHelper } from '@tanstack/vue-table'
-import { h, ref, watch } from 'vue'
+import { ref } from 'vue'
 import Datatable from '@/Components/Datatable.vue'
+import { createColumnHelper } from '@tanstack/vue-table'
 
-// Initialize column helper and state
+// Initialize column helper
 const columnHelper = createColumnHelper()
+
+// Define table state
 const loading = ref(false)
 const pagination = ref({
-    current_page: props.users.current_page,
-    per_page: Number(props.users.per_page),
-    total: props.users.total
+    current_page: 1,
+    per_page: 10,
+    total: 0
 })
 
 // Define table columns
 const columns = [
     columnHelper.accessor('name', {
         header: 'Name',
-        cell: info => h('span', {
-            'aria-label': \`User: \${info.getValue()}\`
-        }, info.getValue())
+        cell: info => info.getValue()
+    }),
+    columnHelper.accessor('email', {
+        header: 'Email',
+        cell: info => info.getValue()
     }),
     columnHelper.accessor('status', {
         header: 'Status',
-        cell: info => h('span', {
-            class: \`px-2 py-1 rounded-full text-xs font-medium \${
+        cell: info => (
+            <span class={\`px-2 py-1 rounded-full text-xs font-medium \${
                 info.getValue() === 'active'
                     ? 'bg-green-50 text-green-700'
                     : 'bg-red-50 text-red-700'
-            }\`,
-            role: 'status'
-        }, info.getValue())
+            }\`}>
+                {info.getValue()}
+            </span>
+        )
     })
 ]
 
-// Handle row actions
-const handleEdit = (row) => {
-    router.visit(route('users.edit', { user: row.id }))
-}
-
-const handleDelete = (row) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-        router.delete(route('users.destroy', { user: row.id }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                // Show success message
-                flash('User deleted successfully', 'success')
-            }
-        })
-    }
-}
-
-// Handle pagination changes
-watch(pagination, newPagination => {
-    loading.value = true
-    router.get(
-        route('users.index'),
-        {
-            page: newPagination.current_page,
-            per_page: newPagination.per_page
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
-            onFinish: () => loading.value = false
-        }
-    )
-}, { deep: true })`)
+// Template usage
+<Datatable
+    :data="users"
+    :columns="columns"
+    :loading="loading"
+    :pagination="pagination"
+    :search-fields="['name', 'email']"
+    empty-message="No users found"
+    empty-description="Users will appear here"
+    export-file-name="users_export"
+    @update:pagination="pagination = $event"
+/>`)
 
 const templateExampleCode = ref(`<Datatable
     :data="users.data"
@@ -227,28 +211,41 @@ const middlewareCode = ref(`class RoleMiddleware
     }
 }`)
 
-const actionButtonsCode = ref(`columnHelper.display({
+const actionButtonsCode = ref(`// Add to your columns array
+columnHelper.display({
     id: 'actions',
     header: 'Actions',
-    cell: ({ row }) => {
-        return (
-            <div class="flex space-x-2">
-                <button
-                    onClick={() => handleEdit(row.original)}
-                    class="text-blue-600 hover:text-blue-800"
-                >
-                    Edit
-                </button>
-                <button
-                    onClick={() => handleDelete(row.original)}
-                    class="text-red-600 hover:text-red-800"
-                >
-                    Delete
-                </button>
-            </div>
-        )
-    }
-})`)
+    cell: info => (
+        <div class="flex items-center gap-2">
+            <button
+                onClick={() => handleEdit(info.row.original)}
+                class="btn-primary-outline btn-sm"
+            >
+                Edit
+            </button>
+            <button
+                onClick={() => handleDelete(info.row.original)}
+                class="btn-danger-outline btn-sm"
+            >
+                Delete
+            </button>
+        </div>
+    )
+})
+
+// Action handlers
+const handleEdit = (user) => {
+    router.visit(route('users.edit', { user: user.id }))
+}
+
+const handleDelete = async (user) => {
+    if (!confirm('Are you sure you want to delete this user?')) return
+
+    router.delete(route('users.destroy', { user: user.id }), {
+        preserveScroll: true,
+        onSuccess: () => flash('User deleted successfully')
+    })
+}`)
 
 const articleLinks = [
     { text: 'Authentication', href: '#authentication' },
@@ -304,6 +301,122 @@ watch([
 ], () => {
     applyHighlighting()
 }, { deep: true })
+
+const configExample = `{
+    // Required props
+    name: {
+        type: String,
+        required: true
+    },
+    label: {
+        type: String,
+        required: true
+    },
+    server: {
+        type: Object,
+        required: true
+    },
+
+    // Optional props
+    labelIdle: {
+        type: String,
+        default: 'Drop files here...'
+    },
+    acceptedFileTypes: {
+        type: Array,
+        default: () => ['image/jpeg', 'image/png', 'application/pdf', 'image/x-icon']
+    },
+    maxFileSize: {
+        type: String,
+        default: '5MB'
+    },
+    allowMultiple: {
+        type: Boolean,
+        default: false
+    },
+    maxFiles: {
+        type: Number,
+        default: 1
+    },
+    required: {
+        type: Boolean,
+        default: false
+    },
+    files: {
+        type: Array,
+        default: () => []
+    }
+}`
+
+const scriptExample = `import { defineComponent } from 'vue'
+import vueFilePond from 'vue-filepond'
+import 'filepond/dist/filepond.min.css'
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
+import FilePondPluginPdfPreview from 'filepond-plugin-pdf-preview'
+import 'filepond-plugin-pdf-preview/dist/filepond-plugin-pdf-preview.min.css'
+
+const FilePond = vueFilePond(
+    FilePondPluginFileValidateType,
+    FilePondPluginImagePreview,
+    FilePondPluginFileValidateSize,
+    FilePondPluginPdfPreview
+)
+
+const serverConfig = {
+    url: '/upload',
+    process: {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    }
+}
+
+const handleFileUpload = (error, file) => {
+    if (!error) {
+        console.log('File uploaded:', file)
+    }
+}
+
+const handleFileRemove = (error, file) => {
+    if (!error) {
+        console.log('File removed:', file)
+    }
+}`
+
+const templateExample = `<file-pond 
+    name="document"
+    label="Upload Document"
+    :label-idle="'Drop files here...'"
+    :allow-multiple="false"
+    :max-files="1"
+    :accepted-file-types="['image/jpeg', 'image/png', 'application/pdf']"
+    :max-file-size="'5MB'"
+    :server="serverConfig"
+    :files="[]"
+    :credits="null"
+    :allow-pdf-preview="true"
+    :pdf-preview-height="320"
+    :pdf-component-extra-params="'toolbar=0'"
+    class="bg-white dark:bg-gray-800 rounded-lg"
+    @processfile="(error, file) => handleFileUpload(error, file)"
+    @removefile="(error, file) => handleFileRemove(error, file)"
+/>`
+
+const googleFontsConfig = `// config/google-fonts.php
+'fonts' => [
+    'default' => 'https://fonts.googleapis.com/css2?family=Your+Font:wght@400;500;600;700&display=swap'
+]
+
+// resources/css/app.css
+@theme {
+    --font-sans: "Your Font", "sans-serif";
+}`
+
+const googleFontsUsage = `php artisan google-fonts:fetch
+php artisan optimize`
 </script>
 
 
@@ -325,10 +438,8 @@ watch([
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Core Features</h1>
                 </div>
                 <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
-                    Explore GuacPanel's powerful built-in features including authentication, permissions, security
-                    middleware, backup systems,
-                    data tables, and activity tracking. Each feature is designed to help you build secure and scalable
-                    admin interfaces.
+                    Build secure Laravel admin interfaces with GuacPanel's essential features: authentication,
+                    permissions, data tables, backup system, and activity tracking. Everything you need, ready to use.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#authentication"
@@ -376,14 +487,11 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-2">
-                                <a href="https://laravel.com/docs/fortify" target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">Laravel Fortify</a>
-                                automatically scaffolds the login, two-factor login, registration,
-                                password
-                                reset, and email verification features for your project, allowing you to start building
-                                the
-                                features you care about instead of worrying about the nitty-gritty details of user
-                                authentication.
+                                GuacPanel is built on <a href="https://laravel.com/docs/fortify" target="_blank"
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">Laravel Fortify</a>,
+                                providing ready-to-use authentication features including login, registration, two-factor
+                                auth, password reset, and email verification. Focus on building your app while Fortify
+                                handles the auth.
                             </p>
                         </div>
 
@@ -395,16 +503,6 @@ watch([
                                 instead of traditional passwords. This modern approach enhances security by eliminating
                                 password-related vulnerabilities while providing a smoother user experience.
                             </p>
-
-                            <div
-                                class="mt-6 p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                    <span class="flex-shrink-0 text-xl">💡</span>
-                                    <span><strong>Pro Tip:</strong> Passwordless login is perfect for non-technical
-                                        users -
-                                        no more forgotten passwords or security concerns!</span>
-                                </p>
-                            </div>
                         </div>
 
                         <div class="space-y-8">
@@ -454,13 +552,19 @@ watch([
                         <div>
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel provides a robust permissions and roles system built on top of <a
-                                    href="https://spatie.be/docs/laravel-permission" target="_blank"
+                                Built on <a href="https://spatie.be/docs/laravel-permission" target="_blank"
                                     class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's
-                                    Laravel-Permission</a> package. This system allows you to control access to
-                                different parts
-                                of your application with granular precision.
+                                    Laravel-Permission</a>,
+                                GuacPanel offers fine-grained access control through an easy-to-use roles and
+                                permissions system. Manage everything through a clean UI - for managing users' roles,
+                                and permissions.
                             </p>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                <li>Create and assign roles visually</li>
+                                <li>Set granular permissions for each role</li>
+                                <li>View permission inheritance at a glance</li>
+                                <li>View all users and their roles and permissions</li>
+                            </ul>
                         </div>
                     </div>
                 </section>
@@ -483,10 +587,8 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel includes several middleware components that enhance security and user
-                                management.
-                                These middleware classes intercept HTTP requests before they reach your controllers,
-                                allowing you to implement security checks, enforce policies, and manage user sessions.
+                                Protect your Laravel app with GuacPanel's built-in security middleware. Handle account
+                                status, password policies, and two-factor authentication automatically on every request.
                             </p>
                         </div>
 
@@ -557,12 +659,8 @@ watch([
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">password.expired</code>
-                                                middleware checks if the authenticated user's password has expired based
-                                                on the system settings. If expired, redirects to a password change
-                                                page. By default, passwords expire after 90 days. You can change this
-                                                period in the User model's <code
-                                                    class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">isPasswordExpired</code>
-                                                method.</span>
+                                                middleware enforces password expiry (default 90 days). Customize the
+                                                expiry period in the User model.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -595,8 +693,7 @@ watch([
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">force.password.change</code>
-                                                middleware checks if the user is flagged for a mandatory password
-                                                change. If so, redirects to the password change page.</span>
+                                                middleware enforces mandatory password updates when required.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -629,9 +726,8 @@ watch([
                                             <span class="flex-shrink-0 text-xl">💡</span>
                                             <span><strong>Pro Tip:</strong> The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">require.two.factor</code>
-                                                middleware checks if two-factor authentication is enabled in system
-                                                settings. If so and the user hasn't configured 2FA, redirects to the
-                                                setup page.</span>
+                                                middleware ensures users set up 2FA when it's required by system
+                                                settings.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -658,18 +754,12 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel includes a powerful backup system built on <a
-                                    href="https://spatie.be/docs/laravel-backup" target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's Laravel
-                                    Backup package</a>. This system enables you to:
+                                GuacPanel provides a clean interface for <a href="https://spatie.be/docs/laravel-backup"
+                                    target="_blank" class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's
+                                    Laravel Backup</a>.
+                                Create, download, and manage backups through the UI - no command line needed. Monitor
+                                backup health and delete old backups with ease.
                             </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>Automatically backup your database and files</li>
-                                <li>Schedule regular backups</li>
-                                <li>Store backups across multiple storage locations (local, S3, Dropbox, etc.)</li>
-                                <li>Monitor backup health</li>
-                                <li>Automatically manage and remove outdated backups</li>
-                            </ul>
                         </div>
 
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
@@ -686,8 +776,6 @@ watch([
                                     instantly with a single click, without needing command line access.</li>
                                 <li><span class="font-semibold">Backup Management:</span> Download, delete, or restore
                                     backups through a user-friendly interface with clear status indicators.</li>
-                                <li><span class="font-semibold">Health Monitoring:</span> Receive notifications about
-                                    backup status and potential issues through the admin dashboard.</li>
                             </ul>
                         </div>
                     </div>
@@ -711,17 +799,19 @@ watch([
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel includes a powerful data tables component built on top of <a
+                                GuacPanel provides a powerful data table interface built on <a
                                     href="https://tanstack.com/table/v8" target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. These
-                                tables provide a rich interactive experience with features like:
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">TanStack Table</a>. Our
+                                <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">Datatable</code>
+                                component offers a complete solution for data management.
                             </p>
                             <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>Column sorting and filtering</li>
-                                <li>Pagination with server-side support</li>
-                                <li>Data export (CSV, Excel)</li>
-                                <li>Responsive design for all screen sizes</li>
-                                <li>Customizable columns and cell rendering</li>
+                                <li>Row selection with bulk actions</li>
+                                <li>Server-side pagination and sorting</li>
+                                <li>Built-in search with customizable fields</li>
+                                <li>CSV export of selected or all rows</li>
+                                <li>Responsive design with dark mode support</li>
+                                <li>Customizable page sizes and loading states</li>
                             </ul>
                         </div>
 
@@ -756,8 +846,10 @@ watch([
                                             <p
                                                 class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                                 <span class="flex-shrink-0 text-xl">💡</span>
-                                                <span><strong>Pro Tip:</strong> Creates a table configuration with two
-                                                    columns (Name and Status) and sets up pagination state.</span>
+                                                <span><strong>Pro Tip:</strong> Creates a table with three columns
+                                                    (Name, Email, Status), server-side pagination, and styled status
+                                                    indicators. The component handles search, export, and row selection
+                                                    automatically.</span>
                                             </p>
                                         </div>
                                     </div>
@@ -790,13 +882,10 @@ watch([
                                             <p
                                                 class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                                 <span class="flex-shrink-0 text-xl">💡</span>
-                                                <span><strong>Pro Tip:</strong> Adds Edit and Delete action buttons to
-                                                    your table. These buttons call the <code
-                                                        class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">handleEdit</code>
-                                                    and
-                                                    <code
-                                                        class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">handleDelete</code>
-                                                    functions when clicked.</span>
+                                                <span><strong>Pro Tip:</strong> Add action buttons using <code
+                                                        class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">columnHelper.display</code>.
+                                                    Buttons use GuacPanel's built-in styles and integrate with
+                                                    Inertia.js for navigation and actions.</span>
                                             </p>
                                         </div>
                                     </div>
@@ -805,41 +894,7 @@ watch([
                                 <div
                                     class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">3.</span> Using the Datatable Component
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Implement the datatable in your template:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(templateExampleCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre
-                                            class="text-sm"><code v-highlight class="language-html">{{ templateExampleCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <div
-                                            class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                            <p
-                                                class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                                <span class="flex-shrink-0 text-xl">💡</span>
-                                                <span><strong>Pro Tip:</strong> Renders the datatable component with
-                                                    your configuration and binds the necessary props and events.</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">4.</span> Backend Integration
+                                        <span class="mr-3">3.</span> Backend Integration
                                     </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">
                                         Set up your backend controller to provide paginated data:
@@ -891,59 +946,10 @@ watch([
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="space-y-4">
                             <div class="prose dark:prose-invert max-w-none">
-                                <p>GuacPanel includes comprehensive authentication logging that tracks all login
-                                    attempts,
-                                    both successful and failed. The system automatically logs:</p>
-                            </div>
-
-                            <div class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-white">Tracked Information</h4>
-                                    <ul
-                                        class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2 mt-2">
-                                        <li>User ID and type</li>
-                                        <li>Login timestamp</li>
-                                        <li>IP address</li>
-                                        <li>User agent (browser/device information)</li>
-                                        <li>Login success status</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-white">Implementation</h4>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 my-2">The system uses Laravel's
-                                        event system to automatically log authentication attempts:</p>
-                                    <ul
-                                        class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2">
-                                        <li>Successful logins are logged via the <code
-                                                class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">LogSuccessfulLogin</code>
-                                            listener</li>
-                                        <li>Failed login attempts are tracked by the <code
-                                                class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">LogFailedLogin</code>
-                                            listener</li>
-                                        <li>All logs are stored in the <code
-                                                class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded">login_histories</code>
-                                            table</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                <div>
-                                    <h4 class="font-medium text-gray-800 dark:text-white">Viewing Logs</h4>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 my-2">Authentication logs can be
-                                        viewed in the admin dashboard under the Authentication Logs section. You can
-                                        filter logs by:</p>
-                                    <ul
-                                        class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-2">
-                                        <li>Date range</li>
-                                        <li>User</li>
-                                        <li>Login status (success/failure)</li>
-                                        <li>IP address</li>
-                                    </ul>
-                                </div>
+                                <p>GuacPanel automatically tracks all login activity, storing user details, timestamp,
+                                    IP, device info, and login status. The system uses Laravel events for logging and
+                                    provides a dashboard view where you can filter logs by user, date, success/failure,
+                                    and IP address.</p>
                             </div>
                         </div>
                     </div>
@@ -964,68 +970,13 @@ watch([
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel includes a comprehensive browser session management system that allows users
-                                to view and manage their active sessions across different devices. This feature enhances
-                                security by enabling users to monitor and control their account access.
-                            </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>View and manage your active sessions across different devices.</li>
-                                <li>Each session shows the device type, browser, and last activity time.</li>
-                                <li>Log out from all other devices or terminate individual sessions with a single click.</li>
-                            </ul>
-                        </div>
-                        <div class="space-y-8">
-                            <div class="mt-8">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Implementation</h3>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code class="language-php">class BrowserSessionController extends Controller
-{
-    public function index(Request $request)
-    {
-        $user = $this->getAuthUser();
-        $sessions = [];
-
-        if (config('session.driver') === 'database') {
-            $sessionRecords = DB::connection(config('session.connection'))
-                ->table(config('session.table', 'sessions'))
-                ->where('user_id', $user->getAuthIdentifier())
-                ->orderBy('last_activity', 'desc')
-                ->get();
-
-            foreach ($sessionRecords as $session) {
-                $sessions[] = [
-                    'id' => $session->id ?? '',
-                    'agent' => $this->formatAgent($session->user_agent ?? ''),
-                    'ip' => $session->ip_address ?? '',
-                    'lastActive' => $session->last_activity ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '',
-                    'isCurrent' => ($session->id ?? '') === $request->session()->getId(),
-                ];
-            }
-        }
-
-        return Inertia::render('UserAccount/IndexSessionPage', [
-            'user' => $user,
-            'sessions' => $sessions,
-        ]);
-    }
-}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                    <div
-                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                        <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                            <span class="flex-shrink-0 text-xl">💡</span>
-                                            <span><strong>Pro Tip:</strong> The session management system uses Laravel's
-                                                database session driver to track and manage user sessions. Make sure to
-                                                configure your session driver in <code
-                                                    class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">config/session.php</code>.</span>
-                                        </p>
-                                    </div>
-                                </div>
+                        <div class="space-y-4">
+                            <div class="prose dark:prose-invert max-w-none">
+                                <p>GuacPanel uses <a href="https://laravel.com/docs/session" target="_blank"
+                                        class="border-b-2 border-blue-500 dark:border-blue-400">Laravel Sessions</a> to
+                                    let users monitor and control their active sessions, showing device type, browser,
+                                    and last activity. Users can log out from individual sessions or all devices at
+                                    once.</p>
                             </div>
                         </div>
                     </div>
@@ -1046,29 +997,12 @@ watch([
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Model Auditing</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel integrates <a href="https://github.com/owen-it/laravel-auditing"
-                                    target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">owen-it/laravel-auditing</a>
-                                package for comprehensive model auditing and activity tracking. While the core auditing
-                                functionality is handled by the package, GuacPanel provides:
-                            </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>User-friendly interface to view audit logs</li>
-                                <li>Filtering and search capabilities for audits</li>
-                                <li>User activity tracking dashboard</li>
-                            </ul>
-
-                            <div
-                                class="mt-6 p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                    <span class="flex-shrink-0 text-xl">💡</span>
-                                    <span><strong>Pro Tip:</strong> Implement the <code
-                                            class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">Auditable</code>
-                                        interface on critical models to track important changes automatically.</span>
-                                </p>
+                        <div class="space-y-4">
+                            <div class="prose dark:prose-invert max-w-none">
+                                <p>GuacPanel uses <a href="https://github.com/owen-it/laravel-auditing" target="_blank"
+                                        class="border-b-2 border-blue-500 dark:border-blue-400">Laravel Auditing </a> to
+                                    track model changes, providing a clean interface to view, search, and filter all
+                                    user activity logs.</p>
                             </div>
                         </div>
                     </div>
@@ -1088,67 +1022,42 @@ watch([
                     </div>
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <div class="prose dark:prose-invert max-w-none">
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel includes a powerful file upload component built on top of <a
-                                    href="https://pqina.nl/filepond/" target="_blank"
-                                    class="border-b-2 border-blue-500 dark:border-blue-400">FilePond</a>. This component
-                                provides a
-                                modern, drag-and-drop interface for file uploads with the following features:
-                            </p>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
-                                <li>Drag and drop file uploads</li>
-                                <li>Image and PDF preview support</li>
-                                <li>File type validation</li>
-                                <li>File size limits</li>
-                                <li>Multiple file upload support</li>
-                                <li>Progress indicators</li>
-                            </ul>
+                        <div class="space-y-4">
+                            <div class="prose dark:prose-invert max-w-none">
+                                <p>GuacPanel uses <a href="https://pqina.nl/filepond/" target="_blank"
+                                        class="border-b-2 border-blue-500 dark:border-blue-400">FilePond</a> to provide
+                                    a modern file upload interface with drag-and-drop, image/PDF previews, size limits,
+                                    and type validation.</p>
+                            </div>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Configuration
-                                    Options</h3>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Configuration</h3>
                                 <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-js">{
-    name: String, 
-    label: String, 
-    labelIdle: String, 
-    acceptedFileTypes: Array, ['image/jpeg', 'image/png', 'application/pdf']
-    maxFileSize: String,
-    allowMultiple: Boolean, 
-    maxFiles: Number, 
-    server: Object, 
-    required: Boolean, 
-    files: Array
-}</code></pre>
+                                    <pre
+                                        class="text-sm"><code v-highlight class="language-js">{{ configExample }}</code></pre>
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Usage Example</h3>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Script Setup</h3>
                                 <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-html">&lt;FilePondUploader
-    name="document"
-    label="Upload Document"
-    :acceptedFileTypes="['application/pdf']"
-    maxFileSize="10MB"
-    :server="{
-        url: '/upload',
-        process: {
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        }
-    }"
-    @processfile="handleFileUpload"
-    @removefile="handleFileRemove"
-/&gt;</code></pre>
+                                    <pre
+                                        class="text-sm"><code v-highlight class="language-js">{{ scriptExample }}</code></pre>
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Events</h3>
-                                <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Template</h3>
+                                <div class="bg-gray-800 rounded-lg p-4">
+                                    <pre
+                                        class="text-sm"><code v-highlight class="language-html">{{ templateExample }}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Events</h3>
+                                <ul
+                                    class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm">
                                     <li><code
                                             class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">@processfile</code>
                                         - Emitted when a file is uploaded</li>
@@ -1176,61 +1085,25 @@ watch([
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="prose dark:prose-invert max-w-none">
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                GuacPanel includes built-in support for Google Fonts with local caching for better
-                                performance. Here's how to configure and use Google Fonts in your project:
+                            <p>GuacPanel uses <a href="https://github.com/spatie/laravel-google-fonts" target="_blank"
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's Laravel Google
+                                    Fonts</a> to provide self-hosted fonts with local caching for better performance.
                             </p>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 1: Configure
-                                    Google Fonts</h3>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Edit the <code
-                                        class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">config/google-fonts.php</code>
-                                    file to add your desired fonts:
-                                </p>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Configuration</h3>
                                 <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-php">'fonts' => [
-    'default' => 'https://fonts.googleapis.com/css2?family=Your+Font:wght@400;500;600;700&display=swap',
-],</code></pre>
+                                    <pre
+                                        class="text-sm"><code v-highlight class="language-php">{{ googleFontsConfig }}</code></pre>
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 2: Update CSS
-                                    Configuration</h3>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Edit <code
-                                        class="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">resources/css/app.css</code>
-                                    to use your new font:
-                                </p>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Usage</h3>
                                 <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-css">@theme {
-    --font-sans: "Your Font", "sans-serif";
-    // ... other theme variables
-}</code></pre>
+                                    <pre
+                                        class="text-sm"><code v-highlight class="language-bash">{{ googleFontsUsage }}</code></pre>
                                 </div>
-                            </div>
-
-                            <div class="mt-6">
-                                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Step 3: Fetch and
-                                    Optimize Fonts</h3>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Run the following commands to fetch the fonts and optimize the application:
-                                </p>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-bash">php artisan google-fonts:fetch
-php artisan optimize</code></pre>
-                                </div>
-                            </div>
-
-                            <div class="mt-6">
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    For more information and advanced configuration options, visit the <a
-                                        href="https://github.com/spatie/laravel-google-fonts" target="_blank"
-                                        class="border-b-2 border-blue-500 dark:border-blue-400">Spatie Laravel Google
-                                        Fonts package repository</a>.
-                                </p>
                             </div>
                         </div>
                     </div>
