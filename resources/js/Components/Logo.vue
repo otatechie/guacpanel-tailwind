@@ -28,18 +28,16 @@ function handleDarkError() {
 
 
 <template>
-    <header class="flex justify-center items-center py-2">
-        <figure v-if="(logoUrl && !hasError) || (darkLogoUrl && !hasDarkError)" class="flex justify-center">
-            <!-- Light mode logo -->
-            <img v-if="logoUrl && !hasError" :src="logoUrl" alt="Application Logo"
-                class="w-auto object-contain dark:hidden" :style="{ maxHeight: size }" @error="handleError" />
-            <!-- Dark mode logo -->
-            <img v-if="darkLogoUrl && !hasDarkError" :src="darkLogoUrl" alt="Application Logo"
-                class="w-auto object-contain hidden dark:block" :style="{ maxHeight: size }" @error="handleDarkError" />
-        </figure>
+    <figure v-if="(logoUrl && !hasError) || (darkLogoUrl && !hasDarkError)" class="flex justify-center items-center">
+        <!-- Light mode logo -->
+        <img v-if="logoUrl && !hasError" :src="logoUrl" alt="Application Logo"
+            class="w-auto object-contain dark:hidden" :style="{ maxHeight: size }" @error="handleError" />
+        <!-- Dark mode logo -->
+        <img v-if="darkLogoUrl && !hasDarkError" :src="darkLogoUrl" alt="Application Logo"
+            class="w-auto object-contain hidden dark:block" :style="{ maxHeight: size }" @error="handleDarkError" />
+    </figure>
 
-        <h1 v-else class="text-3xl font-extrabold text-gray-800 dark:text-white">
-            {{ page.props.personalisation?.app_name || 'GuacPanel' }}
-        </h1>
-    </header>
+    <h1 v-else class="text-3xl font-extrabold text-gray-800 dark:text-white">
+        {{ page.props.personalisation?.app_name || 'GuacPanel' }}
+    </h1>
 </template>

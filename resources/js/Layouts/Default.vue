@@ -1,12 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { usePage } from '@inertiajs/vue3'
+import { usePage, Link } from '@inertiajs/vue3'
 import NavSidebarDesktop from '../Components/NavSidebarDesktop.vue'
 import NavProfile from '../Components/NavProfile.vue'
 import Notification from '../Components/Notification.vue'
 import FlashMessage from '../Components/FlashMessage.vue'
 import Footer from '../Shared/Public/Footer.vue'
 import ColorThemeSwitcher from '../Components/ColorThemeSwitcher.vue'
+import Logo from '../Components/Logo.vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
@@ -80,14 +81,6 @@ onUnmounted(() => {
     document.removeEventListener('click', handleClickAway)
     document.removeEventListener('keydown', handleKeyDown)
 })
-
-const logoUrl = computed(() => {
-    return page.props.personalisation?.app_logo || null
-})
-
-const darkLogoUrl = computed(() => {
-    return page.props.personalisation?.app_logo_dark || null
-})
 </script>
 
 
@@ -109,12 +102,9 @@ const darkLogoUrl = computed(() => {
                 <nav class="flex h-16 items-center px-4 gap-4" role="navigation" aria-label="Primary navigation">
                     <section class="flex items-center gap-4" aria-label="GuacPanel logo and menu controls">
                         <!-- Logo -->
-                        <Link href="/" class="text-xl font-semibold text-gray-800 dark:text-white"
+                        <Link href="/" class="flex items-center text-xl font-semibold text-gray-800 dark:text-white"
                             aria-label="Go to homepage">
-                        <img v-if="logoUrl && darkLogoUrl" :src="logoUrl" alt="GuacPanel logo" class="h-10 w-auto object-contain dark:hidden" />
-                        <img v-if="darkLogoUrl" :src="darkLogoUrl" alt="GuacPanel logo" class="h-10 w-auto object-contain hidden dark:block" />
-                        <img v-if="logoUrl && !darkLogoUrl" :src="logoUrl" alt="GuacPanel logo" class="h-10 w-auto object-contain" />
-                        <span v-if="!logoUrl && !darkLogoUrl">GuacPanel</span>
+                        <Logo size="2.5rem" class="!py-0 !justify-start" />
                         </Link>
 
                         <!-- Mobile Menu Toggle Button -->
@@ -158,7 +148,6 @@ const darkLogoUrl = computed(() => {
                         </div>
                     </section>
 
-                    <!-- User Controls Section -->
                     <section class="flex flex-1 items-center justify-end gap-4" aria-label="User controls">
                         <ColorThemeSwitcher />
                         <Notification v-if="user" :user="user" />
