@@ -7,7 +7,6 @@ use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminAuditController;
-use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\AdminSettingController;
@@ -118,15 +117,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                 });
             });
 
-            // Backup Routes
-            Route::prefix('backup')->name('backup.')->group(function () {
-                Route::controller(AdminBackupController::class)->group(function () {
-                    Route::get('/', 'index')->name('index');
-                    Route::post('/', 'createBackup')->name('create');
-                    Route::get('/download/{path}', 'download')->name('download')->where('path', '.*');
-                    Route::delete('/{path}', 'destroy')->name('destroy')->where('path', '.*');
-                });
-            });
+
 
             // Health Check Route
             Route::get('health', HealthCheckResultsController::class)->name('health');

@@ -218,9 +218,9 @@ function copyCode() {
                                     d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Smart Data Tables</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Feature-rich tables with
-                            sorting, filtering, and export capabilities.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">TanStack Table</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Powerful table features using
+                            TanStack Table for data management.</p>
                     </div>
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-blue-100 dark:hover:border-blue-900 transition-all duration-300"
@@ -233,9 +233,9 @@ function copyCode() {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">File Management</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Drag-and-drop file uploads
-                            with preview and validation support.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">FilePond Upload</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Modern file uploads using
+                            FilePond with image preview support.</p>
                     </div>
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-green-100 dark:hover:border-green-900 transition-all duration-300"
@@ -248,10 +248,11 @@ function copyCode() {
                                     d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Automated Backups</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Scheduled backups with
-                            multiple storage locations and monitoring.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Spatie Backup</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Integrated Laravel backup system with
+                            multi-disk storage support.</p>
                     </div>
+
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-orange-100 dark:hover:border-orange-900 transition-all duration-300"
                         role="listitem">
@@ -263,9 +264,9 @@ function copyCode() {
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Activity Tracking</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Comprehensive audit logging
-                            for all user actions and changes.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Laravel Auditing</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Model changes and user actions tracked
+                            using Owen-IT's Laravel Auditing.</p>
                     </div>
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-pink-100 dark:hover:border-pink-900 transition-all duration-300"
@@ -293,9 +294,9 @@ function copyCode() {
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Role-based Access</h3>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Fine-grained permissions
-                            with hierarchical roles and team management.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Spatie Permissions</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Role-based access control using
+                            Spatie's Laravel-permission.</p>
                     </div>
 
                     <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-rose-100 dark:hover:border-rose-900 transition-all duration-300"

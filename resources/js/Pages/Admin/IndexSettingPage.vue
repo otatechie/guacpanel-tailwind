@@ -99,7 +99,7 @@ defineOptions({
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Data Backup</h3>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Schedule and manage automated backups of your
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Schedule and manage backups of your
                         system data.</p>
                     </Link>
 

@@ -27,7 +27,6 @@
         "spatie/laravel-google-fonts": "^1.4",
         "spatie/laravel-health": "^1.32",
         "spatie/laravel-ignition": "^2.0",
-        "spatie/laravel-medialibrary": "^11.0",
         "spatie/laravel-permission": "^6.10",
         "symfony/process": "^7.0",
         "tightenco/ziggy": "^2.3"

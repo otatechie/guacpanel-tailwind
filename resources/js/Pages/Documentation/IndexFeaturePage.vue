@@ -451,7 +451,7 @@ watch([
 
                     <div
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
+                        <div>
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 GuacPanel provides a robust permissions and roles system built on top of <a
@@ -461,30 +461,6 @@ watch([
                                 different parts
                                 of your application with granular precision.
                             </p>
-                        </div>
-
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Key Concepts</h3>
-
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <div
-                                    class="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800/30">
-                                    <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-2">Permissions</h4>
-                                    <p class="text-teal-700 dark:text-teal-400 text-sm">
-                                        Granular access controls that define what actions a user can perform. Examples:
-                                        <code>create-user</code>, <code>edit-post</code>, <code>delete-comment</code>.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800/30">
-                                    <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-2">Roles</h4>
-                                    <p class="text-teal-700 dark:text-teal-400 text-sm">
-                                        Collections of permissions that can be assigned to users. Examples:
-                                        <code>admin</code>, <code>editor</code>, <code>subscriber</code>.
-                                    </p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>

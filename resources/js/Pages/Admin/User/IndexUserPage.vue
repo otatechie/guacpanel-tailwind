@@ -53,13 +53,44 @@ const closeModal = () => {
     form.reset()
 }
 
+const isSuperUser = (user) => {
+    if (!user?.roles?.length) return false
+    const role = user.roles[0]
+    return role?.name?.toLowerCase() === 'superuser' || role?.slug?.toLowerCase() === 'superuser'
+}
+
+const canDeleteUser = (user) => {
+    if (!user) return false
+    if (isSuperUser(user)) return false
+    return true
+}
+
+const handleEdit = (user) => {
+    if (!user?.id) return
+    router.visit(route('admin.user.edit', { id: user.id }))
+}
+
 const confirmDeleteUser = (user) => {
-    // Prevent deleting super users
-    if (isSuperUser(user)) {
-        return
-    }
+    if (!canDeleteUser(user)) return
     userToDelete.value = user
     showDeleteModal.value = true
+}
+
+const deleteUser = () => {
+    if (!userToDelete.value?.id) return
+    if (!canDeleteUser(userToDelete.value)) return
+    
+    router.delete(route('admin.user.destroy', { id: userToDelete.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showDeleteModal.value = false
+            userToDelete.value = null
+        },
+        onError: () => {
+            showDeleteModal.value = false
+            userToDelete.value = null
+        }
+    })
 }
 
 const openCreateModal = () => {
@@ -78,113 +109,84 @@ const createUser = () => {
     })
 }
 
-const deleteUser = () => {
-    router.delete(route('admin.user.destroy', { id: userToDelete.value.id }), {
-        preserveScroll: true,
-        onSuccess: () => {
-            showDeleteModal.value = false
-        }
-    })
-}
-
-// Add helper function to check if user is super admin
-const isSuperUser = (user) => {
-    // Check if user has superuser role
-    return user.role?.name?.toLowerCase() === 'superuser' || 
-           user.role?.slug?.toLowerCase() === 'superuser'
-}
-
 const columns = [
     columnHelper.accessor('name', {
         header: 'Name',
-        cell: info => h('span', {
-            'aria-label': `User name: ${info.getValue()}`
-        }, info.getValue()),
-        meta: {
-            ariaLabel: 'User name'
-        }
+        cell: info => h('span', info.getValue() || '-')
     }),
     columnHelper.accessor('email', {
         header: 'Email',
-        cell: info => h('span', {
-            'aria-label': `Email address: ${info.getValue()}`
-        }, info.getValue()),
-        meta: {
-            ariaLabel: 'User email address'
+        cell: info => h('span', info.getValue() || '-')
+    }),
+    columnHelper.accessor('role', {
+        header: 'Role',
+        cell: info => {
+            const roleName = info.row.original.roles?.[0]?.name || 'No Role'
+            return h('span', {
+                class: 'px-2 py-1 text-sm rounded-full inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+            }, roleName)
         }
     }),
     columnHelper.accessor('created_at_formatted', {
         header: 'Created At',
-        cell: info => h('span', {
-            'aria-label': `Account created on: ${info.getValue()}`
-        }, info.getValue()),
-        meta: {
-            ariaLabel: 'Account creation date'
-        }
+        cell: info => h('span', info.getValue() || '-')
     }),
     columnHelper.display({
         id: 'actions',
         header: 'Actions',
-        cell: (info) => {
+        cell: info => {
             const user = info.row.original
-            const isSuper = isSuperUser(user)
+            if (!user?.id) return null
             
-            return h('div', { class: 'flex items-center gap-2 justify-end' }, [
-                // Edit button - always enabled now
-                h('button', {
-                    class: 'p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50',
-                    onClick: () => handleEdit(user),
-                    title: 'Edit user'
+            const editButton = h('button', {
+                class: 'p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer',
+                onClick: () => handleEdit(user),
+                type: 'button'
+            }, [
+                h('svg', {
+                    class: 'w-4 h-4',
+                    fill: 'none',
+                    stroke: 'currentColor',
+                    viewBox: '0 0 24 24'
                 }, [
-                    h('span', { class: 'sr-only' }, 'Edit user'),
-                    h('svg', {
-                        class: 'w-4 h-4',
-                        fill: 'none',
-                        stroke: 'currentColor',
-                        viewBox: '0 0 24 24'
-                    }, [
-                        h('path', {
-                            'stroke-linecap': 'round',
-                            'stroke-linejoin': 'round',
-                            'stroke-width': '2',
-                            d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                        })
-                    ])
-                ]),
-                // Delete button - disabled for superuser
-                h('button', {
-                    class: `p-2 transition-colors rounded-lg ${
-                        isSuper 
-                            ? 'text-gray-300 cursor-not-allowed' 
-                            : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
-                    }`,
-                    onClick: isSuper ? undefined : () => confirmDeleteUser(user),
-                    disabled: isSuper,
-                    title: isSuper ? 'Superuser cannot be deleted' : 'Delete user'
-                }, [
-                    h('span', { class: 'sr-only' }, isSuper ? 'Superuser cannot be deleted' : 'Delete user'),
-                    h('svg', {
-                        class: 'w-4 h-4',
-                        fill: 'none',
-                        stroke: 'currentColor',
-                        viewBox: '0 0 24 24'
-                    }, [
-                        h('path', {
-                            'stroke-linecap': 'round',
-                            'stroke-linejoin': 'round',
-                            'stroke-width': '2',
-                            d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                        })
-                    ])
+                    h('path', {
+                        'stroke-linecap': 'round',
+                        'stroke-linejoin': 'round',
+                        'stroke-width': '2',
+                        d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                    })
                 ])
             ])
+
+            const deleteButton = h('button', {
+                class: 'p-2 text-gray-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer',
+                onClick: () => confirmDeleteUser(user),
+                type: 'button'
+            }, [
+                h('svg', {
+                    class: 'w-4 h-4',
+                    fill: 'none',
+                    stroke: 'currentColor',
+                    viewBox: '0 0 24 24'
+                }, [
+                    h('path', {
+                        'stroke-linecap': 'round',
+                        'stroke-linejoin': 'round',
+                        'stroke-width': '2',
+                        d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                    })
+                ])
+            ])
+
+            return h('div', { 
+                class: 'flex items-center gap-2 justify-end' 
+            }, [
+                editButton,
+                canDeleteUser(user) && deleteButton
+            ].filter(Boolean))
         }
     })
 ]
-
-const handleEdit = (user) => {
-    router.visit(route('admin.user.edit', { id: user.id }))
-}
 
 watch(pagination, newPagination => {
     loading.value = true

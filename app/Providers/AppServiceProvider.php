@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\User;
 use App\Models\Personalisation;
-use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Storage;
