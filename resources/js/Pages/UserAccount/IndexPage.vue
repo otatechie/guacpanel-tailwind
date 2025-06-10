@@ -48,11 +48,13 @@ const submitPasswordForm = () => {
 }
 
 const confirmDeactivateAccount = () => {
-    deactivateModal.value = true
+    // Prevent deactivation
+    return
 }
 
 const confirmDeleteAccount = () => {
-    deleteModal.value = true
+    // Prevent deletion
+    return
 }
 
 const deactivateAccount = () => {
