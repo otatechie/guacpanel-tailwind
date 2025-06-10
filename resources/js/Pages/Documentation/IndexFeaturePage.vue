@@ -467,7 +467,6 @@ php artisan optimize`
 
         <div class="flex flex-col space-y-8 mb-8">
             <ArticleNavigation :links="articleLinks" />
-
             <div class="space-y-16">
                 <section id="authentication" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">

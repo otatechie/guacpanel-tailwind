@@ -42,7 +42,7 @@ function handleDarkError() {
             class="w-auto object-contain hidden dark:block" :style="{ maxHeight: size }" @error="handleDarkError" />
     </figure>
 
-    <h1 v-else class="text-3xl font-extrabold text-gray-800 dark:text-white">
+    <h1 v-else class="text-3xl font-extrabold text-gray-800 dark:text-white text-center">
         {{ page.props.personalisation?.app_name || 'GuacPanel' }}
     </h1>
 </template>
