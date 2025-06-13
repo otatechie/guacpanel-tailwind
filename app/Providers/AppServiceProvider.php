@@ -20,22 +20,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) {
-            $personalisation = Personalisation::first() ?? new Personalisation();
+        // Get personalization data
+        $personalisation = Personalisation::first() ?? new Personalisation();
+        if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
+            $personalisation->favicon = null;
+        }
 
-            if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
-                $personalisation->favicon = null;
-            }
-
+        // Share with Laravel views
+        View::composer('*', function ($view) use ($personalisation) {
             $view->with('personalisation', $personalisation);
         });
 
-        // Share app version with Inertia
+        // Share with Inertia
         Inertia::share([
             'app' => [
                 'version' => config('app.version'),
                 'name' => config('app.name'),
-            ]
+            ],
+            'personalisation' => fn () => $personalisation
         ]);
     }
 }
