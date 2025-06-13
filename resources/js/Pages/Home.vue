@@ -1,6 +1,6 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const code = `git clone https://github.com/otatechie/guacpanel-tailwind
 cd guacpanel-tailwind && composer install
@@ -8,11 +8,19 @@ php artisan migrate --seed
 npm install && npm run dev`
 
 const copied = ref(false)
+const stars = ref(0)
+
 function copyCode() {
     navigator.clipboard.writeText(code)
     copied.value = true
     setTimeout(() => (copied.value = false), 1500)
 }
+
+onMounted(async () => {
+    const response = await fetch('https://api.github.com/repos/otatechie/guacpanel-tailwind')
+    const data = await response.json()
+    stars.value = data.stargazers_count
+})
 </script>
 
 <template>
@@ -46,13 +54,14 @@ function copyCode() {
                         </svg>
                     </a>
                     <a href="https://github.com/otatechie/guacpanel-tailwind" target="_blank"
-                        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         aria-label="View on GitHub">
                         <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 24 24"
                             aria-hidden="true">
                             <path
                                 d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.237 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
                         </svg>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ stars }}</span>
                     </a>
                     <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         aria-label="Toggle mobile menu">
@@ -88,7 +97,8 @@ function copyCode() {
                 </h1>
 
                 <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-2xl mx-auto">
-                    Build amazing Laravel applications with ease. GuacPanel provides ready-to-use features like authentication, permissions, backup management, and auditing - all with beautiful UI components.
+                    Build amazing Laravel applications with ease. GuacPanel provides ready-to-use features like
+                    authentication, permissions, backup management, and auditing - all with beautiful UI components.
                     <span aria-hidden="true" class="inline-block animate-bounce">🚀</span>
                 </p>
 
@@ -388,11 +398,10 @@ function copyCode() {
                     </nav>
                     <span class="hidden md:block text-gray-400 dark:text-gray-600" aria-hidden="true">·</span>
                     <span>
-                        Made with <span class="text-red-500 dark:text-red-400" role="img" aria-label="love">❤️</span> in
-                        Accra by
+                        Made with <span class="text-red-500 dark:text-red-400" role="img" aria-label="love">♡</span> in
                         <a href="https://github.com/otatechie"
-                            class="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 transition-colors underline underline-offset-2"
-                            aria-label="Visit otatechie's GitHub profile">otatechie</a>
+                            class="text-gray-500 font-medium hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 transition-colors underline underline-offset-2"
+                            aria-label="Visit otatechie's GitHub profile">Accra</a>
                     </span>
                 </div>
             </div>
