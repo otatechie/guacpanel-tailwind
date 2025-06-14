@@ -23,7 +23,7 @@
         "@tailwindcss/vite": "^4.0.1",
         "@tanstack/vue-table": "^8.20.5",
         "@vitejs/plugin-vue": "^5.1.2",
-        "chart.js": "^4.4.6",
+        "chart.js": "^4.5.0",
         "dotenv": "^16.4.5",
         "filepond": "^4.32.7",
         "filepond-plugin-file-validate-size": "^2.2.8",
@@ -34,6 +34,7 @@
         "nprogress": "^0.2.0",
         "path": "^0.12.7",
         "vue": "^3.0.0",
+        "vue-chartjs": "^5.3.2",
         "vue-filepond": "^7.0.4",
         "ziggy-js": "^2.3.0"
     }
