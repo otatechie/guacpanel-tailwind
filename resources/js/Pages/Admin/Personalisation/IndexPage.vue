@@ -5,7 +5,6 @@ import { computed, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import FilePondUploader from '@/Components/FilePondUploader.vue'
 import FormInput from '@/Components/FormInput.vue'
-import FormSelect from '@/Components/FormSelect.vue'
 import PageHeader from '@/Components/PageHeader.vue'
 import axios from 'axios'
 

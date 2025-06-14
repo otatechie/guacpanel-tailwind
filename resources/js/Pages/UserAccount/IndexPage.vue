@@ -115,7 +115,7 @@ const deleteAccount = () => {
                                 <FormInput v-model="profileForm.name" label="Legal name"
                                     :error="profileForm.errors.name" />
                                 <FormInput v-model="profileForm.email" label="Email address" type="email"
-                                    autocomplete="email" :error="profileForm.errors.email" />
+                                    autocomplete="email" :error="profileForm.errors.email" disabled />
                             </div>
                             <FormInput v-model="profileForm.location" label="Location"
                                 :error="profileForm.errors.location" />
@@ -148,6 +148,13 @@ const deleteAccount = () => {
 
             <form @submit.prevent="submitPasswordForm" class="divide-y divide-gray-200 dark:divide-gray-600">
                 <section class="p-6 space-y-6 dark:bg-gray-700" aria-labelledby="change-password" id="password-section">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 text-sm text-blue-700 dark:text-blue-400 font-medium flex items-center gap-2">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                        For demo purposes, password updates have been disabled in the Fortify configuration.
+                    </div>
+
                     <header class="flex items-center gap-3">
                         <span class="p-2 bg-purple-50 dark:bg-purple-900 rounded-lg">
                             <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24"

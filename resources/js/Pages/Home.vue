@@ -90,7 +90,7 @@ onMounted(async () => {
             </div>
 
             <div class="relative">
-                <h1 id="hero-heading" class="text-4xl md:text-6xl font-extrabold text-gray-900 px-2 dark:text-white mb-6">
+                <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold text-gray-900 px-2 dark:text-white mb-6">
                     Ready to ship
                     <span
                         class="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-green-500 dark:from-teal-400 dark:to-green-400">faster</span>?

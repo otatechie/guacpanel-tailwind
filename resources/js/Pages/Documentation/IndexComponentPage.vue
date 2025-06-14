@@ -133,7 +133,7 @@ const pageHeaderCode = ref(`<PageHeader
 >
     <template #actions>
         <button class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-            Add User
+            Add
         </button>
     </template>
 </PageHeader>`)
@@ -302,7 +302,6 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 mt-4">
                                     <li>Visual feedback with red border and error icon when errors are present</li>
                                     <li>Error message display below the input field</li>
-                                    <li>ARIA attributes for accessibility (aria-invalid, aria-describedby)</li>
                                     <li>Integration with Laravel validation</li>
                                 </ul>
                             </div>
@@ -565,15 +564,22 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                         class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Navigation Sidebar</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
-                            A versatile sidebar navigation component that supports multiple levels of navigation,
+                            A simple and accessible sidebar navigation component that supports nested menus,
                             permissions,
-                            dropdown menus, and dividers. Built with accessibility in mind and responds to the user's
-                            permissions.
+                            and dark mode. Perfect for admin dashboards and documentation sites.
                         </p>
+                        <h4 class="font-medium text-gray-800 dark:text-white mb-4">Key Features</h4>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+                            <li>Simple navigation with icons and labels</li>
+                            <li>Dropdown menus for nested navigation</li>
+                            <li>Permission-based visibility control</li>
+                            <li>Active state highlighting</li>
+                            <li>Dark mode support</li>
+                        </ul>
 
-                        <div class="grid md:grid-cols-1 gap-8">
+                        <div class="grid md:grid-cols-1 gap-8 mt-4">
                             <div class="space-y-4">
-                                <h4 class="font-medium text-gray-800 dark:text-white">Usage</h4>
+                                <h4 class="font-medium text-gray-800 dark:text-white">Basic Usage</h4>
                                 <div class="bg-gray-800 rounded-lg p-4 relative group">
                                     <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
                                         @click="navigator.clipboard.writeText(navSidebarCode)">
@@ -600,111 +606,50 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                         </div>
 
                         <div class="mt-8">
-                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Key Features</h4>
-                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
-                                <li>Support for nested navigation with dropdowns</li>
-                                <li>Permission-based visibility for menu items</li>
-                                <li>Visual indicators for active and parent-active states</li>
-                                <li>Divider support for visual separation of menu sections</li>
-                                <li>Dark mode compatible</li>
-                                <li>Accessible keyboard navigation</li>
-                            </ul>
-                        </div>
-
-                        <div class="mt-8">
                             <h4 class="font-medium text-gray-800 dark:text-white mb-4">Navigation Structure</h4>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                The navigation sidebar uses a structured configuration to define menu items. The
-                                structure follows these principles:
+                                The sidebar uses a simple array of sections and items to define the navigation menu:
                             </p>
 
-                            <div class="mb-6">
-                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Navigation Sections
-                                </h5>
-                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                    <pre class="text-sm"><code class="language-javascript">const navigationSections = reactive([
-  {
-    items: [ /* First section items */ ]
-  },
-  {
-    items: [ /* Second section items */ ]
-  }
-])</code></pre>
-                                </div>
-                                <p class="text-gray-600 dark:text-gray-400 mt-2">
-                                    Navigation is organized into sections, each containing an array of items. Sections
-                                    are visually separated in the UI.
-                                </p>
-                            </div>
-
                             <div class="space-y-6">
-                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Item Types</h5>
-
-                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                    <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Regular Item</h6>
-                                    <pre class="text-sm"><code class="language-javascript">{
-  name: 'Dashboard',
-  href: route('home'),
-  icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955..." />',
-  permission: 'dashboard-view' // Optional: Permission required to see this item
-},
-{ type: 'divider' } // Visual separator between navigation items</code></pre>
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Basic Menu Item
+                                    </h5>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                        <pre class="text-sm"><code class="language-javascript">{
+  name: 'Dashboard',           // The text to display
+  route: 'dashboard',         // Laravel route name
+  icon: '<svg>...</svg>',     // Icon SVG path
+  permission: 'view-dashboard' // Optional: Required permission
+}</code></pre>
+                                    </div>
                                 </div>
 
-                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                    <h6 class="text-xs font-medium text-gray-800 dark:text-white mb-2">Dropdown Menu
-                                    </h6>
-                                    <pre class="text-sm"><code class="language-javascript">{
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Dropdown Menu
+                                    </h5>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                        <pre class="text-sm"><code class="language-javascript">{
   name: 'Settings',
-  icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94..." />',
-  isOpen: false, // Initial state of dropdown (closed)
-  children: [
-    { 
-      name: 'General', 
-      href: route('admin.setting.index'), 
-      permission: 'settings-general-view'  // Child permissions
-    },
-    { 
-      name: 'Users', 
-      href: route('admin.user.index'), 
-      permission: 'users-view' 
+  icon: '<svg>...</svg>',
+  children: [                 // Array of child menu items
+    {
+      name: 'General',
+      route: 'settings.index',
+      permission: 'manage-settings'
     }
   ]
 }</code></pre>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="mt-6">
-                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Icons</h5>
-                                <p class="text-gray-600 dark:text-gray-400">
-                                    Icons use inline SVG paths from <a href="https://heroicons.com/" target="_blank"
-                                        class="text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-teal-300">Heroicons</a>.
-                                    Only include the path data, not the entire SVG element.
-                                </p>
-                            </div>
-
-                            <div class="mt-6">
-                                <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Permissions</h5>
-                                <p class="text-gray-600 dark:text-gray-400">
-                                    Add the <code>permission</code> property to any item to restrict visibility based on
-                                    user permissions. If omitted, the item will be visible to all users.
-                                </p>
-
-                                <div
-                                    class="mt-4 p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                    <p
-                                        class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2 leading-6">
-                                        <span class="flex-shrink-0 text-xl">💡</span>
-                                        <span><strong>Pro Tip:</strong> GuacPanel leverages <a
-                                                href="https://spatie.be/docs/laravel-permission" target="_blank"
-                                                class="border-b-2 border-blue-500 dark:border-teal-400">Spatie's
-                                                Laravel-Permission</a> package for permission management. Use consistent
-                                            permission naming like <code
-                                                class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">settings-general-view</code>,
-                                            <code
-                                                class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">users-view</code>
-                                            that directly map to your application's permission system.</span>
-                                    </p>
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Divider</h5>
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                                        <pre class="text-sm"><code class="language-javascript">{ 
+  type: 'divider'           // Adds a visual separator
+}</code></pre>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -949,24 +894,24 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                         class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Page Header</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">
-                            A consistent page header component that includes a title, optional description, breadcrumbs navigation,
-                            and a flexible actions slot. Perfect for creating uniform page layouts across your application.
+                            A consistent page header component that includes a title, optional description, breadcrumbs
+                            navigation,
+                            and a flexible actions slot. Perfect for creating uniform page layouts across your
+                            application.
                         </p>
 
                         <div class="grid md:grid-cols-2 gap-8">
                             <div class="space-y-4">
                                 <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
-                                <PageHeader
-                                    title="User Management"
-                                    description="Manage user accounts and permissions"
+                                <PageHeader title="User Management" description="Manage user accounts and permissions"
                                     :breadcrumbs="[
                                         { label: 'Dashboard', href: '/dashboard' },
                                         { label: 'Users' }
-                                    ]"
-                                >
+                                    ]">
                                     <template #actions>
-                                        <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500">
-                                            Add User
+                                        <button
+                                            class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-500 cursor-pointer">
+                                            Add
                                         </button>
                                     </template>
                                 </PageHeader>
@@ -990,30 +935,45 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">title</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Required</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The main heading for the page</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">The main
+                                                heading for the page
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">description</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">''</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Optional description text below the title</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Optional
+                                                description text
+                                                below the title</td>
                                         </tr>
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">breadcrumbs</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">[]</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of breadcrumb objects with label and optional href properties</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of
+                                                breadcrumb objects
+                                                with label and optional href properties</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1026,14 +986,21 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">actions</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Content for the actions area in the header (typically buttons or other controls)</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Content for
+                                                the actions area
+                                                in the header (typically buttons or other controls)</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1161,11 +1128,11 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                         <tr>
                                             <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">size</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">String</td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'2.5rem'</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">'4rem'</td>
                                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Controls the
                                                 maximum height
-                                                of the logo. Can be set to any valid CSS size value (e.g., '2.5rem',
-                                                '40px', '3rem')
+                                                of the logo. Can be set to any valid CSS size value (e.g., '4rem',
+                                                '40px')
                                             </td>
                                         </tr>
                                     </tbody>

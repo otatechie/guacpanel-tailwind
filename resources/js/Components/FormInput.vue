@@ -29,6 +29,10 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: null
+    },
+    disabled: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -39,7 +43,10 @@ const inputPlaceholder = computed(() => props.placeholder || props.label)
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 
 const inputClass = computed(() => 
-    `w-full peer border rounded-md bg-white dark:bg-gray-800 dark:text-white 
+    `w-full peer border rounded-md 
+    ${props.disabled 
+        ? 'cursor-not-allowed !bg-gray-100 dark:!bg-gray-700 text-gray-500 dark:text-gray-400' 
+        : 'bg-white dark:bg-gray-800 dark:text-white'}
     border-gray-300 dark:border-gray-600 placeholder-transparent px-3 py-2
     ${props.error ? 'error' : ''}`
 )
@@ -62,6 +69,7 @@ function togglePasswordVisibility() {
                 :id="inputId" 
                 :value="modelValue" 
                 :required="required"
+                :disabled="disabled"
                 @input="updateValue"
                 :class="inputClass"
                 :placeholder="inputPlaceholder" 

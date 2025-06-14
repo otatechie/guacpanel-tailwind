@@ -34,12 +34,6 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
                             Homepage
                             </Link>
                         </li>
-                        <li>
-                            <a href="#"
-                                class="text-xs text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white underline">
-                                Terms
-                            </a>
-                        </li>
                     </ul>
                 </nav>
 
