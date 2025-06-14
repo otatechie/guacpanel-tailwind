@@ -2,6 +2,7 @@
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import Default from '../Layouts/Default.vue'
+import LineChart from '@/Components/LineChart.vue'
 
 defineOptions({
     layout: Default
@@ -12,7 +13,7 @@ const userName = computed(() => page.props.auth.user?.name || 'User')
 
 const formattedDate = computed(() => {
     const date = new Date()
-    return { 
+    return {
         display: date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -109,6 +110,26 @@ const systemHealth = ref({
     network: 89
 })
 
+// Chart data
+const chartData = ref({
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+        {
+            label: 'Revenue',
+            data: [65000, 59000, 80000, 81000, 76000, 85000]
+        },
+        {
+            label: 'Expenses',
+            data: [45000, 47000, 55000, 58000, 56000, 62000]
+        }
+    ]
+})
+
+// Format currency for y-axis
+const formatCurrency = (value) => {
+    return '$' + value.toLocaleString()
+}
+
 onMounted(() => {
     const handleKeyPress = (event) => {
         if (event.key === 'r' && (event.ctrlKey || event.metaKey)) {
@@ -130,6 +151,7 @@ onMounted(() => {
 
 
 <template>
+
     <Head title="Dashboard" />
 
     <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -163,13 +185,22 @@ onMounted(() => {
                             'text-emerald-600 dark:text-emerald-400': stock.change > 0,
                             'text-rose-600 dark:text-rose-400': stock.change < 0
                         }" class="flex items-center text-sm font-medium">
-                            <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" :class="{ 'rotate-180': stock.change < 0 }">
-                                <path d="M12 5L20 13L18.6 14.4L13 8.8V19H11V8.8L5.4 14.4L4 13L12 5Z" fill="currentColor"/>
+                            <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                :class="{ 'rotate-180': stock.change < 0 }">
+                                <path d="M12 5L20 13L18.6 14.4L13 8.8V19H11V8.8L5.4 14.4L4 13L12 5Z"
+                                    fill="currentColor" />
                             </svg>
                             {{ Math.abs(stock.change).toFixed(2) }}%
                         </span>
                     </div>
                 </article>
+            </section>
+
+            <!-- Revenue Chart -->
+            <section
+                class="mb-8 bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
+                <LineChart :chart-data="chartData" title="Revenue vs Expenses" height="400px"
+                    :y-axis-format="formatCurrency" :colors="['#3b82f6', '#ef4444']" :animation-duration="1500" />
             </section>
 
             <!-- Key Stats -->
@@ -179,7 +210,7 @@ onMounted(() => {
                     <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ card.title }}</h2>
                     <div class="mt-2 flex items-baseline">
                         <strong class="text-xl font-bold text-gray-900 dark:text-white">{{ card.value }}</strong>
-                        <span class="ml-2 text-xs font-medium" 
+                        <span class="ml-2 text-xs font-medium"
                             :class="card.growth.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
                             {{ card.growth }}
                         </span>
@@ -190,7 +221,8 @@ onMounted(() => {
             <!-- Main Content -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Upcoming Tasks -->
-                <section class="md:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 mb-6 md:mb-0">
+                <section
+                    class="md:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 mb-6 md:mb-0">
                     <div class="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700">
                         <h2 class="font-medium text-gray-900 dark:text-white flex items-center">
                             <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
@@ -217,7 +249,8 @@ onMounted(() => {
                 </section>
 
                 <!-- System Health -->
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+                <section
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
                     <div class="p-4 border-b border-gray-100 dark:border-gray-700">
                         <h2 class="font-medium text-gray-900 dark:text-white flex items-center">
                             <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
@@ -244,5 +277,3 @@ onMounted(() => {
         </div>
     </main>
 </template>
-
-

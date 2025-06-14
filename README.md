@@ -9,7 +9,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4.x-06B6D4?style=flat&logo=tailwind-css)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/MIT)
 
-An opinionated Laravel starter kit with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications.
+An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications.
 
 ## Screenshots
 
