@@ -90,13 +90,13 @@ onMounted(async () => {
             </div>
 
             <div class="relative">
-                <h1 id="hero-heading" class="text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white mb-6">
+                <h1 id="hero-heading" class="text-4xl md:text-6xl font-extrabold text-gray-900 px-2 dark:text-white mb-6">
                     Ready to ship
                     <span
                         class="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-green-500 dark:from-teal-400 dark:to-green-400">faster</span>?
                 </h1>
 
-                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-2xl mx-auto">
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 px-2 mb-4 max-w-2xl mx-auto">
                     Build amazing Laravel applications with ease. GuacPanel provides ready-to-use features like
                     authentication, permissions, backup management, and auditing - all with beautiful UI components.
                     <span aria-hidden="true" class="inline-block animate-bounce">🚀</span>
@@ -112,11 +112,6 @@ onMounted(async () => {
                     <span class="opacity-75">Inertia 2.0</span>
                     <span class="opacity-50">/</span>
                     <span class="opacity-75">Tailwind CSS 4+</span>
-                </p>
-
-                <p class="text-base text-gray-500 dark:text-gray-400 mb-12">
-                    Open source. Modern. Beautiful.
-                    <span class="text-teal-500 dark:text-teal-400 font-semibold">Try the demo!</span>
                 </p>
 
                 <div class="flex flex-wrap justify-center gap-4 mb-16">
@@ -184,6 +179,48 @@ onMounted(async () => {
                             <span class="text-blue-400 dark:text-blue-500">~</span>
                             <span class="ml-1">$</span>
                             <span class="ml-2 animate-pulse">▊</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 relative overflow-hidden" role="region" aria-labelledby="why-heading">
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            </div>
+            <div class="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+
+            <div class="max-w-7xl mx-auto px-4 relative">
+                <div class="max-w-3xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 id="why-heading"
+                            class="text-4xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 mb-4">
+                            Why GuacPanel?
+                        </h2>
+                        <div class="h-1 w-20 bg-gradient-to-r from-teal-500 to-green-500 mx-auto rounded-full mb-8">
+                        </div>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                            A simple, clean dashboard with just the essentials
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 md:p-12 backdrop-blur-sm bg-opacity-80 dark:bg-opacity-80">
+                        <div class="space-y-6 text-lg">
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Every Laravel project starts the same way. You know the drill; authentication, user
+                                management, security features, 2FA setup, password policies, backup systems, activity
+                                logs. You've built these a dozen times before, and you'll probably build them a dozen
+                                times more.
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Most dashboards try to be everything at once, when you just need something that gets out
+                                of your way and lets you build.
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                That's why I made GuacPanel: open-source, no bloat, no subscriptions, just the essential
+                                features developers actually need. Because sometimes, less is more.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -383,6 +420,186 @@ onMounted(async () => {
             </div>
         </section>
 
+        <section
+            class="py-24 bg-gradient-to-br from-slate-50 via-white to-white dark:from-gray-900 dark:via-gray-900 dark:to-gray-800"
+            role="region" aria-labelledby="faq-heading">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 id="faq-heading" class="text-4xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        Frequently Asked Questions
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        Everything you need to know about GuacPanel
+                    </p>
+                </div>
+
+                <div class="max-w-3xl mx-auto">
+                    <div class="space-y-8">
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">1.</span>
+                                    <span>What is GuacPanel?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                GuacPanel is an open-source, security-focused dashboard starter kit for Laravel 11. It
+                                includes essential features like 2FA, password policies, backups, activity logs, and
+                                user management, all built with Vue 3, Tailwind CSS, and Inertia.js.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">2.</span>
+                                    <span>Why did you build GuacPanel?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Because I was tired of rebuilding the same security and user management features in
+                                every Laravel project. Existing dashboards felt bloated, overly complex, or expensive,
+                                I wanted something simple, clean, and easy to extend.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">3.</span>
+                                    <span>Is GuacPanel production-ready?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Yes, it includes production-level features like 2FA enforcement, password expiry, backup
+                                management, and detailed logs, things you would otherwise have to build or integrate
+                                manually.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">4.</span>
+                                    <span>Does GuacPanel include bloatware?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                No. GuacPanel only includes carefully chosen packages that solve real problems most
+                                Laravel apps need, like Fortify (authentication), Spatie (backups, permissions), and
+                                Filepond (file uploads). If you don't want a feature, you can remove it without breaking
+                                the rest.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">5.</span>
+                                    <span>Can I remove or swap packages?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Yes. Everything in GuacPanel is modular. Don't need backups or permissions? Remove the
+                                related packages without breaking the app.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">6.</span>
+                                    <span>Does GuacPanel replace Jetstream or Fortify?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                No, GuacPanel uses Fortify under the hood but provides a complete, ready-to-use
+                                frontend with Inertia and Vue. Jetstream, on the other hand, comes with its own
+                                scaffolding and stack opinions.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">7.</span>
+                                    <span>Is GuacPanel free?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Yes, 100% open-source under the MIT license.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">8.</span>
+                                    <span>Where can I contribute or report issues?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                On the <a href="https://github.com/otatechie/guacpanel-tailwind"
+                                    class="text-teal-600 dark:text-teal-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors underline underline-offset-2"
+                                    aria-label="Visit GitHub repo">GitHub</a> repo, feel free to open
+                                issues or submit pull requests!
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">9.</span>
+                                    <span>Is GuacPanel actively maintained?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Yes. We plan to keep GuacPanel updated with the latest Laravel releases, security
+                                patches, and community-driven improvements.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">10.</span>
+                                    <span>Does GuacPanel include CRUD generators?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                No, GuacPanel focuses on security, user management, and app essentials. If you want
+                                CRUD generators, you can integrate them separately.
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                <span class="flex items-baseline gap-3">
+                                    <span class="text-teal-600 dark:text-teal-500">11.</span>
+                                    <span>Can I suggest features?</span>
+                                </span>
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Absolutely, feature requests are welcome via GitHub issues. Let's make GuacPanel better
+                                together!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <footer class="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-8" role="contentinfo">
             <div class="max-w-7xl mx-auto px-4">
                 <div
@@ -396,7 +613,7 @@ onMounted(async () => {
                             class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
                             aria-label="View source on GitHub">GitHub</a>
                     </nav>
-                    <span class="hidden md:block text-gray-400 dark:text-gray-600" aria-hidden="true">·</span>
+                    <span class="hidden md:block text-gray-800 dark:text-gray-600" aria-hidden="true">·</span>
                     <span>
                         Made with <span class="text-red-500 dark:text-red-400" role="img" aria-label="love">♡</span> in
                         <a href="https://github.com/otatechie"
