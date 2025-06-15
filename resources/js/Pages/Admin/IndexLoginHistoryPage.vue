@@ -62,17 +62,14 @@ const columns = [
             return h('div', {
                 class: 'flex items-center gap-2',
                 role: 'status',
-                'aria-label': `Login ${status.success ? 'successful' : 'failed'} from IP ${status.ip}`
+                'aria-label': `Login ${status.success ? 'successful' : 'failed'} `
             }, [
                 h('span', {
                     class: status.success
                         ? 'px-2 py-1 text-sm rounded-md bg-green-50 text-green-700 dark:bg-green-900/50 dark:text-green-400'
                         : 'px-2 py-1 text-sm rounded-md bg-red-50 text-red-700 dark:bg-red-900/50 dark:text-red-400'
                 }, status.success ? 'Success' : 'Failed'),
-                h('span', {
-                    class: 'text-sm text-gray-500',
-                    'aria-label': `IP Address: ${status.ip}`
-                }, `(${status.ip})`)
+
             ])
         },
         meta: {
