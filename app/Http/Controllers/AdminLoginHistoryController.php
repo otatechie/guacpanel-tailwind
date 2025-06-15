@@ -22,7 +22,6 @@ class AdminLoginHistoryController extends Controller
                 'id',
                 'user_id',
                 'user_type',
-                'ip_address',
                 'user_agent',
                 'login_at',
                 'login_successful'
@@ -43,7 +42,6 @@ class AdminLoginHistoryController extends Controller
 
                 $item->status = [
                     'success' => $item->login_successful ?? true,
-                    'ip' => $item->ip_address ?: 'Unknown IP'
                 ];
 
                 $item->username = $item->user?->name ?? 'Unknown User';
