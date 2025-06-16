@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             PermissionRoleSeeder::class,
             UserSeeder::class,
+            FinancialMetricsSeeder::class,
         ]);
     }
 }
