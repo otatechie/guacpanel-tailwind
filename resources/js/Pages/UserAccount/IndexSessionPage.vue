@@ -24,7 +24,6 @@ const formattedSessions = computed(() =>
         device: session.agent?.device || 'Unknown device',
         browser: session.agent?.browser || 'Unknown browser',
         platform: session.agent?.platform || '',
-        ip: session.ip || '',
         lastActive: session.lastActive || '',
         isCurrent: session.isCurrent || false
     }))
@@ -135,10 +134,6 @@ const getDeviceIcon = (device) => {
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400 hidden sm:table-cell">
-                                        IP Address
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400 hidden sm:table-cell">
                                         Last Active
                                     </th>
                                     <th scope="col"
@@ -174,17 +169,11 @@ const getDeviceIcon = (device) => {
                                                 </div>
                                                 <div class="sm:hidden mt-1 space-y-1">
                                                     <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                        IP: {{ session.ip }}
-                                                    </div>
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400">
                                                         Last active: {{ session.lastActive }}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                                        <div class="text-sm text-gray-900 dark:text-gray-100">{{ session.ip }}</div>
                                     </td>
                                     <td
                                         class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden sm:table-cell">

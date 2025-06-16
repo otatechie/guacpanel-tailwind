@@ -34,7 +34,6 @@ class BrowserSessionController extends Controller
                 $sessions[] = [
                     'id' => $session->id ?? '',
                     'agent' => $this->formatAgent($session->user_agent ?? ''),
-                    'ip' => $session->ip_address ?? '',
                     'lastActive' => $session->last_activity ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '',
                     'isCurrent' => ($session->id ?? '') === $request->session()->getId(),
                 ];
