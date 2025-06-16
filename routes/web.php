@@ -3,10 +3,12 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminAuditController;
+use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\AdminSettingController;
@@ -16,10 +18,9 @@ use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionRoleController;
+
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
-
-use App\Http\Controllers\AdminBackupController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -72,6 +73,9 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                 Route::delete('account/sessions/{sessionId}', 'destroySession')->name('session.destroy');
             });
         });
+
+        // Chart Routes
+        Route::get('charts', [ChartController::class, 'index'])->name('chart.index');
 
         // Protected Routes requiring 2FA
         Route::middleware(['require.two.factor'])->group(function () {
