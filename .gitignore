@@ -1,21 +1,8 @@
 /vendor
 /node_modules
 /public/storage
-/storage
-!storage/app
-!storage/app/.gitignore
-!storage/framework
-!storage/framework/.gitignore
-!storage/framework/cache
-!storage/framework/cache/.gitignore
-!storage/framework/sessions
-!storage/framework/sessions/.gitignore
-!storage/framework/testing
-!storage/framework/testing/.gitignore
-!storage/framework/views
-!storage/framework/views/.gitignore
-!storage/logs
-!storage/logs/.gitignore
+/storage/*.key
+/storage/pail
 
 .env
 .env.backup
