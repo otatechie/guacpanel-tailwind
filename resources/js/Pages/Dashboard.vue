@@ -2,8 +2,10 @@
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import Default from '../Layouts/Default.vue'
-import LineChart from '@/Components/Charts/LineChart.vue'
-import DoughnutChart from '@/Components/Charts/DoughnutChart.vue'
+import ApexLineChart from '@/Components/Charts/ApexLineChart.vue'
+import ApexDonutChart from '@/Components/Charts/ApexDonutChart.vue'
+import ApexBarChart from '@/Components/Charts/ApexBarChart.vue'
+import ApexAreaChart from '@/Components/Charts/ApexAreaChart.vue'
 
 defineOptions({
     layout: Default
@@ -165,6 +167,53 @@ const doughnutData = computed(() => ({
     }]
 }));
 
+// Bar chart data   
+const barChartData = computed(() => ({
+    labels: props.financialMetrics?.months || [],
+    datasets: [
+        {
+            label: 'Income',
+            data: (props.financialMetrics?.months || [])
+                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
+            backgroundColor: '#10b981',
+            borderColor: '#10b981',
+            borderWidth: 1
+        },
+        {
+            label: 'Expenses',
+            data: (props.financialMetrics?.months || [])
+                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
+            backgroundColor: '#ef4444',
+            borderColor: '#ef4444',
+            borderWidth: 1
+        }
+    ]
+}));
+
+// Area chart data
+const areaChartData = computed(() => ({
+    labels: props.financialMetrics?.months || [],
+    datasets: [
+        {
+            label: 'Income',
+            data: (props.financialMetrics?.months || [])
+                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 1,
+            tension: 0.4,
+            fill: true
+        },
+        {
+            label: 'Expenses',
+            data: (props.financialMetrics?.months || [])
+                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        }
+    ]
+}));
+
 onMounted(() => {
     const handleKeyPress = (event) => {
         if (event.key === 'r' && (event.ctrlKey || event.metaKey)) {
@@ -190,7 +239,7 @@ onMounted(() => {
     <Head title="Dashboard" />
 
     <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class="max-w-4xl mx-auto px-4 py-10">
+        <div class="max-w-4xl mx-auto px-4">
             <header class="mb-8">
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     {{ greeting }}, {{ userName }}
@@ -229,22 +278,6 @@ onMounted(() => {
                         </span>
                     </div>
                 </article>
-            </section>
-
-            <!-- Charts -->
-            <section
-                class="mb-8 bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <LineChart :chart-data="lineChartData" :title="'Revenue vs Expenses'" height="400px"
-                            :enable-grid="true" :enable-legend="true" :enable-tooltip="true"
-                            :animation-duration="1500" />
-                    </div>
-                    <div>
-                        <DoughnutChart :chart-data="doughnutData" :title="'Revenue Distribution'" height="400px"
-                            :enable-legend="true" :enable-tooltip="true" :animation-duration="1500" />
-                    </div>
-                </div>
             </section>
 
             <!-- Key Stats -->
