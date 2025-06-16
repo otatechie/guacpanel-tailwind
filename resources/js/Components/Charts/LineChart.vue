@@ -80,7 +80,6 @@ const props = defineProps({
 	}
 })
 
-// Compute final chart options by merging defaults with props
 const finalOptions = computed(() => {
 	const baseOptions = {
 		responsive: true,
@@ -149,14 +148,12 @@ const finalOptions = computed(() => {
 		}
 	}
 
-	// Merge with custom options
 	return {
 		...baseOptions,
 		...props.chartOptions
 	}
 })
 
-// Apply custom colors to datasets if not already specified
 const colorizedData = computed(() => {
 	const data = { ...props.chartData }
 	if (data.datasets) {

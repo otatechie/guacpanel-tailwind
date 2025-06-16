@@ -2,10 +2,22 @@
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import Default from '../Layouts/Default.vue'
-import LineChart from '@/Components/LineChart.vue'
+import LineChart from '@/Components/Charts/LineChart.vue'
+import DoughnutChart from '@/Components/Charts/DoughnutChart.vue'
 
 defineOptions({
     layout: Default
+})
+
+const props = defineProps({
+    financialMetrics: {
+        type: Object,
+        required: true,
+        default: () => ({
+            income: {},
+            expense: {}
+        })
+    }
 })
 
 const page = usePage()
@@ -110,25 +122,48 @@ const systemHealth = ref({
     network: 89
 })
 
-// Chart data
-const chartData = ref({
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+// Line chart data
+const lineChartData = computed(() => ({
+    labels: props.financialMetrics?.months || [],
     datasets: [
         {
-            label: 'Revenue',
-            data: [65000, 59000, 80000, 81000, 76000, 85000]
+            label: 'Income',
+            data: (props.financialMetrics?.months || [])
+                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 1,
+            tension: 0.4,
+            fill: true
         },
         {
             label: 'Expenses',
-            data: [45000, 47000, 55000, 58000, 56000, 62000]
+            data: (props.financialMetrics?.months || [])
+                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            borderWidth: 1,
+            tension: 0.4,
+            fill: true
         }
     ]
-})
+}));
 
-// Format currency for y-axis
-const formatCurrency = (value) => {
-    return '$' + value.toLocaleString()
-}
+// Doughnut chart data
+const doughnutData = computed(() => ({
+    labels: ['Total Income', 'Total Expenses'],
+    datasets: [{
+        label: 'Revenue Distribution',
+        data: [
+            (props.financialMetrics?.months || [])
+                .reduce((sum, month) => sum + Number(props.financialMetrics?.income?.[month] || 0), 0),
+            (props.financialMetrics?.months || [])
+                .reduce((sum, month) => sum + Number(props.financialMetrics?.expense?.[month] || 0), 0)
+        ],
+        backgroundColor: ['#10b981', '#ef4444'],
+        borderWidth: 1
+    }]
+}));
 
 onMounted(() => {
     const handleKeyPress = (event) => {
@@ -196,11 +231,20 @@ onMounted(() => {
                 </article>
             </section>
 
-            <!-- Revenue Chart -->
+            <!-- Charts -->
             <section
                 class="mb-8 bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
-                <LineChart :chart-data="chartData" title="Revenue vs Expenses" height="400px"
-                    :y-axis-format="formatCurrency" :colors="['#3b82f6', '#ef4444']" :animation-duration="1500" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <LineChart :chart-data="lineChartData" :title="'Revenue vs Expenses'" height="400px"
+                            :enable-grid="true" :enable-legend="true" :enable-tooltip="true"
+                            :animation-duration="1500" />
+                    </div>
+                    <div>
+                        <DoughnutChart :chart-data="doughnutData" :title="'Revenue Distribution'" height="400px"
+                            :enable-legend="true" :enable-tooltip="true" :animation-duration="1500" />
+                    </div>
+                </div>
             </section>
 
             <!-- Key Stats -->
