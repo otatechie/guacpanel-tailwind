@@ -3,28 +3,15 @@ import { Head } from '@inertiajs/vue3'
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
 import Public from '@/Layouts/Public.vue'
 import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import hljs from 'highlight.js/lib/core'
-import javascript from 'highlight.js/lib/languages/javascript'
-import bash from 'highlight.js/lib/languages/bash'
-import 'highlight.js/styles/github-dark.css'
-
-hljs.registerLanguage('javascript', javascript)
-hljs.registerLanguage('bash', bash)
-
-const vHighlight = {
-    mounted(el) {
-        hljs.highlightElement(el)
-    },
-    updated(el) {
-        hljs.highlightElement(el)
-    }
-}
+import CodeBlock from '@/Components/CodeBlock.vue'
 
 defineOptions({
     layout: Public
 })
 
-const routeConfigCode = ref(`// Magic Link Authentication Routes
+// All code examples moved to constants
+const codeExamples = {
+    routeConfig: `// Magic Link Authentication Routes
 Route::middleware(['guest', 'web'])->group(function () {
     Route::controller(MagicLinkController::class)->group(function () {
         Route::get('/magic-link/register', 'create')->name('magic.register.create');
@@ -32,17 +19,9 @@ Route::middleware(['guest', 'web'])->group(function () {
         Route::post('/login/magic-link', 'login')->name('magic.login.request');
         Route::get('/magic-link/{token}', 'authenticate')->name('magic.login');
     });
-});`)
+});`,
 
-const featureToggleCode = ref(`protected function checkPasswordlessEnabled()
-{
-    $passwordlessEnabled = DB::table('settings')->value('passwordless_login') ?? true;
-    if (!$passwordlessEnabled) {
-        abort(404);
-    }
-}`)
-
-const magicLinkCode = ref(`protected function sendLoginLink(User $user)
+    magicLink: `protected function sendLoginLink(User $user)
 {
     $url = URL::temporarySignedRoute(
         'magic.login',
@@ -51,9 +30,9 @@ const magicLinkCode = ref(`protected function sendLoginLink(User $user)
     );
 
     Mail::to($user)->send(new MagicLoginLink($url));
-}`)
+}`,
 
-const authProcessCode = ref(`public function authenticate(Request $request)
+    authProcess: `public function authenticate(Request $request)
 {
     if (!$request->hasValidSignature()) {
         return redirect()->route('login')
@@ -65,9 +44,9 @@ const authProcessCode = ref(`public function authenticate(Request $request)
     $request->session()->regenerate();
 
     return redirect()->intended(config('fortify.home'));
-}`)
+}`,
 
-const accountDisablingCode = ref(`public function handle(Request $request, Closure $next): Response
+    accountDisabling: `public function handle(Request $request, Closure $next): Response
 {
     if (auth()->check() && auth()->user()->is_disabled) {
         auth()->logout();
@@ -76,9 +55,9 @@ const accountDisablingCode = ref(`public function handle(Request $request, Closu
     }
 
     return $next($request);
-}`)
+}`,
 
-const passwordExpiryCode = ref(`public function handle(Request $request, Closure $next): Response
+    passwordExpiry: `public function handle(Request $request, Closure $next): Response
 {
     if (auth()->check()) {
         $user = auth()->user();
@@ -91,9 +70,9 @@ const passwordExpiryCode = ref(`public function handle(Request $request, Closure
     }
 
     return $next($request);
-}`)
+}`,
 
-const forcePasswordCode = ref(`public function handle(Request $request, Closure $next): Response
+    forcePassword: `public function handle(Request $request, Closure $next): Response
 {
     if (auth()->check() && auth()->user()->force_password_change) {
         session()->flash('warning', 'You must change your password before continuing.');
@@ -101,9 +80,9 @@ const forcePasswordCode = ref(`public function handle(Request $request, Closure 
     }
 
     return $next($request);
-}`)
+}`,
 
-const twoFactorCode = ref(`public function handle(Request $request, Closure $next): Response
+    twoFactor: `public function handle(Request $request, Closure $next): Response
 {
     if (!auth()->check()) {
         return $next($request);
@@ -121,9 +100,9 @@ const twoFactorCode = ref(`public function handle(Request $request, Closure $nex
     }
 
     return $next($request);
-}`)
+}`,
 
-const tableExampleCode = ref(`// Import required dependencies
+    tableExample: `// Import required dependencies
 import { ref } from 'vue'
 import Datatable from '@/Components/Datatable.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
@@ -161,22 +140,9 @@ const columns = [
             </span>
         )
     })
-]
+]`,
 
-// Template usage
-<Datatable
-    :data="users"
-    :columns="columns"
-    :loading="loading"
-    :pagination="pagination"
-    :search-fields="['name', 'email']"
-    empty-message="No users found"
-    empty-description="Users will appear here"
-    export-file-name="users_export"
-    @update:pagination="pagination = $event"
-/>`)
-
-const templateExampleCode = ref(`<Datatable
+    templateExample: `<Datatable
     :data="users.data"
     :columns="columns"
     :loading="loading"
@@ -186,9 +152,9 @@ const templateExampleCode = ref(`<Datatable
     empty-description="Users will appear here"
     export-file-name="users_export"
     @update:pagination="pagination = $event"
-/>`)
+/>`,
 
-const backendCode = ref(`public function index(Request $request)
+    backendCode: `public function index(Request $request)
 {
     return Inertia::render('Admin/User/IndexUserPage', [
         'users' => User::query()
@@ -196,10 +162,9 @@ const backendCode = ref(`public function index(Request $request)
             ->latest()                       
             ->paginate($request->input('per_page', 10)) //Paginated results
     ]);
-}`)
+}`,
 
-
-const middlewareCode = ref(`class RoleMiddleware
+    middlewareCode: `class RoleMiddleware
 {
     public function handle($request, Closure $next, $role)
     {
@@ -209,9 +174,9 @@ const middlewareCode = ref(`class RoleMiddleware
 
         return $next($request);
     }
-}`)
+}`,
 
-const actionButtonsCode = ref(`// Add to your columns array
+    actionButtons: `// Add to your columns array
 columnHelper.display({
     id: 'actions',
     header: 'Actions',
@@ -245,64 +210,9 @@ const handleDelete = async (user) => {
         preserveScroll: true,
         onSuccess: () => flash('User deleted successfully')
     })
-}`)
+}`,
 
-const articleLinks = [
-    { text: 'Authentication', href: '#authentication' },
-    { text: 'Security Middleware', href: '#middleware' },
-    { text: 'Backup System', href: '#backup-system' },
-    { text: 'Data Tables', href: '#data-tables' },
-    { text: 'Authentication Logs', href: '#activity-logs' },
-    { text: 'Browser Sessions', href: '#browser-sessions' },
-    { text: 'Activity Tracking', href: '#activity-tracking' },
-    { text: 'File Uploads', href: '#file-uploads' },
-    { text: 'Google Fonts', href: '#google-fonts' }
-]
-
-const fixHighlightLanguages = () => {
-    document.querySelectorAll('pre code.language-vue').forEach((block) => {
-        block.className = 'language-xml'
-    })
-}
-
-const applyHighlighting = () => {
-    nextTick(() => {
-        fixHighlightLanguages()
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block)
-        })
-    })
-}
-
-const showBackToTop = ref(false)
-
-const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const handleScroll = () => {
-    showBackToTop.value = window.scrollY > 500
-}
-
-onMounted(() => {
-    window.addEventListener('scroll', handleScroll)
-    applyHighlighting()
-})
-
-onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
-})
-
-watch([
-    routeConfigCode, featureToggleCode, magicLinkCode, authProcessCode,
-    accountDisablingCode, passwordExpiryCode, forcePasswordCode,
-    twoFactorCode, tableExampleCode, templateExampleCode,
-    backendCode, middlewareCode, actionButtonsCode
-], () => {
-    applyHighlighting()
-}, { deep: true })
-
-const configExample = `{
+    configExample: `{
     // Required props
     name: {
         type: String,
@@ -346,9 +256,9 @@ const configExample = `{
         type: Array,
         default: () => []
     }
-}`
+}`,
 
-const scriptExample = `import { defineComponent } from 'vue'
+    scriptExample: `import { defineComponent } from 'vue'
 import vueFilePond from 'vue-filepond'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
@@ -384,28 +294,9 @@ const handleFileRemove = (error, file) => {
     if (!error) {
         console.log('File removed:', file)
     }
-}`
+}`,
 
-const templateExample = `<file-pond 
-    name="document"
-    label="Upload Document"
-    :label-idle="'Drop files here...'"
-    :allow-multiple="false"
-    :max-files="1"
-    :accepted-file-types="['image/jpeg', 'image/png', 'application/pdf']"
-    :max-file-size="'5MB'"
-    :server="serverConfig"
-    :files="[]"
-    :credits="null"
-    :allow-pdf-preview="true"
-    :pdf-preview-height="320"
-    :pdf-component-extra-params="'toolbar=0'"
-    class="bg-white dark:bg-gray-800 rounded-lg"
-    @processfile="(error, file) => handleFileUpload(error, file)"
-    @removefile="(error, file) => handleFileRemove(error, file)"
-/>`
-
-const googleFontsConfig = `// config/google-fonts.php
+    googleFontsConfig: `// config/google-fonts.php
 'fonts' => [
     'default' => 'https://fonts.googleapis.com/css2?family=Your+Font:wght@400;500;600;700&display=swap'
 ]
@@ -413,12 +304,43 @@ const googleFontsConfig = `// config/google-fonts.php
 // resources/css/app.css
 @theme {
     --font-sans: "Your Font", "sans-serif";
-}`
+}`,
 
-const googleFontsUsage = `php artisan google-fonts:fetch
+    googleFontsUsage: `php artisan google-fonts:fetch
 php artisan optimize`
-</script>
+}
 
+const articleLinks = [
+    { text: 'Authentication', href: '#authentication' },
+    { text: 'Permissions & Roles', href: '#permissions-roles' },
+    { text: 'Security Middleware', href: '#middleware' },
+    { text: 'Backup System', href: '#backup-system' },
+    { text: 'Data Tables', href: '#data-tables' },
+    { text: 'Authentication Logs', href: '#activity-logs' },
+    { text: 'Browser Sessions', href: '#browser-sessions' },
+    { text: 'Activity Tracking', href: '#activity-tracking' },
+    { text: 'File Uploads', href: '#file-uploads' },
+    { text: 'Google Fonts', href: '#google-fonts' }
+]
+
+const showBackToTop = ref(false)
+
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const handleScroll = () => {
+    showBackToTop.value = window.scrollY > 500
+}
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+})
+</script>
 
 <template>
 
@@ -506,29 +428,21 @@ php artisan optimize`
 
                         <div class="space-y-8">
                             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Implementation</h3>
-                            <div class="grid gap-8">
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">1.</span> Route Configuration
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        First, set up the routes for magic link authentication:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(routeConfigCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre
-                                            class="text-sm"><code class="language-php">{{ routeConfigCode }}</code></pre>
+                            <div class="grid md:grid-cols-1 gap-4">
+                                <div class="space-y-4">
+                                    <h4 class="font-medium text-gray-800 dark:text-white">Route Configuration</h4>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.routeConfig" language="php" />
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div
+                            class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mt-8">
+                            <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2"><span
+                                    class="flex-shrink-0 text-xl">💡</span><span><strong>Pro Tip:</strong> Passwordless
+                                    login is currently disabled. Enable it in your Security Settings to use this
+                                    feature.</span></p>
                         </div>
                     </div>
                 </section>
@@ -594,33 +508,22 @@ php artisan optimize`
                         <div class="space-y-8">
                             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Key Middleware
                                 Components</h3>
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">1.</span> Account Disabling
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Prevents disabled user accounts from accessing the application:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(accountDisablingCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre
-                                        class="text-sm"><code class="language-php">{{ accountDisablingCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            <div class="grid md:grid-cols-1 gap-4">
+                                <div class="space-y-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">1.</span> Account Disabling
+                                    </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Prevents disabled user accounts
+                                        from accessing the application</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.accountDisabling" language="php" />
+                                    </div>
                                     <div
-                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
+                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mt-8">
                                         <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                            <span class="flex-shrink-0 text-xl">💡</span>
-                                            <span><strong>Pro Tip:</strong> The <code
+                                            <span class="flex-shrink-0 text-xl">💡</span><span><strong>Pro Tip:</strong>
+                                                The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">disable.account</code>
                                                 middleware checks if the authenticated user has been disabled. If so, it
                                                 logs them out and redirects to the login page with an error
@@ -628,102 +531,72 @@ php artisan optimize`
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">2.</span> Password Expiry
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Enforces password expiration policies:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(passwordExpiryCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre
-                                        class="text-sm"><code class="language-php">{{ passwordExpiryCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                                <hr class="border-gray-100 dark:border-gray-700 my-4">
+                                <div class="space-y-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">2.</span> Password Expiry
+                                    </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Enforces password expiration for
+                                        user accounts</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.passwordExpiry" language="php" />
+                                    </div>
                                     <div
-                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
+                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mt-8">
                                         <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                            <span class="flex-shrink-0 text-xl">💡</span>
-                                            <span><strong>Pro Tip:</strong> The <code
+                                            <span class="flex-shrink-0 text-xl">💡</span><span><strong>Pro Tip:</strong>
+                                                The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">password.expired</code>
                                                 middleware enforces password expiry (default 90 days). Customize the
-                                                expiry period in the User model.</span>
+                                                expiry period in the <code
+                                                    class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">User</code>
+                                                model.</span>
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">3.</span> Force Password Change
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Forces users to change their password when required:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(forcePasswordCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre class="text-sm"><code class="language-php">{{ forcePasswordCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            <div class="grid md:grid-cols-1 gap-4 mt-8">
+                                <hr class="border-gray-100 dark:border-gray-700 my-4">
+                                <div class="space-y-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">3.</span> Force Password Change
+                                    </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Forces users to change their
+                                        password
+                                        after a certain period</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.forcePassword" language="php" />
+                                    </div>
                                     <div
-                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
+                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mt-8">
                                         <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                            <span class="flex-shrink-0 text-xl">💡</span>
-                                            <span><strong>Pro Tip:</strong> The <code
+                                            <span class="flex-shrink-0 text-xl">💡</span><span><strong>Pro Tip:</strong>
+                                                The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">force.password.change</code>
                                                 middleware enforces mandatory password updates when required.</span>
                                         </p>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div
-                                class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">4.</span> Two-Factor Authentication
-                                </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                    Enforces two-factor authentication requirements:
-                                </p>
-
-                                <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(twoFactorCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre class="text-sm"><code class="language-php">{{ twoFactorCode }}</code></pre>
-                                </div>
-
-                                <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="space-y-4">
+                                    <hr class="border-gray-100 dark:border-gray-700 my-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">4.</span> Two-Factor Authentication
+                                    </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Enforces two-factor authentication
+                                        for user accounts</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.twoFactor" language="php" />
+                                    </div>
                                     <div
-                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
+                                        class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mt-8">
                                         <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                            <span class="flex-shrink-0 text-xl">💡</span>
-                                            <span><strong>Pro Tip:</strong> The <code
+                                            <span class="flex-shrink-0 text-xl">💡</span><span><strong>Pro Tip:</strong>
+                                                The <code
                                                     class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">require.two.factor</code>
                                                 middleware ensures users set up 2FA when it's required by system
                                                 settings.</span>
@@ -752,7 +625,7 @@ php artisan optimize`
                         class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                         <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
-                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            <p class="text-gray-600 dark:text-gray-400">
                                 GuacPanel provides a clean interface for <a href="https://spatie.be/docs/laravel-backup"
                                     target="_blank" class="border-b-2 border-blue-500 dark:border-blue-400">Spatie's
                                     Laravel Backup</a>.
@@ -761,8 +634,8 @@ php artisan optimize`
                             </p>
                         </div>
 
-                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Backup UI</h3>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">Backup UI</h3>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 The backup interface provides an intuitive way to manage your system backups directly
                                 from the admin panel, letting you create, download, and manage backups with ease.
@@ -817,111 +690,51 @@ php artisan optimize`
                         <div class="space-y-8">
                             <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Implementation</h3>
 
-                            <div class="grid gap-8">
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">1.</span> Table Configuration
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Set up your columns and table state:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(tableExampleCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre
-                                            class="text-sm"><code class="language-javascript">{{ tableExampleCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <div
-                                            class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                            <p
-                                                class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                                <span class="flex-shrink-0 text-xl">💡</span>
-                                                <span><strong>Pro Tip:</strong> Creates a table with three columns
-                                                    (Name, Email, Status), server-side pagination, and styled status
-                                                    indicators. The component handles search, export, and row selection
-                                                    automatically.</span>
-                                            </p>
-                                        </div>
+                            <div class="grid md:grid-cols-1 gap-4">
+                                <div class="space-y-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">1.</span> Table Configuration </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Configure the table with the
+                                        following options:</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.tableExample" language="javascript" />
                                     </div>
                                 </div>
 
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">2.</span> Adding Action Buttons
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Add action buttons to your table:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(actionButtonsCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre
-                                            class="text-sm"><code class="language-javascript">{{ actionButtonsCode }}</code></pre>
-                                    </div>
-
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <div
-                                            class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                            <p
-                                                class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                                <span class="flex-shrink-0 text-xl">💡</span>
-                                                <span><strong>Pro Tip:</strong> Add action buttons using <code
-                                                        class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">columnHelper.display</code>.
-                                                    Buttons use GuacPanel's built-in styles and integrate with
-                                                    Inertia.js for navigation and actions.</span>
-                                            </p>
-                                        </div>
+                                <div class="space-y-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">2.</span> Template Usage </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following template to
+                                        create a new table:</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.templateExample" language="vue" />
                                     </div>
                                 </div>
+                            </div>
 
-                                <div
-                                    class="p-6 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
-                                    <h5 class="flex items-center text-xl font-bold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">3.</span> Backend Integration
-                                    </h5>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                                        Set up your backend controller to provide paginated data:
-                                    </p>
-
-                                    <div class="bg-gray-800 rounded-lg p-4 group relative">
-                                        <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                            @click="navigator.clipboard.writeText(backendCode)">
-                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </button>
-                                        <pre class="text-sm"><code class="language-php">{{ backendCode }}</code></pre>
+                            <div class="grid md:grid-cols-1 gap-4 mt-8">
+                                <div class="space-y-4">
+                                    <h5
+                                        class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                        <span class="mr-3">3.</span> Backend Integration </h5>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following code to integrate
+                                        the table with the backend:</p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.backendCode" language="php" />
                                     </div>
+                                </div>
+                            </div>
 
-                                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                                        <div
-                                            class="p-4 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                                            <p
-                                                class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
-                                                <span class="flex-shrink-0 text-xl">💡</span>
-                                                <span><strong>Pro Tip:</strong> The controller returns paginated data to
-                                                    your frontend, with eager-loaded relationships for better
-                                                    performance.</span>
-                                            </p>
-                                        </div>
-                                    </div>
+                            <div class="mt-8">
+                                <h5
+                                    class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">4.</span> Action Buttons </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following code to add action
+                                    buttons to the table:</p>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.actionButtons" language="javascript" />
                                 </div>
                             </div>
                         </div>
@@ -1029,27 +842,28 @@ php artisan optimize`
                                     and type validation.</p>
                             </div>
 
-                            <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Configuration</h3>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre
-                                        class="text-sm"><code v-highlight class="language-js">{{ configExample }}</code></pre>
+                            <div class="mt-8">
+                                <hr class="border-gray-100 dark:border-gray-700 my-4">
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">1.</span> Configuration </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Configure the file upload with the following options:</p>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.configExample" language="javascript" />
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Script Setup</h3>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre
-                                        class="text-sm"><code v-highlight class="language-js">{{ scriptExample }}</code></pre>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">2.</span> Script Setup </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following script to setup the file upload:</p>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.scriptExample" language="javascript" />
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Template</h3>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre
-                                        class="text-sm"><code v-highlight class="language-html">{{ templateExample }}</code></pre>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">3.</span> Template </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following template to create a new file upload:</p>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.templateExample" language="vue" />
                                 </div>
                             </div>
 
@@ -1090,18 +904,16 @@ php artisan optimize`
                             </p>
 
                             <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Configuration</h3>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre
-                                        class="text-sm"><code v-highlight class="language-php">{{ googleFontsConfig }}</code></pre>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">1.</span> Configuration</h5>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.googleFontsConfig" language="php" />
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Usage</h3>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre
-                                        class="text-sm"><code v-highlight class="language-bash">{{ googleFontsUsage }}</code></pre>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">2.</span> Usage</h5>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.googleFontsUsage" language="bash" />
                                 </div>
                             </div>
                         </div>

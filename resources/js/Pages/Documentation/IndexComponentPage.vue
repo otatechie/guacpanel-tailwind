@@ -3,10 +3,7 @@ import { Head } from '@inertiajs/vue3'
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
 import Public from '@/Layouts/Public.vue'
 import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import hljs from 'highlight.js'
-import 'highlight.js/lib/languages/php'
-import 'highlight.js/lib/languages/javascript'
-import 'highlight.js/styles/night-owl.css'
+import CodeBlock from '@/Components/CodeBlock.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormCheckbox from '@/Components/FormCheckbox.vue'
 import FormSelect from '@/Components/FormSelect.vue'
@@ -16,102 +13,40 @@ import Switch from '@/Components/Switch.vue'
 import FlashMessage from '@/Components/FlashMessage.vue'
 import NavSidebarDesktop from '@/Components/NavSidebarDesktop.vue'
 import Logo from '@/Components/Logo.vue'
+import ApexAreaChart from '@/Components/Charts/ApexAreaChart.vue'
+import ApexBarChart from '@/Components/Charts/ApexBarChart.vue'
+import ApexLineChart from '@/Components/Charts/ApexLineChart.vue'
+import ApexDonutChart from '@/Components/Charts/ApexDonutChart.vue'
 
-defineOptions({
-    layout: Public
-})
-
-const articleLinks = [
-    {
-        text: 'Form Components', href: '#form-components', children: [
-            { text: 'Form Input', href: '#form-input' },
-            { text: 'Form Checkbox', href: '#form-checkbox' },
-            { text: 'Form Select', href: '#form-select' }
-        ]
-    },
-    {
-        text: 'Navigation Component', href: '#navigation-components', children: [
-            { text: 'Navigation Sidebar', href: '#nav-sidebar' }
-        ]
-    },
-    {
-        text: 'Feedback Components', href: '#feedback-components', children: [
-            { text: 'Flash Message', href: '#flash-message' },
-            { text: 'Modal', href: '#modal' }
-        ]
-    },
-    {
-        text: 'Utility Components', href: '#utility-components', children: [
-            { text: 'Switch', href: '#switch' },
-            { text: 'Logo', href: '#logo' },
-            { text: 'Page Header', href: '#page-header' }
-        ]
-    }
-]
-
-const fixHighlightLanguages = () => {
-    document.querySelectorAll('pre code.language-vue').forEach((block) => {
-        block.className = 'language-xml'
-    })
-}
-
-const applyHighlighting = () => {
-    nextTick(() => {
-        fixHighlightLanguages()
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block)
-        })
-    })
-}
-
-const showBackToTop = ref(false)
-
-const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const handleScroll = () => {
-    showBackToTop.value = window.scrollY > 500
-}
-
-onMounted(() => {
-    window.addEventListener('scroll', handleScroll)
-    applyHighlighting()
-})
-
-onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
-})
-
-const demoEmail = ref('')
-const demoIsChecked = ref(false)
-const demoIsOpen = ref(false)
-const demoIsEnabled = ref(false)
-const demoSelectedCountry = ref('')
-const demoCountries = ref([
-    { name: 'United States', code: 'US' },
-    { name: 'Canada', code: 'CA' },
-    { name: 'United Kingdom', code: 'GB' }
-])
-
-const formInputCode = ref(`<FormInput
+const codeExamples = {
+    formInput: `<FormInput
     v-model="email"
     label="Email Address"
     id="demo-email"
     type="email"
     required
     error="Please enter a valid email address"
-/>`)
+/>`,
 
-const formCheckboxCode = ref(`<FormCheckbox
+    formCheckbox: `<FormCheckbox
     v-model="selectedItems"
     :value="item.id"
     :label="item.name"
     :name="remember"
     :id="remember"
-/>`)
+/>`,
 
-const modalCode = ref(`<Modal :show="isOpen" @close="isOpen = false" size="md">
+    formSelect: `<FormSelect
+    v-model="selectedCountry"
+    label="Country"
+    id="demo-country"
+    :options="demoCountries"
+    option-label="name"
+    option-value="code"
+    required
+/>`,
+
+    modal: `<Modal :show="isOpen" @close="isOpen = false" size="md">
     <template #title>Edit Profile</template>
 
     <div class="space-y-4">
@@ -121,9 +56,9 @@ const modalCode = ref(`<Modal :show="isOpen" @close="isOpen = false" size="md">
     <template #footer>
         <button @click="save">Save Changes</button>
     </template>
-</Modal>`)
+</Modal>`,
 
-const pageHeaderCode = ref(`<PageHeader
+    pageHeader: `<PageHeader
     title="User Management"
     description="Manage user accounts and permissions"
     :breadcrumbs="[
@@ -136,30 +71,20 @@ const pageHeaderCode = ref(`<PageHeader
             Add
         </button>
     </template>
-</PageHeader>`)
+</PageHeader>`,
 
-const switchCode = ref(`<Switch
+    switch: `<Switch
     v-model="isEnabled"
     label="Enable notifications"
-/>`)
+/>`,
 
-const formSelectCode = ref(`<FormSelect
-    v-model="selectedCountry"
-    label="Country"
-    id="demo-country"
-    :options="demoCountries"
-    option-label="name"
-    option-value="code"
-    required
-/>`)
-
-const flashMessageCode = ref(`<FlashMessage
+    flashMessage: `<FlashMessage
     type="success"
     message="Your changes have been saved successfully!"
     :duration="3000"
-/>`)
+/>`,
 
-const flashMessageUsageCode = ref(`// In your Laravel controller
+    flashMessageUsage: `// In your Laravel controller
 public function store(Request $request)
 {
     // Process the request...
@@ -175,11 +100,11 @@ public function store(Request $request)
     
     // Or flash an info message
     return redirect()->back()->with('info', 'Your changes have been saved.');
-}`)
+}`,
 
-const navSidebarCode = ref(`<NavSidebarDesktop />`)
+    navSidebar: `<NavSidebarDesktop />`,
 
-const navSidebarCodeUsage = ref(`// Add items to navigation sections
+    navSidebarUsage: `// Add items to navigation sections
 const navigationSections = reactive([
     {
         items: [
@@ -204,9 +129,138 @@ const navigationSections = reactive([
             },
         ]
     }
-])`)
+])`,
 
-const logoCode = ref(`<Logo size="3.5rem" />`)
+    logo: `<Logo size="3.5rem" />`,
+
+    areaChart: `<ApexAreaChart
+    :chart-data="chartData"
+    title="Monthly Revenue"
+    height="300px"
+/>`,
+
+    barChart: `<ApexBarChart
+    :chart-data="chartData"
+    title="Revenue vs Expenses"
+    height="300px"
+/>`,
+
+    lineChart: `<ApexLineChart
+    :chart-data="chartData"
+    title="Growth Trend"
+    height="300px"
+/>`,
+
+    donutChart: `<ApexDonutChart
+    :chart-data="chartData"
+    title="Revenue Distribution"
+    height="300px"
+/>`
+}
+
+defineOptions({
+    layout: Public
+})
+
+const articleLinks = [
+    {
+        text: 'Form Components', href: '#form-components', children: [
+            { text: 'Form Input', href: '#form-input' },
+            { text: 'Form Checkbox', href: '#form-checkbox' },
+            { text: 'Form Select', href: '#form-select' }
+        ]
+    },
+    {
+        text: 'Data Visualization', href: '#data-visualization', children: [
+            { text: 'Area Chart', href: '#area-chart' },
+            { text: 'Bar Chart', href: '#bar-chart' },
+            { text: 'Line Chart', href: '#line-chart' },
+            { text: 'Donut Chart', href: '#donut-chart' }
+        ]
+    },
+    {
+        text: 'Navigation Component', href: '#navigation-components', children: [
+            { text: 'Navigation Sidebar', href: '#nav-sidebar' }
+        ]
+    },
+    {
+        text: 'Feedback Components', href: '#feedback-components', children: [
+            { text: 'Flash Message', href: '#flash-message' },
+            { text: 'Modal', href: '#modal' }
+        ]
+    },
+    {
+        text: 'Utility Components', href: '#utility-components', children: [
+            { text: 'Switch', href: '#switch' },
+            { text: 'Logo', href: '#logo' },
+            { text: 'Page Header', href: '#page-header' }
+        ]
+    }
+]
+
+const showBackToTop = ref(false)
+
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const handleScroll = () => {
+    showBackToTop.value = window.scrollY > 500
+}
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+})
+
+const demoEmail = ref('')
+const demoIsChecked = ref(false)
+const demoIsOpen = ref(false)
+const demoIsEnabled = ref(false)
+const demoSelectedCountry = ref('')
+const demoCountries = ref([
+    { name: 'United States', code: 'US' },
+    { name: 'Canada', code: 'CA' },
+    { name: 'United Kingdom', code: 'GB' }
+])
+
+const demoChartData = ref({
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+        {
+            label: 'Revenue',
+            data: [4400, 5500, 4900, 6500, 7000, 8000]
+        },
+        {
+            label: 'Expenses',
+            data: [3500, 4100, 3600, 4800, 5200, 6000]
+        }
+    ]
+})
+
+const chartProps = [
+    {
+        name: 'chartData',
+        type: 'Object',
+        default: 'Required',
+        description: 'Data object containing labels and datasets for the chart'
+    },
+    {
+        name: 'height',
+        type: 'String',
+        default: '400px',
+        description: 'Height of the chart container'
+    },
+    {
+        name: 'title',
+        type: 'String',
+        default: "''",
+        description: 'Title displayed above the chart'
+    }
+]
 </script>
 
 
@@ -280,15 +334,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                     required error="Please enter a valid email address" />
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(formInputCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ formInputCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.formInput" language="vue" />
                             </div>
                         </div>
 
@@ -444,15 +491,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                     name="terms" id="terms" />
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(formCheckboxCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ formCheckboxCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.formCheckbox" language="vue" />
                             </div>
                         </div>
                     </div>
@@ -472,15 +512,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                     :options="demoCountries" option-label="name" option-value="code" required />
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(formSelectCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ formSelectCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.formSelect" language="vue" />
                             </div>
                         </div>
 
@@ -542,6 +575,258 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                     </div>
                 </section>
 
+                <section id="data-visualization" class="space-y-6 scroll-mt-16">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Data Visualization</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">
+                        Data visualization components help users understand and analyze data through visual
+                        representations.
+                        These components are essential for creating informative and interactive data visualizations.
+                    </p>
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4"><span
+                                class="mr-3">1.</span> Area Chart</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A versatile area chart component that supports multiple datasets and customizable styling.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <ApexAreaChart :chart-data="demoChartData" title="Monthly Revenue" height="300px" />
+                            </div>
+
+                            <div>
+                                <CodeBlock :code="codeExamples.areaChart" language="vue" />
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr v-for="prop in chartProps" :key="prop.name">
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ prop.name }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ prop.type
+                                            }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.default }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.description }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4"><span
+                                class="mr-3">2.</span> Bar Chart</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A customizable bar chart component that supports multiple datasets and customizable styling.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <ApexBarChart :chart-data="demoChartData" title="Revenue vs Expenses" height="300px" />
+                            </div>
+
+                            <div>
+                                <CodeBlock :code="codeExamples.barChart" language="vue" />
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr v-for="prop in chartProps" :key="prop.name">
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ prop.name }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ prop.type
+                                            }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.default }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.description }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4"><span
+                                class="mr-3">3.</span> Line Chart</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A customizable line chart component that supports multiple datasets and customizable
+                            styling.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <ApexLineChart :chart-data="demoChartData" title="Growth Trend" height="300px" />
+                            </div>
+
+                            <div>
+                                <CodeBlock :code="codeExamples.lineChart" language="vue" />
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr v-for="prop in chartProps" :key="prop.name">
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ prop.name }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ prop.type
+                                            }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.default }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.description }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-300">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4"><span
+                                class="mr-3">4.</span> Donut Chart</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            A customizable donut chart component that supports multiple datasets and customizable
+                            styling.
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <h4 class="font-medium text-gray-800 dark:text-white">Example</h4>
+                                <ApexDonutChart :chart-data="demoChartData" title="Revenue Distribution"
+                                    height="300px" />
+                            </div>
+
+                            <div>
+                                <CodeBlock :code="codeExamples.donutChart" language="vue" />
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Props</h4>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-800/50">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Type</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Default</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr v-for="prop in chartProps" :key="prop.name">
+                                            <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ prop.name }}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ prop.type
+                                            }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.default }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{
+                                                prop.description }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
                 <section id="navigation-components" class="space-y-6 scroll-mt-16">
                     <div class="flex items-center mb-6">
                         <div
@@ -578,35 +863,25 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                         </ul>
 
                         <div class="grid md:grid-cols-1 gap-8 mt-4">
+                            <hr class="border-gray-100 dark:border-gray-700">
                             <div class="space-y-4">
-                                <h4 class="font-medium text-gray-800 dark:text-white">Basic Usage</h4>
-                                <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(navSidebarCode)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre class="text-sm"><code class="language-vue">{{ navSidebarCode }}</code></pre>
+                                <h4 class="font-semibold text-lg text-gray-800 dark:text-white"><span
+                                        class="mr-3">1.</span>
+                                    Basic Usage</h4>
+                                <div>
+                                    <CodeBlock :code="codeExamples.navSidebar" language="vue" />
                                 </div>
 
-                                <div class="bg-gray-800 rounded-lg p-4 relative group mt-6">
-                                    <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                        @click="navigator.clipboard.writeText(navSidebarCodeUsage)">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                    </button>
-                                    <pre
-                                        class="text-sm"><code class="language-javascript">{{ navSidebarCodeUsage }}</code></pre>
+                                <div>
+                                    <CodeBlock :code="codeExamples.navSidebarUsage" language="javascript" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-8">
-                            <h4 class="font-medium text-gray-800 dark:text-white mb-4">Navigation Structure</h4>
+                            <h4 class="font-semibold text-lg text-gray-800 dark:text-white mb-4"><span
+                                    class="mr-3">2.</span>
+                                Navigation Structure</h4>
                             <p class="text-gray-600 dark:text-gray-400 mb-4">
                                 The sidebar uses a simple array of sections and items to define the navigation menu:
                             </p>
@@ -615,40 +890,40 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 <div>
                                     <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Basic Menu Item
                                     </h5>
-                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                        <pre class="text-sm"><code class="language-javascript">{
-  name: 'Dashboard',           // The text to display
-  route: 'dashboard',         // Laravel route name
-  icon: '<svg>...</svg>',     // Icon SVG path
-  permission: 'view-dashboard' // Optional: Required permission
-}</code></pre>
+                                    <div>
+                                        <CodeBlock :code="{
+                                            name: 'Dashboard',           // The text to display
+                                            route: 'dashboard',         // Laravel route name
+                                            icon: '<svg>...</svg>',     // Icon SVG path
+                                            permission: 'view-dashboard' // Optional: Permission required to see this item
+                                        }" language="javascript" />
                                     </div>
                                 </div>
 
                                 <div>
                                     <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Dropdown Menu
                                     </h5>
-                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                        <pre class="text-sm"><code class="language-javascript">{
-  name: 'Settings',
-  icon: '<svg>...</svg>',
-  children: [                 // Array of child menu items
-    {
-      name: 'General',
-      route: 'settings.index',
-      permission: 'manage-settings'
-    }
-  ]
-}</code></pre>
+                                    <div>
+                                        <CodeBlock :code="{
+                                            name: 'Settings',
+                                            icon: '<svg>...</svg>',
+                                            children: [                 // Array of child menu items
+                                                {
+                                                    name: 'General',
+                                                    route: 'settings.index',
+                                                    permission: 'manage-settings'
+                                                }
+                                            ]
+                                        }" language="javascript" />
                                     </div>
                                 </div>
 
                                 <div>
                                     <h5 class="text-sm font-medium text-gray-800 dark:text-white mb-2">Divider</h5>
-                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                                        <pre class="text-sm"><code class="language-javascript">{ 
-  type: 'divider'           // Adds a visual separator
-}</code></pre>
+                                    <div>
+                                        <CodeBlock :code="{
+                                            type: 'divider'           // Adds a visual separator
+                                        }" language="javascript" />
                                     </div>
                                 </div>
                             </div>
@@ -690,15 +965,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                     :duration="3000" />
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(flashMessageCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ flashMessageCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.flashMessage" language="vue" />
                             </div>
                         </div>
 
@@ -805,15 +1073,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 </div>
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(modalCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ modalCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.modal" language="vue" />
                             </div>
                         </div>
 
@@ -917,15 +1178,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 </PageHeader>
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(pageHeaderCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ pageHeaderCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.pageHeader" language="vue" />
                             </div>
                         </div>
 
@@ -1033,15 +1287,8 @@ const logoCode = ref(`<Logo size="3.5rem" />`)
                                 <Switch v-model="demoIsEnabled" label="Enable notifications" />
                             </div>
 
-                            <div class="bg-gray-800 rounded-lg p-4 relative group">
-                                <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                    @click="navigator.clipboard.writeText(switchCode)">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <pre class="text-sm"><code class="language-vue">{{ switchCode }}</code></pre>
+                            <div>
+                                <CodeBlock :code="codeExamples.switch" language="vue" />
                             </div>
                         </div>
 
