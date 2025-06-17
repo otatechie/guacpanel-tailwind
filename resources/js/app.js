@@ -6,6 +6,7 @@ import "nprogress/nprogress.css";
 import "../css/app.css";
 import { initializeTheme } from "./utils/themeInit";
 
+
 // Initialize theme before Vue app starts
 initializeTheme();
 

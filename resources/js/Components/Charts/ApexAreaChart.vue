@@ -1,142 +1,117 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
 
 const props = defineProps({
-    chartData: {
-        type: Object,
-        required: true
-    },
-    height: {
-        type: String,
-        default: '400px'
-    },
-    title: {
-        type: String,
-        default: ''
-    }
+    chartData: { type: Object, required: true },
+    height: { type: String, default: '400px' },
+    title: { type: String, default: '' }
 })
 
-const series = computed(() => props.chartData.datasets.map(dataset => ({
-    name: dataset.label,
-    data: dataset.data
-})))
+const isDark = ref(document.documentElement.classList.contains('dark'))
 
-const chartOptions = computed(() => ({
-    chart: {
-        type: 'area',
-        toolbar: {
-            show: true,
-            tools: {
-                download: true,
-                selection: false,
-                zoom: false,
-                zoomin: false,
-                zoomout: false,
-                pan: false,
-                reset: false
+const observer = new MutationObserver(() => {
+    isDark.value = document.documentElement.classList.contains('dark')
+})
+
+observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+})
+
+onUnmounted(() => observer.disconnect())
+
+const series = computed(() =>
+    props.chartData.datasets.map(dataset => ({
+        name: dataset.label,
+        data: dataset.data
+    }))
+)
+
+const fontFamily = 'Instrument Sans'
+
+const chartOptions = computed(() => {
+    const dark = isDark.value
+    const textColor = dark ? '#ffffff' : '#111827'
+    const axisColor = dark ? '#9ca3af' : '#6b7280'
+    const gridColor = dark ? '#374151' : '#e5e7eb'
+
+    return {
+        chart: {
+            type: 'area',
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                    selection: false,
+                    zoom: false,
+                    zoomin: false,
+                    zoomout: false,
+                    pan: false,
+                    reset: false
+                }
+            },
+            animations: { enabled: false },
+            redrawOnWindowResize: true,
+            redrawOnParentResize: true,
+            foreColor: axisColor
+        },
+        plotOptions: {
+            area: { dataLabels: { enabled: false } }
+        },
+        dataLabels: { enabled: false },
+        stroke: { curve: 'smooth', width: 2 },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.7,
+                opacityTo: 0.3,
+                stops: [0, 90, 100]
             }
         },
-        animations: {
-            enabled: false
+        colors: ['#10b981'],
+        title: {
+            text: props.title,
+            align: 'center',
+            style: {
+                fontSize: '16px',
+                fontWeight: '600',
+                fontFamily,
+                color: textColor
+            }
         },
-        redrawOnWindowResize: true,
-        redrawOnParentResize: true,
-        width: '100%',
-        height: '100%'
-    },
-    plotOptions: {
-        area: {
-            dataLabels: {
-                enabled: false
+        xaxis: {
+            categories: props.chartData.labels,
+            labels: {
+                style: { colors: axisColor, fontFamily }
             }
-        }
-    },
-    dataLabels: {
-        enabled: false,
-        show: false
-    },
-    stroke: {
-        curve: 'smooth',
-        width: 2
-    },
-    fill: {
-        type: 'gradient',
-        gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.7,
-            opacityTo: 0.3,
-            stops: [0, 90, 100]
-        }
-    },
-    colors: ['#10b981'],
-    title: {
-        text: props.title,
-        align: 'center',
-        style: {
-            fontSize: '16px',
-            fontWeight: 'bold',
-            fontFamily: 'Instrument Sans'
-        }
-    },
-    xaxis: {
-        categories: props.chartData.labels,
-        labels: {
-            style: {
-                colors: '#6b7280',
-                fontFamily: 'Instrument Sans'
+        },
+        yaxis: {
+            labels: {
+                style: { colors: axisColor, fontFamily },
+                formatter: val => val.toLocaleString()
             }
-        }
-    },
-    yaxis: {
-        labels: {
-            style: {
-                colors: '#6b7280',
-                fontFamily: 'Instrument Sans'
-            },
-            formatter: (value) => {
-                return value.toLocaleString()
+        },
+        grid: {
+            borderColor: gridColor,
+            strokeDashArray: 4
+        },
+        legend: { show: false },
+        tooltip: {
+            theme: 'dark',
+            y: { formatter: val => val.toLocaleString() }
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                title: { style: { fontSize: '14px', fontFamily } },
+                xaxis: { labels: { style: { fontSize: '10px', fontFamily } } },
+                yaxis: { labels: { style: { fontSize: '10px', fontFamily } } }
             }
-        }
-    },
-    grid: {
-        borderColor: '#e5e7eb',
-        strokeDashArray: 4
-    },
-    legend: {
-        show: false
-    },
-    tooltip: {
-        theme: 'light',
-        y: {
-            formatter: (value) => value.toLocaleString()
-        }
-    },
-    responsive: [{
-        breakpoint: 480,
-        options: {
-            title: {
-                style: {
-                    fontSize: '14px'
-                }
-            },
-            xaxis: {
-                labels: {
-                    style: {
-                        fontSize: '10px'
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: {
-                        fontSize: '10px'
-                    }
-                }
-            }
-        }
-    }]
-}))
+        }]
+    }
+})
 </script>
 
 <template>
@@ -146,7 +121,8 @@ const chartOptions = computed(() => ({
             :height="height" 
             :options="chartOptions" 
             :series="series"
-            class="w-full" 
+            class="w-full"
+            :key="isDark"
         />
     </div>
 </template>

@@ -3,28 +3,61 @@ import { Head } from '@inertiajs/vue3'
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
 import Public from '@/Layouts/Public.vue'
 import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import hljs from 'highlight.js/lib/core'
-import bash from 'highlight.js/lib/languages/bash'
-import php from 'highlight.js/lib/languages/php'
-import 'highlight.js/styles/github-dark.css'
-
-hljs.registerLanguage('bash', bash)
-hljs.registerLanguage('php', php)
-
-const vHighlight = {
-    mounted(el) {
-        hljs.highlightElement(el)
-    },
-    updated(el) {
-        hljs.highlightElement(el)
-    }
-}
+import CodeBlock from '@/Components/CodeBlock.vue'
+import 'highlight.js/styles/atom-one-dark.css';
 
 defineOptions({
     layout: Public
 })
 
 const searchQuery = ref('')
+const showBackToTop = ref(false)
+
+const codeExamples = {
+    cloneRepo: `git clone https://github.com/otatechie/guacpanel-tailwind.git
+cd guacpanel-tailwind`,
+
+    installDeps: `composer install
+npm install`,
+
+    setupEnv: `cp .env.example .env`,
+
+    runServer: `npm run dev
+php artisan serve`,
+
+    installAssets: `npm install
+npm run dev`,
+
+    databaseEnv: `DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password`,
+
+    runMigrations: `php artisan migrate`,
+
+    seedDatabase: `php artisan db:seed`,
+
+    defaultCredentials: `Email: ota@example.com
+Password: password`,
+
+    permissionFix: `chmod -R 777 storage bootstrap/cache`,
+
+    composerFix: `composer install --ignore-platform-reqs`,
+
+    npmFix: `npm cache clean --force
+npm install`,
+
+    mysqlDumpEnv: `DB_DUMP_PATH=your path`,
+
+    mysqlDumpConfig: `'mysql' => [
+    // ...other mysql configuration
+    'dump' => [
+        'dump_binary_path' => '/usr/bin/mysqldump',  // Adjust your path
+    ],
+],`
+}
 
 const articleLinks = [
     { text: 'Prerequisites', href: '#prerequisites' },
@@ -46,16 +79,20 @@ const filteredSections = computed(() => {
     })).filter(section => section.items.length > 0)
 })
 
-const applyHighlighting = () => {
-    nextTick(() => {
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block)
-        })
-    })
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const handleScroll = () => {
+    showBackToTop.value = window.scrollY > 500
 }
 
 onMounted(() => {
-    applyHighlighting()
+    window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
@@ -78,7 +115,8 @@ onMounted(() => {
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Getting Started</h1>
                 </div>
                 <p class="text-lg text-teal-100 dark:text-teal-200 max-w-3xl mb-8">
-                    Set up GuacPanel in minutes with this step-by-step guide. Build your Laravel admin interface with authentication, permissions, and modern UI components ready to go.
+                    Set up GuacPanel in minutes with this step-by-step guide. Build your Laravel admin interface with
+                    authentication, permissions, and modern UI components ready to go.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <a href="#installation"
@@ -107,8 +145,7 @@ onMounted(() => {
 
         <section id="prerequisites" class="mb-12 scroll-mt-16">
             <div class="flex items-center mb-6">
-                <div
-                    class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                <div class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
                     <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -150,123 +187,47 @@ onMounted(() => {
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
                 <div class="space-y-6">
                     <div>
-                        <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div
-                                class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                </svg>
-                            </div>
-                            Clone the Repository
+                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                            <span class="mr-3">1.</span> Clone the Repository
                         </h3>
-                        <div class="bg-gray-800 rounded-lg p-4 group relative">
-                            <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                onclick="navigator.clipboard.writeText('git clone https://github.com/otatechie/guacpanel-tailwind.git\ncd guacpanel-tailwind')">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                            </button>
-                            <pre class="text-sm"><code v-highlight class="language-bash">git clone https://github.com/otatechie/guacpanel-tailwind.git
-cd guacpanel-tailwind</code></pre>
+                        <div class="bg-gray-800 rounded-lg">
+                            <CodeBlock :code="codeExamples.cloneRepo" language="bash" />
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div
-                                class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-white" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                            </div>
-                            Install Dependencies
+                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                            <span class="mr-3">2.</span> Install Dependencies
                         </h3>
-                        <div class="bg-gray-800 rounded-lg p-4 group relative">
-                            <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                onclick="navigator.clipboard.writeText('composer install\nnpm install')">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                            </button>
-                            <pre class="text-sm"><code v-highlight class="language-bash">composer install
-npm install</code></pre>
+                        <div class="bg-gray-800 rounded-lg">
+                            <CodeBlock :code="codeExamples.installDeps" language="bash" />
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div
-                                class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                </svg>
-                            </div>
-                            Set Up Environment
+                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                            <span class="mr-3">3.</span> Set Up Environment
                         </h3>
-                        <div class="bg-gray-800 rounded-lg p-4 group relative">
-                            <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                onclick="navigator.clipboard.writeText('cp .env.example .env\nphp artisan key:generate')">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                            </button>
-                            <pre class="text-sm"><code v-highlight class="language-bash">cp .env.example .env
-php artisan key:generate</code></pre>
-                        </div>
-                        <p class="mt-2 text-gray-600 dark:text-gray-400 text-sm">Configure your database and other
-                            settings in
-                            the .env file</p>
-                    </div>
-
-                    <div>
-                        <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div
-                                class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-white" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            Run Development Server
-                        </h3>
-                        <div class="bg-gray-800 rounded-lg p-4 group relative">
-                            <button class="absolute right-4 top-4 text-gray-400 hover:text-gray-300"
-                                onclick="navigator.clipboard.writeText('npm run dev\nphp artisan serve')">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                            </button>
-                            <pre class="text-sm"><code v-highlight class="language-bash">npm run dev
-php artisan serve</code></pre>
+                        <div class="bg-gray-800 rounded-lg">
+                            <CodeBlock :code="codeExamples.setupEnv" language="bash" />
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="flex items-center text-xl font-semibold text-gray-800 dark:text-white mb-4">
-                            <div
-                                class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-white" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            Install and compile frontend assets
+                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                            <span class="mr-3">4.</span> Start Development Server
                         </h3>
-                        <div class="bg-gray-800 rounded-lg p-4">
-                            <pre class="text-sm"><code v-highlight class="language-bash">npm install
-npm run dev</code></pre>
+                        <div class="bg-gray-800 rounded-lg">
+                            <CodeBlock :code="codeExamples.runServer" language="bash" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                            <span class="mr-3">5.</span> Install and compile frontend assets
+                        </h3>
+                        <div class="bg-gray-800 rounded-lg">
+                            <CodeBlock :code="codeExamples.installAssets" language="bash" />
                         </div>
                     </div>
                 </div>
@@ -275,8 +236,7 @@ npm run dev</code></pre>
 
         <section id="after-installation" class="mb-12 scroll-mt-16">
             <div class="flex items-center mb-6">
-                <div
-                    class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                <div class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
                     <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -284,148 +244,102 @@ npm run dev</code></pre>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-white">After Installation</h2>
             </div>
-            <div
-                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8 mb-6" id="database-setup">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8 mb-6"
+                id="database-setup">
                 <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Database Setup</h3>
                 <div class="space-y-4">
                     <div class="prose dark:prose-invert max-w-none">
-                        <p>1. Update your database credentials in .env file:</p>
+                        <p><span class="mr-3">1.</span> Update your database credentials in .env file:</p>
                     </div>
-                    <div class="bg-gray-800 rounded-lg p-4">
-                        <pre class="text-sm"><code v-highlight class="language-bash">DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=your_database
-DB_USERNAME=your_username
-DB_PASSWORD=your_password</code></pre>
+                    <div class="bg-gray-800 rounded-lg">
+                        <CodeBlock :code="codeExamples.databaseEnv" language="bash" />
                     </div>
 
                     <div class="prose dark:prose-invert max-w-none">
-                        <p>2. Run migrations:</p>
+                        <p><span class="mr-3">2.</span> Run migrations:</p>
                     </div>
-                    <div class="bg-gray-800 rounded-lg p-4">
-                        <pre class="text-sm"><code v-highlight class="language-bash">php artisan migrate</code></pre>
-                    </div>
-
-                    <div class="prose dark:prose-invert max-w-none">
-                        <p>3. Seed the database with initial data:</p>
-                    </div>
-                    <div class="bg-gray-800 rounded-lg p-4">
-                        <pre class="text-sm"><code v-highlight class="language-bash">php artisan db:seed</code></pre>
+                    <div class="bg-gray-800 rounded-lg">
+                        <CodeBlock :code="codeExamples.runMigrations" language="bash" />
                     </div>
 
                     <div class="prose dark:prose-invert max-w-none">
-                        <p>4. Install and compile frontend assets:</p>
+                        <p><span class="mr-3">3.</span> Seed the database with initial data:</p>
                     </div>
-                    <div class="bg-gray-800 rounded-lg p-4">
-                        <pre class="text-sm"><code v-highlight class="language-bash">npm install
-npm run dev</code></pre>
+                    <div class="bg-gray-800 rounded-lg">
+                        <CodeBlock :code="codeExamples.seedDatabase" language="bash" />
                     </div>
 
                     <div class="prose dark:prose-invert max-w-none">
-                        <p>Default superuser credentials:</p>
+                        <p><span class="mr-3">4.</span> Default superuser credentials:</p>
                     </div>
-                    <div class="bg-gray-800 rounded-lg p-4">
-                        <pre class="text-sm"><code v-highlight class="language-bash">Email: ota@example.com
-Password: password</code></pre>
+                    <div class="bg-gray-800 rounded-lg">
+                        <CodeBlock :code="codeExamples.defaultCredentials" language="bash" />
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8" id="common-issues">
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Common Issues</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8"
+                id="common-issues">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Common Issues</h3>
+                <hr class="border-gray-100 dark:border-gray-700 my-4">
                 <div class="grid gap-6">
-                    <div class="space-y-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                    <div class="space-y-4 rounded-lg ">
                         <div class="flex items-start gap-3">
-                            <div class="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg">
-                                <svg class="w-5 h-5 text-white" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            </div>
                             <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white">Permission Issues</h4>
+                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">1.</span>
+                                    Permission Issues</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you encounter permission
                                     issues, run:</p>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-bash">chmod -R 777 storage bootstrap/cache</code></pre>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.permissionFix" language="bash" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                    <div class="space-y-4 rounded-lg">
                         <div class="flex items-start gap-3">
-                            <div class="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg">
-                                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
                             <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white">Composer Dependencies</h4>
+                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">2.</span>
+                                    Composer Dependencies</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you get dependency errors,
                                     try:</p>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-bash">composer install --ignore-platform-reqs</code></pre>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.composerFix" language="bash" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                    <div class="space-y-4 rounded-lg">
                         <div class="flex items-start gap-3">
-                            <div class="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg">
-                                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
                             <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white">NPM Issues</h4>
+                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">3.</span> NPM
+                                    Issues</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you have npm issues, try
                                     clearing the cache:</p>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-bash">npm cache clean --force
-npm install</code></pre>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.npmFix" language="bash" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                    <div class="space-y-4 rounded-lg">
                         <div class="flex items-start gap-3">
-                            <div class="p-2 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg">
-                                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7m5 4h6m-6 4h6m-6 4h6" />
-                                </svg>
-                            </div>
                             <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white">MySQL Database Backup</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Configure mysqldump path in your .env file:</p>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-bash">DB_DUMP_PATH=your path</code></pre>
+                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">4.</span> MySQL
+                                    Database Backup</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Configure mysqldump path in
+                                    your .env file:</p>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.mysqlDumpEnv" language="bash" />
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">Alternatively, you can set the path in config/database.php:</p>
-                                <div class="bg-gray-800 rounded-lg p-4">
-                                    <pre class="text-sm"><code v-highlight class="language-php">'mysql' => [
-    // ...other mysql configuration
-    'dump' => [
-        'dump_binary_path' => '/usr/bin/mysqldump',  // Adjust your path
-    ],
-],</code></pre>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">Alternatively, you can set
+                                    the path in config/database.php:</p>
+                                <div class="bg-gray-800 rounded-lg">
+                                    <CodeBlock :code="codeExamples.mysqlDumpConfig" language="php" />
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">If you get "Command not found (exitcode 127)" error:</p>
-                                <ol class="list-decimal list-inside text-sm text-gray-600 dark:text-gray-400 ml-4 mb-2">
-                                    <li>Verify mysqldump is installed</li>
-                                    <li>Find mysqldump location: <code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">which mysqldump</code> (Linux/Mac) or search in MySQL installation folder (Windows)</li>
-                                    <li>Update the path in either .env or config/database.php</li>
-                                </ol>                               
                             </div>
                         </div>
                     </div>

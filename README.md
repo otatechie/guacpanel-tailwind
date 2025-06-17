@@ -46,6 +46,14 @@ An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind C
   - Local Google Fonts via [Spatie Laravel Google Fonts](https://github.com/spatie/laravel-google-fonts)
   - Customizable theme settings
 
+- 📊 **Data Visualization**
+  - Interactive charts with [ApexCharts v3](https://apexcharts.com)
+    - Line, Area, Bar, and Donut charts
+    - Responsive and mobile-friendly
+    - Export capabilities
+  - Automatic data formatting
+  - Dynamic chart resizing
+
 - 📊 **Data Tables**
   - Modern tables with [@tanstack/vue-table v8](https://tanstack.com/table/v8/docs)
     - Server-side pagination
@@ -132,6 +140,7 @@ php artisan serve
 - [Inertia.js Documentation](https://inertiajs.com/)
 - [TanStack Table Documentation](https://tanstack.com/table/v8)
 - [FilePond Documentation](https://pqina.nl/filepond/)
+- [ApexCharts Documentation](https://apexcharts.com/docs/)
 
 ## 🚀 Live Demo
 
