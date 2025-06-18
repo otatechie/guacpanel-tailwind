@@ -1,80 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-
-const colors = [
-    {
-        name: 'Purple',
-        value: 'purple',
-        gradientFrom: '#a855f7',
-        gradientTo: '#c084fc',
-        primary: '#a855f7',
-        hover: '#9333ea',
-        rgb: '168, 85, 247'
-    },
-    {
-        name: 'Blue',
-        value: 'blue',
-        gradientFrom: '#3b82f6',
-        gradientTo: '#60a5fa',
-        primary: '#3b82f6',
-        hover: '#2563eb',
-        rgb: '59, 130, 246'
-    },
-    {
-        name: 'Green',
-        value: 'green',
-        gradientFrom: '#22c55e',
-        gradientTo: '#4ade80',
-        primary: '#22c55e',
-        hover: '#16a34a',
-        rgb: '34, 197, 94'
-    },
-    {
-        name: 'Orange',
-        value: 'orange',
-        gradientFrom: '#f97316',
-        gradientTo: '#fb923c',
-        primary: '#f97316',
-        hover: '#ea580c',
-        rgb: '249, 115, 22'
-    },
-    {
-        name: 'Yellow',
-        value: 'yellow',
-        gradientFrom: '#eab308',
-        gradientTo: '#facc15',
-        primary: '#eab308',
-        hover: '#ca8a04',
-        rgb: '234, 179, 8'
-    },
-    {
-        name: 'Teal',
-        value: 'teal',
-        gradientFrom: '#0d9488',
-        gradientTo: '#14b8a6',
-        primary: '#0d9488',
-        hover: '#0f766e',
-        rgb: '13, 148, 136'
-    },
-    {
-        name: 'Black',
-        value: 'black',
-        gradientFrom: '#1f2937',
-        gradientTo: '#111827',
-        primary: '#1f2937',
-        hover: '#111827',
-        rgb: '31, 41, 55'
-    },
-    {
-        name: 'Cyan',
-        value: 'cyan',
-        gradientFrom: '#06b6d4',
-        gradientTo: '#22d3ee',
-        primary: '#06b6d4',
-        hover: '#0891b2',
-        rgb: '6, 182, 212'
-    }
-]
+import { colors, applyThemeColor } from '@/utils/themeInit'
 
 const selectedColor = ref(localStorage.getItem('theme-color') || 'teal')
 const isOpen = ref(false)
@@ -83,15 +9,7 @@ const updateTheme = (color) => {
     selectedColor.value = color
     localStorage.setItem('theme-color', color)
     isOpen.value = false
-
-    const root = document.documentElement
-    const selectedColorObj = colors.find(c => c.value === color)
-
-    root.style.setProperty('--primary-gradient-from', selectedColorObj.gradientFrom)
-    root.style.setProperty('--primary-gradient-to', selectedColorObj.gradientTo)
-    root.style.setProperty('--primary-color', selectedColorObj.primary)
-    root.style.setProperty('--primary-hover', selectedColorObj.hover)
-    root.style.setProperty('--primary-color-rgb', selectedColorObj.rgb)
+    applyThemeColor(color)
 }
 
 const toggleDropdown = () => {
@@ -115,14 +33,16 @@ onMounted(() => {
 <template>
     <div class="relative theme-dropdown hidden lg:block">
         <button @click="toggleDropdown"
-            class="inline-flex items-center text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer">
-            <span>Theme</span>
-            <svg class="w-3.5 h-3.5 ml-1 text-gray-500 dark:text-gray-400" :class="{ 'transform rotate-180': isOpen }"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd" />
+            class="group flex items-center text-sm p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008Z" />
             </svg>
+            <span
+                class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Theme color
+            </span>
         </button>
 
         <div v-if="isOpen"
@@ -136,19 +56,11 @@ onMounted(() => {
                     }" />
                     <span>{{ color.name }}</span>
                 </div>
-                <svg v-if="selectedColor === color.value" 
-                    class="w-4 h-4 shrink-0"
-                    :style="{ color: color.primary }"
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
+                <svg v-if="selectedColor === color.value" class="w-4 h-4 shrink-0" :style="{ color: color.primary }"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                     stroke-width="1.5">
-                    <path 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round" 
-                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" 
-                    />
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
             </button>
         </div>

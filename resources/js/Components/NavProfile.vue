@@ -67,13 +67,6 @@ const menuItems = [
     { type: 'separator' },
     {
         type: 'link',
-        label: 'Settings',
-        icon: 'cog',
-        href: route('admin.setting.index')
-    },
-    { type: 'separator' },
-    {
-        type: 'link',
         label: 'Sign out',
         icon: 'logout',
         href: route('logout'),
@@ -141,11 +134,14 @@ const icons = {
 <template>
     <nav class="relative" ref="menuWrapper">
         <button type="button"
-            class="relative flex items-center rounded-full text-sm focus:outline-none lg:rounded-md uppercase lg:p-2 lg:hover:bg-gray-50 dark:lg:hover:bg-gray-700 cursor-pointer"
+            class="relative flex items-center rounded-full text-sm focus:outline-none lg:rounded-md uppercase lg:p-1.5 lg:hover:bg-gray-50 dark:lg:hover:bg-gray-700 cursor-pointer group"
             id="user-menu-button" :aria-expanded="menuOpen.toString()" @click="toggleMenu">
             <img :src="avatarUrl" :alt="`${safeUserName}'s avatar`"
-                class="h-6 w-6 rounded-full ring-2 ring-white dark:ring-gray-800" />
-            <svg class="ml-1 hidden h-3.5 w-3.5 text-gray-400 dark:text-gray-500 lg:block"
+                class="size-5 rounded-full ring-2 ring-white dark:ring-gray-800" />
+            <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap capitalize">
+                Profile
+            </span>
+            <svg class="ml-1 hidden h-3.5 w-3.5 text-gray-400 dark:text-gray-400 lg:block"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"
                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -161,7 +157,7 @@ const icons = {
                     <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ safeUserName }}</div>
                     <div class="flex items-center space-x-2">
                         <span
-                            class="inline-flex items-center rounded-md bg-gray-50 dark:bg-gray-700/50 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 ring-1 ring-inset ring-gray-500/10 dark:ring-gray-400/20 font-mono">
+                            class="inline-flex items-center rounded-md bg-gray-50 dark:bg-gray-700/50 px-2 py-1 text-xs font-medium text-gray-600 dark:text-gray-300 ring-1 ring-inset ring-gray-500/10 dark:ring-gray-400/20 font-mono uppercase">
                             <svg class="mr-1 h-3 w-3 text-gray-400 dark:text-gray-500" viewBox="0 0 24 24"
                                 fill="currentColor" v-html="icons.check" />
                             {{ primaryRole }}

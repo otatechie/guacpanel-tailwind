@@ -379,6 +379,20 @@ onMounted(async () => {
                         <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Secure magic link and
                             one-time code authentication with device verification.</p>
                     </div>
+
+                    <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-cyan-100 dark:hover:border-cyan-900 transition-all duration-300"
+                        role="listitem">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-cyan-600 dark:from-cyan-600 dark:to-cyan-700 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Apex Charts</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Beautiful, interactive chart components including line, bar, area, donut, and more for comprehensive data visualization.</p>
+                    </div>
                 </div>
             </div>
         </section>

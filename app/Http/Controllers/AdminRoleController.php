@@ -23,8 +23,13 @@ class AdminRoleController extends Controller
     
     public function index()
     {
+        $roles = Role::with('permissions')->get()->map(function ($role) {
+            $role->is_protected = $this->isProtectedRole($role->name);
+            return $role;
+        });
+
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'roles' => Role::with('permissions')->get(),
+            'roles' => $roles,
             'permissions' => Permission::all()
         ]);
     }
@@ -42,11 +47,15 @@ class AdminRoleController extends Controller
                 'not_in:' . $this->getProtectedRolesForValidation(),
                 'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/' // Must start with a letter
             ],
+            'description' => ['nullable', 'string', 'max:255'],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id']
         ]);
 
-        $role = Role::create(['name' => $validatedData['name']]);
+        $role = Role::create([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description']
+        ]);
 
         if ($request->has('permissions')) {
             $role->syncPermissions($request->permissions);
@@ -58,7 +67,6 @@ class AdminRoleController extends Controller
 
     public function update(Request $request, Role $role): RedirectResponse
     {
-        // Prevent updating protected system roles
         if ($this->isProtectedRole($role->name)) {
             return redirect()->route('admin.role.index')
                 ->with('error', 'Cannot modify system role: ' . $role->name);
@@ -74,11 +82,15 @@ class AdminRoleController extends Controller
                 'not_in:' . $this->getProtectedRolesForValidation(),
                 'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/' // Must start with a letter
             ],
+            'description' => ['nullable', 'string', 'max:255'],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id']
         ]);
 
-        $role->update(['name' => $validatedData['name']]);
+        $role->update([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description']
+        ]);
 
         if ($request->has('permissions')) {
             $role->syncPermissions($request->permissions);
@@ -92,7 +104,6 @@ class AdminRoleController extends Controller
     {
         $role = Role::findOrFail($id);
 
-        // Prevent deleting protected system roles
         if ($this->isProtectedRole($role->name)) {
             return redirect()->route('admin.role.index')
                 ->with('error', 'Cannot delete system role: ' . $role->name);

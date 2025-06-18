@@ -77,6 +77,42 @@ const colors = [
         primary: '#f97316',
         hover: '#ea580c',
         rgb: '249, 115, 22'
+    },
+    {
+        name: 'Yellow',
+        value: 'yellow',
+        gradientFrom: '#eab308',
+        gradientTo: '#facc15',
+        primary: '#eab308',
+        hover: '#ca8a04',
+        rgb: '234, 179, 8'
+    },
+    {
+        name: 'Teal',
+        value: 'teal',
+        gradientFrom: '#0d9488',
+        gradientTo: '#14b8a6',
+        primary: '#0d9488',
+        hover: '#0f766e',
+        rgb: '13, 148, 136'
+    },
+    {
+        name: 'Black',
+        value: 'black',
+        gradientFrom: '#1f2937',
+        gradientTo: '#111827',
+        primary: '#1f2937',
+        hover: '#111827',
+        rgb: '31, 41, 55'
+    },
+    {
+        name: 'Cyan',
+        value: 'cyan',
+        gradientFrom: '#06b6d4',
+        gradientTo: '#22d3ee',
+        primary: '#06b6d4',
+        hover: '#0891b2',
+        rgb: '6, 182, 212'
     }
 ]
 
@@ -104,7 +140,7 @@ function addThemeTransitions() {
 // Adjust theme intensity
 function adjustThemeIntensity(intensity = 1) {
     const root = document.documentElement
-    const currentColor = localStorage.getItem('theme-color') || 'purple'
+    const currentColor = localStorage.getItem('theme-color') || 'teal'
     const selectedColorObj = colors.find(c => c.value === currentColor)
     
     if (selectedColorObj) {
@@ -136,8 +172,21 @@ function applyThemePreset(presetName = 'modern') {
     }
 }
 
+// Apply theme color
+function applyThemeColor(color) {
+    const selectedColorObj = colors.find(c => c.value === color)
+    if (selectedColorObj) {
+        const root = document.documentElement
+        root.style.setProperty('--primary-gradient-from', selectedColorObj.gradientFrom)
+        root.style.setProperty('--primary-gradient-to', selectedColorObj.gradientTo)
+        root.style.setProperty('--primary-color', selectedColorObj.primary)
+        root.style.setProperty('--primary-hover', selectedColorObj.hover)
+        root.style.setProperty('--primary-color-rgb', selectedColorObj.rgb)
+    }
+}
+
 export function initializeTheme() {
-    const savedColor = localStorage.getItem('theme-color') || 'purple'
+    const savedColor = localStorage.getItem('theme-color') || 'teal'
     const savedPreset = localStorage.getItem('theme-preset')
     const savedIntensity = parseFloat(localStorage.getItem('theme-intensity') || '1')
     
@@ -148,15 +197,7 @@ export function initializeTheme() {
     if (savedPreset && presets[savedPreset]) {
         applyThemePreset(savedPreset)
     } else {
-        const selectedColorObj = colors.find(c => c.value === savedColor)
-        if (selectedColorObj) {
-            const root = document.documentElement
-            root.style.setProperty('--primary-gradient-from', selectedColorObj.gradientFrom)
-            root.style.setProperty('--primary-gradient-to', selectedColorObj.gradientTo)
-            root.style.setProperty('--primary-color', selectedColorObj.primary)
-            root.style.setProperty('--primary-hover', selectedColorObj.hover)
-            root.style.setProperty('--primary-color-rgb', selectedColorObj.rgb)
-        }
+        applyThemeColor(savedColor)
     }
     
     // Apply saved intensity
@@ -165,4 +206,4 @@ export function initializeTheme() {
     }
 }
 
-export { colors, presets, applyThemePreset, adjustThemeIntensity } 
+export { colors, presets, applyThemePreset, adjustThemeIntensity, applyThemeColor } 

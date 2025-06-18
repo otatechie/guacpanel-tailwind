@@ -109,6 +109,43 @@ const createUser = () => {
     })
 }
 
+const handleBulkAction = ({ actionId, selectedRows }) => {
+    // Filter out superusers from selection
+    const validUsers = selectedRows.filter(user => !isSuperUser(user))
+    if (!validUsers.length) return
+
+    switch (actionId) {
+        case 'delete':
+            router.delete(route('admin.user.bulk-delete'), {
+                data: { ids: validUsers.map(user => user.id) },
+                preserveScroll: true
+            })
+            break
+        case 'force-password-change':
+            router.put(route('admin.user.bulk-update'), {
+                ids: validUsers.map(user => user.id),
+                updates: { force_password_change: true }
+            }, {
+                preserveScroll: true
+            })
+            break
+        case 'disable-accounts':
+            router.put(route('admin.user.bulk-update'), {
+                ids: validUsers.map(user => user.id),
+                updates: { disable_account: true }
+            }, {
+                preserveScroll: true
+            })
+            break
+    }
+}
+
+const bulkActions = [
+    { id: 'delete', label: 'Delete Selected' },
+    { id: 'force-password-change', label: 'Force Password Change' },
+    { id: 'disable-accounts', label: 'Disable Accounts' }
+]
+
 const columns = [
     columnHelper.accessor('name', {
         header: 'Name',
@@ -123,7 +160,7 @@ const columns = [
         cell: info => {
             const roleName = info.row.original.roles?.[0]?.name || 'No Role'
             return h('span', {
-                class: 'px-2 py-1 text-sm rounded-full inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+                class: 'px-2 py-1 text-sm rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
             }, roleName)
         }
     }),
@@ -139,9 +176,10 @@ const columns = [
             if (!user?.id) return null
             
             const editButton = h('button', {
-                class: 'p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer',
+                class: 'p-2 text-blue-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer',
                 onClick: () => handleEdit(user),
-                type: 'button'
+                type: 'button',
+                title: 'Edit user'
             }, [
                 h('svg', {
                     class: 'w-4 h-4',
@@ -159,9 +197,10 @@ const columns = [
             ])
 
             const deleteButton = h('button', {
-                class: 'p-2 text-gray-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer',
+                class: 'p-2 text-red-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer',
                 onClick: () => confirmDeleteUser(user),
-                type: 'button'
+                type: 'button',
+                title: 'Delete user'
             }, [
                 h('svg', {
                     class: 'w-4 h-4',
@@ -228,6 +267,7 @@ watch(pagination, newPagination => {
                 <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
                     :search-fields="['name', 'email', 'created_at_formatted']" empty-message="No users found"
                     empty-description="Users will appear here once created" export-file-name="users"
+                    :bulk-actions="bulkActions" @bulk-action="handleBulkAction"
                     @update:pagination="pagination = $event" />
             </div>
         </div>
