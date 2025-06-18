@@ -53,4 +53,17 @@ class AdminLoginHistoryController extends Controller
             'loginHistory' => $loginHistory
         ]);
     }
+    
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:login_history,id']
+        ]);
+
+        LoginHistory::whereIn('id', $request->ids)->delete();
+
+        return response()->json(['message' => 'Selected records have been deleted']);
+    }
 }

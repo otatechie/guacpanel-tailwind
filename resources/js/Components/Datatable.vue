@@ -8,6 +8,7 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
 } from '@tanstack/vue-table'
+import Modal from '@/Components/Modal.vue'
 
 const selectionColor = 'var(--selection-color)'
 
@@ -21,7 +22,8 @@ const styles = {
     rowOdd: "bg-gray-50 dark:bg-gray-800",
     rowHover: "hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors",
     rowSelected: "bg-[var(--selection-color-light)] dark:bg-[var(--selection-color-dark)]",
-    focusRing: "focus:outline-none focus:ring-2 focus:ring-opacity-50"
+    focusRing: "focus:outline-none focus:ring-2 focus:ring-opacity-50",
+    dropdown: "absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 }
 
 const icons = {
@@ -30,7 +32,8 @@ const icons = {
     firstPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />`,
     prevPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />`,
     nextPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />`,
-    lastPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />`
+    lastPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />`,
+    chevronDown: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />`
 }
 
 const props = defineProps({
@@ -47,6 +50,10 @@ const props = defineProps({
     defaultPageSize: { type: Number, default: 10 },
     loading: { type: Boolean, default: false },
     error: { type: String, default: '' },
+    bulkDeleteRoute: {
+        type: String,
+        default: ''
+    },
     pagination: {
         type: Object,
         default: () => ({
@@ -54,17 +61,23 @@ const props = defineProps({
             per_page: 10,
             total: 0
         })
+    },
+    formatExportData: {
+        type: Function,
+        default: null
     }
 })
 
-const emit = defineEmits(['update:pagination'])
+const emit = defineEmits(['update:pagination', 'bulk-delete'])
 const sorting = ref([])
-const selectedRows = ref({})
+const rowSelection = ref({})
 const searchQuery = ref('')
 const pagination = ref({
     pageIndex: 0,
     pageSize: props.defaultPageSize,
 })
+const showBulkActions = ref(false)
+const showDeleteModal = ref(false)
 
 const filteredData = computed(() => {
     if (!searchQuery.value || !props.searchFields.length) return props.data
@@ -99,6 +112,22 @@ const paginationInfo = computed(() => {
     return { currentPage, pageSize, total, start, end, pageCount }
 })
 
+// Selection-related computed properties
+const selectedRows = computed(() => table.getSelectedRowModel().rows)
+const hasSelection = computed(() => selectedRows.value.length > 0)
+const selectionCount = computed(() => selectedRows.value.length)
+
+//Bulk delete
+const handleBulkDelete = () => {
+    if (!props.bulkDeleteRoute) return
+    showDeleteModal.value = false
+
+    emit('bulk-delete', {
+        route: props.bulkDeleteRoute,
+        selectedRows: selectedRows.value.map(row => row.original)
+    })
+}
+
 const currentPage = computed(() => paginationInfo.value.currentPage)
 const paginationStart = computed(() => paginationInfo.value.start)
 const paginationEnd = computed(() => paginationInfo.value.end)
@@ -106,8 +135,6 @@ const totalRows = computed(() => paginationInfo.value.total)
 const pageCount = computed(() => paginationInfo.value.pageCount)
 const isFirstPage = computed(() => currentPage.value <= 1)
 const isLastPage = computed(() => currentPage.value >= pageCount.value)
-const hasSelection = computed(() => Object.keys(selectedRows.value).length > 0)
-const selectionCount = computed(() => Object.keys(selectedRows.value).length)
 
 const goToPage = (pageNumber) => {
     if (!isServerPagination.value) return
@@ -134,7 +161,22 @@ const clearSearch = () => {
 
 const formatValueForCSV = (value) => {
     if (value === null || value === undefined) return ''
+    if (typeof value === 'object') {
+        if (value instanceof Date) return value.toISOString()
+        return Object.values(value).join(' - ')
+    }
     return String(value).replace(/,/g, ';')
+}
+
+const getColumnHeader = (column) => {
+    if (typeof column.header === 'string') return column.header
+    if (column.accessorKey) {
+        return column.accessorKey
+            .replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, l => l.toUpperCase())
+    }
+    return ''
 }
 
 const exportToCSV = () => {
@@ -143,10 +185,25 @@ const exportToCSV = () => {
         : table.getRowModel().rows
 
     const dataToExport = rowsToExport.map(row => {
+        if (props.formatExportData) {
+            return props.formatExportData(row.original)
+        }
+
         const rowData = {}
         props.columns.forEach(column => {
             if (column.accessorKey) {
-                rowData[column.header] = formatValueForCSV(row.original[column.accessorKey])
+                const header = getColumnHeader(column)
+                const value = column.accessorFn
+                    ? column.accessorFn(row.original)
+                    : row.original[column.accessorKey]
+                rowData[header] = formatValueForCSV(value)
+            } else if (column.id && !column.id.startsWith('_')) {
+                // Handle computed/derived columns that aren't internal
+                const header = getColumnHeader(column)
+                const cell = row.getVisibleCells().find(c => c.column.id === column.id)
+                if (cell?.getValue) {
+                    rowData[header] = formatValueForCSV(cell.getValue())
+                }
             }
         })
         return rowData
@@ -177,7 +234,7 @@ const table = useVueTable({
     columns: props.columns,
     state: {
         get sorting() { return sorting.value },
-        get rowSelection() { return selectedRows.value },
+        get rowSelection() { return rowSelection.value },
         get pagination() {
             if (isServerPagination.value) {
                 return {
@@ -192,8 +249,8 @@ const table = useVueTable({
         }
     },
     onRowSelectionChange: updaterOrValue => {
-        selectedRows.value = typeof updaterOrValue === 'function'
-            ? updaterOrValue(selectedRows.value)
+        rowSelection.value = typeof updaterOrValue === 'function'
+            ? updaterOrValue(rowSelection.value)
             : updaterOrValue
     },
     onSortingChange: updaterOrValue => {
@@ -213,7 +270,6 @@ const table = useVueTable({
     getPaginationRowModel: isServerPagination.value ? undefined : getPaginationRowModel(),
     enableRowSelection: true,
     enableMultiRowSelection: true,
-    enableSubRowSelection: false,
     getRowId: (row) => row.id || row.ID || JSON.stringify(row),
 })
 
@@ -257,17 +313,13 @@ watch(() => props.data, () => {
                     <select
                         class="border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                         :style="{ '--tw-ring-color': 'var(--primary-color)' }"
-                        :value="isServerPagination ? props.pagination.per_page : pagination.value.pageSize"
-                        @change="(e) => {
+                        :value="isServerPagination ? props.pagination.per_page : pagination.pageSize" @change="(e) => {
                             const newSize = Number(e.target.value);
                             if (isServerPagination) {
                                 updateServerPagination({ per_page: newSize, current_page: 1 });
                             } else {
-                                pagination.value = {
-                                    ...pagination.value,
-                                    pageSize: newSize,
-                                    pageIndex: 0
-                                };
+                                pagination.pageSize = newSize;
+                                pagination.pageIndex = 0;
                             }
                         }">
                         <option v-for="size in pageSizeOptions" :key="size" :value="size">
@@ -276,19 +328,30 @@ watch(() => props.data, () => {
                     </select>
                 </div>
 
-                <!-- Selection Count Badge -->
-                <span v-if="hasSelection" role="status"
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium" :style="{
-                        backgroundColor: 'var(--selection-color-light)',
-                        color: 'var(--selection-color)'
-                    }">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                    {{ selectionCount }} selected
-                </span>
+                <!-- Selection Count and Bulk Actions -->
+                <div v-if="hasSelection" class="flex items-center gap-2">
+                    <span role="status" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
+                        :style="{
+                            backgroundColor: 'var(--selection-color-light)',
+                            color: 'var(--selection-color)'
+                        }">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                        {{ selectionCount }} selected
+                    </span>
+                    <button v-if="bulkDeleteRoute" @click="showDeleteModal = true"
+                        class="btn-danger btn-sm inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-white rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
+                        Bulk Delete
+                    </button>
+                </div>
             </div>
 
             <!-- Right Controls: Search and Export -->
@@ -475,5 +538,50 @@ watch(() => props.data, () => {
                 </template>
             </nav>
         </footer>
+
+        <!-- Delete Confirmation Modal -->
+        <Modal :show="showDeleteModal" @close="showDeleteModal = false" size="lg">
+            <template #title>
+                <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Confirm Deletion
+                </div>
+            </template>
+
+            <div class="sm:flex sm:items-start">
+                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete {{ selectionCount }} selected records? This action cannot be
+                        undone.
+                    </p>
+                </div>
+            </div>
+
+            <template #footer>
+                <button type="button" @click="showDeleteModal = false"
+                    class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
+                    Cancel
+                </button>
+                <button type="button" :disabled="loading" @click="handleBulkDelete" class="btn-danger">
+                    <template v-if="loading">
+                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        Deleting...
+                    </template>
+                    <template v-else>
+                        Delete
+                    </template>
+                </button>
+            </template>
+        </Modal>
     </section>
 </template>

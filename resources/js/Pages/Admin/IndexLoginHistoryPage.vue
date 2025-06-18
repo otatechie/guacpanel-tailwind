@@ -5,6 +5,7 @@ import { h, ref, watch } from 'vue'
 import Default from '@/Layouts/Default.vue'
 import PageHeader from '@/Components/PageHeader.vue'
 import Datatable from '@/Components/Datatable.vue'
+import axios from 'axios'
 
 defineOptions({
     layout: Default
@@ -26,9 +27,10 @@ const pagination = ref({
 })
 
 const columns = [
-    columnHelper.accessor('login_at', {
+    columnHelper.accessor(row => row.login_at_diff, {
+        id: 'login_at',
         header: 'Login Time',
-        cell: info => info.row.original.login_at_diff,
+        cell: info => info.getValue(),
         meta: {
             ariaLabel: 'Login timestamp'
         }
@@ -78,6 +80,17 @@ const columns = [
     }),
 ]
 
+const handleBulkDelete = async ({ selectedRows }) => {
+    if (!selectedRows?.length) return;
+
+    loading.value = true;
+    const ids = selectedRows.map(row => row.id);
+
+    await axios.post(route('admin.login.history.bulk-destroy'), { ids });
+    await router.reload({ preserveScroll: true });
+    loading.value = false;
+};
+
 watch(pagination, newPagination => {
     loading.value = true
     router.get(
@@ -112,7 +125,8 @@ watch(pagination, newPagination => {
                 <Datatable :data="loginHistory.data" :columns="columns" :loading="loading" :pagination="pagination"
                     :search-fields="['username', 'user_agent', 'login_at']"
                     empty-message="No login history records found" empty-description="Login history will appear here"
-                    export-file-name="login_history" @update:pagination="pagination = $event">
+                    export-file-name="login_history" :bulk-delete-route="route('admin.login.history.bulk-destroy')"
+                    @update:pagination="pagination = $event" @bulk-delete="handleBulkDelete">
                     <template #loading>
                         <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
                             Loading login history...
@@ -123,3 +137,4 @@ watch(pagination, newPagination => {
         </div>
     </main>
 </template>
+

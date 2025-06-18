@@ -13,21 +13,22 @@ defineOptions({
 const props = defineProps({
     user: Object,
     sessions: {
-        type: Array,
-        default: () => []
+        type: Object,
     }
 });
 
-const formattedSessions = computed(() =>
-    props.sessions.map(session => ({
+const formattedSessions = computed(() => {
+    if (!Array.isArray(props.sessions)) return [];
+
+    return props.sessions.map(session => ({
         id: session.id,
         device: session.agent?.device || 'Unknown device',
         browser: session.agent?.browser || 'Unknown browser',
         platform: session.agent?.platform || '',
         lastActive: session.lastActive || '',
         isCurrent: session.isCurrent || false
-    }))
-);
+    }));
+});
 
 const logoutModal = ref(false)
 const logoutAllModal = ref(false)
@@ -165,7 +166,7 @@ const getDeviceIcon = (device) => {
                                                 <div class="text-xs text-gray-500 dark:text-gray-400">
                                                     {{ session.browser }}
                                                     <span v-if="session.platform" class="ml-1">({{ session.platform
-                                                        }})</span>
+                                                    }})</span>
                                                 </div>
                                                 <div class="sm:hidden mt-1 space-y-1">
                                                     <div class="text-xs text-gray-500 dark:text-gray-400">
@@ -267,7 +268,7 @@ const getDeviceIcon = (device) => {
                         </div>
                         <div class="ml-3">
                             <div class="text-sm font-medium text-gray-900 dark:text-gray-200">{{ selectedSession.device
-                                }}</div>
+                            }}</div>
                             <div class="text-sm text-gray-500 dark:text-gray-400">{{ selectedSession.browser }}</div>
                             <div class="text-sm text-gray-500 dark:text-gray-400">Last active: {{
                                 selectedSession.lastActive }}</div>

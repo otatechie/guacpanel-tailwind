@@ -18,7 +18,7 @@ use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionRoleController;
-
+use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
 
@@ -104,7 +104,8 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
 
                 // Audit & History Routes
                 Route::get('audits', [AdminAuditController::class, 'index'])->name('audit.index');
-                Route::get('login/history', [AdminLoginHistoryController::class, 'index'])->name('login.history.index');
+                Route::get('login-history', [AdminLoginHistoryController::class, 'index'])->name('login.history.index');
+                Route::post('login-history/bulk-destroy', [AdminLoginHistoryController::class, 'bulkDestroy'])->name('login.history.bulk-destroy');
 
                 // Permissions & Roles Routes
                 Route::get('permissions/roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role.index');
@@ -128,6 +129,15 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                         Route::post('/create', 'createBackup')->name('create');
                         Route::get('/download/{path}', 'download')->name('download');
                         Route::delete('/{path}', 'destroy')->name('destroy');
+                    });
+                });
+
+                // Session Management Routes
+                Route::prefix('sessions')->name('sessions.')->group(function () {
+                    Route::controller(AdminSessionController::class)->group(function () {
+                        Route::get('/', 'index')->name('index');
+                        Route::delete('/{sessionId}', 'destroy')->name('destroy');
+                        Route::delete('/user/{userId}', 'destroyAllForUser')->name('destroy-all');
                     });
                 });
             });

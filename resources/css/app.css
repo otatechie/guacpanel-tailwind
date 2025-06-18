@@ -489,10 +489,12 @@ pre {
 
 .nav-item-default:hover {
     color: #111827;
+    background-color: #f3f4f6;
 }
 
 .dark .nav-item-default:hover {
     color: white;
+    background-color: rgba(55, 65, 81, 0.5);
 }
 
 .nav-icon {
@@ -554,10 +556,12 @@ pre {
 
 .nav-dropdown-default:hover {
     color: #111827;
+    background-color: #f3f4f6;
 }
 
 .dark .nav-dropdown-default:hover {
     color: white;
+    background-color: rgba(55, 65, 81, 0.5);
 }
 
 .nav-child-item {
@@ -592,10 +596,12 @@ pre {
 
 .nav-child-item-default:hover {
     color: #111827;
+    background-color: #f3f4f6;
 }
 
 .dark .nav-child-item-default:hover {
     color: white;
+    background-color: rgba(55, 65, 81, 0.5);
 }
 
 .nav-divider {
