@@ -94,12 +94,10 @@ const deleteUser = () => {
 }
 
 const openCreateModal = () => {
-    console.log('Opening modal with roles:', props.roles)
     showCreateUserModal.value = true
 }
 
 const createUser = () => {
-    console.log('Creating user with form data:', form.data())
     form.post(route('admin.user.store'), {
         preserveScroll: true,
         onSuccess: () => {
