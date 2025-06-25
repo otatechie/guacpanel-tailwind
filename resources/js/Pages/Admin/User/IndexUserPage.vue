@@ -94,12 +94,10 @@ const deleteUser = () => {
 }
 
 const openCreateModal = () => {
-    console.log('Opening modal with roles:', props.roles)
     showCreateUserModal.value = true
 }
 
 const createUser = () => {
-    console.log('Creating user with form data:', form.data())
     form.post(route('admin.user.store'), {
         preserveScroll: true,
         onSuccess: () => {
@@ -108,43 +106,6 @@ const createUser = () => {
         }
     })
 }
-
-const handleBulkAction = ({ actionId, selectedRows }) => {
-    // Filter out superusers from selection
-    const validUsers = selectedRows.filter(user => !isSuperUser(user))
-    if (!validUsers.length) return
-
-    switch (actionId) {
-        case 'delete':
-            router.delete(route('admin.user.bulk-delete'), {
-                data: { ids: validUsers.map(user => user.id) },
-                preserveScroll: true
-            })
-            break
-        case 'force-password-change':
-            router.put(route('admin.user.bulk-update'), {
-                ids: validUsers.map(user => user.id),
-                updates: { force_password_change: true }
-            }, {
-                preserveScroll: true
-            })
-            break
-        case 'disable-accounts':
-            router.put(route('admin.user.bulk-update'), {
-                ids: validUsers.map(user => user.id),
-                updates: { disable_account: true }
-            }, {
-                preserveScroll: true
-            })
-            break
-    }
-}
-
-const bulkActions = [
-    { id: 'delete', label: 'Delete Selected' },
-    { id: 'force-password-change', label: 'Force Password Change' },
-    { id: 'disable-accounts', label: 'Disable Accounts' }
-]
 
 const columns = [
     columnHelper.accessor('name', {
@@ -267,7 +228,6 @@ watch(pagination, newPagination => {
                 <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
                     :search-fields="['name', 'email', 'created_at_formatted']" empty-message="No users found"
                     empty-description="Users will appear here once created" export-file-name="users"
-                    :bulk-actions="bulkActions" @bulk-action="handleBulkAction"
                     @update:pagination="pagination = $event" />
             </div>
         </div>

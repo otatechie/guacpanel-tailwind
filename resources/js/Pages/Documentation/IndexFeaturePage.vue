@@ -212,6 +212,21 @@ const handleDelete = async (user) => {
     })
 }`,
 
+    bulkDelete: `// Add bulk delete functionality to your Datatable
+<Datatable 
+    :bulk-delete-route="route('admin.login.history.bulk-destroy')"
+    @bulk-delete="handleBulkDelete">
+</Datatable>
+
+// Handle the bulk delete event
+const handleBulkDelete = async ({ selectedRows }) => {
+    if (!selectedRows?.length) return;
+
+    const ids = selectedRows.map(row => row.id);
+    await axios.post(route('admin.login.history.bulk-destroy'), { ids });
+    await router.reload({ preserveScroll: true });
+};`,
+
     configExample: `{
     // Required props
     name: {
@@ -735,6 +750,77 @@ onUnmounted(() => {
                                     buttons to the table:</p>
                                 <div class="bg-gray-800 rounded-lg">
                                     <CodeBlock :code="codeExamples.actionButtons" language="javascript" />
+                                </div>
+                            </div>
+
+                            <div class="mt-8">
+                                <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-6">
+                                    4. Bulk Delete
+                                </h5>
+                                <div class="bg-gray-800 rounded-lg mb-8">
+                                    <CodeBlock :code="codeExamples.bulkDelete" language="javascript" />
+                                </div>
+
+                                <h5 class="text-lg font-medium text-gray-800 dark:text-white mb-4">
+                                    Detailed Guide
+                                </h5>
+                                <div class="space-y-6">
+                                    <!-- Setup Section -->
+                                    <div class="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                                        <h6 class="font-medium text-gray-900 dark:text-white mb-2">1. Setup</h6>
+                                        <p class="text-gray-600 dark:text-gray-400 mb-2">
+                                            Add the bulk delete feature to your Datatable component:
+                                        </p>
+                                        <div class="bg-gray-100 dark:bg-gray-800 rounded p-3">
+                                            <code class="text-sm">:bulk-delete-route="route('your.bulk.delete.route')"</code>
+                                        </div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                            This enables row selection checkboxes and the bulk delete button automatically.
+                                        </p>
+                                    </div>
+
+                                    <!-- Event Handling Section -->
+                                    <div class="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                                        <h6 class="font-medium text-gray-900 dark:text-white mb-2">2. Event Handling</h6>
+                                        <p class="text-gray-600 dark:text-gray-400 mb-2">
+                                            Listen for the bulk-delete event:
+                                        </p>
+                                        <div class="bg-gray-100 dark:bg-gray-800 rounded p-3">
+                                            <code class="text-sm">@bulk-delete="handleBulkDelete"</code>
+                                        </div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                            The event provides selected rows data in the callback parameter.
+                                        </p>
+                                    </div>
+
+                                    <!-- Pro Tips Section -->
+                                    <div class="bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg p-4 border border-teal-200 dark:border-teal-800/30">
+                                        <h6 class="font-medium text-teal-900 dark:text-teal-300 mb-4 flex items-center">
+                                            <span class="text-xl mr-2">💡</span> Pro Tips
+                                        </h6>
+                                        <ul class="space-y-2 text-sm text-teal-800 dark:text-teal-300">
+                                            <li class="flex items-start">
+                                                <span class="mr-3 text-lg">•</span>
+                                                <span>Automatic row selection with select all/none functionality</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <span class="mr-3 text-lg">•</span>
+                                                <span>Built-in confirmation dialogs for delete actions</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <span class="mr-3 text-lg">•</span>
+                                                <span>Loading states handled automatically during operations</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <span class="mr-3 text-lg">•</span>
+                                                <span>Bulk delete button appears only when rows are selected</span>
+                                            </li>
+                                            <li class="flex items-start">
+                                                <span class="mr-3 text-lg">•</span>
+                                                <span>Use <code class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">preserveScroll: true</code> to maintain scroll position after deletion</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
