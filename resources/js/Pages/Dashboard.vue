@@ -1,11 +1,11 @@
 <script setup>
 import { Head, usePage } from '@inertiajs/vue3'
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref } from 'vue'
 import Default from '../Layouts/Default.vue'
-import ApexLineChart from '@/Components/Charts/ApexLineChart.vue'
-import ApexDonutChart from '@/Components/Charts/ApexDonutChart.vue'
-import ApexBarChart from '@/Components/Charts/ApexBarChart.vue'
-import ApexAreaChart from '@/Components/Charts/ApexAreaChart.vue'
+import StockWidget from '@/Components/Widgets/StockWidget.vue'
+import AchievementWidget from '@/Components/Widgets/AchievementWidget.vue'
+import MetricWidget from '@/Components/Widgets/MetricWidget.vue'
+import StatWidget from '@/Components/Widgets/StatWidget.vue'
 
 defineOptions({
     layout: Default
@@ -19,6 +19,11 @@ const props = defineProps({
             income: {},
             expense: {}
         })
+    },
+    stats: {
+        type: Array,
+        required: true,
+        default: () => []
     }
 })
 
@@ -43,8 +48,27 @@ const greeting = computed(() => {
     return 'Good evening'
 })
 
+
+const icons = {
+    // Metric icons
+    revenue: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    conversion: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>',
+    response: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    // Achievement icons
+    chatMinutes: '<path d="M39.37 18.432c0 3.058-.906 5.862-2.466 8.203a14.728 14.728 0 0 1-10.079 6.367c-.717.127-1.455.19-2.214.19-.759 0-1.497-.063-2.214-.19a14.728 14.728 0 0 1-10.078-6.368 14.692 14.692 0 0 1-2.467-8.202c0-8.16 6.6-14.76 14.76-14.76s14.759 6.6 14.759 14.76Z"/><path d="m44.712 38.17-3.431.83a2.063 2.063 0 0 0-1.539 1.572l-.728 3.122c-.09.384-.281.734-.554 1.012a2.068 2.068 0 0 1-.992.564c-.375.09-.768.073-1.134-.052a2.078 2.078 0 0 1-.938-.653l-9.92-11.64-9.92 11.661a2.078 2.078 0 0 1-.938.653 2.038 2.038 0 0 1-1.134.052 2.067 2.067 0 0 1-.992-.563 2.137 2.137 0 0 1-.554-1.012l-.728-3.123a2.13 2.13 0 0 0-.55-1.01 2.06 2.06 0 0 0-.988-.562L6.24 38.19a2.073 2.073 0 0 1-.956-.533 2.14 2.14 0 0 1-.563-.953 2.175 2.175 0 0 1-.015-1.113c.091-.366.276-.7.536-.97l8.11-8.284a14.672 14.672 0 0 0 4.307 4.281 14.34 14.34 0 0 0 5.634 2.134 12.29 12.29 0 0 0 2.183.191c.749 0 1.477-.063 2.184-.19 4.138-.617 7.694-3.017 9.94-6.416l8.11 8.285c1.144 1.147.583 3.165-.998 3.547Z"/>',
+    expertRating: '<path d="m26.91 5.776 4.483 10.683a1.544 1.544 0 0 0 1.287.942l11.474.992a1.544 1.544 0 0 1 .876 2.715L36.325 28.7a1.559 1.559 0 0 0-.49 1.523l2.61 11.296a1.544 1.544 0 0 1-2.295 1.677l-9.86-5.982a1.53 1.53 0 0 0-1.59 0l-9.861 5.982a1.544 1.544 0 0 1-2.295-1.677l2.609-11.296a1.56 1.56 0 0 0-.49-1.523l-8.705-7.593a1.544 1.544 0 0 1 .876-2.715l11.474-.992a1.544 1.544 0 0 0 1.287-.942l4.483-10.683a1.544 1.544 0 0 1 2.833 0Z"/>',
+    sessionsCompleted: '<path d="M10.811 39.091c-1.775-1.775-.598-5.505-1.5-7.69-.939-2.255-4.377-4.089-4.377-6.5 0-2.413 3.438-4.246 4.376-6.502.903-2.182-.274-5.914 1.501-7.69 1.776-1.775 5.508-.598 7.69-1.5 2.266-.939 4.09-4.377 6.501-4.377 2.412 0 4.246 3.438 6.501 4.376 2.185.903 5.915-.274 7.69 1.501 1.776 1.776.598 5.506 1.502 7.69.937 2.266 4.376 4.09 4.376 6.501 0 2.412-3.439 4.246-4.377 6.501-.903 2.185.274 5.915-1.5 7.69-1.776 1.776-5.506.598-7.69 1.501-2.256.938-4.09 4.377-6.502 4.377s-4.245-3.439-6.5-4.377c-2.183-.903-5.915.275-7.69-1.5Z"/><path d="m17.281 26.444 4.632 4.631L32.718 20.27"/>',
+    appDownloads: '<path d="M45.571 12.006 27.046 30.531l-7.719-7.718L5.434 36.706"/><path d="M45.569 24.356v-12.35h-12.35"/>',
+    // Stat icons
+    tasks: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',
+    messages: '<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',
+    projects: '<path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>',
+    performance: '<path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/>'
+}
+
 // Stock data
-const stocks = [
+const stocks = ref([
     {
         symbol: 'AAPL',
         name: 'Apple, Inc',
@@ -77,280 +101,88 @@ const stocks = [
         icon: 'https://logodownload.org/wp-content/uploads/2014/04/hp-logo-1.png',
         bgColor: 'blue'
     }
-]
-
-const statCards = [
-    {
-        title: 'Total Members',
-        value: '12,768',
-        growth: '+12.6%'
-    },
-    {
-        title: 'Total Posts',
-        value: '39,265',
-        growth: '+8.2%'
-    },
-    {
-        title: 'Comments',
-        value: '142,334',
-        growth: '+5.4%'
-    },
-    {
-        title: 'Server Load',
-        value: '34.12%',
-        growth: '-2.4%'
-    }
-]
-
-const upcomingTasks = ref([
-    {
-        id: 1,
-        title: 'Dashboard Design Review',
-        dueDate: '2024-03-20',
-        priority: 'high'
-    },
-    {
-        id: 2,
-        title: 'API Integration',
-        dueDate: '2024-03-22',
-        priority: 'medium'
-    }
 ])
-
-const systemHealth = ref({
-    cpu: 45,
-    memory: 72,
-    storage: 63,
-    network: 89
-})
-
-// Line chart data
-const lineChartData = computed(() => ({
-    labels: props.financialMetrics?.months || [],
-    datasets: [
-        {
-            label: 'Income',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderWidth: 1,
-            tension: 0.4,
-            fill: true
-        },
-        {
-            label: 'Expenses',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
-            borderColor: '#ef4444',
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-            borderWidth: 1,
-            tension: 0.4,
-            fill: true
-        }
-    ]
-}));
-
-// Doughnut chart data
-const doughnutData = computed(() => ({
-    labels: ['Total Income', 'Total Expenses'],
-    datasets: [{
-        label: 'Revenue Distribution',
-        data: [
-            (props.financialMetrics?.months || [])
-                .reduce((sum, month) => sum + Number(props.financialMetrics?.income?.[month] || 0), 0),
-            (props.financialMetrics?.months || [])
-                .reduce((sum, month) => sum + Number(props.financialMetrics?.expense?.[month] || 0), 0)
-        ],
-        backgroundColor: ['#10b981', '#ef4444'],
-        borderWidth: 1
-    }]
-}));
-
-// Bar chart data   
-const barChartData = computed(() => ({
-    labels: props.financialMetrics?.months || [],
-    datasets: [
-        {
-            label: 'Income',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
-            backgroundColor: '#10b981',
-            borderColor: '#10b981',
-            borderWidth: 1
-        },
-        {
-            label: 'Expenses',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
-            backgroundColor: '#ef4444',
-            borderColor: '#ef4444',
-            borderWidth: 1
-        }
-    ]
-}));
-
-// Area chart data
-const areaChartData = computed(() => ({
-    labels: props.financialMetrics?.months || [],
-    datasets: [
-        {
-            label: 'Income',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderWidth: 1,
-            tension: 0.4,
-            fill: true
-        },
-        {
-            label: 'Expenses',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
-            borderColor: '#ef4444',
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-        }
-    ]
-}));
-
-onMounted(() => {
-    const handleKeyPress = (event) => {
-        if (event.key === 'r' && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault()
-            systemHealth.value = {
-                cpu: Math.floor(Math.random() * 100),
-                memory: Math.floor(Math.random() * 100),
-                storage: Math.floor(Math.random() * 100),
-                network: Math.floor(Math.random() * 100)
-            }
-        }
-    }
-    window.addEventListener('keydown', handleKeyPress)
-    onUnmounted(() => {
-        window.removeEventListener('keydown', handleKeyPress)
-    })
-})
 </script>
-
 
 <template>
 
     <Head title="Dashboard" />
 
-    <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class="max-w-4xl mx-auto px-4">
-            <header class="mb-8">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    {{ greeting }}, {{ userName }}
-                    <span class="text-blue-500 dark:text-blue-400 animate-pulse">•</span>
-                </h1>
-                <time class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ formattedDate.display }}
-                </time>
+    <main class="min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <header class="mb-10">
+                <div class="flex items-center justify-between mb-2">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                        {{ greeting }}, {{ userName }}
+                        <span class="text-blue-500 dark:text-blue-400 animate-pulse">•</span>
+                    </h1>
+                    <time
+                        class="text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm">
+                        {{ formattedDate.display }}
+                    </time>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400">Here's what's happening with your portfolio today.</p>
             </header>
 
-            <!-- Stock Ticker -->
-            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <article v-for="stock in stocks" :key="stock.symbol"
-                    class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div :class="`bg-${stock.bgColor}-100 dark:bg-${stock.bgColor}-900/30 p-2 rounded-full`">
-                            <img :src="stock.icon" :alt="stock.name" class="w-8 h-8">
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white">{{ stock.symbol }}</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ stock.name }}</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-end">
-                        <strong class="text-xl font-bold text-gray-900 dark:text-white">${{ stock.price }}</strong>
-                        <span :class="{
-                            'text-emerald-600 dark:text-emerald-400': stock.change > 0,
-                            'text-rose-600 dark:text-rose-400': stock.change < 0
-                        }" class="flex items-center text-sm font-medium">
-                            <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                :class="{ 'rotate-180': stock.change < 0 }">
-                                <path d="M12 5L20 13L18.6 14.4L13 8.8V19H11V8.8L5.4 14.4L4 13L12 5Z"
-                                    fill="currentColor" />
-                            </svg>
-                            {{ Math.abs(stock.change).toFixed(2) }}%
-                        </span>
-                    </div>
-                </article>
+            <!-- Metrics Widgets -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Metric Widgets</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <MetricWidget title="Total Revenue" :value="84621" trend="up" :change="12.5" :svg="icons.revenue"
+                        color="emerald" />
+                    <MetricWidget title="Active Users" :value="2847" trend="up" :change="8.2" :svg="icons.users"
+                        color="blue" />
+                    <MetricWidget title="Conversion Rate" value="3.24%" trend="down" :change="-1.8"
+                        :svg="icons.conversion" color="amber" />
+                    <MetricWidget title="Avg. Response Time" value="284ms" trend="up" :change="15.3"
+                        :svg="icons.response" color="rose" />
+                </div>
             </section>
 
-            <!-- Key Stats -->
-            <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <article v-for="card in statCards" :key="card.title"
-                    class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700">
-                    <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ card.title }}</h2>
-                    <div class="mt-2 flex items-baseline">
-                        <strong class="text-xl font-bold text-gray-900 dark:text-white">{{ card.value }}</strong>
-                        <span class="ml-2 text-xs font-medium"
-                            :class="card.growth.startsWith('+') ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
-                            {{ card.growth }}
-                        </span>
-                    </div>
-                </article>
+            <!-- Stock Widgets -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Stock Widgets</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <StockWidget :stock="stocks[0]" :src="stocks[0].icon" :alt="stocks[0].name"
+                        :bg-color="stocks[0].bgColor" size="lg" />
+                    <StockWidget :stock="stocks[1]" :src="stocks[1].icon" :alt="stocks[1].name"
+                        :bg-color="stocks[1].bgColor" size="lg" />
+                    <StockWidget :stock="stocks[2]" :src="stocks[2].icon" :alt="stocks[2].name"
+                        :bg-color="stocks[2].bgColor" size="lg" />
+                    <StockWidget :stock="stocks[3]" :src="stocks[3].icon" :alt="stocks[3].name"
+                        :bg-color="stocks[3].bgColor" size="lg" />
+                </div>
             </section>
 
-            <!-- Main Content -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Upcoming Tasks -->
-                <section
-                    class="md:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 mb-6 md:mb-0">
-                    <div class="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700">
-                        <h2 class="font-medium text-gray-900 dark:text-white flex items-center">
-                            <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
-                            Upcoming Tasks
-                        </h2>
-                    </div>
-                    <div class="p-4 space-y-3">
-                        <div v-for="task in upcomingTasks" :key="task.id"
-                            class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <div class="flex justify-between">
-                                <h3 class="text-gray-900 dark:text-white font-medium">{{ task.title }}</h3>
-                                <span :class="{
-                                    'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400': task.priority === 'high',
-                                    'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400': task.priority === 'medium'
-                                }" class="text-xs px-2 py-0.5 rounded-full">
-                                    {{ task.priority }}
-                                </span>
-                            </div>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Due {{ new Date(task.dueDate).toLocaleDateString() }}
-                            </p>
-                        </div>
-                    </div>
-                </section>
+            <!-- Achievements Widget-->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Achievement Widgets</h2>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 w-full mx-auto max-w-8xl">
+                    <AchievementWidget title="Expert Chat & Call Minutes" value="75K+" viewBox="0 0 50 50"
+                        color="text-blue-500 dark:text-blue-400" :svg="icons.chatMinutes" />
+                    <AchievementWidget title="Average Expert Rating" value="4.9" viewBox="0 0 51 50"
+                        color="text-blue-500 dark:text-blue-400" :svg="icons.expertRating" />
+                    <AchievementWidget title="Sessions Completed" value="8900+" viewBox="0 0 50 50"
+                        color="text-blue-500 dark:text-blue-400" :svg="icons.sessionsCompleted" />
+                    <AchievementWidget title="App Downloads" value="1.5M+" viewBox="0 0 51 50"
+                        color="text-blue-500 dark:text-blue-400" :svg="icons.appDownloads" />
+                </div>
+            </section>
 
-                <!-- System Health -->
-                <section
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div class="p-4 border-b border-gray-100 dark:border-gray-700">
-                        <h2 class="font-medium text-gray-900 dark:text-white flex items-center">
-                            <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
-                            System Health
-                        </h2>
-                    </div>
-                    <div class="p-4 space-y-4">
-                        <div v-for="(value, metric) in systemHealth" :key="metric" class="space-y-1">
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">{{ metric }}</span>
-                                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ value }}%</span>
-                            </div>
-                            <div class="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-700" :class="{
-                                    'bg-emerald-500': value < 70,
-                                    'bg-amber-500': value >= 70 && value < 90,
-                                    'bg-rose-500': value >= 90
-                                }" :style="`width: ${value}%`"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
+            <!-- Stats Widgets -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Stats Overview</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <StatWidget title="Tasks Completed" value="24/30" description="Daily task completion rate"
+                        :icon="icons.tasks" trend="up" color="green" />
+                    <StatWidget title="New Messages" value="48" description="Unread messages today"
+                        :icon="icons.messages" trend="up" color="blue" />
+                    <StatWidget title="Active Projects" value="15" description="Projects in progress"
+                        :icon="icons.projects" trend="neutral" color="purple" />
+                    <StatWidget title="Performance" value="92%" description="Overall system performance"
+                        :icon="icons.performance" trend="down" color="red" />
+                </div>
+            </section>
         </div>
     </main>
 </template>
