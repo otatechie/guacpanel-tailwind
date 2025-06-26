@@ -156,7 +156,10 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
             Route::get('/stats', [DashboardController::class, 'refreshStats']);
             Route::get('/financial-metrics', [DashboardController::class, 'refreshFinancialMetrics']);
         });
+<<<<<<< develop
 
+=======
+>>>>>>> main
     });
 });
 
