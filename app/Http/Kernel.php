@@ -3,9 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\HandleInertiaRequests;
-use App\Http\Middleware\ProducerProfileSetup;
-use App\Http\Middleware\ProfileSetup;
-use App\Http\Middleware\SetupCharity;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel

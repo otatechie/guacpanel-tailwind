@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\Auth\MagicLinkController;
@@ -18,9 +19,10 @@ use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionRoleController;
-use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use App\Http\Controllers\AdminHealthStatusController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -140,6 +142,12 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                         Route::delete('/user/{userId}', 'destroyAllForUser')->name('destroy-all');
                     });
                 });
+
+                // Health Monitoring Routes
+                Route::controller(AdminHealthStatusController::class)->prefix('health')->name('health.')->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::post('refresh', 'runHealthChecks')->name('refresh');
+                });
             });
         });
 
@@ -148,6 +156,10 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
             Route::get('/stats', [DashboardController::class, 'refreshStats']);
             Route::get('/financial-metrics', [DashboardController::class, 'refreshFinancialMetrics']);
         });
+<<<<<<< develop
+
+=======
+>>>>>>> main
     });
 });
 

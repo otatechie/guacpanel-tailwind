@@ -182,6 +182,24 @@ defineOptions({
                     <p class="text-sm text-gray-600 dark:text-gray-400">Monitor and manage active user sessions across
                         the system.</p>
                     </Link>
+
+                    <Link :href="route('admin.health.index')"
+                        class="group relative flex flex-col p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-500 hover:shadow-sm transition-all duration-200 overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 h-1 w-full bg-violet-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="flex items-center gap-4 mb-3">
+                        <div
+                            class="p-3 bg-violet-50 dark:bg-violet-900/30 rounded-xl border border-violet-100 dark:border-violet-800 group-hover:bg-violet-100 dark:group-hover:bg-violet-900/50 transition-colors">
+                            <svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7m0 0a3 3 0 0 1-3 3m0 3h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Zm-3 6h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">System Health</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Monitor and manage system health and performance.</p>
+                    </Link>
                 </div>
             </div>
         </div>
