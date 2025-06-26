@@ -2,19 +2,38 @@
 
 namespace App\Providers;
 
-use App\Models\Personalisation;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Models\Personalisation;
+use Spatie\Health\Facades\Health;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\ServiceProvider;
+use Spatie\Health\Checks\Checks\CacheCheck;
+use Spatie\Health\Checks\Checks\QueueCheck;
+use Spatie\Health\Checks\Checks\DatabaseCheck;
+use Spatie\Health\Checks\Checks\DebugModeCheck;
+use Spatie\Health\Checks\Checks\EnvironmentCheck;
+use Spatie\Health\Checks\Checks\OptimizedAppCheck;
+use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register(): void {}
+    public function register(): void {
+        Health::checks([
+            UsedDiskSpaceCheck::new(),
+            DatabaseCheck::new(),
+            EnvironmentCheck::new(),
+            DebugModeCheck::new(),
+            CacheCheck::new(),
+            QueueCheck::new(),
+            OptimizedAppCheck::new(),
+        ]);
+
+    }
 
     /**
      * Bootstrap any application services.
