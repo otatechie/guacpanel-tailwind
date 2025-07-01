@@ -9,28 +9,32 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Inertia\Inertia;
+use App\Traits\HasProtectedPermission;
 
 class AdminRoleController extends Controller
 {
     use HasProtectedRoles;
-    
+
 
     public function __construct()
     {
-        $this->middleware(['auth', 'permission:manage-roles']);
+        $this->middleware('permission:manage-roles');
     }
 
-    
+
     public function index()
     {
-        $roles = Role::with('permissions')->get()->map(function ($role) {
-            $role->is_protected = $this->isProtectedRole($role->name);
-            return $role;
-        });
-
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'roles' => $roles,
-            'permissions' => Permission::all()
+            'roles' => Role::with('permissions:id,name,description')
+                ->select('id', 'name', 'description')
+                ->get()
+                ->map(function ($role) {
+                    $role->is_protected = $this->isProtectedRole($role->name);
+                    return $role;
+                }),
+            'permissions' => Permission::select('id', 'name', 'description')->get(),
+            'protectedRoles' => $this->getProtectedRoles(),
+            'protectedPermissions' => app(HasProtectedPermission::class)->getProtectedPermissions()
         ]);
     }
 
@@ -61,15 +65,16 @@ class AdminRoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        return redirect()->route('admin.role.index')->with('success', 'Role created successfully.');
+        session()->flash('success', 'Role created successfully.');
+        return redirect()->route('admin.role.index');
     }
 
 
     public function update(Request $request, Role $role): RedirectResponse
     {
         if ($this->isProtectedRole($role->name)) {
-            return redirect()->route('admin.role.index')
-                ->with('error', 'Cannot modify system role: ' . $role->name);
+            session()->flash('error', 'Cannot modify system role: ' . $role->name);
+            return redirect()->route('admin.role.index');
         }
 
         $validatedData = $request->validate([
@@ -96,21 +101,23 @@ class AdminRoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        return redirect()->route('admin.role.index')->with('success', 'Role updated successfully.');
+        session()->flash('success', 'Role updated successfully.');
+        return redirect()->route('admin.role.index');
     }
-    
+
 
     public function destroy(string $id): RedirectResponse
     {
         $role = Role::findOrFail($id);
 
         if ($this->isProtectedRole($role->name)) {
-            return redirect()->route('admin.role.index')
-                ->with('error', 'Cannot delete system role: ' . $role->name);
+            session()->flash('error', 'Cannot delete system role: ' . $role->name);
+            return redirect()->route('admin.role.index');
         }
 
         $role->delete();
 
-        return redirect()->route('admin.role.index')->with('success', 'Role deleted successfully.');
+        session()->flash('success', 'Role deleted successfully.');
+        return redirect()->route('admin.role.index');
     }
 }

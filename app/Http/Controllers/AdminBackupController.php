@@ -12,9 +12,15 @@ use Illuminate\Filesystem\FilesystemAdapter;
 
 class AdminBackupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view-backups');
+    }
+
+
     private function getDisk()
     {
-        return Storage::disk('local');
+        return Storage::disk(config('backup.backup.destination.disks')[0] ?? 'local');
     }
 
 
@@ -44,40 +50,54 @@ class AdminBackupController extends Controller
     {
         $disk = $this->getDisk();
         $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
-        $files = $disk->allFiles($backupName);
+        
+        $files = collect($disk->allFiles($backupName))
+            ->filter(fn($file) => str_ends_with($file, '.zip'));
+        
+        if ($files->isEmpty()) {
+            return [[
+                'name' => $backupName,
+                'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
+                'storageType' => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
+                'reachable' => true,
+                'healthy' => true,
+                'count' => 0,
+                'storageSpace' => $this->formatBytes(0),
+                'backups' => [],
+            ]];
+        }
 
-        $backups = collect($files)
-            ->filter(fn($file) => str_ends_with($file, '.zip'))
-            ->map(fn($file) => [
-                'path' => $file,
-                'date' => date('M d, Y g:i A', $disk->lastModified($file)),
-                'size' => $this->formatBytes($disk->size($file)),
-            ])
+        $backups = $files
+            ->map(function ($file) use ($disk) {
+                $size = $disk->size($file);
+                $lastModified = $disk->lastModified($file);
+                
+                return [
+                    'path' => $file,
+                    'date' => date('M d, Y g:i A', $lastModified),
+                    'size' => $this->formatBytes($size),
+                    'raw_size' => $size,
+                ];
+            })
             ->sortByDesc(fn($backup) => strtotime($backup['date']))
             ->values()
             ->toArray();
 
-        $totalSize = collect($backups)->sum(fn($backup) => $disk->size($backup['path']));
-        $storageType = config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other';
-
+        $totalSize = collect($backups)->sum('raw_size');
+        
         return [[
             'name' => $backupName,
             'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
-            'storageType' => $storageType,
+            'storageType' => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
             'reachable' => true,
             'healthy' => true,
             'count' => count($backups),
             'storageSpace' => $this->formatBytes($totalSize),
-            'backups' => $backups,
+            'backups' => array_map(function ($backup) {
+                unset($backup['raw_size']);
+                return $backup;
+            }, $backups),
         ]];
-    }
-
-
-    private function handleBackupError(\Exception $e, string $action = 'process backup')
-    {
-        report($e);
-        session()->flash('error', "Failed to {$action}: " . $e->getMessage());
-        return redirect()->back();
     }
 
 
@@ -88,49 +108,41 @@ class AdminBackupController extends Controller
         
         return $disk->exists($decodedPath) ? $decodedPath : null;
     }
-    
+
 
     public function download(string $path)
     {
-        try {
-            $decodedPath = $this->validateBackupExists($path, true);
-            
-            if (!$decodedPath) {
-                session()->flash('error', 'Unable to locate backup file.');
-                return redirect()->back();
-            }
-
-            $filePath = storage_path('app/' . $decodedPath);
-            
-            if (!file_exists($filePath)) {
-                session()->flash('error', 'Backup file not found on disk.');
-                return redirect()->back();
-            }
-
-            return response()->download($filePath, basename($decodedPath));
-        } catch (\Exception $e) {
-            return $this->handleBackupError($e, 'download backup');
+        $decodedPath = $this->validateBackupExists($path, true);
+        
+        if (!$decodedPath) {
+            session()->flash('error', 'Unable to locate backup file.');
+            return redirect()->back();
         }
+
+        $filePath = storage_path('app/' . $decodedPath);
+        
+        if (!file_exists($filePath)) {
+            session()->flash('error', 'Backup file not found on disk.');
+            return redirect()->back();
+        }
+
+        return response()->download($filePath, basename($decodedPath));
     }
 
 
     public function destroy(string $path)
     {
-        try {
-            $decodedPath = $this->validateBackupExists($path, true);
-            
-            if (!$decodedPath) {
-                session()->flash('error', 'Backup file not found.');
-                return redirect()->back();
-            }
-            
-            $this->getDisk()->delete($decodedPath);
-            session()->flash('warning', 'Backup deleted successfully.');
-            
+        $decodedPath = $this->validateBackupExists($path, true);
+        
+        if (!$decodedPath) {
+            session()->flash('error', 'Backup file not found.');
             return redirect()->back();
-        } catch (\Exception $e) {
-            return $this->handleBackupError($e, 'delete backup');
         }
+        
+        $this->getDisk()->delete($decodedPath);
+        session()->flash('warning', 'Backup deleted successfully.');
+        
+        return redirect()->back();
     }
 
 

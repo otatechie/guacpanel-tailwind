@@ -137,7 +137,6 @@ const runHealthChecks = () => {
             </PageHeader>
 
             <section class="p-6 space-y-6">
-                <!-- Header with timestamp -->
                 <div class="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
                     <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -153,13 +152,10 @@ const runHealthChecks = () => {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                     <template v-for="(group, status) in groupedResults" :key="status">
                         <div v-for="result in group" :key="result.label"
-                            class="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all duration-200 hover:shadow-md group">
+                            class="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all duration-200 hover:shadow-md group dark:border dark:border-gray-700">
                             <!-- Loading Overlay -->
                             <div v-if="isRunning"
                                 class="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center rounded-lg z-10">
-                                <div class="animate-pulse text-sm text-gray-500 dark:text-gray-400">
-                                    Checking system health...
-                                </div>
                             </div>
 
                             <div class="flex items-start gap-3">

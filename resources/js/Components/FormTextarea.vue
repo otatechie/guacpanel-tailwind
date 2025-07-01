@@ -55,6 +55,7 @@ function updateValue(event) {
 }
 </script>
 
+
 <template>
     <div>
         <label :for="inputId" class="relative block">

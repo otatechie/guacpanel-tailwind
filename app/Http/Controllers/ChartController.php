@@ -3,19 +3,22 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Inertia\Controller;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use App\Models\FinancialMetric;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ChartController extends Controller
 {
     public function index()
     {
-        $metrics = FinancialMetric::selectRaw("DATE_FORMAT(date, '%b') as month, type, SUM(amount) as total")
-            ->whereYear('date', now()->year)
-            ->groupBy('month', 'type')
-            ->orderBy(DB::raw("STR_TO_DATE(month, '%b')"))
+        $currentYear = now()->year;
+
+        $metrics = FinancialMetric::select(DB::raw('EXTRACT(MONTH FROM date) as month_number'), 'type', DB::raw('SUM(amount) as total'))
+            ->whereYear('date', $currentYear)
+            ->groupBy('month_number', 'type')
+            ->orderBy('month_number')
             ->get();
 
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -24,13 +27,13 @@ class ChartController extends Controller
         $expense = array_fill_keys($months, 0);
 
         foreach ($metrics as $metric) {
+            $monthName = Carbon::create($currentYear, $metric->month_number)->format('M');
             if ($metric->type === 'income') {
-                $income[$metric->month] = (float) $metric->total;
+                $income[$monthName] = (float) $metric->total;
             } else {
-                $expense[$metric->month] = (float) $metric->total;
+                $expense[$monthName] = (float) $metric->total;
             }
         }
-
 
         return Inertia::render('Chart', [
             'financialMetrics' => [

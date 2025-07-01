@@ -1,5 +1,4 @@
 <?php
-
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
@@ -153,13 +152,9 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
 
         // Dashboard API endpoints
         Route::prefix('api/dashboard')->group(function () {
-            Route::get('/stats', [DashboardController::class, 'refreshStats']);
             Route::get('/financial-metrics', [DashboardController::class, 'refreshFinancialMetrics']);
         });
-<<<<<<< develop
 
-=======
->>>>>>> main
     });
 });
 

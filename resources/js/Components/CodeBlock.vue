@@ -57,6 +57,7 @@ onMounted(highlight);
 watch(() => [props.code, props.language], highlight);
 </script>
 
+
 <template>
     <div class="code-block-container">
         <pre><code :class="language" v-html="highlightedCode"></code></pre>

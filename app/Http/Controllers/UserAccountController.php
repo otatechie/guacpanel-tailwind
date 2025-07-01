@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -13,37 +15,21 @@ use Jenssegers\Agent\Agent;
 
 class UserAccountController extends Controller
 {
-    private const PASSWORD_RULES = [
-        'required',
-        'confirmed',
-        'min:8',
-        'regex:/[A-Z]/',
-        'regex:/[0-9]/',
-        'regex:/[^A-Za-z0-9]/',
-    ];
-
-
-    private function getAuthUser(): User
-    {
-        return Auth::user();
-    }
-
-
     public function index()
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
 
         abort_if($user->id !== Auth::id(), 403, 'You are not authorized to access this profile.');
 
         return Inertia::render('UserAccount/IndexPage', [
-            'user' => array_merge($user->only('name', 'email', 'location'), []),
+            'user' => $user->only('name', 'email', 'location'),
         ]);
     }
 
 
     public function indexTwoFactorAuthentication()
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
 
         $data = [
             'user' => $user,
@@ -57,7 +43,7 @@ class UserAccountController extends Controller
 
     public function indexPasswordExpired()
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
 
         if (!$user->isPasswordExpired()) {
             return redirect()->route('home');
@@ -69,11 +55,26 @@ class UserAccountController extends Controller
 
     public function updateExpiredPassword(Request $request)
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
 
         $validatedData = $request->validate([
-            'password' => self::PASSWORD_RULES
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+            ]
         ]);
+
+        // Check if new password is the same as current password
+        if (Hash::check($validatedData['password'], $user->password)) {
+            return back()->withErrors([
+                'password' => 'Your new password cannot be the same as your current password.'
+            ]);
+        }
 
         $now = now();
         $user->update([
@@ -90,7 +91,7 @@ class UserAccountController extends Controller
 
     public function session(Request $request)
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
         $sessions = [];
 
         if (config('session.driver') === 'database') {
@@ -121,35 +122,44 @@ class UserAccountController extends Controller
     protected function formatAgent($userAgent)
     {
         if (empty($userAgent)) {
-            return ['device' => 'Unknown', 'browser' => 'Unknown'];
+            return ['device' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown'];
         }
 
-        $agent = new \Jenssegers\Agent\Agent();
+        $agent = new Agent();
         $agent->setUserAgent($userAgent);
 
         return [
-            'device' => $agent->device() ? $agent->device() : ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
-            'platform' => $agent->platform() ? $agent->platform() : 'Unknown',
-            'browser' => $agent->browser() ? $agent->browser() : 'Unknown',
+            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+            'platform' => $agent->platform() ?: 'Unknown',
+            'browser' => $agent->browser() ?: 'Unknown',
         ];
     }
 
 
     public function deactivateAccount()
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
         $user->update(['disable_account' => true]);
 
-        return redirect()->route('home')->with('info', 'Account has been deactivated successfully.');
+        Auth::logout();
+        $request = request();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('info', 'Account has been deactivated successfully.');
     }
 
 
     public function deleteAccount()
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
         $user->delete();
-        Auth::logout();
 
-        session()->flash('info', 'Account has been deleted successfully.');
+        Auth::logout();
+        $request = request();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('info', 'Account has been deleted successfully.');
     }
 }

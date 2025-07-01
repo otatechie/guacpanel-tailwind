@@ -41,7 +41,7 @@ const colorClasses = {
         <div class="flex items-center justify-between">
             <div :class="[colorClasses[color], 'rounded-lg p-3']">
                 <span class="sr-only">{{ title }} icon</span>
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-html="icon"></svg>
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" v-html="icon"></svg>
             </div>
             <div v-if="trend !== 'neutral'" class="flex items-center">
                 <svg v-if="trend === 'up'" class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">

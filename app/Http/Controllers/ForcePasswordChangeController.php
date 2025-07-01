@@ -6,8 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
-use Laravel\Fortify\Rules\Password;
 
 class ForcePasswordChangeController extends Controller
 {
@@ -25,7 +26,8 @@ class ForcePasswordChangeController extends Controller
 
     public function update(Request $request)
     {
-        $key = 'user.password.change.update:' . $request->user()->id;
+        $user = $request->user();
+        $key = 'user.password.change.update:' . $user->id;
         $maxAttempts = 3;
         $decaySeconds = 120;
 
@@ -42,15 +44,25 @@ class ForcePasswordChangeController extends Controller
             'password' => [
                 'required',
                 'confirmed',
-                'min:8',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
             ]
         ]);
 
-        $user = $request->user();
+        // Check if new password is the same as current password
+        if (Hash::check($validatedData['password'], $user->password)) {
+            return back()->withErrors([
+                'password' => 'Your new password cannot be the same as your current password.'
+            ]);
+        }
 
         $user->update([
             'password' => Hash::make($validatedData['password']),
             'force_password_change' => false,
+            'password_changed_at' => now(),
         ]);
 
         RateLimiter::clear($key);
