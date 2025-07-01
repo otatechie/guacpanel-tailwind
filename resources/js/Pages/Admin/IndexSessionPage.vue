@@ -26,8 +26,6 @@ const pagination = ref({
     total: props.sessions.total
 })
 
-
-
 const showTerminateModal = ref(false)
 const selectedSession = ref(null)
 const selectedUser = ref(null)
@@ -47,7 +45,7 @@ const confirmTerminate = (session) => {
     showTerminateModal.value = true
 }
 
-const terminateSession = () => {
+/* const terminateSession = () => {
     if (!selectedSession.value?.id) return
 
     form.delete(route('admin.sessions.destroy', { sessionId: selectedSession.value.id }), {
@@ -62,6 +60,7 @@ const terminateSession = () => {
         }
     })
 }
+ */
 
 const columns = [
     columnHelper.accessor('user', {
@@ -77,10 +76,6 @@ const columns = [
             const device = info.row.original.device_info
             return h('span', {}, `${device.browser} on ${device.platform} (${device.device})`)
         }
-    }),
-    columnHelper.accessor('ip_address', {
-        header: 'IP Address',
-        cell: info => h('span', info.getValue() || '-')
     }),
     columnHelper.accessor('last_active_diff', {
         header: 'Last Active',
@@ -166,7 +161,7 @@ watch(pagination, newPagination => {
                 <Datatable :data="sessions.data" 
                 :columns="columns" :loading="loading" 
                 :pagination="pagination"
-                    :search-fields="['user.name', 'user.email', 'ip_address', 'device_info.browser']"
+                    :search-fields="['user.name', 'user.email', 'device_info.browser']"
                     empty-message="No active sessions found" empty-description="Active sessions will appear here"
                     export-file-name="sessions" @update:pagination="pagination = $event" />
             </div>

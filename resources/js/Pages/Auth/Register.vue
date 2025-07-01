@@ -60,17 +60,17 @@ const submit = () => {
                 </div>
 
                 <Link :href="route('magic.create')"
-                    class="w-full flex items-center justify-center gap-2 btn-secondary dark:hover:bg-gray-800 dark:text-gray-200 dark:hover:text-purple-400 transition-colors cursor-pointer"
+                    class="w-full flex items-center justify-center gap-2 px-4 py-2.5 cursor-pointer text-sm btn-secondary"
                     role="button" aria-label="Create account with magic link">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span>Create account with magic link</span>
                 </Link>
-                <p class="text-xs text-center text-gray-500 dark:text-gray-400" role="note">
-                    We'll send a secure login link to your email
+                <p class="text-xs text-center text-gray-500 dark:text-gray-400 mt-2" role="note">
+                    No password needed - we'll send a secure login link to your email
                 </p>
             </template>
         </form>

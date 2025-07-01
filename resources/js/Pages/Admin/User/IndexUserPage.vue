@@ -79,7 +79,7 @@ const confirmDeleteUser = (user) => {
 const deleteUser = () => {
     if (!userToDelete.value?.id) return
     if (!canDeleteUser(userToDelete.value)) return
-    
+
     router.delete(route('admin.user.destroy', { id: userToDelete.value.id }), {
         preserveScroll: true,
         onSuccess: () => {
@@ -106,43 +106,6 @@ const createUser = () => {
         }
     })
 }
-
-const handleBulkAction = ({ actionId, selectedRows }) => {
-    // Filter out superusers from selection
-    const validUsers = selectedRows.filter(user => !isSuperUser(user))
-    if (!validUsers.length) return
-
-    switch (actionId) {
-        case 'delete':
-            router.delete(route('admin.user.bulk-delete'), {
-                data: { ids: validUsers.map(user => user.id) },
-                preserveScroll: true
-            })
-            break
-        case 'force-password-change':
-            router.put(route('admin.user.bulk-update'), {
-                ids: validUsers.map(user => user.id),
-                updates: { force_password_change: true }
-            }, {
-                preserveScroll: true
-            })
-            break
-        case 'disable-accounts':
-            router.put(route('admin.user.bulk-update'), {
-                ids: validUsers.map(user => user.id),
-                updates: { disable_account: true }
-            }, {
-                preserveScroll: true
-            })
-            break
-    }
-}
-
-const bulkActions = [
-    { id: 'delete', label: 'Delete Selected' },
-    { id: 'force-password-change', label: 'Force Password Change' },
-    { id: 'disable-accounts', label: 'Disable Accounts' }
-]
 
 const columns = [
     columnHelper.accessor('name', {
@@ -172,7 +135,7 @@ const columns = [
         cell: info => {
             const user = info.row.original
             if (!user?.id) return null
-            
+
             const editButton = h('button', {
                 class: 'p-2 text-blue-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer',
                 onClick: () => handleEdit(user),
@@ -215,8 +178,8 @@ const columns = [
                 ])
             ])
 
-            return h('div', { 
-                class: 'flex items-center gap-2 justify-end' 
+            return h('div', {
+                class: 'flex items-center gap-2 justify-end'
             }, [
                 editButton,
                 canDeleteUser(user) && deleteButton
@@ -265,7 +228,6 @@ watch(pagination, newPagination => {
                 <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
                     :search-fields="['name', 'email', 'created_at_formatted']" empty-message="No users found"
                     empty-description="Users will appear here once created" export-file-name="users"
-                    :bulk-actions="bulkActions" @bulk-action="handleBulkAction"
                     @update:pagination="pagination = $event" />
             </div>
         </div>
@@ -340,10 +302,14 @@ watch(pagination, newPagination => {
 
         <template #default>
             <!-- Display form errors -->
-            <div v-if="Object.keys(form.errors).length > 0" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div v-if="Object.keys(form.errors).length > 0"
+                class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clip-rule="evenodd" />
                     </svg>
                     <div>
                         <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
@@ -352,7 +318,8 @@ watch(pagination, newPagination => {
                         <div class="mt-2 text-sm text-red-700 dark:text-red-300">
                             <ul class="list-disc pl-5 space-y-1">
                                 <li v-for="(error, field) in form.errors" :key="field">
-                                    <span class="capitalize font-medium">{{ field.replace('_', ' ') }}:</span> {{ error }}
+                                    <span class="capitalize font-medium">{{ field.replace('_', ' ') }}:</span> {{ error
+                                    }}
                                 </li>
                             </ul>
                         </div>

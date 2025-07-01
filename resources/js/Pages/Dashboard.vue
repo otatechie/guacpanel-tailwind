@@ -12,14 +12,6 @@ defineOptions({
 })
 
 const props = defineProps({
-    financialMetrics: {
-        type: Object,
-        required: true,
-        default: () => ({
-            income: {},
-            expense: {}
-        })
-    },
     stats: {
         type: Array,
         required: true,
@@ -173,14 +165,13 @@ const stocks = ref([
             <section class="mb-10">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Stats Overview</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatWidget title="Tasks Completed" value="24/30" description="Daily task completion rate"
-                        :icon="icons.tasks" trend="up" color="green" />
-                    <StatWidget title="New Messages" value="48" description="Unread messages today"
-                        :icon="icons.messages" trend="up" color="blue" />
-                    <StatWidget title="Active Projects" value="15" description="Projects in progress"
-                        :icon="icons.projects" trend="neutral" color="purple" />
-                    <StatWidget title="Performance" value="92%" description="Overall system performance"
-                        :icon="icons.performance" trend="down" color="red" />
+                    <StatWidget v-for="(stat, index) in stats" :key="index" :title="stat.title" :value="stat.value"
+                        :trend="stat.growth.startsWith('+') ? 'up' : (stat.growth.startsWith('-') ? 'down' : 'neutral')"
+                        :color="stat.growth.startsWith('+') ? 'green' : (stat.growth.startsWith('-') ? 'red' : 'blue')"
+                        :icon="stat.title.includes('Member') ? icons.users :
+                            stat.title.includes('Growth') ? icons.performance :
+                                stat.title.includes('Session') ? icons.projects :
+                                    icons.tasks" />
                 </div>
             </section>
         </div>

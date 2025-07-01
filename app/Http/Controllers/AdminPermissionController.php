@@ -26,7 +26,7 @@ class AdminPermissionController extends Controller
             'name' => [
                 'required',
                 'string',
-                'regex:/^[a-z]+(?:-[a-z]+)*$/i', // Hyphens only and letters only
+                'regex:/^[a-z]+(?:-[a-z]+)*$/i', 
                 Rule::unique(Permission::class),
                 'not_in:' . $this->getProtectedPermissionsForValidation(),
             ],
@@ -38,14 +38,16 @@ class AdminPermissionController extends Controller
 
         Permission::create($validatedData);
         session()->flash('success', 'Permission created successfully.');
+        
+        return redirect()->back();
     }
 
 
     public function update(Request $request, Permission $permission)
     {
         if ($this->isProtectedPermission($permission->name)) {
-            return redirect()->back()
-                ->with('error', 'Cannot modify system permission: ' . $permission->name);
+            session()->flash('error', 'Cannot modify system permission: ' . $permission->name);
+            return redirect()->back();
         }
 
         $validatedData = $request->validate([
@@ -61,9 +63,11 @@ class AdminPermissionController extends Controller
             'name.regex' => 'Permission name must contain only letters and hyphens in format: resource-action (e.g. posts-edit)',
             'name.not_in' => 'Cannot use this name as it is reserved for system use.'
         ]);
-
+        
         $permission->update($validatedData);
         session()->flash('success', 'Permission updated successfully.');
+        
+        return redirect()->back();
     }
 
 
@@ -73,12 +77,13 @@ class AdminPermissionController extends Controller
 
         // Prevent deleting protected system permissions
         if ($this->isProtectedPermission($permission->name)) {
-            return redirect()->back()
-                ->with('error', 'Cannot delete system permission: ' . $permission->name);
+            session()->flash('error', 'Cannot delete system permission: ' . $permission->name);
+            return redirect()->back();
         }
 
         $permission->delete();
-
-        return redirect()->back()->with('success', 'Permission deleted successfully.');
+        session()->flash('success', 'Permission deleted successfully.');
+        
+        return redirect()->back();
     }
 }

@@ -5,22 +5,16 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
-use Inertia\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller;
 
 class BrowserSessionController extends Controller
 {
-    private function getAuthUser(): User
-    {
-        return Auth::user();
-    }
-
-
     public function index(Request $request)
     {
-        $user = $this->getAuthUser();
+        $user = Auth::user();
         $sessions = [];
 
         if (config('session.driver') === 'database') {
@@ -50,19 +44,18 @@ class BrowserSessionController extends Controller
     protected function formatAgent($userAgent)
     {
         if (empty($userAgent)) {
-            return ['device' => 'Unknown', 'browser' => 'Unknown'];
+            return ['device' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown'];
         }
 
         $agent = new \Jenssegers\Agent\Agent();
         $agent->setUserAgent($userAgent);
 
         return [
-            'device' => $agent->device() ? $agent->device() : ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
-            'platform' => $agent->platform() ? $agent->platform() : 'Unknown',
-            'browser' => $agent->browser() ? $agent->browser() : 'Unknown',
+            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+            'platform' => $agent->platform() ?: 'Unknown',
+            'browser' => $agent->browser() ?: 'Unknown',
         ];
     }
-
 
     public function logoutOtherDevices(Request $request)
     {
@@ -72,7 +65,7 @@ class BrowserSessionController extends Controller
 
         Auth::logoutOtherDevices($request->password);
 
-        $this->deleteSessionFromDatabase($request);
+        $this->deleteOtherSessionsFromDatabase($request);
 
         return back()->with('status', 'All other sessions have been terminated successfully.');
     }
@@ -80,13 +73,19 @@ class BrowserSessionController extends Controller
 
     public function destroySession(Request $request, $sessionId)
     {
-        $this->deleteSessionFromDatabase($request);
+        if (config('session.driver') === 'database') {
+            DB::connection(config('session.connection'))
+                ->table(config('session.table', 'sessions'))
+                ->where('user_id', $request->user()->getAuthIdentifier())
+                ->where('id', $sessionId)
+                ->delete();
+        }
 
         return back()->with('status', 'Session terminated successfully.');
     }
 
 
-    private function deleteSessionFromDatabase(Request $request)
+    private function deleteOtherSessionsFromDatabase(Request $request)
     {
         if (config('session.driver') === 'database') {
             DB::connection(config('session.connection'))

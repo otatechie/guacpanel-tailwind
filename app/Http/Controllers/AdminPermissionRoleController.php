@@ -22,37 +22,53 @@ class AdminPermissionRoleController extends Controller
 
     public function index()
     {
-        $permissions = Permission::get()->map(function ($permission) {
-            return [
-                'id' => $permission->id,
-                'name' => $permission->name,
-                'description' => $permission->description,
-                'created_at' => $permission->created_at->diffForHumans(),
-                'is_protected' => $this->isProtectedPermission($permission->name)
-            ];
-        });
+        $permissions = Permission::select('id', 'name', 'description', 'created_at')
+            ->get()
+            ->map(function ($permission) {
+                return [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'description' => $permission->description,
+                    'created_at' => $permission->created_at->diffForHumans(),
+                    'is_protected' => $this->isProtectedPermission($permission->name)
+                ];
+            });
 
-        $roles = Role::with(['permissions', 'users'])
+        $roles = Role::select('id', 'name', 'created_at')
+            ->with([
+                'permissions:id,name,description', 
+                'users' => function($query) {
+                    $query->select('id');
+                }
+            ])
             ->get()
             ->map(function ($role) {
                 return [
                     'id' => $role->id,
                     'name' => $role->name,
                     'users_count' => $role->users->count(),
-                    'permissions' => $role->permissions,
+                    'permissions' => $role->permissions->map(function($permission) {
+                        return [
+                            'id' => $permission->id,
+                            'name' => $permission->name,
+                            'description' => $permission->description
+                        ];
+                    }),
                     'created_at' => $role->created_at->diffForHumans(),
                     'is_protected' => $this->isProtectedRole($role->name)
                 ];
             });
 
-        $users = User::get()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'created_at' => $user->created_at->diffForHumans()
-            ];
-        });
+        $users = User::select('id', 'name', 'email', 'created_at')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'created_at' => $user->created_at->diffForHumans()
+                ];
+            });
 
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
             'permissions' => $permissions,
