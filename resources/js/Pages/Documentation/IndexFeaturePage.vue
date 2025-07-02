@@ -321,6 +321,14 @@ const handleFileRemove = (error, file) => {
     --font-sans: "Your Font", "sans-serif";
 }`,
 
+    generateSearchKey: `php artisan typesense:generate-search-key`,
+
+    typesenseEnv: `# .env
+TYPESENSE_SEARCH_ONLY_KEY=your_generated_search_key_here
+TYPESENSE_HOST=localhost
+TYPESENSE_PORT=8108
+TYPESENSE_PROTOCOL=http`,
+
     googleFontsUsage: `php artisan google-fonts:fetch
 php artisan optimize`
 }
@@ -331,6 +339,7 @@ const articleLinks = [
     { text: 'Security Middleware', href: '#middleware' },
     { text: 'Backup System', href: '#backup-system' },
     { text: 'Data Tables', href: '#data-tables' },
+    { text: 'Typesense Search', href: '#typesense-search' },
     { text: 'Authentication Logs', href: '#activity-logs' },
     { text: 'Browser Sessions', href: '#browser-sessions' },
     { text: 'Activity Tracking', href: '#activity-tracking' },
@@ -709,7 +718,8 @@ onUnmounted(() => {
                                 <div class="space-y-4">
                                     <h5
                                         class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">1.</span> Table Configuration </h5>
+                                        <span class="mr-3">1.</span> Table Configuration
+                                    </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">Configure the table with the
                                         following options:</p>
                                     <div class="bg-gray-800 rounded-lg">
@@ -720,7 +730,8 @@ onUnmounted(() => {
                                 <div class="space-y-4">
                                     <h5
                                         class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">2.</span> Template Usage </h5>
+                                        <span class="mr-3">2.</span> Template Usage
+                                    </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following template to
                                         create a new table:</p>
                                     <div class="bg-gray-800 rounded-lg">
@@ -733,7 +744,8 @@ onUnmounted(() => {
                                 <div class="space-y-4">
                                     <h5
                                         class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                                        <span class="mr-3">3.</span> Backend Integration </h5>
+                                        <span class="mr-3">3.</span> Backend Integration
+                                    </h5>
                                     <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following code to integrate
                                         the table with the backend:</p>
                                     <div class="bg-gray-800 rounded-lg">
@@ -743,9 +755,9 @@ onUnmounted(() => {
                             </div>
 
                             <div class="mt-8">
-                                <h5
-                                    class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                                    <span class="mr-3">4.</span> Action Buttons </h5>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">4.</span> Action Buttons
+                                </h5>
                                 <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following code to add action
                                     buttons to the table:</p>
                                 <div class="bg-gray-800 rounded-lg">
@@ -766,22 +778,27 @@ onUnmounted(() => {
                                 </h5>
                                 <div class="space-y-6">
                                     <!-- Setup Section -->
-                                    <div class="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                                    <div
+                                        class="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                                         <h6 class="font-medium text-gray-900 dark:text-white mb-2">1. Setup</h6>
                                         <p class="text-gray-600 dark:text-gray-400 mb-2">
                                             Add the bulk delete feature to your Datatable component:
                                         </p>
                                         <div class="bg-gray-100 dark:bg-gray-800 rounded p-3">
-                                            <code class="text-sm">:bulk-delete-route="route('your.bulk.delete.route')"</code>
+                                            <code
+                                                class="text-sm">:bulk-delete-route="route('your.bulk.delete.route')"</code>
                                         </div>
                                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                            This enables row selection checkboxes and the bulk delete button automatically.
+                                            This enables row selection checkboxes and the bulk delete button
+                                            automatically.
                                         </p>
                                     </div>
 
                                     <!-- Event Handling Section -->
-                                    <div class="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                        <h6 class="font-medium text-gray-900 dark:text-white mb-2">2. Event Handling</h6>
+                                    <div
+                                        class="bg-white dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                                        <h6 class="font-medium text-gray-900 dark:text-white mb-2">2. Event Handling
+                                        </h6>
                                         <p class="text-gray-600 dark:text-gray-400 mb-2">
                                             Listen for the bulk-delete event:
                                         </p>
@@ -792,34 +809,89 @@ onUnmounted(() => {
                                             The event provides selected rows data in the callback parameter.
                                         </p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                                    <!-- Pro Tips Section -->
-                                    <div class="bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg p-4 border border-teal-200 dark:border-teal-800/30">
-                                        <h6 class="font-medium text-teal-900 dark:text-teal-300 mb-4 flex items-center">
-                                            <span class="text-xl mr-2">💡</span> Pro Tips
-                                        </h6>
-                                        <ul class="space-y-2 text-sm text-teal-800 dark:text-teal-300">
-                                            <li class="flex items-start">
-                                                <span class="mr-3 text-lg">•</span>
-                                                <span>Automatic row selection with select all/none functionality</span>
-                                            </li>
-                                            <li class="flex items-start">
-                                                <span class="mr-3 text-lg">•</span>
-                                                <span>Built-in confirmation dialogs for delete actions</span>
-                                            </li>
-                                            <li class="flex items-start">
-                                                <span class="mr-3 text-lg">•</span>
-                                                <span>Loading states handled automatically during operations</span>
-                                            </li>
-                                            <li class="flex items-start">
-                                                <span class="mr-3 text-lg">•</span>
-                                                <span>Bulk delete button appears only when rows are selected</span>
-                                            </li>
-                                            <li class="flex items-start">
-                                                <span class="mr-3 text-lg">•</span>
-                                                <span>Use <code class="bg-teal-100 dark:bg-teal-900/40 px-1.5 py-0.5 rounded">preserveScroll: true</code> to maintain scroll position after deletion</span>
-                                            </li>
-                                        </ul>
+                <section id="typesense-search" class="space-y-6 scroll-mt-16">
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Typesense Search</h2>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                        <div class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-8">
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Introduction</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                GuacPanel integrates <a href="https://typesense.org" target="_blank"
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">Typesense</a>, a
+                                lightning-fast,
+                                open-source search engine that provides typo-tolerant search functionality. Before
+                                proceeding, ensure you have set up <a
+                                    href="https://laravel.com/docs/12.x/scout#main-content" target="_blank"
+                                    class="border-b-2 border-blue-500 dark:border-blue-400">Typesense with Laravel
+                                    Scout</a> and your Typesense server is running. With Typesense,
+                                you can implement powerful search features with minimal configuration.
+                            </p>
+                            <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+                                <li>Typo-tolerant search with configurable tolerance levels</li>
+                                <li>Real-time search with instant results</li>
+                                <li>Faceted search and filtering capabilities</li>
+                                <li>Geo-search functionality</li>
+                                <li>Multi-language support</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-8">
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Implementation</h3>
+
+                            <div class="grid md:grid-cols-1 gap-6">
+                                <div class="dark:bg-gray-800/50">
+                                    <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">API Key
+                                        Security</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                        Protect your Typesense API key by generating scoped search-only API keys. Never
+                                        expose your admin API key in frontend code.
+                                        For detailed information about API key management, visit the <a
+                                            href="https://typesense.org/docs/29.0/api/api-keys.html#create-an-api-key"
+                                            target="_blank"
+                                            class="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 underline">Typesense
+                                            API Keys Documentation</a>.
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                        GuacPanel includes a utility script at <code
+                                            class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">generate-search-key.php</code>
+                                        that you can use to generate secure search-only API keys. Run this script to
+                                        create a new search key:
+                                    </p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.generateSearchKey" language="bash" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Frontend
+                                        Implementation</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                        Use the generated search-only API key from the script in your frontend code to
+                                        safely perform searches. Make sure to set
+                                        <code
+                                            class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">TYPESENSE_SEARCH_ONLY_KEY</code>
+                                        in your <code
+                                            class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">.env</code> file:
+                                    </p>
+                                    <div class="bg-gray-800 rounded-lg">
+                                        <CodeBlock :code="codeExamples.typesenseEnv" language="bash" />
                                     </div>
                                 </div>
                             </div>
@@ -930,24 +1002,33 @@ onUnmounted(() => {
 
                             <div class="mt-8">
                                 <hr class="border-gray-100 dark:border-gray-700 my-4">
-                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">1.</span> Configuration </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">Configure the file upload with the following options:</p>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">1.</span> Configuration
+                                </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Configure the file upload with the
+                                    following options:</p>
                                 <div class="bg-gray-800 rounded-lg">
                                     <CodeBlock :code="codeExamples.configExample" language="javascript" />
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">2.</span> Script Setup </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following script to setup the file upload:</p>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">2.</span> Script Setup
+                                </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following script to setup the
+                                    file upload:</p>
                                 <div class="bg-gray-800 rounded-lg">
                                     <CodeBlock :code="codeExamples.scriptExample" language="javascript" />
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">3.</span> Template </h5>
-                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following template to create a new file upload:</p>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">3.</span> Template
+                                </h5>
+                                <p class="text-gray-600 dark:text-gray-400 mb-4">Use the following template to create a
+                                    new file upload:</p>
                                 <div class="bg-gray-800 rounded-lg">
                                     <CodeBlock :code="codeExamples.templateExample" language="vue" />
                                 </div>
@@ -990,14 +1071,18 @@ onUnmounted(() => {
                             </p>
 
                             <div class="mt-6">
-                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">1.</span> Configuration</h5>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">1.</span> Configuration
+                                </h5>
                                 <div class="bg-gray-800 rounded-lg">
                                     <CodeBlock :code="codeExamples.googleFontsConfig" language="php" />
                                 </div>
                             </div>
 
                             <div class="mt-6">
-                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4"><span class="mr-3">2.</span> Usage</h5>
+                                <h5 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                                    <span class="mr-3">2.</span> Usage
+                                </h5>
                                 <div class="bg-gray-800 rounded-lg">
                                     <CodeBlock :code="codeExamples.googleFontsUsage" language="bash" />
                                 </div>
