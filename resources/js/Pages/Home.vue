@@ -63,14 +63,6 @@ onMounted(async () => {
                         </svg>
                         <span class="text-sm text-gray-500 dark:text-gray-400">{{ stars }}</span>
                     </a>
-                    <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        aria-label="Toggle mobile menu">
-                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
                 </div>
             </div>
         </header>
@@ -393,6 +385,8 @@ onMounted(async () => {
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Apex Charts</h3>
                         <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Beautiful, interactive chart components including line, bar, area, donut, and more for comprehensive data visualization.</p>
                     </div>
+
+
                 </div>
             </div>
         </section>
@@ -557,14 +551,14 @@ onMounted(async () => {
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                                 <span class="flex items-baseline gap-3">
                                     <span class="text-teal-600 dark:text-teal-500">8.</span>
-                                    <span>Where can I contribute or report issues?</span>
+                                    <span>Where can I contribute, request features or report issues?</span>
                                 </span>
                             </h3>
                             <p class="text-gray-600 dark:text-gray-300">
                                 On the <a href="https://github.com/otatechie/guacpanel-tailwind"
                                     class="text-teal-600 dark:text-teal-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors underline underline-offset-2"
                                     aria-label="Visit GitHub repo">GitHub</a> repo, feel free to open
-                                issues or submit pull requests!
+                                issues, request features or submit pull requests!
                             </p>
                         </div>
 
@@ -593,20 +587,6 @@ onMounted(async () => {
                             <p class="text-gray-600 dark:text-gray-300">
                                 No, GuacPanel focuses on security, user management, and app essentials. If you want
                                 CRUD generators, you can integrate them separately.
-                            </p>
-                        </div>
-
-                        <div
-                            class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                                <span class="flex items-baseline gap-3">
-                                    <span class="text-teal-600 dark:text-teal-500">11.</span>
-                                    <span>Can I suggest features?</span>
-                                </span>
-                            </h3>
-                            <p class="text-gray-600 dark:text-gray-300">
-                                Absolutely, feature requests are welcome via GitHub issues. Let's make GuacPanel better
-                                together!
                             </p>
                         </div>
                     </div>

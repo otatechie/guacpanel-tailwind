@@ -5,7 +5,7 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import "../css/app.css";
 import { initializeTheme } from "./utils/themeInit";
-
+import InstantSearch from "vue-instantsearch/vue3/es";
 
 // Initialize theme before Vue app starts
 initializeTheme();
@@ -39,6 +39,7 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) });
 
         app.use(plugin).use(ZiggyVue);
+        app.use(InstantSearch);
 
         const globalComponents = {
             Link,

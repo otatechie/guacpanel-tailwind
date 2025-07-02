@@ -12,7 +12,6 @@ class Personalisation extends Model
 
     protected $guarded = ['id'];
 
-
     protected static function booted()
     {
         static::saved(function ($settings) {

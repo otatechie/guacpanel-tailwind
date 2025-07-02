@@ -1,4 +1,5 @@
 <?php
+
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\AdminSettingController;
@@ -20,7 +22,6 @@ use App\Http\Controllers\AdminLoginHistoryController;
 use App\Http\Controllers\AdminPermissionRoleController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
-use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use App\Http\Controllers\AdminHealthStatusController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
@@ -155,6 +156,8 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
             Route::get('/financial-metrics', [DashboardController::class, 'refreshFinancialMetrics']);
         });
 
+        // Typesense routes
+        Route::middleware(['auth', 'throttle:60,1'])->get('/typesense/scoped-key', [TypesenseController::class, 'getScopedKey']);
     });
 });
 

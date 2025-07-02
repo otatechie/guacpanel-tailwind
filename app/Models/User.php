@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,6 +25,8 @@ class User extends Authenticatable implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     use HasRoles;
+
+    use Searchable;
 
     protected $guarded = ['id'];
 
@@ -147,27 +150,37 @@ class User extends Authenticatable implements Auditable
         return $this->latestLogin?->logout_at === null;
     }
 
-   
+
     public function isSuperUser(): bool
     {
         return $this->hasRole('superuser');
     }
 
-   
+
     public function canBeDeleted(): bool
     {
         return !$this->isSuperUser();
     }
 
-   
+
     public function canChangeRole(): bool
     {
         return !$this->isSuperUser();
     }
 
-    
+
     public function canChangeAccountStatus(): bool
     {
         return !$this->isSuperUser();
+    }
+
+
+    public function toSearchableArray(): array
+    {
+        return array_merge($this->toArray(), [
+            'id' => (string) $this->id,
+            'created_at' => $this->created_at->timestamp,
+            'collection_name' => 'users',
+        ]);
     }
 }
