@@ -386,6 +386,19 @@ onMounted(async () => {
                         <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Beautiful, interactive chart components including line, bar, area, donut, and more for comprehensive data visualization.</p>
                     </div>
 
+                    <div class="group bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:border-emerald-100 dark:hover:border-emerald-900 transition-all duration-300"
+                        role="listitem">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Typesense Search</h3>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Lightning-fast, typo-tolerant search functionality with Typesense integration for an exceptional search experience.</p>
+                    </div>
 
                 </div>
             </div>
