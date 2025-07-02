@@ -23,6 +23,7 @@
         "@tailwindcss/vite": "^4.0.1",
         "@tanstack/vue-table": "^8.20.5",
         "@vitejs/plugin-vue": "^5.1.2",
+        "algoliasearch": "^5.30.0",
         "apexcharts": "^4.7.0",
         "dotenv": "^16.4.5",
         "filepond": "^4.32.7",
@@ -33,8 +34,10 @@
         "lowlight": "^3.3.0",
         "nprogress": "^0.2.0",
         "path": "^0.12.7",
+        "typesense-instantsearch-adapter": "^2.9.0",
         "vue": "^3.0.0",
         "vue-filepond": "^7.0.4",
+        "vue-instantsearch": "^4.21.0",
         "vue-prism-component": "^2.0.0",
         "vue3-apexcharts": "^1.8.0",
         "ziggy-js": "^2.3.0"

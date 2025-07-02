@@ -48,11 +48,8 @@ class HandleInertiaRequests extends Middleware
             [
                 'auth' => [
                     'user' => $request->user() ? [
-                        'id' => $request->user()->id,
                         'name' => $request->user()->name,
-                        'username' => $request->user()->username,
                         'roles' => $request->user()->roles->pluck('name'),
-                        'permissions' => $request->user()->getAllPermissions()->pluck('name'),
                         'avatar' => $avatar
                             ->create($request->user()->name)
                             ->setTheme('pastel')
@@ -72,7 +69,6 @@ class HandleInertiaRequests extends Middleware
                     'warning' => fn() => $request->session()->get('warning'),
                     'info' => fn() => $request->session()->get('info'),
                     'danger' => fn() => $request->session()->get('danger'),
-                    'all' => fn() => $request->session()->get('_flash.old', []),
                     'recovery-codes-generated' => fn() => $request->session()->get('recovery-codes-generated'),
                     'two-factor-authentication-enabled' => fn() => $request->session()->get('two-factor-authentication-enabled'),
                     'two-factor-authentication-disabled' => fn() => $request->session()->get('two-factor-authentication-disabled'),

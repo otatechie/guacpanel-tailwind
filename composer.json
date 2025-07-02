@@ -18,10 +18,11 @@
         "laravel/framework": "^11.0",
         "laravel/pail": "^1.2",
         "laravel/sanctum": "^4.0",
-        "laravel/scout": "^10.12",
+        "laravel/scout": "^10.15",
         "laravel/tinker": "^2.9",
         "laravolt/avatar": "^5.1",
         "owen-it/laravel-auditing": "^13.6",
+        "php-http/curl-client": "^2.3",
         "rinvex/countries": "^9.0",
         "spatie/laravel-backup": "^9.1",
         "spatie/laravel-google-fonts": "^1.4",
@@ -29,7 +30,8 @@
         "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-permission": "^6.10",
         "symfony/process": "^7.0",
-        "tightenco/ziggy": "^2.3"
+        "tightenco/ziggy": "^2.3",
+        "typesense/typesense-php": "^5.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

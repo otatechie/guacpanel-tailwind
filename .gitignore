@@ -19,3 +19,12 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Typesense binaries
+typesense-server
+typesense-server-*.deb
+typesense-server-*.tar.gz
+typesense-server-*.tar.gz.*
+typesense-server.md5.txt
+typesense/data/
+data/
