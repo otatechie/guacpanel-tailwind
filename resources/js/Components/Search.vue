@@ -128,7 +128,7 @@ const performFederatedSearch = async () => {
     }
 
     // Use Typesense's multi-search feature with a single HTTP request
-    const searchResponse = await axios.post(`${props.protocol}://${props.host}:${props.port}/multi_search`, {
+    const searchResponse = await axios.post('/typesense/multi-search', {
         searches: [
             {
                 collection: "users",
@@ -145,10 +145,6 @@ const performFederatedSearch = async () => {
                 per_page: 5
             }
         ]
-    }, {
-        headers: {
-            'X-TYPESENSE-API-KEY': apiKey
-        }
     }).catch(error => {
         return { data: { results: [{ hits: [] }, { hits: [] }] } };
     });
