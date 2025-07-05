@@ -38,10 +38,10 @@ class TypesenseController extends Controller
         $typesenseHost = config('scout.typesense.client-settings.nodes.0.host');
         $typesensePort = config('scout.typesense.client-settings.nodes.0.port');
         $typesenseProtocol = config('scout.typesense.client-settings.nodes.0.protocol');
-        $typesenseApiKey = config('scout.typesense.client-settings.api_key');
+        $typesenseApiKey = config('scout.typesense.client-settings.search_only_key');
 
         if (empty($typesenseApiKey)) {
-            Log::error('Typesense API key not configured');
+            Log::error('Typesense search-only key not configured');
             return response()->json(['error' => 'Search service configuration error'], 500);
         }
 

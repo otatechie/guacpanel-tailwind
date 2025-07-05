@@ -19,18 +19,6 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: 'Search...'
-    },
-    host: {
-        type: String,
-        default: 'localhost'
-    },
-    port: {
-        type: String,
-        default: '8108'
-    },
-    protocol: {
-        type: String,
-        default: 'http'
     }
 });
 
@@ -95,9 +83,10 @@ onMounted(async () => {
                 apiKey: apiKey,
                 nodes: [
                     {
-                        host: props.host,
-                        port: props.port,
-                        protocol: props.protocol
+                        host: window.location.hostname,
+                        port: window.location.port || '80',
+                        protocol: window.location.protocol.replace(':', ''),
+                        path: '/typesense'
                     }
                 ]
             },
