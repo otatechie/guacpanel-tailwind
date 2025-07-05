@@ -31,4 +31,35 @@ class TypesenseController extends Controller
 
         return response()->json(['apiKey' => $searchOnlyKey]);
     }
+
+    
+    public function multiSearch(Request $request): JsonResponse
+    {
+        $typesenseHost = config('scout.typesense.client-settings.nodes.0.host');
+        $typesensePort = config('scout.typesense.client-settings.nodes.0.port');
+        $typesenseProtocol = config('scout.typesense.client-settings.nodes.0.protocol');
+        $typesenseApiKey = config('scout.typesense.client-settings.api_key');
+
+        if (empty($typesenseApiKey)) {
+            Log::error('Typesense API key not configured');
+            return response()->json(['error' => 'Search service configuration error'], 500);
+        }
+
+        $client = new \GuzzleHttp\Client();
+
+        try {
+            $response = $client->post("{$typesenseProtocol}://{$typesenseHost}:{$typesensePort}/multi_search", [
+                'headers' => [
+                    'X-TYPESENSE-API-KEY' => $typesenseApiKey,
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => $request->all()
+            ]);
+
+            return response()->json(json_decode($response->getBody()->getContents()));
+        } catch (\Exception $e) {
+            Log::error('Typesense multi-search error: ' . $e->getMessage());
+            return response()->json(['error' => 'Search service error'], 500);
+        }
+    }
 }

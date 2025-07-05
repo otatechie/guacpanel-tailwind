@@ -157,7 +157,10 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
         });
 
         // Typesense routes
-        Route::middleware(['auth', 'throttle:60,1'])->get('/typesense/scoped-key', [TypesenseController::class, 'getScopedKey']);
+        Route::middleware(['auth', 'throttle:60,1'])->group(function() {
+            Route::get('/typesense/scoped-key', [TypesenseController::class, 'getScopedKey']);
+            Route::post('/typesense/multi-search', [TypesenseController::class, 'multiSearch']);
+        });
     });
 });
 
