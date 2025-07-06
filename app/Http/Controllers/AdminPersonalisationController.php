@@ -35,21 +35,27 @@ class AdminPersonalisationController extends Controller
             'favicon' => ['nullable', 'file', 'mimes:png,ico', 'max:2048'],
         ]);
 
-        if ($request->hasFile(['app_logo', 'app_logo_dark', 'favicon'])) {
-            $fileFields = ['app_logo', 'app_logo_dark', 'favicon'];
-            $fileField = collect($fileFields)->first(fn($field) => $request->hasFile($field));
+        if ($request->hasFile('app_logo') || $request->hasFile('app_logo_dark') || $request->hasFile('favicon')) {
+            $field = $request->hasFile('app_logo') ? 'app_logo' : ($request->hasFile('app_logo_dark') ? 'app_logo_dark' : 'favicon');
 
-            $file = $request->file($fileField);
+            $file = $request->file($field);
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('personalisation', $fileName, 'public');
+
+            $path = $request->file($field)->storeAs(
+                'personalisation',
+                $fileName,
+                'public'
+            );
 
             $personalisation = Personalisation::firstOrCreate();
 
-            if ($personalisation->$fileField && Storage::disk('public')->exists($personalisation->$fileField)) {
-                Storage::disk('public')->delete($personalisation->$fileField);
+            if ($personalisation->$field) {
+                if (Storage::disk('public')->exists($personalisation->$field)) {
+                    Storage::disk('public')->delete($personalisation->$field);
+                }
             }
 
-            $personalisation->update([$fileField => $path]);
+            $personalisation->update([$field => $path]);
 
             return response()->json(['path' => Storage::url($path)]);
         }
