@@ -321,7 +321,7 @@ const handleFileRemove = (error, file) => {
     --font-sans: "Your Font", "sans-serif";
 }`,
 
-    generateSearchKey: `php artisan typesense:generate-search-key`,
+    generateSearchKey: `php generate-search-key.php`,
 
     typesenseEnv: `# .env
 TYPESENSE_SEARCH_ONLY_KEY=your_generated_search_key_here
