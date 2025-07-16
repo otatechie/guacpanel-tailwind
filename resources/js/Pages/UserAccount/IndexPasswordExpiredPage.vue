@@ -30,7 +30,6 @@ const submit = () => {
         <h1 class="main-heading text-center dark:text-white">
             Password update required
         </h1>
-
         <div v-if="$page.props.flash.warning"
             class="my-4 p-4 bg-orange-100 text-orange-700 rounded-lg flex items-center">
             <div

@@ -68,7 +68,7 @@ const deleteUser = () => {
 
     <Head :title="`Edit User - ${props.user.name}`" />
 
-    <main class="max-w-5xl mx-auto" role="main">
+    <main class="max-w-6xl mx-auto" role="main">
         <div class="container-border overflow-hidden dark:bg-gray-800">
             <PageHeader :title="`Edit User - ${props.user.name}`" description="Manage user information, roles, and permissions"
                 :breadcrumbs="[

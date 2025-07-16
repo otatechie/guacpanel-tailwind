@@ -45,8 +45,7 @@ const activeTab = ref('roles')
 
     <Head title="Permissions & Roles" />
 
-    <main class="max-w-5xl mx-auto" aria-labelledby="permissions-roles-title">
-
+    <main class="max-w-6xl mx-auto" aria-labelledby="permissions-roles-title">
         <div class="container-border overflow-hidden">
             <PageHeader title="User Access Management" description="Manage user roles and permissions" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },

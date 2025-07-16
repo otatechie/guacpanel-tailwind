@@ -35,7 +35,7 @@ const submit = () => {
 
     <Head title="Security & Authentication Settings" />
 
-    <main class="max-w-5xl mx-auto" role="main">
+    <main class="max-w-6xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Security & Authentication"
                 description="Configure system-wide security policies and authentication requirements" :breadcrumbs="[

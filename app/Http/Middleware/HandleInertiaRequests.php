@@ -2,13 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Personalisation;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Middleware;
 use Laravolt\Avatar\Avatar;
+use App\Models\SystemNotice;
+use Illuminate\Http\Request;
+use App\Models\Personalisation;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -88,6 +88,19 @@ class HandleInertiaRequests extends Middleware
                 'settings' => [
                     'passwordlessLogin' => DB::table('settings')->value('passwordless_login') ?? true,
                 ],
+
+                'systemNotices' => SystemNotice::query()
+                    ->where('is_active', true)
+                    ->where(function ($query) {
+                        $query->whereNull('visible_from')
+                            ->orWhere('visible_from', '<=', now());
+                    })
+                    ->where(function ($query) {
+                        $query->whereNull('expires_at')
+                            ->orWhere('expires_at', '>', now());
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->get(),
             ],
         );
     }

@@ -149,7 +149,7 @@ watch(pagination, newPagination => {
 
     <Head title="Active Sessions" />
 
-    <main class="max-w-5xl mx-auto" role="main">
+    <main class="max-w-6xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Active Sessions" description="Manage system user sessions" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
