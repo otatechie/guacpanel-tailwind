@@ -7,10 +7,10 @@ use App\Http\Controllers\ChartController;
 use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\AdminSettingController;
@@ -18,11 +18,12 @@ use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\AdminPermissionController;
+use App\Http\Controllers\AdminHealthStatusController;
 use App\Http\Controllers\AdminLoginHistoryController;
+use App\Http\Controllers\AdminSystemNoticeController;
 use App\Http\Controllers\AdminPermissionRoleController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
-use App\Http\Controllers\AdminHealthStatusController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -148,6 +149,16 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                     Route::get('/', 'index')->name('index');
                     Route::post('refresh', 'runHealthChecks')->name('refresh');
                 });
+
+                // System Notice Routes
+                Route::controller(AdminSystemNoticeController::class)->prefix('system-notices')->name('system-notice.')->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/', 'store')->name('store');
+                    Route::get('/{systemNotice}', 'edit')->name('edit');
+                    Route::put('/{systemNotice}', 'update')->name('update');
+                    Route::delete('/{systemNotice}', 'destroy')->name('destroy');
+                });
             });
         });
 
@@ -157,7 +168,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
         });
 
         // Typesense routes
-        Route::middleware(['auth', 'throttle:60,1'])->group(function() {
+        Route::middleware(['auth', 'throttle:60,1'])->group(function () {
             Route::get('/typesense/scoped-key', [TypesenseController::class, 'getScopedKey']);
             Route::post('/typesense/multi-search', [TypesenseController::class, 'multiSearch']);
         });

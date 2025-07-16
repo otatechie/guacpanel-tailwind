@@ -51,11 +51,6 @@
     <!-- Scripts and Styles -->
     @vite(['resources/js/app.js', 'resources/js/darkMode.js', 'resources/css/app.css'])
     @inertiaHead
-
-    <script
-        src="https://app.rybbit.io/api/script.js"
-        data-site-id="1239"
-        defer></script>
 </head>
 
 @googlefonts

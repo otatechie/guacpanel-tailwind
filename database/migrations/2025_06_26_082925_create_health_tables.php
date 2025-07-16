@@ -24,7 +24,6 @@ return new class extends Migration
             $table->json('meta');
             $table->timestamp('ended_at');
             $table->uuid('batch');
-
             $table->timestamps();
         });
         
