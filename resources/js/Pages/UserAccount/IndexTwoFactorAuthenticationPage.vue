@@ -69,7 +69,7 @@ const benefits = [
 
     <Head title="Two-Factor Authentication" />
 
-    <main class="max-w-5xl mx-auto" aria-labelledby="2fa-settings">
+    <main class="max-w-6xl mx-auto" aria-labelledby="2fa-settings">
 
         <article class="container-border overflow-hidden">
             <PageHeader title="Two-Factor Authentication" description="Add an extra layer of security to your account"

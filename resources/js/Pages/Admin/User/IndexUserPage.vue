@@ -210,7 +210,7 @@ watch(pagination, newPagination => {
 
     <Head title="Users" />
 
-    <main class="max-w-5xl mx-auto" role="main">
+    <main class="max-w-6xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="Users" description="Manage system users and their access" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },

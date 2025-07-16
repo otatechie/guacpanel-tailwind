@@ -119,7 +119,7 @@ const areaChartData = computed(() => ({
     <Head title="Dashboard" />
 
     <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class="max-w-4xl mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
             <!-- Charts -->
             <section
                 class="mb-8 bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">

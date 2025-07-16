@@ -122,7 +122,7 @@ const getStats = (info) => {
 
     <Head title="System Backups" />
 
-    <main class="max-w-5xl mx-auto" role="main">
+    <main class="max-w-6xl mx-auto" role="main">
         <div class="container-border overflow-hidden">
             <PageHeader title="System Backups" description="Manage system backups and restore points" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },

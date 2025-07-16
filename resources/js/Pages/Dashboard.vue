@@ -101,7 +101,7 @@ const stocks = ref([
     <Head title="Dashboard" />
 
     <main class="min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
             <header class="mb-10">
                 <div class="flex items-center justify-between mb-2">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">

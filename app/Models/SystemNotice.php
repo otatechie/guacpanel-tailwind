@@ -12,4 +12,9 @@ class SystemNotice extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'visible_from' => 'datetime',
+        'expires_at' => 'datetime',
+    ];
+
 }
