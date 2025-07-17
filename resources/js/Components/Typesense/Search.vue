@@ -29,27 +29,22 @@ const showResults = ref(false);
 const isMobileSearchActive = ref(false);
 const federatedResults = ref([]);
 const isFederatedSearching = ref(false);
-const searchInput = ref(null);
 
-// API interactions
 const fetchTypesenseApiKey = async () => {
     try {
-        const response = await axios.get('/typesense/scoped-key', {
-            params: { collections: ['users', 'financial_metrics'] }
-        });
-
+        const response = await axios.get('/typesense/scoped-key');
         if (response?.data?.apiKey) {
             typesenseApiKey.value = response.data.apiKey;
             hasValidApiKey.value = true;
-            return response.data.apiKey;
         }
     } catch (error) {
         console.error('Failed to fetch Typesense API key:', error);
+        hasValidApiKey.value = false;
+    } finally {
+        isLoading.value = false;
     }
-    return null;
 };
 
-// Event handlers
 const closeOverlay = () => {
     showResults.value = false;
     isMobileSearchActive.value = false;
@@ -58,7 +53,7 @@ const closeOverlay = () => {
 };
 
 const handleKeyDown = (event) => {
-    if (event.key === 'Escape' && props.isOpen && props.isMobile) {
+    if (event.key === 'Escape') {
         closeOverlay();
     }
 };
@@ -79,7 +74,6 @@ const handleFocus = () => {
     showResults.value = true;
     if (props.isMobile) {
         isMobileSearchActive.value = true;
-        searchInput.value?.focus();
     }
 };
 
@@ -91,23 +85,18 @@ const handleBlur = () => {
     }
 };
 
-// Lifecycle and watchers
 onMounted(async () => {
     await fetchTypesenseApiKey();
-    isLoading.value = false;
-});
-
-watch(() => props.isOpen, (isOpen) => {
-    if (isOpen && props.isMobile) {
+    if (props.isOpen) {
         document.addEventListener('keydown', handleKeyDown);
-    } else {
-        document.removeEventListener('keydown', handleKeyDown);
     }
 });
 
-watch(isMobileSearchActive, (newValue) => {
-    if (newValue && props.isMobile) {
-        showResults.value = true;
+watch(() => props.isOpen, (isOpen) => {
+    if (isOpen) {
+        document.addEventListener('keydown', handleKeyDown);
+    } else {
+        document.removeEventListener('keydown', handleKeyDown);
     }
 });
 </script>
@@ -117,7 +106,7 @@ watch(isMobileSearchActive, (newValue) => {
         <!-- Mobile Search Overlay -->
         <div v-if="isOpen && isMobile" role="dialog" aria-modal="true" aria-label="Search site"
             class="fixed inset-0 z-50 bg-gray-900/50 dark:bg-gray-900/80">
-            <div class="fixed inset-x-0 top-0 bg-white dark:bg-gray-800 p-4 shadow-lg" @touchstart.stop @click.stop>
+            <div class="fixed inset-x-0 top-0 bg-white dark:bg-gray-800 p-4 shadow-lg" @click.stop>
                 <!-- Mobile Header -->
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="text-sm font-medium text-gray-700 dark:text-gray-300">Search</h2>

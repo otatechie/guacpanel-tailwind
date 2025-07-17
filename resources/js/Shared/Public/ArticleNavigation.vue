@@ -11,17 +11,29 @@ const props = defineProps({
 const activeSection = ref('');
 
 const updateActiveSection = () => {
-    const scrollPosition = window.scrollY + 100;
+    const scrollPosition = window.scrollY + 150;
+    let currentActive = '';
+    
     for (const link of props.links) {
         const sectionId = link.href.replace('#', '');
         const section = document.getElementById(sectionId);
-        if (section && section.offsetTop <= scrollPosition) {
-            activeSection.value = link.href;
+        
+        if (section) {
+            const sectionTop = section.offsetTop;
+            
+            // If this section is at or above the scroll position, mark it as active
+            if (scrollPosition >= sectionTop) {
+                currentActive = link.href;
+            }
         }
     }
-    if (!activeSection.value && props.links.length > 0) {
-        activeSection.value = props.links[0].href;
+    
+    // If no section is found, default to the first one
+    if (!currentActive && props.links.length > 0) {
+        currentActive = props.links[0].href;
     }
+    
+    activeSection.value = currentActive;
 };
 
 onMounted(() => {
@@ -35,25 +47,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <aside
-        class="hidden xl:block w-64 fixed right-0 top-16 bg-gray-50 dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700">
-        <div class="max-h-[600px] overflow-y-auto">
-            <div
-                class="sticky top-0 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 z-10 backdrop-blur-sm">
-                <h2 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide">In This Article
-                </h2>
+    <aside class="hidden xl:block w-56 fixed right-6 top-20">
+        <div class="space-y-2">
+            <!-- Header -->
+            <div class="pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-sm font-medium text-gray-900 dark:text-white">Contents</h2>
             </div>
-            <nav class="py-3 px-3">
+
+            <!-- Navigation -->
+            <nav>
                 <ul class="space-y-1">
                     <li v-for="link in links" :key="link.href">
                         <a :href="link.href"
-                            class="block px-2 py-1 text-sm rounded-md transition-colors duration-200 ease-in-out"
-                            :class="[
-                                link.href === activeSection
-                                    ? 'text-teal-600 dark:text-teal-400 font-medium bg-teal-50 dark:bg-teal-900/20'
-                                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
-                            ]">
-                            {{ link.text }}
+                           class="group relative block py-1.5 text-sm transition-colors duration-150"
+                           :class="[
+                               link.href === activeSection
+                                   ? 'text-gray-900 dark:text-white font-medium'
+                                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                           ]">
+                            
+                            <!-- Tiny active indicator -->
+                            <div v-if="link.href === activeSection" 
+                                 class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 bg-gray-400 dark:bg-gray-500 rounded-full"></div>
+                            
+                            <span class="block"
+                                  :class="{ 'pl-3': link.href === activeSection }">
+                                {{ link.text }}
+                            </span>
                         </a>
                     </li>
                 </ul>
@@ -61,23 +81,3 @@ onUnmounted(() => {
         </div>
     </aside>
 </template>
-
-<style scoped>
-aside div {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
-
-aside div::-webkit-scrollbar {
-    width: 4px;
-}
-
-aside div::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-aside div::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5);
-    border-radius: 2px;
-}
-</style>

@@ -11,7 +11,6 @@ const props = defineProps({
 
 const emit = defineEmits(['heightChange'])
 
-// Get notices from Inertia shared data if not provided as props
 const { systemNotices } = usePage().props
 const allNotices = computed(() => props.notices.length > 0 ? props.notices : systemNotices || [])
 const dismissedNotices = ref(new Set())
@@ -19,25 +18,25 @@ const noticeContainer = ref(null)
 
 const isNoticeVisible = (notice) => {
     const now = new Date()
-    
+
     // Check if notice is active
     if (!notice.is_active) return false
-    
+
     // Check if notice has been dismissed
     if (dismissedNotices.value.has(notice.id)) return false
-    
+
     // Check visible_from date
     if (notice.visible_from) {
         const visibleFrom = new Date(notice.visible_from)
         if (now < visibleFrom) return false
     }
-    
+
     // Check expires_at date
     if (notice.expires_at) {
         const expiresAt = new Date(notice.expires_at)
         if (now > expiresAt) return false
     }
-    
+
     return true
 }
 
@@ -47,7 +46,6 @@ const visibleNotices = computed(() => {
 
 const dismissNotice = (noticeId) => {
     dismissedNotices.value.add(noticeId)
-    // Immediately emit new height after DOM update
     nextTick(() => {
         emit('heightChange', noticeContainer.value?.offsetHeight || 0)
     })
@@ -69,24 +67,24 @@ const handleKeyDown = (event, noticeId) => {
 const getTypeStyles = (type) => {
     const styles = {
         info: {
-            bg: 'bg-blue-200',
-            text: 'text-blue-800',
-            icon: 'text-blue-600'
+            bg: 'bg-blue-50 border border-blue-200 dark:bg-blue-900/10 dark:border-blue-800/20',
+            text: 'text-blue-800 dark:text-blue-100',
+            icon: 'text-blue-500 dark:text-blue-400'
         },
         success: {
-            bg: 'bg-green-200',
-            text: 'text-green-800',
-            icon: 'text-green-600'
+            bg: 'bg-green-50 border border-green-200 dark:bg-green-900/10 dark:border-green-800/20',
+            text: 'text-green-800 dark:text-green-100',
+            icon: 'text-green-500 dark:text-green-400'
         },
         warning: {
-            bg: 'bg-orange-200',
-            text: 'text-yellow-800',
-            icon: 'text-yellow-600'
+            bg: 'bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/10 dark:border-yellow-800/20',
+            text: 'text-yellow-800 dark:text-yellow-100',
+            icon: 'text-yellow-500 dark:text-yellow-400'
         },
         error: {
-            bg: 'bg-red-200',
-            text: 'text-red-800',
-            icon: 'text-red-600'
+            bg: 'bg-red-50 border border-red-200 dark:bg-red-900/10 dark:border-red-800/20',
+            text: 'text-red-800 dark:text-red-100',
+            icon: 'text-red-500 dark:text-red-400'
         }
     }
     return styles[type] || styles.info
@@ -114,39 +112,45 @@ const getTypeLabel = (type) => {
 </script>
 
 <template>
-    <div v-if="visibleNotices.length > 0" ref="noticeContainer" class="w-full" role="region" aria-label="System Notices">
+    <div v-if="visibleNotices.length > 0" ref="noticeContainer" class="w-full space-y-3" role="region"
+        aria-label="System Notices">
         <div v-for="notice in visibleNotices" :key="notice.id" :class="[
-            'px-4 py-4 text-md flex items-center w-full relative',
+            'px-4 py-3 rounded-lg flex items-start w-full relative shadow-sm',
+            'transition duration-200 ease-in-out hover:shadow-md',
             getTypeStyles(notice.type).bg
         ]" role="alert" :aria-label="`${getTypeLabel(notice.type)} notice: ${notice.title}`">
-
-            <!-- Dismiss button for dismissible notices -->
-            <button v-if="notice.is_dismissible" @click="dismissNotice(notice.id)"
-                @keydown="handleKeyDown($event, notice.id)"
-                class="absolute top-2 right-2 p-1 rounded-md hover:bg-black/10 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer"
-                :class="[getTypeStyles(notice.type).icon, 'focus:ring-current']"
-                :aria-label="`Dismiss ${getTypeLabel(notice.type).toLowerCase()} notice: ${notice.title}`" tabindex="0"
-                type="button">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <!-- Icon with background -->
+            <div :class="[
+                'flex-shrink-0 rounded-full p-1.5 bg-white/80 dark:bg-gray-900/50',
+                'border border-current/10'
+            ]">
+                <svg viewBox="0 0 24 24" :class="['w-4 h-4', getTypeStyles(notice.type).icon]"
+                    :aria-label="`${getTypeLabel(notice.type)} icon`" role="img">
+                    <path fill="currentColor" :d="getTypeIcon(notice.type)" />
                 </svg>
-            </button>
+            </div>
 
-            <!-- Icon -->
-            <svg viewBox="0 0 24 24" :class="['w-5 h-5 sm:w-5 sm:h-5 mr-3', getTypeStyles(notice.type).icon]"
-                :aria-label="`${getTypeLabel(notice.type)} icon`" role="img">
-                <path fill="currentColor" :d="getTypeIcon(notice.type)" />
-            </svg>
-
-            <!-- Content -->
-            <div class="flex-1">
-                <h3 class="font-semibold text-lg" :class="getTypeStyles(notice.type).text">
+            <!-- Content with better spacing -->
+            <div class="flex-1 min-w-0 ml-3">
+                <h3 class="font-medium leading-5" :class="getTypeStyles(notice.type).text">
                     {{ notice.title }}
                 </h3>
-                <p class="text-sm" :class="getTypeStyles(notice.type).text">
+                <p class="text-xs mt-1 leading-relaxed opacity-90" :class="getTypeStyles(notice.type).text">
                     {{ notice.content }}
                 </p>
             </div>
+
+            <!-- Dismiss button with better hover effect -->
+            <button v-if="notice.is_dismissible" @click="dismissNotice(notice.id)"
+                @keydown="handleKeyDown($event, notice.id)"
+                class="ml-4 p-1.5 rounded-full transition-colors duration-200 hover:bg-black/5 dark:hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer"
+                :class="[getTypeStyles(notice.type).icon]"
+                :aria-label="`Dismiss ${getTypeLabel(notice.type).toLowerCase()} notice: ${notice.title}`" tabindex="0"
+                type="button">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
     </div>
 </template>
