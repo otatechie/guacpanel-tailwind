@@ -66,19 +66,6 @@ const articleLinks = [
     { text: 'Common Issues', href: '#common-issues' }
 ]
 
-const filteredSections = computed(() => {
-    if (!searchQuery.value) return features.core
-    const query = searchQuery.value.toLowerCase()
-
-    return features.core.map(section => ({
-        ...section,
-        items: section.items.filter(item =>
-            item.name.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query)
-        )
-    })).filter(section => section.items.length > 0)
-})
-
 const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -99,9 +86,9 @@ onUnmounted(() => {
 
 <template>
 
-    <Head title="Installation - Starter Kit" />
+    <Head title="Installation - GuacPanel" />
 
-    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+    <div id="prerequisites" class="max-w-7xl mx-auto lg:px-8">
         <div
             class="relative overflow-hidden rounded-2xl mb-12 bg-gradient-to-br from-teal-600 to-teal-700 dark:from-teal-900 dark:to-teal-800">
             <div class="relative z-10 p-8 md:p-12">
@@ -143,242 +130,231 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <section id="prerequisites" class="mb-12 scroll-mt-16">
-            <div class="flex items-center mb-6">
-                <div class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Prerequisites</h2>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                <ul class="list-disc list-inside space-y-4 text-gray-800 dark:text-white">
-                    <li>
-                        <span class="font-medium">PHP >= 8.2</span>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 ml-2">With required extensions</span>
-                    </li>
-                    <li>
-                        <span class="font-medium">Node.js & NPM</span>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 ml-2">Latest LTS version</span>
-                    </li>
-                    <li>
-                        <span class="font-medium">Composer</span>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 ml-2">Package manager</span>
-                    </li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="installation" class="space-y-6 mb-12 scroll-mt-16">
-            <div class="flex items-center mb-6">
-                <div class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Installation Steps</h2>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            <span class="mr-3">1.</span> Clone the Repository
-                        </h3>
-                        <div class="bg-gray-800 rounded-lg">
-                            <CodeBlock :code="codeExamples.cloneRepo" language="bash" />
+        <section class="space-y-10">
+            <!-- Prerequisites Section -->
+            <section id="prerequisites" class="scroll-mt-16">
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Prerequisites</h2>
+                <div class="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-200/50 dark:border-gray-700/50 p-6 md:p-8 hover:border-teal-500/50 dark:hover:border-teal-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/10">
+                    <div class="grid gap-6">
+                        <!-- PHP -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">PHP >= 8.2</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Required PHP extensions: BCMath, Ctype, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, cURL, GD/Imagick</p>
                         </div>
-                    </div>
 
-                    <div>
-                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            <span class="mr-3">2.</span> Install Dependencies
-                        </h3>
-                        <div class="bg-gray-800 rounded-lg">
-                            <CodeBlock :code="codeExamples.installDeps" language="bash" />
+                        <!-- Node.js -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Node.js >= 18.0.0</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Required for Vite build tool, Tailwind CSS v4, and Vue.js development</p>
                         </div>
-                    </div>
 
-                    <div>
-                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            <span class="mr-3">3.</span> Set Up Environment
-                        </h3>
-                        <div class="bg-gray-800 rounded-lg">
-                            <CodeBlock :code="codeExamples.setupEnv" language="bash" />
+                        <!-- Composer -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Composer >= 2.0</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Required for Laravel 11, Spatie packages, and PHP dependencies</p>
                         </div>
-                    </div>
 
-                    <div>
-                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            <span class="mr-3">4.</span> Start Development Server
-                        </h3>
-                        <div class="bg-gray-800 rounded-lg">
-                            <CodeBlock :code="codeExamples.runServer" language="bash" />
+                        <!-- Database -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Database (MySQL/PostgreSQL)</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Required for Laravel, Spatie Backup, and application data storage</p>
                         </div>
-                    </div>
 
-                    <div>
-                        <h3 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            <span class="mr-3">5.</span> Install and compile frontend assets
-                        </h3>
-                        <div class="bg-gray-800 rounded-lg">
-                            <CodeBlock :code="codeExamples.installAssets" language="bash" />
+                        <!-- Additional Requirements -->
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Additional Requirements</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Git for cloning, sufficient disk space for dependencies, and internet connection for package downloads</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="after-installation" class="mb-12 scroll-mt-16">
-            <div class="flex items-center mb-6">
-                <div class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">After Installation</h2>
-            </div>
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8 mb-6"
-                id="database-setup">
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Database Setup</h3>
-                <div class="space-y-4">
-                    <div class="prose dark:prose-invert max-w-none">
-                        <p><span class="mr-3">1.</span> Update your database credentials in .env file:</p>
-                    </div>
-                    <div class="bg-gray-800 rounded-lg">
-                        <CodeBlock :code="codeExamples.databaseEnv" language="bash" />
-                    </div>
-
-                    <div class="prose dark:prose-invert max-w-none">
-                        <p><span class="mr-3">2.</span> Run migrations:</p>
-                    </div>
-                    <div class="bg-gray-800 rounded-lg">
-                        <CodeBlock :code="codeExamples.runMigrations" language="bash" />
-                    </div>
-
-                    <div class="prose dark:prose-invert max-w-none">
-                        <p><span class="mr-3">3.</span> Seed the database with initial data:</p>
-                    </div>
-                    <div class="bg-gray-800 rounded-lg">
-                        <CodeBlock :code="codeExamples.seedDatabase" language="bash" />
-                    </div>
-
-                    <div class="prose dark:prose-invert max-w-none">
-                        <p><span class="mr-3">4.</span> Default superuser credentials:</p>
-                    </div>
-                    <div class="bg-gray-800 rounded-lg">
-                        <CodeBlock :code="codeExamples.defaultCredentials" language="bash" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 md:p-8"
-                id="common-issues">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Common Issues</h3>
-                <hr class="border-gray-100 dark:border-gray-700 my-4">
-                <div class="grid gap-6">
-                    <div class="space-y-4 rounded-lg ">
-                        <div class="flex items-start gap-3">
-                            <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">1.</span>
-                                    Permission Issues</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you encounter permission
-                                    issues, run:</p>
-                                <div class="bg-gray-800 rounded-lg">
-                                    <CodeBlock :code="codeExamples.permissionFix" language="bash" />
-                                </div>
+            <!-- Installation Section -->
+            <section id="installation" class="scroll-mt-16">
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Installation Steps</h2>
+                <div class="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-200/50 dark:border-gray-700/50 p-6 md:p-8 hover:border-teal-500/50 dark:hover:border-teal-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/10">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="flex items-center text-md font-medium text-gray-800 dark:text-white mb-4">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">1</span>
+                                Clone the Repository
+                            </h3>
+                            <div class="bg-gray-800 rounded-lg">
+                                <CodeBlock :code="codeExamples.cloneRepo" language="bash" />
                             </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-4 rounded-lg">
-                        <div class="flex items-start gap-3">
-                            <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">2.</span>
-                                    Composer Dependencies</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you get dependency errors,
-                                    try:</p>
-                                <div class="bg-gray-800 rounded-lg">
-                                    <CodeBlock :code="codeExamples.composerFix" language="bash" />
-                                </div>
+                        <div>
+                            <h3 class="flex items-center text-md font-medium text-gray-800 dark:text-white mb-4">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">2</span>
+                                Install Dependencies
+                            </h3>
+                            <div class="bg-gray-800 rounded-md">
+                                <CodeBlock :code="codeExamples.installDeps" language="bash" />
                             </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-4 rounded-lg">
-                        <div class="flex items-start gap-3">
-                            <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">3.</span> NPM
-                                    Issues</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you have npm issues, try
-                                    clearing the cache:</p>
-                                <div class="bg-gray-800 rounded-lg">
-                                    <CodeBlock :code="codeExamples.npmFix" language="bash" />
-                                </div>
+                        <div>
+                            <h3 class="flex items-center text-md font-medium text-gray-800 dark:text-white mb-4">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">3</span>
+                                Set Up Environment
+                            </h3>
+                            <div class="bg-gray-800 rounded-md">
+                                <CodeBlock :code="codeExamples.setupEnv" language="bash" />
                             </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-4 rounded-lg">
-                        <div class="flex items-start gap-3">
-                            <div>
-                                <h4 class="font-medium text-gray-800 dark:text-white"><span class="mr-3">4.</span> MySQL
-                                    Database Backup</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Configure mysqldump path in
-                                    your .env file:</p>
-                                <div class="bg-gray-800 rounded-lg">
-                                    <CodeBlock :code="codeExamples.mysqlDumpEnv" language="bash" />
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">Alternatively, you can set
-                                    the path in config/database.php:</p>
-                                <div class="bg-gray-800 rounded-lg">
-                                    <CodeBlock :code="codeExamples.mysqlDumpConfig" language="php" />
-                                </div>
+                        <div>
+                            <h3 class="flex items-center text-md font-medium text-gray-800 dark:text-white mb-4">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">4</span>
+                                Start Development Server
+                            </h3>
+                            <div class="bg-gray-800 rounded-md">
+                                <CodeBlock :code="codeExamples.runServer" language="bash" />
+                            </div>
+                        </div>
+
+                        <div>
+                                <h3 class="flex items-center text-md font-medium text-gray-800 dark:text-white mb-4">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">5</span>
+                                Install and compile frontend assets
+                            </h3>
+                            <div class="bg-gray-800 rounded-md">
+                                <CodeBlock :code="codeExamples.installAssets" language="bash" />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Database Setup Section -->
+            <section id="database-setup" class="scroll-mt-16">
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Database Setup</h2>
+                <div class="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-200/50 dark:border-gray-700/50 p-6 md:p-8 hover:border-teal-500/50 dark:hover:border-teal-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/10">
+                    <div class="space-y-4">
+                        <div class="prose dark:prose-invert max-w-none">
+                            <p class="flex items-center"><span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">1</span> Update your database credentials in .env file:</p>
+                        </div>
+                        <div class="bg-gray-800 rounded-md">
+                            <CodeBlock :code="codeExamples.databaseEnv" language="bash" />
+                        </div>
+
+                        <div class="prose dark:prose-invert max-w-none">
+                            <p class="flex items-center"><span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">2</span> Run migrations:</p>
+                        </div>
+                        <div class="bg-gray-800 rounded-md">
+                            <CodeBlock :code="codeExamples.runMigrations" language="bash" />
+                        </div>
+
+                        <div class="prose dark:prose-invert max-w-none">
+                            <p class="flex items-center"><span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">3</span> Seed the database with initial data:</p>
+                        </div>
+                        <div class="bg-gray-800 rounded-md">
+                            <CodeBlock :code="codeExamples.seedDatabase" language="bash" />
+                        </div>
+
+                        <div class="prose dark:prose-invert max-w-none">
+                                <p class="flex items-center"><span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">4</span> Default superuser credentials:</p>
+                        </div>
+                        <div class="bg-gray-800 rounded-md">
+                            <CodeBlock :code="codeExamples.defaultCredentials" language="bash" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Issues Section -->
+            <section id="common-issues" class="scroll-mt-16">
+                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">Common Issues</h2>
+                <div class="bg-white dark:bg-gray-800/50 backdrop-blur-xl rounded-xl border border-gray-200/50 dark:border-gray-700/50 p-6 md:p-8 hover:border-teal-500/50 dark:hover:border-teal-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-teal-500/10">
+                    <div class="grid gap-6">
+                        <div class="space-y-4 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <div>
+                                    <h4 class="font-medium text-md text-gray-800 dark:text-white flex items-center">
+                                        <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">1</span>
+                                        Permission Issues
+                                    </h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you encounter permission
+                                        issues, run:</p>
+                                    <div class="bg-gray-800 rounded-md">
+                                        <CodeBlock :code="codeExamples.permissionFix" language="bash" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-800 dark:text-white flex items-center">
+                                        <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">2</span>
+                                        Composer Dependencies
+                                    </h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you get dependency errors,
+                                        try:</p>
+                                    <div class="bg-gray-800 rounded-md">
+                                        <CodeBlock :code="codeExamples.composerFix" language="bash" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-800 dark:text-white flex items-center">
+                                        <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">3</span>
+                                        NPM Issues
+                                    </h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">If you have npm issues, try
+                                        clearing the cache:</p>
+                                    <div class="bg-gray-800 rounded-md">
+                                        <CodeBlock :code="codeExamples.npmFix" language="bash" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-800 dark:text-white flex items-center">
+                                                <span class="inline-flex items-center justify-center w-6 h-6 bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full mr-3">4</span>
+                                        MySQL Database Backup
+                                    </h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Configure mysqldump path in
+                                        your .env file:</p>
+                                    <div class="bg-gray-800 rounded-md">
+                                        <CodeBlock :code="codeExamples.mysqlDumpEnv" language="bash" />
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-2">Alternatively, you can set
+                                        the path in config/database.php:</p>
+                                    <div class="bg-gray-800 rounded-md">
+                                        <CodeBlock :code="codeExamples.mysqlDumpConfig" language="php" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </section>
     </div>
 
-    <div class="flex flex-col space-y-8 mb-8">
-        <ArticleNavigation :links="articleLinks" />
-    </div>
-
-    <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
-            <a href="/documentation/getting-started"
-                class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
-                <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                <div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Previous</div>
-                    <div
-                        class="font-medium text-gray-800 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                        Getting Started</div>
-                </div>
-            </a>
-
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex justify-end">
             <a href="/documentation/features"
                 class="group flex items-center px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-teal-500 dark:hover:border-teal-500 transition-colors">
                 <div class="text-right">
                     <div class="text-sm text-gray-500 dark:text-gray-400">Next</div>
                     <div
-                        class="font-medium text-gray-800 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400">
+                        class="font-medium text-gray-800 dark:text-white group-hover:text-blue-500 dark:group-hover:text-teal-400">
                         Features</div>
                 </div>
-                <svg class="w-5 h-5 ml-3 text-gray-500 dark:text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400"
+                <svg class="w-5 h-5 ml-3 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-teal-400"
                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
             </a>
         </div>
@@ -391,4 +367,18 @@ onUnmounted(() => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
+
+    <ArticleNavigation :links="articleLinks" />
 </template>
+
+<style scoped>
+.scroll-mt-16 {
+    scroll-margin-top: 4rem;
+}
+
+@media (max-width: 640px) {
+    .scroll-mt-16 {
+        scroll-margin-top: 5rem;
+    }
+}
+</style>

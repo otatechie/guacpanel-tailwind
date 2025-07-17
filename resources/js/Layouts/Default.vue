@@ -18,7 +18,7 @@ const isMobileSearchOpen = ref(false)
 const noticeHeight = ref(0)
 
 const headerHeight = computed(() => {
-    return `${64 + (noticeHeight.value || 0)}px` 
+    return `${70 + (noticeHeight.value || 0)}px` 
 })
 
 const handleNoticeHeightChange = (height) => {
