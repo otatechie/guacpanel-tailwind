@@ -112,10 +112,10 @@ const getTypeLabel = (type) => {
 </script>
 
 <template>
-    <div v-if="visibleNotices.length > 0" ref="noticeContainer" class="w-full space-y-3" role="region"
+    <div v-if="visibleNotices.length > 0" ref="noticeContainer" class="w-full space-y-3 mb-0.5"
         aria-label="System Notices">
         <div v-for="notice in visibleNotices" :key="notice.id" :class="[
-            'px-4 py-3 rounded-lg flex items-start w-full relative shadow-sm',
+            'px-4 py-3 flex items-start w-full relative shadow-sm',
             'transition duration-200 ease-in-out hover:shadow-md',
             getTypeStyles(notice.type).bg
         ]" role="alert" :aria-label="`${getTypeLabel(notice.type)} notice: ${notice.title}`">

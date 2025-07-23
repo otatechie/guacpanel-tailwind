@@ -218,7 +218,7 @@ watch(pagination, newPagination => {
                 { label: 'Users' }
             ]">
                 <template #actions>
-                    <button @click="openCreateModal" class="px-4 py-2 btn-secondary">
+                    <button @click="openCreateModal" class="btn btn-sm btn-secondary">
                         Add User
                     </button>
                 </template>
@@ -295,38 +295,12 @@ watch(pagination, newPagination => {
 
     <Modal :show="showCreateUserModal" @close="closeModal" size="xl">
         <template #title>
-            <div class="flex items-center gap-2 text-gray-800 dark:text-gray-200">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
                 Create New User
-            </div>
+            </h3>
         </template>
 
         <template #default>
-            <!-- Display form errors -->
-            <div v-if="Object.keys(form.errors).length > 0"
-                class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="currentColor"
-                        viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div>
-                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
-                            Please review the highlighted fields
-                        </h3>
-                        <div class="mt-2 text-sm text-red-700 dark:text-red-300">
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li v-for="(error, field) in form.errors" :key="field">
-                                    <span class="capitalize font-medium">{{ field.replace('_', ' ') }}:</span> {{ error
-                                    }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="w-full space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />
@@ -358,12 +332,12 @@ watch(pagination, newPagination => {
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-8">
                 <button @click="closeModal" type="button"
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
                     Cancel
                 </button>
-                <button @click="createUser" type="button" class="btn-primary" :disabled="form.processing">
+                <button @click="createUser" type="button" class="btn btn-sm btn-primary" :disabled="form.processing">
                     Create User
                 </button>
             </div>

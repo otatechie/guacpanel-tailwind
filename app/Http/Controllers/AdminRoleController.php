@@ -34,7 +34,7 @@ class AdminRoleController extends Controller
                 }),
             'permissions' => Permission::select('id', 'name', 'description')->get(),
             'protectedRoles' => $this->getProtectedRoles(),
-            'protectedPermissions' => app(HasProtectedPermission::class)->getProtectedPermissions()
+            'protectedPermissions' => $this->getProtectedPermissions()
         ]);
     }
 

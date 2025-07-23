@@ -49,9 +49,9 @@ const downloadBackup = (fileName) => {
     if (!fileName || typeof fileName !== 'string') return;
 
     const encodedPath = btoa(fileName.trim());
-    
+
     if (!fileName.match(/\.(zip|gz|sql)$/i)) return;
-    
+
     window.location.href = `/admin/backup/download/${encodedPath}`;
 };
 
@@ -130,8 +130,8 @@ const getStats = (info) => {
                 { label: 'Backups' }
             ]">
                 <template #actions>
-                    <button @click="runBackup" class="btn-primary inline-flex items-center gap-2"
-                        :disabled="isBackupRunning" :aria-busy="isBackupRunning">
+                    <button @click="runBackup" class="btn btn-sm btn-primary gap-2" :disabled="isBackupRunning"
+                        :aria-busy="isBackupRunning">
                         <svg v-if="isBackupRunning" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24" aria-hidden="true">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -267,7 +267,7 @@ const getStats = (info) => {
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ backup.date
-                                    }}</p>
+                                        }}</p>
                                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ backup.size }}</p>
                                 </div>
                                 <div class="flex space-x-1">
@@ -332,13 +332,13 @@ const getStats = (info) => {
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-8">
                 <button @click="closeDeleteModal" type="button"
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                     :disabled="form.processing">
                     Cancel
                 </button>
-                <button @click="deleteBackup" type="button" class="btn-danger" :disabled="form.processing">
+                <button @click="deleteBackup" type="button" class="btn btn-sm btn-danger" :disabled="form.processing">
                     {{ form.processing ? 'Deleting...' : 'Yes, delete backup' }}
                 </button>
             </div>

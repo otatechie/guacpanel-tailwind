@@ -128,8 +128,8 @@ const submit = () => {
                     </div>
                 </section>
 
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex items-center justify-end gap-3">
-                    <button type="submit" class="btn-primary inline-flex items-center gap-2" :disabled="form.processing"
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex items-center justify-end">
+                    <button type="submit" class="btn btn-sm btn-primary" :disabled="form.processing"
                         :aria-busy="form.processing">
                         <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24">

@@ -47,7 +47,7 @@ const isProtectedRole = (roleName) => {
 
 const editRole = (role) => {
     if (role.is_protected) {
-        return 
+        return
     }
     editingRole.value = role
     form.name = role.name
@@ -70,7 +70,7 @@ const submitRole = () => {
 
 const confirmDeleteRole = (role) => {
     if (role.is_protected) {
-        return 
+        return
     }
     roleToDelete.value = role
     showDeleteModal.value = true
@@ -108,7 +108,7 @@ const isRoleExpanded = (roleId) => {
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Roles</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Define roles and their permissions</p>
             </hgroup>
-            <button type="button" @click="showAddModal = true" class="btn-primary inline-flex items-center gap-2">
+            <button type="button" @click="showAddModal = true" class="btn btn-sm btn-primary gap-2">
                 Add role
             </button>
         </header>
@@ -250,7 +250,8 @@ const isRoleExpanded = (roleId) => {
                     {{ editingRole ? 'Edit role' : 'Add new role' }}
                 </h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions' }}
+                    {{ editingRole ? 'Modify role details and permissions' : 'Create a new role and assign permissions'
+                    }}
                 </p>
             </template>
 
@@ -259,8 +260,8 @@ const isRoleExpanded = (roleId) => {
                     <FormInput label="Role name" v-model="form.name" type="text" :error="form.errors.name" required
                         placeholder="Enter role name" />
 
-                    <FormInput label="Description" v-model="form.description" type="text" :error="form.errors.description"
-                        placeholder="Enter role description" />
+                    <FormInput label="Description" v-model="form.description" type="text"
+                        :error="form.errors.description" placeholder="Enter role description" />
 
                     <fieldset>
                         <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -305,23 +306,25 @@ const isRoleExpanded = (roleId) => {
             </template>
 
             <template #footer>
-                <button type="button"
-                    class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                    @click="closeModal">
-                    Cancel
-                </button>
-                <button @click="submitRole" type="button" class="btn-primary inline-flex items-center gap-2"
-                    :disabled="form.processing" :aria-busy="form.processing">
-                    <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                    {{ form.processing ? 'Saving...' : (editingRole ? 'Save changes' : 'Add role') }}
-                </button>
+                <div class="flex justify-end gap-8">
+                    <button type="button"
+                        class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                        @click="closeModal">
+                        Cancel
+                    </button>
+                    <button @click="submitRole" type="button" class="btn btn-sm btn-primary" :disabled="form.processing"
+                        :aria-busy="form.processing">
+                        <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        {{ form.processing ? 'Saving...' : (editingRole ? 'Save changes' : 'Add role') }}
+                    </button>
+                </div>
             </template>
         </Modal>
 
@@ -370,13 +373,13 @@ const isRoleExpanded = (roleId) => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-8">
                     <button @click="closeModal" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="form.processing">
                         Cancel
                     </button>
-                    <button @click="deleteRole" type="button" class="btn-danger" :disabled="form.processing">
+                    <button @click="deleteRole" type="button" class="btn btn-sm btn-danger" :disabled="form.processing">
                         {{ form.processing ? 'Deleting...' : 'Yes, delete role' }}
                     </button>
                 </div>

@@ -123,7 +123,7 @@ const runHealthChecks = () => {
                 { label: 'System Health' }
             ]">
                 <template #actions>
-                    <button @click="runHealthChecks" class="btn-primary inline-flex items-center gap-2"
+                    <button @click="runHealthChecks" class="btn btn-sm btn-primary"
                         :disabled="isRunning">
                         <svg v-if="isRunning" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -150,6 +150,13 @@ const runHealthChecks = () => {
 
                 <!-- Health Check Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+
+                    <div v-if="Object.keys(groupedResults).length === 0">
+                        <p class="text-center text-gray-500 dark:text-gray-400">
+                            No health checks found
+                        </p>
+                    </div>
+
                     <template v-for="(group, status) in groupedResults" :key="status">
                         <div v-for="result in group" :key="result.label"
                             class="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all duration-200 hover:shadow-md group dark:border dark:border-gray-700">
