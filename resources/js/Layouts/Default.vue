@@ -124,14 +124,14 @@ onUnmounted(() => {
 
             <!-- Header with System Notices -->
             <header role="banner"
-                class="fixed w-full bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-40"
+                class="fixed w-full bg-white dark:bg-gray-800 z-40"
                 :style="{ height: headerHeight }">
 
                 <!-- System Notices -->
                 <SystemNotice :notices="page.props.systemNotices" @height-change="handleNoticeHeightChange" />
 
                 <!-- Navigation -->
-                <nav class="flex h-16 items-center px-4 gap-4" role="navigation" aria-label="Primary navigation">
+                <nav class="flex h-17 items-center px-4 gap-4 shadow-sm" role="navigation" aria-label="Primary navigation">
                     <!-- Logo Section -->
                     <section class="flex items-center gap-4" aria-label="GuacPanel logo and menu controls">
                         <Link href="/" class="flex items-center text-xl font-semibold text-gray-800 dark:text-white"
@@ -164,7 +164,7 @@ onUnmounted(() => {
                     </section>
 
                     <!-- Desktop Search -->
-                    <section class="hidden md:flex flex-1 justify-center pl-16" aria-label="Site search">
+                    <section class="hidden md:flex flex-1 justify-center pl-6" aria-label="Site search">
                         <div class="relative w-full max-w-lg">
                             <Search :isMobile="false" :placeholder="searchPlaceholder" />
                         </div>

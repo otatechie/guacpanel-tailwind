@@ -84,7 +84,7 @@ const deleteUser = () => {
                             <button type="button" @click="activeTab = tab.key" :class="[
                                 'px-4 py-3 inline-flex items-center gap-2 font-medium text-sm whitespace-nowrap cursor-pointer',
                                 activeTab === tab.key
-                                    ? 'border-b-2 border-purple-500 text-purple-600 bg-white dark:bg-gray-700 dark:text-purple-400'
+                                    ? 'border-b-2 border-blue-500 text-blue-600 bg-white dark:bg-gray-700 dark:text-blue-400'
                                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700'
                             ]" :aria-selected="activeTab === tab.key" :aria-controls="`${tab.key}-panel`" role="tab">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -192,8 +192,8 @@ const deleteUser = () => {
                         </p>
                     </div>
 
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div v-for="permission in permissions.data" :key="permission.id"
                                 class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                 <FormCheckbox v-model="form.permissions" :value="permission.id"
