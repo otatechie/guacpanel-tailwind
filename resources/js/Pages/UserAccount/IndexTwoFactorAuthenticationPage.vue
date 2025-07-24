@@ -103,8 +103,8 @@ const benefits = [
                         Benefits</h2>
                 </header>
 
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-                    <ul class="space-y-3" aria-label="2FA Benefits">
+                <div class="rounded-lg p-2 border border-gray-200 dark:border-gray-700">
+                    <ul class="space-y-2" aria-label="2FA Benefits">
                         <li v-for="(benefit, index) in benefits" :key="index"
                             class="flex items-center gap-3 bg-white dark:bg-gray-900 px-4 py-3 rounded-lg">
                             <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24"
@@ -118,7 +118,7 @@ const benefits = [
                 </div>
 
                 <div class="flex justify-end">
-                    <button @click="enableTwoFactor" :disabled="enableForm.processing" class="btn-primary"
+                    <button @click="enableTwoFactor" :disabled="enableForm.processing" class="btn btn-sm btn-primary"
                         :aria-busy="enableForm.processing">
                         {{ enableForm.processing ? 'Enabling...' : 'Enable 2FA' }}
                     </button>

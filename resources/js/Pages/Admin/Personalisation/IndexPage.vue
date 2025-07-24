@@ -131,7 +131,7 @@ const submit = () => {
                         </div>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="btn-primary inline-flex items-center gap-2"
+                        <button type="submit" class="btn btn-sm btn-primary gap-2"
                             :disabled="form.processing" :aria-busy="form.processing">
                             <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 24 24" aria-hidden="true"></svg>

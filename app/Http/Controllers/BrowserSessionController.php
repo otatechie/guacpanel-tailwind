@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
+use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Routing\Controller;
 
 class BrowserSessionController extends Controller
 {
@@ -47,7 +48,7 @@ class BrowserSessionController extends Controller
             return ['device' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown'];
         }
 
-        $agent = new \Jenssegers\Agent\Agent();
+        $agent = new Agent();
         $agent->setUserAgent($userAgent);
 
         return [

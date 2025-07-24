@@ -167,8 +167,8 @@ const deleteUser = () => {
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400 mb-4">
                                 Permanently delete this user account and all associated data
                             </p>
-                            <button type="button" @click="showDeleteModal = true" class="btn-danger">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button type="button" @click="showDeleteModal = true" class="btn btn-sm btn-danger gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                                 </svg>
@@ -213,7 +213,7 @@ const deleteUser = () => {
 
                 <div
                     class="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex items-center justify-end gap-3 border-t border-gray-200 dark:border-gray-700">
-                    <button type="submit" class="btn-primary inline-flex items-center gap-2"
+                    <button type="submit" class="btn btn-sm btn-primary"
                         :disabled="form.processing">
                         <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24">
@@ -263,12 +263,12 @@ const deleteUser = () => {
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-8">
                 <button @click="closeModal" type="button"
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
                     Cancel
                 </button>
-                <button @click="deleteUser" :disabled="form.processing" type="button" class="btn-danger">
+                <button @click="deleteUser" :disabled="form.processing" type="button" class="btn btn-sm btn-danger">
                     {{ form.processing ? 'Deleting...' : 'Yes, delete account' }}
                 </button>
             </div>

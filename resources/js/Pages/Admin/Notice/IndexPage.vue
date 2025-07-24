@@ -84,7 +84,7 @@ const formatDate = (dateString) => {
                 ]">
                 <template #actions>
                     <Link :href="route('admin.system-notice.create')"
-                        class="btn-primary inline-flex items-center gap-2">
+                        class="btn btn-sm btn-primary">
                     Create Notice
                     </Link>
                 </template>

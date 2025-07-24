@@ -36,7 +36,7 @@ const closeModal = () => {
 
 const editPermission = (permission) => {
     if (permission.is_protected) {
-        return 
+        return
     }
     editingPermission.value = permission
     form.name = permission.name
@@ -58,7 +58,7 @@ const submitPermission = () => {
 
 const confirmDeletePermission = (permission) => {
     if (permission.is_protected) {
-        return 
+        return
     }
     permissionToDelete.value = permission
     showDeleteModal.value = true
@@ -80,7 +80,7 @@ const deletePermission = () => {
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Permissions</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage individual permissions</p>
             </hgroup>
-            <button type="button" @click="showAddModal = true" class="btn-primary inline-flex items-center gap-2">
+            <button type="button" @click="showAddModal = true" class="btn btn-sm btn-primary">
                 Add permission
             </button>
         </header>
@@ -202,21 +202,23 @@ const deletePermission = () => {
             </template>
 
             <template #footer>
-                <button type="button"
-                    class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                    @click="closeModal">
-                    Cancel
-                </button>
-                <button @click="submitPermission" type="button" class="btn-primary inline-flex items-center gap-2"
-                    :disabled="form.processing" :aria-busy="form.processing">
-                    <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
-                </button>
+                <div class="flex justify-end gap-8">
+                    <button type="button"
+                        class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                        @click="closeModal">
+                        Cancel
+                    </button>
+                    <button @click="submitPermission" type="button" class="btn btn-sm btn-primary"
+                        :disabled="form.processing" :aria-busy="form.processing">
+                        <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
+                    </button>
+                </div>
             </template>
         </Modal>
 
@@ -254,13 +256,14 @@ const deletePermission = () => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-8">
                     <button @click="closeModal" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="form.processing">
                         Cancel
                     </button>
-                    <button @click="deletePermission" type="button" class="btn-danger" :disabled="form.processing">
+                    <button @click="deletePermission" type="button" class="btn btn-sm btn-danger"
+                        :disabled="form.processing">
                         {{ form.processing ? 'Deleting...' : 'Yes, delete permission' }}
                     </button>
                 </div>

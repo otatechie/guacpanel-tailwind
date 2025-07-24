@@ -4,6 +4,7 @@
 /* Theme Configuration */
 @theme {
     --font-sans: "Instrument Sans", sans-serif;
+    --font-serif: "Libre Baskerville", serif;
     --primary-gradient-from: #0d9488;
     --primary-gradient-to: #14b8a6;
     --primary-color: #0d9488;
@@ -268,6 +269,7 @@ pre {
 }
 
 @layer components {
+
     /* Button Styles */
     .btn-primary {
         display: inline-flex;
@@ -332,6 +334,16 @@ pre {
         box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     }
 
+    .btn-danger.btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-primary-outline.btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
     .dark .btn-secondary {
         background-color: #374151;
         color: #e5e7eb;
@@ -361,7 +373,7 @@ pre {
         transition-timing-function: ease-in-out;
         background-color: white;
         color: var(--primary-color);
-        border: 2px solid var(--primary-color);
+        border: 1.5px solid var(--primary-color);
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     }
 

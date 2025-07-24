@@ -301,13 +301,13 @@ const serverConfig = {
 
 const handleFileUpload = (error, file) => {
     if (!error) {
-        console.log('File uploaded:', file)
+        // File uploaded successfully
     }
 }
 
 const handleFileRemove = (error, file) => {
     if (!error) {
-        console.log('File removed:', file)
+        // File removed successfully
     }
 }`,
 

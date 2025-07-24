@@ -226,7 +226,7 @@ const getDeviceIcon = (device) => {
                             Signing out of all other sessions will terminate access from any other devices where you're
                             currently logged in.
                         </p>
-                        <button @click="confirmLogoutAll" class="btn-danger inline-flex items-center gap-2">
+                        <button @click="confirmLogoutAll" class="btn btn-sm btn-danger">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -318,13 +318,13 @@ const getDeviceIcon = (device) => {
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-8">
                 <button @click="logoutAllModal = false" type="button"
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                     :disabled="passwordForm.processing">
                     Cancel
                 </button>
-                <button @click="logoutAllSessions" type="button" class="btn-danger" :disabled="passwordForm.processing">
+                <button @click="logoutAllSessions" type="button" class="btn btn-sm btn-danger" :disabled="passwordForm.processing">
                     {{ passwordForm.processing ? 'Signing out...' : 'Yes, sign out all' }}
                 </button>
             </div>

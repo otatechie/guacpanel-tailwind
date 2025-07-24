@@ -48,12 +48,12 @@ const submitPasswordForm = () => {
 }
 
 const confirmDeactivateAccount = () => {
-    // Prevent deactivation
+    deactivateModal.value = true
     return
 }
 
 const confirmDeleteAccount = () => {
-    // Prevent deletion
+    deleteModal.value = true
     return
 }
 
@@ -122,7 +122,7 @@ const deleteAccount = () => {
                 </section>
 
                 <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
-                    <button type="submit" class="btn-primary inline-flex items-center gap-2"
+                    <button type="submit" class="btn btn-sm btn-primary"
                         :disabled="profileForm.processing" :aria-busy="profileForm.processing">
                         <svg v-if="profileForm.processing" class="animate-spin h-4 w-4"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -137,7 +137,7 @@ const deleteAccount = () => {
         </section>
 
         <!-- Password Section -->
-        <section class="container-border overflow-hidden" aria-labelledby="password-section">
+        <section class="container-border overflow-hidden mt-12" aria-labelledby="password-section">
             <PageHeader title="Password" description="Ensure your account is using a secure password" :breadcrumbs="[
                 { label: 'Dashboard', href: '/' },
                 { label: 'Account' },
@@ -180,7 +180,7 @@ const deleteAccount = () => {
                 </section>
 
                 <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end">
-                    <button type="submit" class="btn-primary inline-flex items-center gap-2"
+                    <button type="submit" class="btn btn-sm btn-primary"
                         :disabled="passwordForm.processing" :aria-busy="passwordForm.processing">
                         <svg v-if="passwordForm.processing" class="animate-spin h-4 w-4"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -194,7 +194,7 @@ const deleteAccount = () => {
             </form>
         </section>
 
-        <section class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 space-y-6"
+        <section class="mt-12 space-y-6"
             aria-labelledby="danger-zone">
             <header class="flex items-center gap-3">
                 <span class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -216,7 +216,7 @@ const deleteAccount = () => {
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         Hide your profile and data temporarily. You can reactivate your account anytime.
                     </p>
-                    <button @click="confirmDeactivateAccount" class="btn-secondary inline-flex items-center gap-2">
+                    <button @click="confirmDeactivateAccount" class="btn btn-sm btn-secondary gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
@@ -231,7 +231,7 @@ const deleteAccount = () => {
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         This action is permanent and cannot be undone. All your data will be permanently deleted.
                     </p>
-                    <button @click="confirmDeleteAccount" class="btn-danger inline-flex items-center gap-2">
+                    <button @click="confirmDeleteAccount" class="btn btn-sm btn-danger gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -262,13 +262,13 @@ const deleteAccount = () => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-8">
                     <button @click="deactivateModal = false" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="deactivateForm.processing">
                         Cancel
                     </button>
-                    <button @click="deactivateAccount" type="button" class="btn-danger"
+                    <button @click="deactivateAccount" type="button" class="btn btn-sm btn-danger"
                         :disabled="deactivateForm.processing">
                         {{ deactivateForm.processing ? 'Deactivating...' : 'Yes, deactivate' }}
                     </button>
@@ -296,13 +296,13 @@ const deleteAccount = () => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-8">
                     <button @click="deleteModal = false" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="deleteForm.processing">
                         Cancel
                     </button>
-                    <button @click="deleteAccount" type="button" class="btn-danger" :disabled="deleteForm.processing">
+                    <button @click="deleteAccount" type="button" class="btn btn-sm btn-danger" :disabled="deleteForm.processing">
                         {{ deleteForm.processing ? 'Deleting...' : 'Yes, delete' }}
                     </button>
                 </div>
