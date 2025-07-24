@@ -40,7 +40,6 @@ const activeTab = ref('roles')
 
 </script>
 
-
 <template>
 
     <Head title="Permissions & Roles" />

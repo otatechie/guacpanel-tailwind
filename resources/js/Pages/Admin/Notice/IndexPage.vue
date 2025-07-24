@@ -85,7 +85,7 @@ const formatDate = (dateString) => {
                 <template #actions>
                     <Link :href="route('admin.system-notice.create')"
                         class="btn btn-sm btn-primary">
-                    Create Notice
+                    Create notice
                     </Link>
                 </template>
             </PageHeader>
@@ -188,7 +188,6 @@ const formatDate = (dateString) => {
         </section>
     </main>
 
-
     <Modal :show="showDeleteModal" @close="closeDeleteModal" size="md">
         <template #title>
             <div class="flex items-center gap-2 text-red-600">
@@ -225,12 +224,12 @@ const formatDate = (dateString) => {
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-end gap-8">
                 <button @click="closeDeleteModal" type="button"
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
                     Cancel
                 </button>
-                <button @click="confirmDelete" type="button" class="btn-danger">
+                <button @click="confirmDelete" type="button" class="btn btn-sm btn-danger">
                     Yes, delete notice
                 </button>
             </div>

@@ -226,7 +226,7 @@ const getDeviceIcon = (device) => {
                             Signing out of all other sessions will terminate access from any other devices where you're
                             currently logged in.
                         </p>
-                        <button @click="confirmLogoutAll" class="btn btn-sm btn-danger">
+                        <button @click="confirmLogoutAll" class="btn btn-sm btn-danger gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round"

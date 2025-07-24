@@ -219,7 +219,7 @@ watch(pagination, newPagination => {
             ]">
                 <template #actions>
                     <button @click="openCreateModal" class="btn btn-sm btn-secondary">
-                        Add User
+                        Add user
                     </button>
                 </template>
             </PageHeader>
