@@ -29,7 +29,12 @@ const formattedDate = computed(() => {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
-        })
+        }),
+        mobileDisplay: date.toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit'
+        }),
+        dayOfWeek: date.toLocaleDateString('en-US', { weekday: 'short' })
     }
 })
 
@@ -102,18 +107,24 @@ const stocks = ref([
 
     <main class="min-h-screen">
         <div class="max-w-6xl mx-auto">
-            <header class="mb-10">
-                <div class="flex items-center justify-between mb-2">
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                        {{ greeting }}, {{ userName }}
+            <header class="mb-6 sm:mb-8 lg:mb-10">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-3 sm:mb-2">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 sm:gap-3">
+                        <span class="hidden sm:inline">{{ greeting }},</span>
+                        <span class="sm:hidden">{{ greeting }}</span>
+                        {{ userName }}
                         <span class="text-blue-500 dark:text-blue-400 animate-pulse">•</span>
                     </h1>
                     <time
-                        class="text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm">
-                        {{ formattedDate.display }}
+                        class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full shadow-sm self-start sm:self-auto">
+                        <div class="hidden sm:block">{{ formattedDate.display }}</div>
+                        <div class="sm:hidden flex items-center gap-1">
+                            <span class="font-semibold">{{ formattedDate.dayOfWeek }}</span>
+                            <span>{{ formattedDate.mobileDisplay }}</span>
+                        </div>
                     </time>
                 </div>
-                <p class="text-gray-600 dark:text-gray-400">Here's what's happening with your portfolio today.</p>
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Here's what's happening with your portfolio today.</p>
             </header>
 
             <!-- Metrics Widgets -->

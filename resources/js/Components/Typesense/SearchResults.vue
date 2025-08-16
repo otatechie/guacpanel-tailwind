@@ -14,11 +14,11 @@ const props = defineProps({
 const emit = defineEmits(['search', 'focus', 'blur']);
 
 // Computed properties for better readability
-const showResultsContainer = computed(() => 
+const showResultsContainer = computed(() =>
     props.showResults && props.searchQuery && props.hasValidApiKey
 );
 
-const hasResults = computed(() => 
+const hasResults = computed(() =>
     props.federatedResults && props.federatedResults.length > 0
 );
 </script>
@@ -27,19 +27,13 @@ const hasResults = computed(() =>
     <div class="typesense-search relative w-full">
         <!-- Search Input Section -->
         <div class="search-input-wrapper relative">
-            <input type="search" 
-                :disabled="isLoading"
-                :placeholder="isLoading ? 'Loading search...' : placeholder"
-                :value="searchQuery"
-                class="search-input"
-                :class="{ 'loading': isLoading }"
-                @input="$emit('search', $event)"
-                @focus="$emit('focus')"
-                @blur="$emit('blur')"
-            />
+            <input type="search" :disabled="isLoading" :placeholder="isLoading ? 'Loading search...' : placeholder"
+                :value="searchQuery" class="search-input" :class="{ 'loading': isLoading }"
+                @input="$emit('search', $event)" @focus="$emit('focus')" @blur="$emit('blur')" />
             <div class="search-icon" :class="{ 'loading': isLoading }">
                 <!-- Loading Spinner -->
-                <svg v-if="isLoading" class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg v-if="isLoading" class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                     <path class="opacity-75" fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -52,8 +46,25 @@ const hasResults = computed(() =>
             </div>
         </div>
 
+        <!-- Service Unavailable Message -->
+        <div v-if="!hasValidApiKey && searchQuery" class="search-results-container">
+            <div
+                class="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+                <svg class="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div>
+                    <p class="text-sm font-medium text-amber-700 dark:text-amber-300">Search Service Unavailable</p>
+                    <p class="text-xs text-amber-600 dark:text-amber-400">Search functionality is temporarily disabled.
+                        Please try again later.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Results Container -->
-        <div v-if="showResultsContainer" class="search-results-container">
+        <div v-else-if="showResultsContainer" class="search-results-container">
             <div class="search-stats-header">
                 {{ hasResults ? `${federatedResults.length} results` : 'No results' }}
             </div>
@@ -248,15 +259,30 @@ const hasResults = computed(() =>
 
 /* Animations */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Dark mode overrides */
 .dark {
-    .search-result-title { color: #f3f4f6; }
-    .search-result-subtitle { color: #9ca3af; }
-    .search-empty-state svg { color: #4b5563; }
+    .search-result-title {
+        color: #f3f4f6;
+    }
+
+    .search-result-subtitle {
+        color: #9ca3af;
+    }
+
+    .search-empty-state svg {
+        color: #4b5563;
+    }
 }
 
 /* Highlight styling */

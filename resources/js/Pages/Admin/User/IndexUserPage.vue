@@ -205,13 +205,11 @@ watch(pagination, newPagination => {
 }, { deep: true })
 </script>
 
-
 <template>
 
     <Head title="Users" />
-
-    <main class="max-w-6xl mx-auto" role="main">
-        <div class="container-border overflow-hidden">
+    <main class="max-w-7xl mx-auto" aria-labelledby="users-management">
+        <div class="container-border">
             <PageHeader title="Users" description="Manage system users and their access" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
@@ -224,12 +222,14 @@ watch(pagination, newPagination => {
                 </template>
             </PageHeader>
 
-            <div class="p-6 dark:bg-gray-900">
-                <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
-                    :search-fields="['name', 'email', 'created_at_formatted']" empty-message="No users found"
-                    empty-description="Users will appear here once created" export-file-name="users"
-                    @update:pagination="pagination = $event" />
-            </div>
+            <section class="p-6 dark:bg-gray-900">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
+                        :search-fields="['name', 'email', 'created_at_formatted']" empty-message="No users found"
+                        empty-description="Users will appear here once created" export-file-name="users"
+                        @update:pagination="pagination = $event" />
+                </div>
+            </section>
         </div>
     </main>
 
@@ -286,7 +286,7 @@ watch(pagination, newPagination => {
                     class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer">
                     Cancel
                 </button>
-                <button @click="deleteUser" type="button" class="btn-danger" :disabled="false">
+                <button @click="deleteUser" type="button" class="btn-danger btn-sm" :disabled="false">
                     Yes, delete user
                 </button>
             </div>

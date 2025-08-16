@@ -38,7 +38,6 @@ const fetchTypesenseApiKey = async () => {
             hasValidApiKey.value = true;
         }
     } catch (error) {
-        console.error('Failed to fetch Typesense API key:', error);
         hasValidApiKey.value = false;
     } finally {
         isLoading.value = false;

@@ -36,7 +36,7 @@ const closeModal = () => {
 
 const editPermission = (permission) => {
     if (permission.is_protected) {
-        return
+        return 
     }
     editingPermission.value = permission
     form.name = permission.name
@@ -58,7 +58,7 @@ const submitPermission = () => {
 
 const confirmDeletePermission = (permission) => {
     if (permission.is_protected) {
-        return
+        return 
     }
     permissionToDelete.value = permission
     showDeleteModal.value = true
@@ -74,121 +74,119 @@ const deletePermission = () => {
 
 <template>
 
-    <section class="p-6 space-y-6">
-        <header class="flex justify-between items-center">
+    <section class="p-3 sm:p-6 space-y-4 sm:space-y-6">
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
             <hgroup>
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Permissions</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage individual permissions</p>
             </hgroup>
-            <button type="button" @click="showAddModal = true" class="btn btn-sm btn-primary">
+            <button type="button" @click="showAddModal = true" class="btn btn-sm btn-primary w-full sm:w-auto">
                 Add permission
             </button>
         </header>
 
-        <table class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600"
-            role="table">
-            <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
-                <tr>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                        Permission name
-                    </th>
-                    <th scope="col"
-                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[100px]">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr v-if="!permissions?.length" class="text-center">
-                    <td colspan="2" class="px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
-                        <figure class="flex flex-col items-center justify-center gap-2">
-                            <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                            </svg>
-                            <figcaption>No permissions found</figcaption>
-                            <button type="button" @click="showAddModal = true"
-                                class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer">
-                                Add your first permission
-                            </button>
-                        </figure>
-                    </td>
-                </tr>
-                <tr v-else v-for="permission in permissions" :key="permission.id"
-                    class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td class="px-6 py-4">
-                        <figure class="flex items-center gap-3">
-                            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                            </svg>
-                            <figcaption class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
-                                        {{ permission.name }}
+        <!-- Mobile responsive table wrapper -->
+        <div class="overflow-x-auto">
+            <table class="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 min-w-[500px]"
+                role="table">
+                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <th scope="col"
+                            class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
+                            Permission name
+                        </th>
+                        <th scope="col"
+                            class="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[100px]">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr v-if="!permissions?.length" class="text-center">
+                        <td colspan="2" class="px-3 sm:px-6 py-8 text-sm text-gray-500 dark:text-gray-400">
+                            <figure class="flex flex-col items-center justify-center gap-2">
+                                <svg class="w-8 h-8 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                </svg>
+                                <figcaption>No permissions found</figcaption>
+                                <button type="button" @click="showAddModal = true"
+                                    class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium cursor-pointer">
+                                    Add your first permission
+                                </button>
+                            </figure>
+                        </td>
+                    </tr>
+                    <tr v-else v-for="permission in permissions" :key="permission.id"
+                        class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="px-3 sm:px-6 py-4">
+                            <figure class="flex items-center gap-3">
+                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                </svg>
+                                <figcaption class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                            {{ permission.name }}
+                                        </p>
+                                        <span v-if="permission.is_protected"
+                                            class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            System Permission
+                                        </span>
+                                    </div>
+                                    <p v-if="permission.description" class="text-xs text-gray-500 dark:text-gray-400">
+                                        {{ permission.description }}
                                     </p>
-                                    <span v-if="permission.is_protected"
-                                        class="inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                                                clip-rule="evenodd" />
+                                </figcaption>
+                            </figure>
+                        </td>
+                        <td class="px-3 sm:px-6 py-4">
+                            <menu class="flex justify-end gap-2">
+                                <li v-if="!permission.is_protected">
+                                    <button type="button" @click="editPermission(permission)"
+                                        class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                                        title="Edit permission">
+                                        <span class="sr-only">Edit permission</span>
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
-                                        System Permission
-                                    </span>
-                                </div>
-                                <p v-if="permission.description" class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ permission.description }}
-                                </p>
-                            </figcaption>
-                        </figure>
-                    </td>
-                    <td class="px-6 py-4">
-                        <menu class="flex justify-end gap-2">
-                            <li v-if="!permission.is_protected">
-                                <button type="button" @click="editPermission(permission)"
-                                    class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
-                                    title="Edit permission">
-                                    <span class="sr-only">Edit permission</span>
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                        aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                </button>
-                            </li>
-                            <li v-if="!permission.is_protected">
-                                <button type="button" @click="confirmDeletePermission(permission)"
-                                    class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
-                                    title="Delete permission">
-                                    <span class="sr-only">Delete permission</span>
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                        aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </li>
-                            <li v-if="permission.is_protected">
-                                <span class="text-xs text-gray-400 dark:text-gray-500">Protected</span>
-                            </li>
-                        </menu>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                                    </button>
+                                </li>
+                                <li v-if="!permission.is_protected">
+                                    <button type="button" @click="confirmDeletePermission(permission)"
+                                        class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
+                                        title="Delete permission">
+                                        <span class="sr-only">Delete permission</span>
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                            aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </li>
+                                <li v-if="permission.is_protected">
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">Protected</span>
+                                </li>
+                            </menu>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <Modal :show="showAddModal" @close="closeModal">
+        <Modal :show="showAddModal" @close="closeModal" size="sm">
             <template #title>
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
-                    {{ editingPermission ? 'Edit permission' : 'Add new permission' }}
-                </h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ editingPermission ? 'Modify permission details' : 'Create a new permission' }}
-                </p>
+                {{ editingPermission ? 'Edit permission' : 'Add new permission' }}
             </template>
 
             <template #default>
@@ -204,17 +202,19 @@ const deletePermission = () => {
             <template #footer>
                 <div class="flex justify-end gap-8">
                     <button type="button"
-                        class="cursor-pointer font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                        class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         @click="closeModal">
                         Cancel
                     </button>
-                    <button @click="submitPermission" type="button" class="btn btn-sm btn-primary"
+                    <button @click="submitPermission" type="button" class="btn btn-sm btn-primary gap-8"
                         :disabled="form.processing" :aria-busy="form.processing">
                         <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
                             <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
                         </svg>
                         {{ form.processing ? 'Saving...' : (editingPermission ? 'Save changes' : 'Add permission') }}
                     </button>
@@ -256,14 +256,13 @@ const deletePermission = () => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-8">
+                <div class="flex justify-end gap-3">
                     <button @click="closeModal" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="form.processing">
                         Cancel
                     </button>
-                    <button @click="deletePermission" type="button" class="btn btn-sm btn-danger"
-                        :disabled="form.processing">
+                    <button @click="deletePermission" type="button" class="btn-danger" :disabled="form.processing">
                         {{ form.processing ? 'Deleting...' : 'Yes, delete permission' }}
                     </button>
                 </div>

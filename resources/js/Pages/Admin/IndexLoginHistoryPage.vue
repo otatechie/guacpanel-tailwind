@@ -113,8 +113,8 @@ watch(pagination, newPagination => {
 
     <Head title="Login History" />
 
-    <main class="max-w-6xl mx-auto" role="main">
-        <div class="container-border overflow-hidden">
+    <main class="max-w-7xl mx-auto" aria-labelledby="login-history">
+        <div class="container-border">
             <PageHeader title="Login History" description="View and monitor login history" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
@@ -122,17 +122,19 @@ watch(pagination, newPagination => {
             ]" />
 
             <section class="p-6 dark:bg-gray-900">
-                <Datatable :data="loginHistory.data" :columns="columns" :loading="loading" :pagination="pagination"
-                    :search-fields="['username', 'user_agent', 'login_at']"
-                    empty-message="No login history records found" empty-description="Login history will appear here"
-                    export-file-name="login_history" :bulk-delete-route="route('admin.login.history.bulk-destroy')"
-                    @update:pagination="pagination = $event" @bulk-delete="handleBulkDelete">
-                    <template #loading>
-                        <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
-                            Loading login history...
-                        </p>
-                    </template>
-                </Datatable>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <Datatable :data="loginHistory.data" :columns="columns" :loading="loading" :pagination="pagination"
+                        :search-fields="['username', 'user_agent', 'login_at']"
+                        empty-message="No login history records found" empty-description="Login history will appear here"
+                        export-file-name="login_history" :bulk-delete-route="route('admin.login.history.bulk-destroy')"
+                        @update:pagination="pagination = $event" @bulk-delete="handleBulkDelete">
+                        <template #loading>
+                            <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
+                                Loading login history...
+                            </p>
+                        </template>
+                    </Datatable>
+                </div>
             </section>
         </div>
     </main>

@@ -51,9 +51,9 @@
     <!-- Scripts and Styles -->
     @vite(['resources/js/app.js', 'resources/js/darkMode.js', 'resources/css/app.css'])
     @inertiaHead
+    @googlefonts
 </head>
 
-@googlefonts
 
 <body class="antialiased h-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     @routes

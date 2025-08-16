@@ -33,6 +33,11 @@ const props = defineProps({
         default: ''
     },
 
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+
     options: {
         type: Array,
         default: () => []
@@ -71,19 +76,24 @@ const displayValue = computed(() => {
 })
 
 const selectClass = computed(() => {
-    const baseClasses = 'w-full peer border rounded-md bg-white px-3 py-2 appearance-none ' +
-        'transition-all duration-200 ease-in-out focus:outline-none cursor-pointer ' +
-        'dark:bg-gray-800 dark:text-white ' +
+    const baseClasses = 'w-full peer border rounded-md px-3 py-2 text-sm appearance-none ' +
+        'transition-all duration-200 ease-in-out focus:outline-none ' +
         (isOpen.value ? 'ring-2 ring-gray-100 dark:ring-gray-700 ' : '')
 
     const borderClasses = props.error
         ? 'border-red-500 dark:border-red-500'
-        : 'border-gray-300 dark:border-gray-600'
+        : 'border-gray-300 dark:border-gray-500'
 
-    return `${baseClasses} ${borderClasses}`
+    const disabledClasses = props.disabled
+        ? 'cursor-not-allowed text-gray-500 dark:text-gray-400'
+        : 'cursor-pointer bg-white dark:bg-gray-800 dark:text-white'
+
+    return `${baseClasses} ${borderClasses} ${disabledClasses}`
 })
 
 function toggleDropdown() {
+    if (props.disabled) return
+    
     isOpen.value = !isOpen.value
     if (isOpen.value) {
         nextTick(() => {
@@ -150,10 +160,11 @@ onBeforeUnmount(() => {
             <input :id="inputId" type="text" readonly :value="displayValue" role="combobox" :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
                 :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
-                :class="[selectClass]" @keydown.arrow-down="isOpen = true" @keydown.enter.prevent="isOpen = !isOpen">
+                :class="[selectClass]" :disabled="disabled"
+                @keydown.arrow-down="isOpen = true" @keydown.enter.prevent="isOpen = !isOpen">
 
             <!-- Clear Button -->
-            <button v-if="modelValue" type="button" @click.stop="clearSelection" class="absolute right-7 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 bg-gray-100 dark:bg-gray-700 p-0.5 rounded-full
+            <button v-if="modelValue && !disabled" type="button" @click.stop="clearSelection" class="absolute right-7 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 bg-gray-100 dark:bg-gray-700 p-0.5 rounded-full
                        hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300
                        transition-colors duration-200 flex items-center justify-center"
                 :aria-label="'Clear ' + label + ' selection'">
@@ -164,8 +175,12 @@ onBeforeUnmount(() => {
             </button>
 
             <!-- Dropdown Arrow -->
-            <svg class="w-4 h-4 transition-transform duration-200 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-gray-500"
-                :class="{ 'rotate-180': isOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            <svg class="w-4 h-4 transition-transform duration-200 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                :class="{ 
+                    'rotate-180': isOpen,
+                    'text-gray-400 dark:text-gray-500': !disabled,
+                    'text-gray-300 dark:text-gray-600': disabled
+                }" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
             </svg>
@@ -196,7 +211,7 @@ onBeforeUnmount(() => {
                 <ul class="overflow-y-auto flex-1">
                     <li v-for="option in filteredOptions" :key="option[optionValue]"
                         :id="`${inputId}-option-${option[optionValue]}`" role="option"
-                        :aria-selected="isOptionSelected(option)" @click="selectOption(option)" class="px-3 py-2 text-sm cursor-pointer capitalize hover:bg-gray-100 dark:hover:bg-gray-700
+                        :aria-selected="isOptionSelected(option)" @click="selectOption(option)" class="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700
                                transition-colors duration-150 text-gray-700 dark:text-white"
                         :class="{ 'bg-gray-100 dark:bg-gray-700': isOptionSelected(option) }">
                         {{ option[optionLabel] }}
@@ -216,7 +231,7 @@ onBeforeUnmount(() => {
             </span>
         </label>
 
-        <p v-if="error" role="alert" class="mt-1 text-sm text-red-600 dark:text-red-400">
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1 text-red-600 dark:text-red-400 text-xs">
             {{ error }}
         </p>
     </fieldset>

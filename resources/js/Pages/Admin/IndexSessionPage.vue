@@ -149,22 +149,24 @@ watch(pagination, newPagination => {
 
     <Head title="Active Sessions" />
 
-    <main class="max-w-6xl mx-auto" role="main">
-        <div class="container-border overflow-hidden">
+    <main class="max-w-7xl mx-auto" aria-labelledby="active-sessions">
+        <div class="container-border">
             <PageHeader title="Active Sessions" description="Manage system user sessions" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'Sessions' }
             ]" />
 
-            <div class="p-6 dark:bg-gray-900">
-                <Datatable :data="sessions.data" 
-                :columns="columns" :loading="loading" 
-                :pagination="pagination"
-                    :search-fields="['user.name', 'user.email', 'device_info.browser']"
-                    empty-message="No active sessions found" empty-description="Active sessions will appear here"
-                    export-file-name="sessions" @update:pagination="pagination = $event" />
-            </div>
+            <section class="p-6 dark:bg-gray-900">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <Datatable :data="sessions.data" 
+                    :columns="columns" :loading="loading" 
+                    :pagination="pagination"
+                        :search-fields="['user.name', 'user.email', 'device_info.browser']"
+                        empty-message="No active sessions found" empty-description="Active sessions will appear here"
+                        export-file-name="sessions" @update:pagination="pagination = $event" />
+                </div>
+            </section>
         </div>
     </main>
 

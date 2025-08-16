@@ -116,91 +116,106 @@ const runHealthChecks = () => {
     <Head title="System Health" />
 
     <main class="max-w-7xl mx-auto" role="main">
-        <div class="container-border overflow-hidden">
+        <div class="container-border">
             <PageHeader title="System Health" description="Monitor system health and performance metrics" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
                 { label: 'Settings', href: route('admin.setting.index') },
                 { label: 'System Health' }
             ]">
                 <template #actions>
-                    <button @click="runHealthChecks" class="btn btn-sm btn-primary"
-                        :disabled="isRunning">
+                    <button @click="runHealthChecks" class="btn btn-sm btn-primary" :disabled="isRunning">
                         <svg v-if="isRunning" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24" aria-hidden="true">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                             <path class="opacity-75" fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
-                        {{ isRunning ? 'Running checks...' : 'Run health checks' }}
+                        {{ isRunning ? 'Running checks...' : 'Run Health Checks' }}
                     </button>
                 </template>
             </PageHeader>
 
-            <section class="p-6 space-y-6">
-                <div class="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
-                    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Updated {{ lastCheckedForHumans }}</span>
-                    </div>
-                </div>
-
-                <!-- Health Check Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-
-                    <div v-if="Object.keys(groupedResults).length === 0">
-                        <p class="text-center text-gray-500 dark:text-gray-400">
-                            No health checks found
-                        </p>
-                    </div>
-
-                    <template v-for="(group, status) in groupedResults" :key="status">
-                        <div v-for="result in group" :key="result.label"
-                            class="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all duration-200 hover:shadow-md group dark:border dark:border-gray-700">
-                            <!-- Loading Overlay -->
-                            <div v-if="isRunning"
-                                class="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center rounded-lg z-10">
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <div :class="[
-                                    'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200',
-                                    getStatusConfig(result.status).bgLight
-                                ]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="w-5 h-5"
-                                        :class="getStatusConfig(result.status).color">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            :d="getStatusConfig(result.status).icon" />
-                                    </svg>
-                                </div>
-
-                                <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                                            {{ result.label }}
-                                        </h3>
-                                        <span :class="[
-                                            'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium uppercase font-mono',
-                                            getStatusConfig(result.status).color,
-                                            getStatusConfig(result.status).bgLight
-                                        ]">
-                                            {{ result.status }}
-                                        </span>
-                                    </div>
-                                    <div v-if="result.notificationMessage"
-                                        class="mt-3 pt-3 text-xs border-t border-gray-100 dark:border-gray-700">
-                                        <p class="text-gray-500 dark:text-gray-400">
-                                            {{ result.notificationMessage }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+            <section class="p-6 dark:bg-gray-900">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <div v-if="Object.keys(groupedResults).length > 0"
+                        class="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+                        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Updated {{ lastCheckedForHumans }}</span>
                         </div>
-                    </template>
+                    </div>
+
+                    <!-- Health Check Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+
+                        <!-- Empty State -->
+                        <div v-if="Object.keys(groupedResults).length === 0" 
+                            class="col-span-full flex flex-col items-center justify-center py-12 px-6 text-center">
+                            <div class="w-16 h-16 mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                                    stroke="currentColor" class="w-8 h-8 text-gray-400 dark:text-gray-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" 
+                                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-medium text-gray-900 dark:text-white mb-2">
+                                No Health Checks Available
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md">
+                                Click the button above to run initial health checks and monitor your system.
+                            </p>
+                        </div>
+
+                        <template v-for="(group, status) in groupedResults" :key="status">
+                            <div v-for="result in group" :key="result.label"
+                                class="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all duration-200 hover:shadow-md group dark:border dark:border-gray-700">
+                                <!-- Loading Overlay -->
+                                <div v-if="isRunning"
+                                    class="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center rounded-lg z-10">
+                                </div>
+
+                                <div class="flex items-start gap-3">
+                                    <div :class="[
+                                        'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200',
+                                        getStatusConfig(result.status).bgLight
+                                    ]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="w-5 h-5"
+                                            :class="getStatusConfig(result.status).color">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                :d="getStatusConfig(result.status).icon" />
+                                        </svg>
+                                    </div>
+
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                                {{ result.label }}
+                                            </h3>
+                                            <span :class="[
+                                                'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium uppercase font-mono',
+                                                getStatusConfig(result.status).color,
+                                                getStatusConfig(result.status).bgLight
+                                            ]">
+                                                {{ result.status }}
+                                            </span>
+                                        </div>
+                                        <div v-if="result.notificationMessage"
+                                            class="mt-3 pt-3 text-xs border-t border-gray-100 dark:border-gray-700">
+                                            <p class="text-gray-500 dark:text-gray-400">
+                                                {{ result.notificationMessage }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </section>
         </div>

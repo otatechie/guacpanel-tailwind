@@ -18,7 +18,7 @@ const isMobileSearchOpen = ref(false)
 const noticeHeight = ref(0)
 
 const headerHeight = computed(() => {
-    return `${70 + (noticeHeight.value || 0)}px` 
+    return `${70 + (noticeHeight.value || 0)}px`
 })
 
 const handleNoticeHeightChange = (height) => {
@@ -26,7 +26,7 @@ const handleNoticeHeightChange = (height) => {
 }
 
 const isMobile = () => window.innerWidth < 768
-const searchPlaceholder = "Search users and financial metrics"
+const searchPlaceholder = "Search users and financial..."
 
 const toggleSidebar = () => {
     isSidebarOpen.value = !isSidebarOpen.value
@@ -123,15 +123,14 @@ onUnmounted(() => {
         <div class="flex flex-col min-h-screen">
 
             <!-- Header with System Notices -->
-            <header role="banner"
-                class="fixed w-full bg-white dark:bg-gray-800 z-40"
-                :style="{ height: headerHeight }">
+            <header role="banner" class="fixed w-full bg-white dark:bg-gray-800 z-40" :style="{ height: headerHeight }">
 
                 <!-- System Notices -->
                 <SystemNotice :notices="page.props.systemNotices" @height-change="handleNoticeHeightChange" />
 
                 <!-- Navigation -->
-                <nav class="flex h-17 items-center px-4 gap-4 shadow-sm" role="navigation" aria-label="Primary navigation">
+                <nav class="flex h-17 items-center px-4 gap-4 shadow-sm" role="navigation"
+                    aria-label="Primary navigation">
                     <!-- Logo Section -->
                     <section class="flex items-center gap-4" aria-label="GuacPanel logo and menu controls">
                         <Link href="/" class="flex items-center text-xl font-semibold text-gray-800 dark:text-white"
@@ -164,8 +163,8 @@ onUnmounted(() => {
                     </section>
 
                     <!-- Desktop Search -->
-                    <section class="hidden md:flex flex-1 justify-center pl-6" aria-label="Site search">
-                        <div class="relative w-full max-w-lg">
+                    <section class="hidden lg:block flex-shrink-0 ml-4" aria-label="Site search">
+                        <div class="w-80">
                             <Search :isMobile="false" :placeholder="searchPlaceholder" />
                         </div>
                     </section>

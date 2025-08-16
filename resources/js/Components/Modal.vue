@@ -12,16 +12,16 @@ const modalPanel = ref(null)
 const closeButton = ref(null)
 const previouslyFocused = ref(null)
 const modalId = `modal-${Math.random().toString(36).substr(2, 9)}`
-const sizeClasses = { 
-    'sm': 'max-w-sm', 
-    'md': 'max-w-md', 
-    'lg': 'max-w-lg', 
-    'xl': 'max-w-xl',
-    '2xl': 'max-w-2xl',
-    '3xl': 'max-w-3xl',
-    '4xl': 'max-w-4xl',
-    '5xl': 'max-w-5xl',
-    'full': 'max-w-full'
+const sizeClasses = {
+    'sm': 'w-full max-w-sm mx-2 sm:mx-4',
+    'md': 'w-full max-w-md mx-2 sm:mx-4',
+    'lg': 'w-full max-w-lg mx-2 sm:mx-4',
+    'xl': 'w-full max-w-xl mx-2 sm:mx-4',
+    '2xl': 'w-full max-w-2xl mx-2 sm:mx-4',
+    '3xl': 'w-full max-w-3xl mx-2 sm:mx-4',
+    '4xl': 'w-full max-w-4xl mx-2 sm:mx-4',
+    '5xl': 'w-full max-w-5xl mx-2 sm:mx-4',
+    'full': 'w-full max-w-full mx-1 sm:mx-2'
 }
 
 const handleKeyDown = (e) => {
@@ -63,39 +63,38 @@ onMounted(() => document.addEventListener('keydown', handleKeyDown))
 onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
 </script>
 
-
 <template>
-    <Transition name="modal">
+    <Transition name="modal" :duration="150">
         <div v-if="show" class="fixed inset-0 z-[999]" role="region" aria-labelledby="modalId">
-            <div class="fixed inset-0 grid h-screen w-screen place-items-center bg-black/30 backdrop-blur-[1px] dark:bg-black/50"
+            <div class="fixed inset-0 grid h-screen w-screen place-items-center bg-black/30 dark:bg-black/50"
                 @click="handleClickOutside" aria-hidden="true"></div>
 
-            <main class="fixed inset-0 z-10 grid h-screen w-screen place-items-center p-4 overflow-hidden" role="dialog"
-                aria-modal="true" :aria-labelledby="modalId">
+            <main class="fixed inset-0 z-10 grid h-screen w-screen place-items-center p-2 sm:p-4 md:p-6 overflow-hidden"
+                role="dialog" aria-modal="true" :aria-labelledby="modalId">
                 <article ref="modalPanel" tabindex="-1"
-                    class="relative w-full rounded-xl bg-white dark:bg-gray-800 shadow-2xl flex flex-col max-h-[calc(100vh-2rem)] backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/5"
+                    class="relative w-full rounded-xl bg-white dark:bg-gray-800 shadow-2xl flex flex-col max-h-[calc(100vh-1rem)] sm:max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-3rem)] ring-1 ring-black/5 dark:ring-white/5"
                     :class="sizeClasses[size] || sizeClasses['md']">
                     <header
-                        class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700/50 flex-shrink-0">
-                        <h2 :id="modalId" class="text-lg font-medium text-gray-900 dark:text-white">
+                        class="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700/50 flex-shrink-0">
+                        <h2 :id="modalId" class="text-sm sm:text-base md:text-lg font-medium text-gray-900 dark:text-white pr-2">
                             <slot name="title"></slot>
                         </h2>
                         <button ref="closeButton" @click="emit('close')"
-                            class="rounded-lg p-1.5 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 cursor-pointer transition-colors duration-150"
+                            class="rounded-lg p-1.5 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:text-gray-500 dark:hover:text-gray-400 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 cursor-pointer flex-shrink-0"
                             aria-label="Close modal">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </header>
 
-                    <section class="px-6 py-4 dark:text-gray-200 overflow-y-auto relative">
+                    <section class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 dark:text-gray-200 overflow-y-auto relative flex-1">
                         <slot></slot>
                     </section>
 
                     <footer v-if="$slots.footer"
-                        class="flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-800/50 px-6 py-4 rounded-b-xl flex-shrink-0">
+                        class="flex justify-end gap-2 sm:gap-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-800/50 px-3 sm:px-4 md:px-6 py-3 sm:py-4 rounded-b-xl flex-shrink-0">
                         <slot name="footer"></slot>
                     </footer>
                 </article>
@@ -107,36 +106,12 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
 <style scoped>
 .modal-enter-active,
 .modal-leave-active {
-    transition: opacity 0.2s ease;
-}
-
-.modal-enter-active .fixed,
-.modal-leave-active .fixed {
-    transition: opacity 0.2s ease;
-}
-
-.modal-enter-active .relative,
-.modal-leave-active .relative {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s ease-out;
 }
 
 .modal-enter-from,
 .modal-leave-to {
     opacity: 0;
-}
-
-.modal-enter-from .relative,
-.modal-leave-to .relative {
-    transform: scale(0.95) translateY(-10px);
-}
-
-.modal-enter-to,
-.modal-leave-from {
-    opacity: 1;
-}
-
-.modal-enter-to .relative,
-.modal-leave-from .relative {
-    transform: scale(1) translateY(0);
+    transform: scale(0.95);
 }
 </style>

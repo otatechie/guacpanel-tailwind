@@ -113,7 +113,7 @@ watch(pagination, newPagination => {
 
     <Head title="Audit Log" />
 
-    <main class="max-w-6xl mx-auto" role="main">
+    <main class="max-w-7xl mx-auto" aria-labelledby="audit-log">
         <div class="container-border overflow-hidden">
             <PageHeader title="Audit Log" description="View and monitor system activities" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
@@ -122,16 +122,18 @@ watch(pagination, newPagination => {
             ]" />
 
             <section class="p-6 dark:bg-gray-900">
-                <Datatable :data="audits.data" :columns="columns" :loading="loading" :pagination="pagination"
-                    :search-fields="['user.name', 'event', 'auditable_type', 'created_at']"
-                    empty-message="No audit records found" empty-description="System activities will appear here"
-                    export-file-name="activity_log" @update:pagination="pagination = $event">
-                    <template #loading>
-                        <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
-                            Loading audit history...
-                        </p>
-                    </template>
-                </Datatable>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                    <Datatable :data="audits.data" :columns="columns" :loading="loading" :pagination="pagination"
+                        :search-fields="['user.name', 'event', 'auditable_type', 'created_at']"
+                        empty-message="No audit records found" empty-description="System activities will appear here"
+                        export-file-name="activity_log" @update:pagination="pagination = $event">
+                        <template #loading>
+                            <p class="text-center p-4 text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
+                                Loading audit history...
+                            </p>
+                        </template>
+                    </Datatable>
+                </div>
             </section>
         </div>
     </main>
