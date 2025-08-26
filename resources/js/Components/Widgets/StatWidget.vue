@@ -66,10 +66,10 @@ const colorClasses = {
         <!-- Content section -->
         <div>
             <!-- Title -->
-            <h3 class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">{{ title }}</h3>
+            <h3 class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 capitalize tracking-wide">{{ title }}</h3>
             
             <!-- Value -->
-            <p class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ value }}</p>
+            <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2">{{ value }}</p>
             
             <!-- Description -->
             <p v-if="description" class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{{ description }}</p>

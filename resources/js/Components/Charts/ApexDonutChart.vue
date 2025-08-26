@@ -24,7 +24,7 @@ onUnmounted(() => observer.disconnect())
 const series = computed(() => props.chartData.datasets[0].data)
 const labels = computed(() => props.chartData.labels)
 
-const fontFamily = 'Instrument Sans'
+const fontFamily = 'Nata Sans'
 const chartOptions = computed(() => {
     const dark = isDark.value
     const textColor = dark ? '#ffffff' : '#111827'
@@ -100,6 +100,9 @@ const chartOptions = computed(() => {
         },
         tooltip: {
             theme: 'dark',
+            style: {
+                fontFamily: fontFamily
+            },
             y: { formatter: val => val.toLocaleString() }
         },
         states: {

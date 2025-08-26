@@ -108,7 +108,7 @@ const isRoleExpanded = (roleId) => {
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Roles</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Define roles and their permissions</p>
             </hgroup>
-            <button type="button" @click="showAddModal = true" class="btn btn-sm btn-primary w-full sm:w-auto">
+            <button type="button" @click="showAddModal = true" class="btn btn-sm btn-primary">
                 Add role
             </button>
         </header>
@@ -212,10 +212,10 @@ const isRoleExpanded = (roleId) => {
                             </p>
                         </td>
                         <td class="px-3 sm:px-6 py-4">
-                            <menu class="flex justify-end gap-2">
+                            <menu class="flex justify-end gap-1">
                                 <li v-if="!role.is_protected">
                                     <button type="button" @click="editRole(role)"
-                                        class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                                        class="p-1 text-blue-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer"
                                         title="Edit role">
                                         <span class="sr-only">Edit role</span>
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -227,7 +227,7 @@ const isRoleExpanded = (roleId) => {
                                 </li>
                                 <li v-if="!role.is_protected">
                                     <button type="button" @click="confirmDeleteRole(role)"
-                                        class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
+                                        class="p-1 text-red-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer"
                                         title="Delete role">
                                         <span class="sr-only">Delete role</span>
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -249,7 +249,7 @@ const isRoleExpanded = (roleId) => {
 
         <Modal :show="showAddModal" @close="closeModal">
             <template #title>
-                {{ editingRole ? 'Edit role' : 'Add new role' }}
+                {{ editingRole ? 'Edit Role' : 'Add New Role' }}
             </template>
 
             <template #default>
@@ -370,13 +370,13 @@ const isRoleExpanded = (roleId) => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-8">
                     <button @click="closeModal" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="form.processing">
                         Cancel
                     </button>
-                    <button @click="deleteRole" type="button" class="btn-danger" :disabled="form.processing">
+                    <button @click="deleteRole" type="button" class="btn btn-danger btn-sm" :disabled="form.processing">
                         {{ form.processing ? 'Deleting...' : 'Yes, delete role' }}
                     </button>
                 </div>

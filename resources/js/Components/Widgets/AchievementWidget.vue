@@ -65,7 +65,7 @@ defineProps({
             <!-- Value display with enhanced typography -->
             <div class="text-center mb-2">
                 <p
-                    class="font-bold text-2xl leading-none mb-2 bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                    class="font-semibold text-2xl leading-none mb-2 bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                     {{ value }}
                 </p>
                 <div

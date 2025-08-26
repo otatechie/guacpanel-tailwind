@@ -59,7 +59,7 @@ const formatChange = (change) => {
         <!-- Header with title and icon -->
         <div class="flex items-center justify-between mb-4">
             <!-- Title -->
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 capitalize tracking-wide">
                 {{ title }}
             </h3>
 
@@ -78,7 +78,7 @@ const formatChange = (change) => {
         <div class="space-y-2">
             <!-- Main value -->
             <div class="flex items-baseline gap-3">
-                <span class="text-2xl font-bold text-gray-900 dark:text-white">
+                <span class="text-2xl font-semibold text-gray-900 dark:text-white">
                     {{ formatValue(value) }}
                 </span>
 

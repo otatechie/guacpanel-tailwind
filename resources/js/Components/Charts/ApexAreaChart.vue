@@ -28,7 +28,7 @@ const series = computed(() =>
     }))
 )
 
-const fontFamily = 'Instrument Sans'
+const fontFamily = 'Nata Sans'
 
 const chartOptions = computed(() => {
     const dark = isDark.value
@@ -100,6 +100,9 @@ const chartOptions = computed(() => {
         legend: { show: false },
         tooltip: {
             theme: 'dark',
+            style: {
+                fontFamily: fontFamily
+            },
             y: { formatter: val => val.toLocaleString() }
         },
         responsive: [{

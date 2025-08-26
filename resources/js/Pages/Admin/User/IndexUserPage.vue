@@ -121,7 +121,7 @@ const columns = [
         cell: info => {
             const roleName = info.row.original.roles?.[0]?.name || 'No Role'
             return h('span', {
-                class: 'px-2 py-1 text-sm rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+                class: 'px-1 py-1 text-xs capitalize rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
             }, roleName)
         }
     }),
@@ -137,7 +137,7 @@ const columns = [
             if (!user?.id) return null
 
             const editButton = h('button', {
-                class: 'p-2 text-blue-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer',
+                class: 'p-1 text-blue-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer',
                 onClick: () => handleEdit(user),
                 type: 'button',
                 title: 'Edit user'
@@ -158,7 +158,7 @@ const columns = [
             ])
 
             const deleteButton = h('button', {
-                class: 'p-2 text-red-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer',
+                class: 'p-1 text-red-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer',
                 onClick: () => confirmDeleteUser(user),
                 type: 'button',
                 title: 'Delete user'
@@ -179,7 +179,7 @@ const columns = [
             ])
 
             return h('div', {
-                class: 'flex items-center gap-2 justify-end'
+                class: 'flex items-center gap-1 justify-end'
             }, [
                 editButton,
                 canDeleteUser(user) && deleteButton

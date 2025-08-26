@@ -129,8 +129,8 @@ const submit = () => {
             </div>
             <div
                 class="px-4 sm:px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-center sm:justify-end">
-                <button type="submit" form="app-details-form" class="btn btn-sm btn-primary w-full sm:w-auto" :disabled="form.processing"
-                    :aria-busy="form.processing">
+                <button type="submit" form="app-details-form" class="btn btn-sm btn-primary w-full sm:w-auto"
+                    :disabled="form.processing" :aria-busy="form.processing">
                     <svg v-if="form.processing" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -145,46 +145,42 @@ const submit = () => {
             <div class="p-4 sm:p-6 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
                 <div
                     class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-100 dark:border-gray-700 p-4 sm:p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Media & Branding</h3>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Branding</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Upload and manage your application logos
                         and favicon</p>
 
-                    <div class="max-w-2xl space-y-8">
-                        <div class="grid grid-cols-1 gap-8" role="group" aria-label="Media uploads">
-                            <FilePondUploader name="app_logo" label="Application logo" label-idle="Drop logo here..."
-                                id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
-                                :files="getInitialFiles('app_logo')"
-                                @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
-                                @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
-
-                            <div
-                                class="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                                <div class="flex items-start gap-1">
-                                    <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 
-                                                                   12a9 9 0 11-18 0 9 9 0  0118 0z" />
-                                    </svg>
-                                    <p class="text-xs text-blue-800 dark:text-blue-200">
-                                        Optional. For logos that work better on dark backgrounds.
-                                    </p>
+                    <div class="max-w-6xl space-y-16 md:space-y-16">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12" role="group" aria-label="Media uploads">
+                            <div class="flex justify-center">
+                                <div class="w-full max-w-48 md:w-32">
+                                    <FilePondUploader name="app_logo" label="Logo" label-idle="Drop logo here..."
+                                        id="app_logo" :accepted-file-types="['image/jpeg', 'image/png']"
+                                        :server="uploadConfig" :files="getInitialFiles('app_logo')"
+                                        @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo')"
+                                        @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo')" />
                                 </div>
                             </div>
 
-                            <FilePondUploader name="app_logo_dark" label="Application logo (dark mode)"
-                                label-idle="Drop logo here..." id="app_logo_dark"
-                                :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
-                                :files="getInitialFiles('app_logo_dark')"
-                                @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo_dark')"
-                                @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo_dark')" />
+                            <div class="flex justify-center">
+                                <div class="w-full max-w-48 md:w-32">
+                                    <FilePondUploader name="app_logo_dark" label="Logo (dark mode)"
+                                        label-idle="Drop logo here..." id="app_logo_dark"
+                                        :accepted-file-types="['image/jpeg', 'image/png']" :server="uploadConfig"
+                                        :files="getInitialFiles('app_logo_dark')"
+                                        @processfile="(error, file) => handleProcessedFile(error, file, 'app_logo_dark')"
+                                        @removefile="(error, file) => handleFileRemoved(error, file, 'app_logo_dark')" />
+                                </div>
+                            </div>
 
-                            <hr class="border-gray-200 dark:border-gray-700">
-
-                            <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
-                                id="favicon" :accepted-file-types="['image/png', 'image/x-icon']" :server="uploadConfig"
-                                :files="getInitialFiles('favicon')"
-                                @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
-                                @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />
+                            <div class="flex justify-center">
+                                <div class="w-full max-w-48 md:w-32">
+                                    <FilePondUploader name="favicon" label="Favicon" label-idle="Drop favicon here..."
+                                        id="favicon" :accepted-file-types="['image/png', 'image/x-icon']"
+                                        :server="uploadConfig" :files="getInitialFiles('favicon')"
+                                        @processfile="(error, file) => handleProcessedFile(error, file, 'favicon')"
+                                        @removefile="(error, file) => handleFileRemoved(error, file, 'favicon')" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

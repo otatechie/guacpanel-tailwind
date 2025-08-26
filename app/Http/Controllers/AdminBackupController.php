@@ -34,11 +34,17 @@ class AdminBackupController extends Controller
 
     public function createBackup()
     {
-        $exitCode = Artisan::call('backup:run', ['--quiet' => true]);
-
+        ob_start();
+        
+        $exitCode = Artisan::call('backup:run', ['--quiet' => false]);
+        
+        $output = ob_get_clean();
+        
+        $artisanOutput = Artisan::output();
+        
         $message = $exitCode === 0
             ? 'Backup completed successfully'
-            : 'Backup failed: ' . Artisan::output();
+            : 'Backup failed: ' . ($output ?: $artisanOutput ?: 'Unknown error occurred');
 
         session()->flash($exitCode === 0 ? 'success' : 'error', $message);
 

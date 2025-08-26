@@ -7,12 +7,18 @@ import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size'
 import FilePondPluginPdfPreview from 'filepond-plugin-pdf-preview'
 import 'filepond-plugin-pdf-preview/dist/filepond-plugin-pdf-preview.min.css'
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
+import FilePondPluginImageResize from 'filepond-plugin-image-resize'
+import FilePondPluginImageCrop from 'filepond-plugin-image-crop'
 
 const FilePond = vueFilePond(
+    FilePondPluginImageExifOrientation,
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
     FilePondPluginFileValidateSize,
-    FilePondPluginPdfPreview
+    FilePondPluginPdfPreview,
+    FilePondPluginImageCrop,
+    FilePondPluginImageResize,
 )
 
 const props = defineProps({
@@ -64,9 +70,9 @@ const emit = defineEmits(['processfile', 'removefile'])
 
 <template>
     <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">
+        <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 text-center">
             {{ label }}
-            <span class="text-xs text-gray-500 ml-2">
+            <span class="text-xs text-gray-500 block mt-1">
                 ({{acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ')}}
                 <template v-if="allowMultiple"> - Max files: {{ maxFiles }}</template>)
             </span>
@@ -74,7 +80,6 @@ const emit = defineEmits(['processfile', 'removefile'])
 
         <file-pond 
             :name="name" 
-            :label-idle="labelIdle" 
             :allow-multiple="allowMultiple" 
             :max-files="maxFiles"
             :accepted-file-types="acceptedFileTypes" 
@@ -83,11 +88,19 @@ const emit = defineEmits(['processfile', 'removefile'])
             :files="files"
             :credits="null" 
             :allow-pdf-preview="true" 
-            :pdf-preview-height="320"
+            :label-idle="`Drop files here or <span class='filepond--label-action'>Browse</span>`"
+            :image-preview-height="100"
+            :image-crop-aspect-ratio="'1:1'"
+            :image-resize-target-width="50"
+            :image-resize-target-height="50"
+            :style-panel-layout="'rounded circle'"
+            :style-load-indicator-position="'center bottom'"
+            :style-button-remove-item-position="'center bottom'"
             :pdf-component-extra-params="'toolbar=0'" 
-            class="bg-white dark:bg-gray-800 rounded-lg"
+            class="max-w-xs md:max-w-none"
             @processfile="(error, file) => $emit('processfile', error, file)"
             @removefile="(error, file) => $emit('removefile', error, file)" 
         />
     </div>
 </template>
+

@@ -51,7 +51,9 @@
     <!-- Scripts and Styles -->
     @vite(['resources/js/app.js', 'resources/js/darkMode.js', 'resources/css/app.css'])
     @inertiaHead
-    @googlefonts
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nata+Sans:wght@100..900&display=swap" rel="stylesheet">
 </head>
 
 

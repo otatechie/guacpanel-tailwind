@@ -91,7 +91,7 @@ const colorClasses = {
             <!-- Stock symbol and name -->
             <div class="flex-1 min-w-0">
                 <h3 
-                    class="font-bold text-gray-900 dark:text-white truncate"
+                    class="font-semibold text-gray-900 dark:text-white truncate"
                     :class="sizeClasses[size].symbol"
                 >
                     {{ stock.symbol }}
@@ -110,7 +110,7 @@ const colorClasses = {
             <!-- Price with enhanced styling -->
             <div class="flex-1 min-w-0">
                 <strong 
-                    class="font-bold text-gray-900 dark:text-white block"
+                    class="font-semibold text-gray-900 dark:text-white block"
                     :class="sizeClasses[size].price"
                 >
                     {{ stock.currency }}{{ stock.price }}

@@ -15,7 +15,7 @@ const selectionColor = 'var(--selection-color)'
 const styles = {
     input: "border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-opacity-50 focus:border-transparent",
     button: "btn-primary-outline !p-2 focus:outline-none focus:ring-2 focus:ring-opacity-50",
-    tableCell: "px-6 py-4 text-sm text-gray-900 dark:text-gray-200",
+    tableCell: "px-6 py-4 text-xs text-gray-900 dark:text-gray-200",
     tableHeader: "table-header",
     sortableHeader: "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700",
     rowEven: "bg-white dark:bg-gray-900",
@@ -72,12 +72,26 @@ const emit = defineEmits(['update:pagination', 'bulk-delete'])
 const sorting = ref([])
 const rowSelection = ref({})
 const searchQuery = ref('')
+const expandedRows = ref([])
 const pagination = ref({
     pageIndex: 0,
     pageSize: props.defaultPageSize,
 })
 const showBulkActions = ref(false)
 const showDeleteModal = ref(false)
+
+const toggleRow = (index) => {
+    const currentIndex = expandedRows.value.indexOf(index)
+    if (currentIndex > -1) {
+        expandedRows.value.splice(currentIndex, 1)
+    } else {
+        expandedRows.value.push(index)
+    }
+}
+
+const handleSelectAll = () => {
+    table.toggleAllRowsSelected()
+}
 
 const filteredData = computed(() => {
     if (!searchQuery.value || !props.searchFields.length) return props.data
@@ -303,9 +317,9 @@ watch(() => props.data, () => {
         </div>
 
         <!-- Table Controls -->
-        <header class="flex justify-between items-center mb-4">
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
             <!-- Left Controls: Page Size and Selection Count -->
-            <div class="flex items-center gap-3">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
                 <div class="flex space-x-2 items-center">
                     <label class="text-sm text-gray-700 dark:text-gray-300">
                         {{ table.options.meta?.showRowsSelectLabel || 'Rows per page:' }}
@@ -329,14 +343,11 @@ watch(() => props.data, () => {
                 </div>
 
                 <!-- Selection Count and Bulk Actions -->
-                <div v-if="hasSelection" class="flex items-center gap-2">
-                    <span role="status" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium"
-                        :style="{
-                            backgroundColor: 'var(--selection-color-light)',
-                            color: 'var(--selection-color)'
-                        }">
+                <div v-if="hasSelection" class="flex items-center gap-6">
+                    <span role="status"
+                        class="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4">
+                            stroke="currentColor" class="w-4 h-4 text-green-600 dark:text-green-500">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
@@ -351,16 +362,19 @@ watch(() => props.data, () => {
                         </svg>
                         Bulk Delete
                     </button>
+
+                    <!-- Additional bulk actions slot -->
+                    <slot name="bulk-actions" :selected-rows="selectedRows" />
                 </div>
             </div>
 
             <!-- Right Controls: Search and Export -->
-            <nav class="flex items-center gap-3">
+            <nav class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
                 <!-- Search Input -->
-                <div v-if="enableSearch" class="relative">
+                <div v-if="enableSearch" class="relative w-full sm:w-48">
                     <label class="sr-only" :for="'table-search'">Search table</label>
                     <input type="search" :id="'table-search'" v-model="searchQuery" placeholder="Search"
-                        :class="[styles.input, styles.focusRing, 'w-48 px-4 py-2']"
+                        :class="[styles.input, styles.focusRing, 'w-full px-4 py-2']"
                         :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
                     <button v-if="searchQuery" @click="clearSearch"
                         :class="[styles.focusRing, 'absolute right-3 top-2.5 text-gray-400 hover:text-gray-600']"
@@ -382,7 +396,109 @@ watch(() => props.data, () => {
 
         <!-- Main Table -->
         <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700" role="grid">
+            <!-- Mobile Card View -->
+            <div class="block md:hidden space-y-3 p-3">
+                <!-- Mobile Select All Header -->
+                <div
+                    class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox"
+                            class="form-checkbox rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
+                            :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
+                            :checked="table.getIsAllRowsSelected()" :indeterminate="table.getIsSomeRowsSelected()"
+                            @change="handleSelectAll" />
+                        <span class="ml-2 text-xs font-medium text-gray-700 dark:text-gray-300">
+                            {{ table.getIsAllRowsSelected() ? 'Deselect All' : 'Select All' }}
+                        </span>
+                    </label>
+
+                    <!-- Mobile Pagination Info -->
+                    <div class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {{ table.getFilteredSelectedRowModel().rows.length }} of {{
+                            table.getFilteredRowModel().rows.length }} selected
+                    </div>
+                </div>
+
+                <div v-for="(row, index) in table.getRowModel().rows" :key="row.id"
+                    class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+
+                    <!-- Main Row Content -->
+                    <div class="p-2">
+                        <!-- Header Row with Checkbox and Expand Button -->
+                        <div class="flex items-center justify-between mb-1.5">
+                            <div class="flex items-center gap-1.5">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox"
+                                        class="form-checkbox rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
+                                        :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
+                                        :checked="row.getIsSelected()" @change="row.toggleSelected()" />
+                                    <span
+                                        class="ml-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">Select</span>
+                                </label>
+
+                                <!-- Expand Button -->
+                                <button @click="toggleRow(index)"
+                                    class="group flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-200">
+                                    <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 transition-transform duration-200 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                                        :class="{ 'rotate-90': expandedRows.includes(index) }"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                        {{ expandedRows.includes(index) ? 'Less' : 'More' }}
+                                    </span>
+                                </button>
+                            </div>
+
+                            <!-- Actions for mobile -->
+                            <div class="flex items-center gap-1.5">
+                                <slot name="mobile-actions" :row="row.original" />
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="border-b border-gray-100 dark:border-gray-700 mb-1.5"></div>
+
+                        <!-- Primary Information (First 2 columns) -->
+                        <div class="grid grid-cols-1 gap-1.5">
+                            <div v-for="(cell, cellIndex) in row.getVisibleCells().slice(0, 2)" :key="cell.id"
+                                class="flex flex-col space-y-0">
+                                <dt
+                                    class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                    {{ getColumnHeader(cell.column.columnDef) }}
+                                </dt>
+                                <dd class="text-xs font-medium text-gray-900 dark:text-gray-100">
+                                    <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                                </dd>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expanded Details Section -->
+                    <div v-if="expandedRows.includes(index)"
+                        class="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30">
+                        <div class="p-2 space-y-2">
+                            <div class="grid grid-cols-1 gap-2">
+                                <div v-for="(cell, cellIndex) in row.getVisibleCells().slice(2)" :key="cell.id"
+                                    class="flex flex-col space-y-0">
+                                    <dt
+                                        class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        {{ getColumnHeader(cell.column.columnDef) }}
+                                    </dt>
+                                    <dd class="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                        <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                                    </dd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Table View -->
+            <table class="hidden md:table min-w-full divide-y divide-gray-200 dark:divide-gray-700" role="grid">
                 <!-- Table Header -->
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
@@ -394,8 +510,7 @@ watch(() => props.data, () => {
                                         class="form-checkbox rounded border-gray-300 dark:border-gray-700 text-blue-600 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800"
                                         :style="{ '--tw-ring-color': 'var(--primary-color)', 'color': selectionColor }"
                                         :checked="table.getIsAllRowsSelected()"
-                                        :indeterminate="table.getIsSomeRowsSelected()"
-                                        @change="table.toggleAllRowsSelected()" />
+                                        :indeterminate="table.getIsSomeRowsSelected()" @change="handleSelectAll" />
                                 </label>
                             </div>
                         </th>
@@ -454,9 +569,9 @@ watch(() => props.data, () => {
         </div>
 
         <!-- Pagination Footer -->
-        <footer class="flex items-center justify-between mt-6 px-1">
+        <footer class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 px-3 sm:px-1">
             <!-- Results Count -->
-            <p class="text-sm text-gray-700 dark:text-gray-300">
+            <p class="text-xs text-gray-700 dark:text-gray-300 text-center sm:text-left">
                 Showing
                 <span class="font-medium">{{ paginationStart }}</span>
                 to
@@ -488,11 +603,12 @@ watch(() => props.data, () => {
 
                     <!-- Page Number Input -->
                     <div class="flex items-center gap-1">
-                        <span class="text-sm text-gray-700 dark:text-gray-300">Page</span>
+                        <span class="hidden sm:inline text-xs text-gray-700 dark:text-gray-300">Page</span>
                         <input type="number" :value="currentPage" @change="handlePageChange"
                             :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']"
                             :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
-                        <span class="text-sm text-gray-700 dark:text-gray-300">of {{ pageCount }}</span>
+                        <span class="hidden sm:inline text-xs text-gray-700 dark:text-gray-300">of {{ pageCount
+                            }}</span>
                     </div>
 
                     <!-- Next Page Button -->

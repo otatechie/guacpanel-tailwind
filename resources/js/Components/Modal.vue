@@ -76,7 +76,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
                     :class="sizeClasses[size] || sizeClasses['md']">
                     <header
                         class="flex items-center justify-between px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700/50 flex-shrink-0">
-                        <h2 :id="modalId" class="text-sm sm:text-base md:text-lg font-medium text-gray-900 dark:text-white pr-2">
+                        <h2 :id="modalId" class="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white pr-2">
                             <slot name="title"></slot>
                         </h2>
                         <button ref="closeButton" @click="emit('close')"

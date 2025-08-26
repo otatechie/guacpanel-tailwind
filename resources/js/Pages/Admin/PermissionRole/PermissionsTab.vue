@@ -149,10 +149,10 @@ const deletePermission = () => {
                             </figure>
                         </td>
                         <td class="px-3 sm:px-6 py-4">
-                            <menu class="flex justify-end gap-2">
+                            <menu class="flex justify-end gap-1">
                                 <li v-if="!permission.is_protected">
                                     <button type="button" @click="editPermission(permission)"
-                                        class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                                        class="p-1 text-blue-400 hover:text-blue-600 transition-colors rounded-lg hover:bg-blue-50 cursor-pointer"
                                         title="Edit permission">
                                         <span class="sr-only">Edit permission</span>
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -164,7 +164,7 @@ const deletePermission = () => {
                                 </li>
                                 <li v-if="!permission.is_protected">
                                     <button type="button" @click="confirmDeletePermission(permission)"
-                                        class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
+                                        class="p-1 text-red-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer"
                                         title="Delete permission">
                                         <span class="sr-only">Delete permission</span>
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -186,7 +186,7 @@ const deletePermission = () => {
 
         <Modal :show="showAddModal" @close="closeModal" size="sm">
             <template #title>
-                {{ editingPermission ? 'Edit permission' : 'Add new permission' }}
+                {{ editingPermission ? 'Edit Permission' : 'Add New Permission' }}
             </template>
 
             <template #default>
@@ -256,13 +256,13 @@ const deletePermission = () => {
             </template>
 
             <template #footer>
-                <div class="flex justify-end gap-3">
+                <div class="flex justify-end gap-8">
                     <button @click="closeModal" type="button"
                         class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                         :disabled="form.processing">
                         Cancel
                     </button>
-                    <button @click="deletePermission" type="button" class="btn-danger" :disabled="form.processing">
+                    <button @click="deletePermission" type="button" class="btn-danger btn-sm" :disabled="form.processing">
                         {{ form.processing ? 'Deleting...' : 'Yes, delete permission' }}
                     </button>
                 </div>

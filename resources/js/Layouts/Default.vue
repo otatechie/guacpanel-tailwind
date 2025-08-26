@@ -135,7 +135,8 @@ onUnmounted(() => {
                     <section class="flex items-center gap-4" aria-label="GuacPanel logo and menu controls">
                         <Link href="/" class="flex items-center text-xl font-semibold text-gray-800 dark:text-white"
                             aria-label="Go to homepage">
-                        <Logo size="2.5rem" />
+                        <Logo size="5rem"
+                            :class="page.props.personalisation?.app_logo ? 'transform -translate-x-8' : ''" />
                         </Link>
 
                         <button type="button" data-menu-button

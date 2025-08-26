@@ -26,7 +26,7 @@ const series = computed(() => props.chartData.datasets.map(dataset => ({
     data: dataset.data
 })))
 
-const fontFamily = 'Instrument Sans'
+const fontFamily = 'Nata Sans'
 const chartOptions = computed(() => {
     const dark = isDark.value
     const textColor = dark ? '#ffffff' : '#111827'
@@ -97,6 +97,9 @@ const chartOptions = computed(() => {
         },
         tooltip: {
             theme: 'dark',
+            style: {
+                fontFamily: fontFamily
+            },
             x: { show: true }
         },
         responsive: [{

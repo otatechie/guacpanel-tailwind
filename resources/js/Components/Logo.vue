@@ -15,7 +15,7 @@ const darkLogoUrl = computed(() => {
 const props = defineProps({
     size: {
         type: String,
-        default: '4rem'// Default size for the logo
+        default: '7rem'// Default size for the logo
     }
 })
 
