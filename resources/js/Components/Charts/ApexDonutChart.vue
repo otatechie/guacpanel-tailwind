@@ -24,7 +24,7 @@ onUnmounted(() => observer.disconnect())
 const series = computed(() => props.chartData.datasets[0].data)
 const labels = computed(() => props.chartData.labels)
 
-const fontFamily = 'Nata Sans'
+const fontFamily = 'Zalando Sans'
 const chartOptions = computed(() => {
     const dark = isDark.value
     const textColor = dark ? '#ffffff' : '#111827'
@@ -81,7 +81,9 @@ const chartOptions = computed(() => {
                             show: true,
                             label: 'Total',
                             formatter(w) {
-                                return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString()
+                                return w.globals.seriesTotals
+                                    .reduce((a, b) => a + b, 0)
+                                    .toLocaleString()
                             }
                         }
                     }
@@ -109,36 +111,39 @@ const chartOptions = computed(() => {
             hover: { filter: { type: 'lighten', value: 0.1 } },
             active: { filter: { type: 'darken', value: 0.35 } }
         },
-        grid: { borderColor: axisColor }, 
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                title: { style: { fontSize: '14px', fontFamily } },
-                plotOptions: {
-                    pie: {
-                        donut: {
-                            size: '65%',
-                            labels: {
-                                value: { fontSize: '12px', fontFamily },
-                                total: { fontSize: '12px', fontFamily }
+        grid: { borderColor: axisColor },
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    title: { style: { fontSize: '14px', fontFamily } },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                size: '65%',
+                                labels: {
+                                    value: { fontSize: '12px', fontFamily },
+                                    total: { fontSize: '12px', fontFamily }
+                                }
                             }
                         }
-                    }
-                },
-                dataLabels: { style: { fontSize: '10px', fontFamily } }
+                    },
+                    dataLabels: { style: { fontSize: '10px', fontFamily } }
+                }
             }
-        }]
+        ]
     }
 })
 </script>
 
 <template>
     <div class="w-full h-full">
-        <VueApexCharts type="donut" 
-        :height="height" 
-        :options="chartOptions" 
-        :series="series" 
-        class="w-full"
-        :key="isDark" />
+        <VueApexCharts
+            :key="isDark"
+            type="donut"
+            :height="height"
+            :options="chartOptions"
+            :series="series"
+            class="w-full" />
     </div>
 </template>

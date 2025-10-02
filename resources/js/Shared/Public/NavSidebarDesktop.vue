@@ -1,8 +1,9 @@
-k<script setup>
-import { Link, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+k
+<script setup>
+import { Link, usePage } from '@inertiajs/vue3'
+import { ref } from 'vue'
 
-const page = usePage();
+const page = usePage()
 
 const navigationSections = ref([
     {
@@ -38,42 +39,54 @@ const navigationSections = ref([
             },
             {
                 type: 'divider'
-            },
+            }
         ]
-    },
-]);
+    }
+])
 
-const isActive = (href) => {
-    const path = new URL(href).pathname;
-    return page.url === path;
-};
+const isActive = href => {
+    const path = new URL(href).pathname
+    return page.url === path
+}
 </script>
 
 <template>
-    <aside data-sidebar-content
-        class="h-full flex flex-col bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 ease-in-out">
+    <aside
+        data-sidebar-content
+        class="h-full flex flex-col bg-[var(--color-surface)] shadow-lg transition-all duration-300 ease-in-out">
         <nav class="flex-1 overflow-y-auto py-2 px-2" aria-labelledby="nav-heading">
             <ul class="space-y-1">
                 <template v-for="(section, sectionIndex) in navigationSections" :key="sectionIndex">
                     <li v-if="sectionIndex > 0" class="my-1.5 px-2" role="separator">
-                        <div class="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
+                        <div class="h-px w-full bg-[var(--color-border)]"></div>
                     </li>
                     <template v-for="(item, itemIndex) in section.items" :key="itemIndex">
                         <li v-if="item.type === 'divider'" class="my-1.5 px-2" role="separator">
-                            <div class="h-px w-full bg-gray-100 dark:bg-gray-700"></div>
+                            <div class="h-px w-full bg-[var(--color-border)]"></div>
                         </li>
                         <li v-else>
-                            <Link :href="item.href" :class="{
-                                'flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out': true,
-                                'text-teal-600 dark:text-teal-400': isActive(item.href),
-                                'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700/50': !isActive(item.href)
-                            }">
-                            <svg class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200" :class="{
-                                'text-teal-600 dark:text-teal-400': isActive(item.href),
-                                'text-gray-400 dark:text-gray-500': !isActive(item.href)
-                            }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" aria-hidden="true" v-html="item.icon"></svg>
-                            <span class="text-sm font-medium">{{ item.name }}</span>
+                            <Link
+                                :href="item.href"
+                                :class="{
+                                    'flex items-center px-2.5 py-2 rounded-lg transition-all duration-200 ease-in-out': true,
+                                    'text-teal-600 dark:text-teal-400': isActive(item.href),
+                                    'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-muted)]':
+                                        !isActive(item.href)
+                                }">
+                                <svg
+                                    class="w-[18px] h-[18px] mr-2.5 transition-colors duration-200"
+                                    :class="{
+                                        'text-teal-600 dark:text-teal-400': isActive(item.href),
+                                        'text-[var(--color-text-muted)]': !isActive(item.href)
+                                    }"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    aria-hidden="true"
+                                    v-html="item.icon"></svg>
+                                <span class="text-sm font-medium">{{ item.name }}</span>
                             </Link>
                         </li>
                     </template>

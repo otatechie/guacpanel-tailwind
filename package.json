@@ -3,13 +3,19 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "lint": "eslint . --fix",
+        "format": "prettier --write \"resources/**/*.{js,vue,css}\""
     },
     "devDependencies": {
+        "@rushstack/eslint-patch": "^1.12.0",
         "@tailwindcss/postcss": "^4.0.1",
         "@vue/compiler-sfc": "^3.4.38",
         "autoprefixer": "^10.4.20",
         "axios": "^1.6.4",
+        "eslint": "^9.36.0",
+        "eslint-formatter-compact": "^8.40.0",
+        "eslint-plugin-vue": "^10.5.0",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.5.1",
         "tailwindcss": "^4.0.1",

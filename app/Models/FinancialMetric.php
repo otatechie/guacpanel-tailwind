@@ -19,7 +19,6 @@ class FinancialMetric extends Model
         'amount' => 'decimal:2'
     ];
 
-
     public function toSearchableArray(): array
     {
         return array_merge($this->toArray(), [

@@ -20,7 +20,6 @@ use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminHealthStatusController;
 use App\Http\Controllers\AdminLoginHistoryController;
-use App\Http\Controllers\AdminSystemNoticeController;
 use App\Http\Controllers\AdminPermissionRoleController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
@@ -148,16 +147,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                 Route::controller(AdminHealthStatusController::class)->prefix('health')->name('health.')->group(function () {
                     Route::get('/', 'index')->name('index');
                     Route::post('refresh', 'runHealthChecks')->name('refresh');
-                });
-
-                // System Notice Routes
-                Route::controller(AdminSystemNoticeController::class)->prefix('system-notices')->name('system-notice.')->group(function () {
-                    Route::get('/', 'index')->name('index');
-                    Route::get('/create', 'create')->name('create');
-                    Route::post('/', 'store')->name('store');
-                    Route::get('/{systemNotice}', 'edit')->name('edit');
-                    Route::put('/{systemNotice}', 'update')->name('update');
-                    Route::delete('/{systemNotice}', 'destroy')->name('destroy');
                 });
             });
         });

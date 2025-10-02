@@ -9,32 +9,47 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Inertia\Inertia;
-use App\Traits\HasProtectedPermission;
+use App\Services\DataTablePaginationService;
 
 class AdminRoleController extends Controller
 {
     use HasProtectedRoles;
 
-
-    public function __construct()
+    public function __construct(private DataTablePaginationService $pagination)
     {
-        $this->middleware('permission:manage-roles');
+        $this->middleware(['auth', 'permission:manage-roles']);
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'roles');
+
+        $roles = Role::query()
+            ->with('permissions')
+            ->latest()
+            ->paginate($perPage)
+            ->withQueryString()
+            ->through(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description,
+                    'created_at' => $role->created_at?->diffForHumans(),
+                    'is_protected' => $this->isProtectedRole($role->name),
+                    'permissions' => $role->permissions->map(function ($permission) {
+                        return [
+                            'id' => $permission->id,
+                            'name' => $permission->name,
+                        ];
+                    }),
+                ];
+            });
+
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'roles' => Role::with('permissions:id,name,description')
-                ->select('id', 'name', 'description')
-                ->get()
-                ->map(function ($role) {
-                    $role->is_protected = $this->isProtectedRole($role->name);
-                    return $role;
-                }),
-            'permissions' => Permission::select('id', 'name', 'description')->get(),
-            'protectedRoles' => $this->getProtectedRoles(),
-            'protectedPermissions' => $this->getProtectedPermissions()
+            'roles' => $roles,
+            'permissions' => Permission::all(),
+            'filters' => $this->pagination->buildFilters($request),
         ]);
     }
 
@@ -65,16 +80,15 @@ class AdminRoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        session()->flash('success', 'Role created successfully.');
-        return redirect()->route('admin.role.index');
+        return redirect()->route('admin.role.index')->with('success', 'Role created successfully.');
     }
 
 
     public function update(Request $request, Role $role): RedirectResponse
     {
         if ($this->isProtectedRole($role->name)) {
-            session()->flash('error', 'Cannot modify system role: ' . $role->name);
-            return redirect()->route('admin.role.index');
+            return redirect()->route('admin.role.index')
+                ->with('error', 'Cannot modify system role: ' . $role->name);
         }
 
         $validatedData = $request->validate([
@@ -101,8 +115,7 @@ class AdminRoleController extends Controller
             $role->syncPermissions($request->permissions);
         }
 
-        session()->flash('success', 'Role updated successfully.');
-        return redirect()->route('admin.role.index');
+        return redirect()->route('admin.role.index')->with('success', 'Role updated successfully.');
     }
 
 
@@ -111,13 +124,12 @@ class AdminRoleController extends Controller
         $role = Role::findOrFail($id);
 
         if ($this->isProtectedRole($role->name)) {
-            session()->flash('error', 'Cannot delete system role: ' . $role->name);
-            return redirect()->route('admin.role.index');
+            return redirect()->route('admin.role.index')
+                ->with('error', 'Cannot delete system role: ' . $role->name);
         }
 
         $role->delete();
 
-        session()->flash('success', 'Role deleted successfully.');
-        return redirect()->route('admin.role.index');
+        return redirect()->route('admin.role.index')->with('success', 'Role deleted successfully.');
     }
 }

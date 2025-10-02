@@ -14,11 +14,14 @@ const observer = new MutationObserver(() => {
     isDark.value = document.documentElement.classList.contains('dark')
 })
 
-observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+})
 
 onUnmounted(() => observer.disconnect())
 
-const fontFamily = 'Nata Sans'
+const fontFamily = 'Zalando Sans'
 
 const series = computed(() =>
     props.chartData.datasets.map(dataset => ({
@@ -96,26 +99,33 @@ const chartOptions = computed(() => {
             },
             y: { formatter: val => val.toLocaleString() }
         },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                title: { style: { fontSize: '14px', fontFamily } },
-                plotOptions: { bar: { columnWidth: '70%' } },
-                xaxis: { labels: { style: { fontSize: '10px', fontFamily } } },
-                yaxis: { labels: { style: { fontSize: '10px', fontFamily } } }
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    title: { style: { fontSize: '14px', fontFamily } },
+                    plotOptions: { bar: { columnWidth: '70%' } },
+                    xaxis: {
+                        labels: { style: { fontSize: '10px', fontFamily } }
+                    },
+                    yaxis: {
+                        labels: { style: { fontSize: '10px', fontFamily } }
+                    }
+                }
             }
-        }]
+        ]
     }
 })
 </script>
 
 <template>
     <div class="w-full h-full">
-        <VueApexCharts type="bar" 
-        :height="height" 
-        :options="chartOptions" 
-        :series="series" 
-        class="w-full" 
-        :key="isDark" />
+        <VueApexCharts
+            :key="isDark"
+            type="bar"
+            :height="height"
+            :options="chartOptions"
+            :series="series"
+            class="w-full" />
     </div>
 </template>

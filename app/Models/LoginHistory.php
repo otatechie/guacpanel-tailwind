@@ -19,13 +19,11 @@ class LoginHistory extends Model
         'logout_at'
     ];
 
-
     protected $casts = [
         'login_successful' => 'boolean',
         'login_at' => 'datetime',
         'logout_at' => 'datetime',
     ];
-
 
     public function user(): MorphTo
     {

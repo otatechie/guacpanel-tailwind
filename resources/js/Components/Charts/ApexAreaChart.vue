@@ -28,7 +28,7 @@ const series = computed(() =>
     }))
 )
 
-const fontFamily = 'Nata Sans'
+const fontFamily = 'Zalando Sans'
 
 const chartOptions = computed(() => {
     const dark = isDark.value
@@ -105,27 +105,32 @@ const chartOptions = computed(() => {
             },
             y: { formatter: val => val.toLocaleString() }
         },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                title: { style: { fontSize: '14px', fontFamily } },
-                xaxis: { labels: { style: { fontSize: '10px', fontFamily } } },
-                yaxis: { labels: { style: { fontSize: '10px', fontFamily } } }
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    title: { style: { fontSize: '14px', fontFamily } },
+                    xaxis: {
+                        labels: { style: { fontSize: '10px', fontFamily } }
+                    },
+                    yaxis: {
+                        labels: { style: { fontSize: '10px', fontFamily } }
+                    }
+                }
             }
-        }]
+        ]
     }
 })
 </script>
 
 <template>
     <div class="w-full h-full">
-        <VueApexCharts 
-            :type="'area'" 
-            :height="height" 
-            :options="chartOptions" 
-            :series="series"
-            class="w-full"
+        <VueApexCharts
             :key="isDark"
-        />
+            :type="'area'"
+            :height="height"
+            :options="chartOptions"
+            :series="series"
+            class="w-full" />
     </div>
 </template>

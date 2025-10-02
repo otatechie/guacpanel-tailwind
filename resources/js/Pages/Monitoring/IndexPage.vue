@@ -45,89 +45,86 @@ const STATUS_CONFIGS = {
     }
 }
 
-const getStatusConfig = (status) => {
+const getStatusConfig = status => {
     const key = status?.toLowerCase() || 'default'
     return STATUS_CONFIGS[key] || STATUS_CONFIGS.default
 }
 
+const results = computed(() => props.healthChecks?.results || [])
+
 const groupedResults = computed(() => {
-    return props.healthChecks.results.reduce((acc, result) => {
-        const status = result.status.toLowerCase();
-        if (!acc[status]) acc[status] = [];
-        acc[status].push(result);
-        return acc;
-    }, {});
-});
+    return results.value.reduce((acc, result) => {
+        const status = (result.status || 'default').toLowerCase()
+        if (!acc[status]) acc[status] = []
+        acc[status].push(result)
+        return acc
+    }, {})
+})
+
+const counts = computed(() => {
+    const map = { ok: 0, warning: 0, failed: 0, crashed: 0 }
+    for (const r of results.value) {
+        const k = (r.status || '').toLowerCase()
+        if (k in map) map[k]++
+    }
+    const total = results.value.length
+    return { ...map, total }
+})
 
 const lastCheckedForHumans = computed(() => {
-    if (!props.healthChecks.lastRanAt) return null;
-
-    const date = new Date(props.healthChecks.lastRanAt);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-
-    if (diffInSeconds < 60) {
-        return 'Just now';
-    }
-
-    if (diffInSeconds < 3600) {
-        const minutes = Math.floor(diffInSeconds / 60);
-        return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-    }
-
-    if (diffInSeconds < 86400) {
-        const hours = Math.floor(diffInSeconds / 3600);
-        return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-    }
-
-    const days = Math.floor(diffInSeconds / 86400);
-    if (days === 1) {
-        return 'Yesterday';
-    }
-
-    if (days < 7) {
-        return `${days} days ago`;
-    }
-
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-});
+    return props.healthChecks.lastRanAtFormatted || null
+})
 
 const runHealthChecks = () => {
-    if (isRunning.value) return;
+    if (isRunning.value) return
 
-    isRunning.value = true;
-    router.post(route('admin.health.refresh'), {}, {
-        preserveScroll: true,
-        onFinish: () => {
-            isRunning.value = false;
+    isRunning.value = true
+    router.post(
+        route('admin.health.refresh'),
+        {},
+        {
+            preserveScroll: true,
+            onFinish: () => {
+                isRunning.value = false
+            }
         }
-    });
-};
+    )
+}
 </script>
 
 <template>
-
     <Head title="System Health" />
 
     <main class="max-w-7xl mx-auto" role="main">
         <div class="container-border">
-            <PageHeader title="System Health" description="Monitor system health and performance metrics" :breadcrumbs="[
-                { label: 'Dashboard', href: route('dashboard') },
-                { label: 'Settings', href: route('admin.setting.index') },
-                { label: 'System Health' }
-            ]">
+            <PageHeader
+                title="System Health"
+                description="Monitor system health and performance metrics"
+                :breadcrumbs="[
+                    { label: 'Dashboard', href: route('dashboard') },
+                    { label: 'Settings', href: route('admin.setting.index') },
+                    { label: 'System Health' }
+                ]">
                 <template #actions>
-                    <button @click="runHealthChecks" class="btn btn-sm btn-primary" :disabled="isRunning">
-                        <svg v-if="isRunning" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                            fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                            <path class="opacity-75" fill="currentColor"
+                    <button
+                        class="btn btn-sm btn-primary w-full sm:w-auto"
+                        :disabled="isRunning"
+                        @click="runHealthChecks">
+                        <svg
+                            v-if="isRunning"
+                            class="animate-spin h-3 w-3 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24">
+                            <circle
+                                class="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                stroke-width="4" />
+                            <path
+                                class="opacity-75"
+                                fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
                         {{ isRunning ? 'Running checks...' : 'Run Health Checks' }}
@@ -138,28 +135,80 @@ const runHealthChecks = () => {
             <section class="p-6 dark:bg-gray-900">
                 <div
                     class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                    <div v-if="Object.keys(groupedResults).length > 0"
-                        class="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
-                        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round"
+                    <div
+                        v-if="Object.keys(groupedResults).length > 0"
+                        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+                        <div
+                            class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                            <svg
+                                class="w-4 h-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
                                     d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span>Updated {{ lastCheckedForHumans }}</span>
                         </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span
+                                class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                                OK: {{ counts.ok }}
+                            </span>
+                            <span
+                                class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300">
+                                Warn: {{ counts.warning }}
+                            </span>
+                            <span
+                                class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300">
+                                Fail: {{ counts.failed }}
+                            </span>
+                            <span
+                                class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+                                Crash: {{ counts.crashed }}
+                            </span>
+                            <span
+                                class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                Total: {{ counts.total }}
+                            </span>
+                        </div>
                     </div>
 
-                    <!-- Health Check Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-
-                        <!-- Empty State -->
-                        <div v-if="Object.keys(groupedResults).length === 0" 
+                        <template v-if="isRunning">
+                            <div
+                                v-for="n in 6"
+                                :key="n"
+                                class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-gray-700 animate-pulse">
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700"></div>
+                                    <div class="flex-1 space-y-3">
+                                        <div
+                                            class="h-4 bg-gray-100 dark:bg-gray-700 rounded w-1/3"></div>
+                                        <div
+                                            class="h-3 bg-gray-100 dark:bg-gray-700 rounded w-2/3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <div
+                            v-else-if="Object.keys(groupedResults).length === 0"
                             class="col-span-full flex flex-col items-center justify-center py-12 px-6 text-center">
-                            <div class="w-16 h-16 mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                                    stroke="currentColor" class="w-8 h-8 text-gray-400 dark:text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" 
+                            <div
+                                class="w-16 h-16 mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                <svg
+                                    class="w-8 h-8 text-gray-400 dark:text-gray-500"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor">
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
                                         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
@@ -167,45 +216,52 @@ const runHealthChecks = () => {
                                 No Health Checks Available
                             </h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md">
-                                Click the button above to run initial health checks and monitor your system.
+                                Click the button above to run initial health checks and monitor your
+                                system.
                             </p>
                         </div>
 
-                        <template v-for="(group, status) in groupedResults" :key="status">
-                            <div v-for="result in group" :key="result.label"
-                                class="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 transition-all duration-200 hover:shadow-md group dark:border dark:border-gray-700">
-                                <!-- Loading Overlay -->
-                                <div v-if="isRunning"
-                                    class="absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center rounded-lg z-10">
-                                </div>
-
+                        <template v-for="(group, status) in groupedResults" v-else :key="status">
+                            <div
+                                v-for="result in group"
+                                :key="result.label"
+                                class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-5 transition-all duration-200 hover:shadow-md border border-gray-100 dark:border-gray-700">
                                 <div class="flex items-start gap-3">
-                                    <div :class="[
-                                        'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200',
-                                        getStatusConfig(result.status).bgLight
-                                    ]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="2" stroke="currentColor" class="w-5 h-5"
-                                            :class="getStatusConfig(result.status).color">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                    <div
+                                        :class="[
+                                            'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
+                                            getStatusConfig(result.status).bgLight
+                                        ]">
+                                        <svg
+                                            class="w-5 h-5"
+                                            :class="getStatusConfig(result.status).color"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="2"
+                                            stroke="currentColor">
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
                                                 :d="getStatusConfig(result.status).icon" />
                                         </svg>
                                     </div>
-
                                     <div class="flex-1">
                                         <div class="flex items-center justify-between mb-2">
-                                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                            <h3
+                                                class="text-lg font-medium text-gray-900 dark:text-white">
                                                 {{ result.label }}
                                             </h3>
-                                            <span :class="[
-                                                'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium uppercase font-mono',
-                                                getStatusConfig(result.status).color,
-                                                getStatusConfig(result.status).bgLight
-                                            ]">
+                                            <span
+                                                :class="[
+                                                    'px-2 py-0.5 rounded-full text-xs uppercase',
+                                                    getStatusConfig(result.status).color,
+                                                    getStatusConfig(result.status).bgLight
+                                                ]">
                                                 {{ result.status }}
                                             </span>
                                         </div>
-                                        <div v-if="result.notificationMessage"
+                                        <div
+                                            v-if="result.notificationMessage"
                                             class="mt-3 pt-3 text-xs border-t border-gray-100 dark:border-gray-700">
                                             <p class="text-gray-500 dark:text-gray-400">
                                                 {{ result.notificationMessage }}

@@ -69,7 +69,7 @@ class UserAccountController extends Controller
             ]
         ]);
 
-        // Check if new password is the same as current password
+
         if (Hash::check($validatedData['password'], $user->password)) {
             return back()->withErrors([
                 'password' => 'Your new password cannot be the same as your current password.'

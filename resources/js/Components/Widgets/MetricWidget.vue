@@ -1,3 +1,23 @@
+<!--
+  MetricWidget - Bold brutalist metric card with geometric accents
+
+  Features:
+  - Strong border and sharp edges for brutalist aesthetic
+  - Large monospace numbers with tabular layout
+  - Colored top bar and corner triangle accent
+  - Trend indicators with up/down/neutral symbols
+  - Auto-formats numbers with locale
+  - Minimal icon display
+
+  Usage:
+  <MetricWidget
+    title="Total Revenue"
+    :value="84621"
+    trend="up"
+    :change="12.5"
+    :svg="revenueIconSVG"
+    color="emerald" />
+-->
 <script setup>
 defineProps({
     title: {
@@ -23,7 +43,7 @@ defineProps({
     },
     viewBox: {
         type: String,
-        default: "0 0 24 24"
+        default: '0 0 24 24'
     },
     color: {
         type: String,
@@ -32,22 +52,22 @@ defineProps({
 })
 
 const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-700/30',
-    green: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-700/30',
-    red: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-700/30',
-    yellow: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-700/30',
-    purple: 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400 border-purple-200 dark:border-purple-700/30',
-    primary: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-700/30'
+    blue: 'text-blue-600 dark:text-blue-400',
+    green: 'text-green-600 dark:text-green-400',
+    red: 'text-red-600 dark:text-red-400',
+    yellow: 'text-yellow-600 dark:text-yellow-400',
+    purple: 'text-purple-600 dark:text-purple-400',
+    primary: 'text-blue-600 dark:text-blue-400'
 }
 
-const formatValue = (value) => {
+const formatValue = value => {
     if (typeof value === 'number') {
         return value.toLocaleString('en-US')
     }
     return value || '0'
 }
 
-const formatChange = (change) => {
+const formatChange = change => {
     if (!change) return null
     return `${change > 0 ? '+' : ''}${Math.abs(change).toFixed(1)}%`
 }
@@ -55,50 +75,65 @@ const formatChange = (change) => {
 
 <template>
     <div
-        class="group bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600">
-        <!-- Header with title and icon -->
-        <div class="flex items-center justify-between mb-4">
-            <!-- Title -->
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 capitalize tracking-wide">
-                {{ title }}
-            </h3>
+        class="relative bg-[var(--color-surface)] border-2 border-[var(--color-text)] overflow-hidden">
+        <div class="h-1" :class="colorClasses[color]"></div>
+        <div class="p-4 sm:p-6">
+            <div class="flex items-start justify-between mb-4 sm:mb-6">
+                <div class="flex-1 min-w-0">
+                    <h3
+                        class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--color-text-muted)] mb-1 leading-tight">
+                        {{ title }}
+                    </h3>
+                </div>
 
-            <!-- Icon container with enhanced styling -->
-            <div v-if="svg"
-                class="flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-300 group-hover:scale-105"
-                :class="colorClasses[color]">
-                <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-3"
-                    xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="svg">
-                </svg>
+                <!-- Icon - minimal square -->
+                <div v-if="svg" class="ml-3 sm:ml-4 shrink-0">
+                    <svg
+                        class="w-4 h-4 sm:w-5 sm:h-5"
+                        :class="colorClasses[color]"
+                        xmlns="http://www.w3.org/2000/svg"
+                        :viewBox="viewBox"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="square"
+                        stroke-linejoin="miter"
+                        v-html="svg"></svg>
+                </div>
             </div>
-        </div>
 
-        <!-- Value and Change section -->
-        <div class="space-y-2">
-            <!-- Main value -->
-            <div class="flex items-baseline gap-3">
-                <span class="text-2xl font-semibold text-gray-900 dark:text-white">
+            <!-- Main value - monospace, large -->
+            <div class="mb-2 sm:mb-3">
+                <span
+                    class="font-mono text-3xl sm:text-4xl font-semibold text-[var(--color-text)] tracking-tight leading-none tabular-nums">
                     {{ formatValue(value) }}
                 </span>
+            </div>
 
-                <!-- Change indicator with enhanced styling -->
-                <div v-if="change" class="flex items-center">
-                    <div class="flex items-center px-2 py-1 rounded-lg text-sm font-medium transition-all duration-300"
-                        :class="{
-                            'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700/30': trend === 'up',
-                            'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700/30': trend === 'down',
-                            'bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700/30': !trend
-                        }">
-                        <!-- Trend Icon -->
-                        <svg v-if="trend" class="w-3.5 h-3.5 mr-1.5" :class="{ 'rotate-180': trend === 'down' }"
-                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 4L20 12L18.6 13.4L13 7.8V20H11V7.8L5.4 13.4L4 12L12 4Z" fill="currentColor" />
-                        </svg>
-                        {{ formatChange(change) }}
-                    </div>
+            <div v-if="change" class="flex items-center gap-2">
+                <div
+                    class="inline-flex items-center gap-1 font-mono text-xs font-medium tabular-nums"
+                    :class="{
+                        'text-green-700 dark:text-green-400': trend === 'up',
+                        'text-red-700 dark:text-red-400': trend === 'down',
+                        'text-[var(--color-text-muted)]': !trend
+                    }">
+                    <span v-if="trend === 'up'">▲</span>
+                    <span v-else-if="trend === 'down'">▼</span>
+                    <span v-else>━</span>
+                    <span>{{ formatChange(change) }}</span>
                 </div>
             </div>
         </div>
+
+        <div
+            class="absolute bottom-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-b-[20px]"
+            :class="{
+                'border-b-blue-600 dark:border-b-blue-400': color === 'blue' || color === 'primary',
+                'border-b-green-600 dark:border-b-green-400': color === 'green',
+                'border-b-red-600 dark:border-b-red-400': color === 'red',
+                'border-b-yellow-600 dark:border-b-yellow-400': color === 'yellow',
+                'border-b-purple-600 dark:border-b-purple-400': color === 'purple'
+            }"></div>
     </div>
 </template>
