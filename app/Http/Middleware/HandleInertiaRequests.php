@@ -2,13 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use Inertia\Middleware;
-use Laravolt\Avatar\Avatar;
-use App\Models\SystemNotice;
-use Illuminate\Http\Request;
 use App\Models\Personalisation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Middleware;
+use Laravolt\Avatar\Avatar;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -42,16 +42,20 @@ class HandleInertiaRequests extends Middleware
     {
         $avatar = new Avatar(config('laravolt.avatar'));
         $personalisation = Personalisation::first() ?? new Personalisation();
+        $user = $request->user();
 
         return array_merge(
             parent::share($request),
             [
                 'auth' => [
-                    'user' => $request->user() ? [
-                        'name' => $request->user()->name,
-                        'roles' => $request->user()->roles->pluck('name'),
+                    'user' => $user ? [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'roles' => $user->roles->pluck('name'),
+                        'permissions' => $user->getAllPermissions()->pluck('name'),
                         'avatar' => $avatar
-                            ->create($request->user()->name)
+                            ->create($user->name)
                             ->setTheme('pastel')
                             ->setFontSize(48)
                             ->setDimension(100, 100)
@@ -69,6 +73,7 @@ class HandleInertiaRequests extends Middleware
                     'warning' => fn() => $request->session()->get('warning'),
                     'info' => fn() => $request->session()->get('info'),
                     'danger' => fn() => $request->session()->get('danger'),
+                    'all' => fn() => $request->session()->get('_flash.old', []),
                     'recovery-codes-generated' => fn() => $request->session()->get('recovery-codes-generated'),
                     'two-factor-authentication-enabled' => fn() => $request->session()->get('two-factor-authentication-enabled'),
                     'two-factor-authentication-disabled' => fn() => $request->session()->get('two-factor-authentication-disabled'),
@@ -81,26 +86,12 @@ class HandleInertiaRequests extends Middleware
                     'app_logo' => $personalisation->app_logo ? Storage::url($personalisation->app_logo) : null,
                     'app_logo_dark' => $personalisation->app_logo_dark ? Storage::url($personalisation->app_logo_dark) : null,
                     'favicon' => $personalisation->favicon ? Storage::url($personalisation->favicon) : null,
-                    'footer_text' => $personalisation->footer_text,
                     'copyright_text' => $personalisation->copyright_text,
                 ],
 
                 'settings' => [
                     'passwordlessLogin' => DB::table('settings')->value('passwordless_login') ?? true,
                 ],
-
-                'systemNotices' => SystemNotice::query()
-                    ->where('is_active', true)
-                    ->where(function ($query) {
-                        $query->whereNull('visible_from')
-                            ->orWhere('visible_from', '<=', now());
-                    })
-                    ->where(function ($query) {
-                        $query->whereNull('expires_at')
-                            ->orWhere('expires_at', '>', now());
-                    })
-                    ->orderBy('created_at', 'desc')
-                    ->get(),
             ],
         );
     }

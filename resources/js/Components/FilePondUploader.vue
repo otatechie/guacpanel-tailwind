@@ -18,10 +18,10 @@ const FilePond = vueFilePond(
     FilePondPluginFileValidateSize,
     FilePondPluginPdfPreview,
     FilePondPluginImageCrop,
-    FilePondPluginImageResize,
+    FilePondPluginImageResize
 )
 
-const props = defineProps({
+defineProps({
     name: {
         type: String,
         required: true
@@ -64,30 +64,30 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['processfile', 'removefile'])
+defineEmits(['processfile', 'removefile'])
 </script>
-
 
 <template>
     <div class="space-y-2">
         <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 text-center">
             {{ label }}
             <span class="text-xs text-gray-500 block mt-1">
-                ({{acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ')}}
-                <template v-if="allowMultiple"> - Max files: {{ maxFiles }}</template>)
+                ({{ acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ') }}
+                <template v-if="allowMultiple">- Max files: {{ maxFiles }}</template>
+                )
             </span>
         </label>
 
-        <file-pond 
-            :name="name" 
-            :allow-multiple="allowMultiple" 
+        <file-pond
+            :name="name"
+            :allow-multiple="allowMultiple"
             :max-files="maxFiles"
-            :accepted-file-types="acceptedFileTypes" 
-            :max-file-size="maxFileSize" 
-            :server="server" 
+            :accepted-file-types="acceptedFileTypes"
+            :max-file-size="maxFileSize"
+            :server="server"
             :files="files"
-            :credits="null" 
-            :allow-pdf-preview="true" 
+            :credits="null"
+            :allow-pdf-preview="true"
             :label-idle="`Drop files here or <span class='filepond--label-action'>Browse</span>`"
             :image-preview-height="100"
             :image-crop-aspect-ratio="'1:1'"
@@ -96,11 +96,9 @@ const emit = defineEmits(['processfile', 'removefile'])
             :style-panel-layout="'rounded circle'"
             :style-load-indicator-position="'center bottom'"
             :style-button-remove-item-position="'center bottom'"
-            :pdf-component-extra-params="'toolbar=0'" 
+            :pdf-component-extra-params="'toolbar=0'"
             class="max-w-xs md:max-w-none"
             @processfile="(error, file) => $emit('processfile', error, file)"
-            @removefile="(error, file) => $emit('removefile', error, file)" 
-        />
+            @removefile="(error, file) => $emit('removefile', error, file)" />
     </div>
 </template>
-

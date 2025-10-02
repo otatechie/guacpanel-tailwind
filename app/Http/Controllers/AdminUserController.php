@@ -8,26 +8,46 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Services\DataTablePaginationService;
 
 class AdminUserController extends Controller
 {
-    public function __construct()
+    public function __construct(private DataTablePaginationService $pagination)
     {
         $this->middleware('permission:view-users');
     }
-    
 
     public function index(Request $request)
     {
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'users');
+
+        $users = User::query()
+            ->with(['roles', 'permissions'])
+            ->latest()
+            ->paginate($perPage)
+            ->withQueryString()
+            ->through(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'disable_account' => $user->disable_account,
+                    'force_password_change' => $user->force_password_change,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at,
+                    'roles' => $user->roles,
+                    'permissions' => $user->permissions,
+                    'is_superuser' => $user->isSuperUser(),
+                ];
+            });
+
         return Inertia::render('Admin/User/IndexUserPage', [
-            'users' => User::query()
-                ->select(['id', 'name', 'email', 'created_at', 'disable_account', 'force_password_change'])
-                ->with(['roles:id,name', 'permissions:id,name'])
-                ->latest()
-                ->paginate($request->input('per_page', 10)),
+            'users' => $users,
             'roles' => [
                 'data' => Role::select(['id', 'name'])->get()
-            ]
+            ],
+            'filters' => $this->pagination->buildFilters($request),
         ]);
     }
 
@@ -44,9 +64,7 @@ class AdminUserController extends Controller
 
         $user = User::create($validatedData);
 
-        if (!empty($request->role)) {
-            $user->assignRole($request->role);
-        }
+        $user->assignRole($request->role);
 
         return redirect()->back()->with('success', 'New user account created successfully.');
     }
@@ -56,9 +74,7 @@ class AdminUserController extends Controller
     {
         $this->authorize('edit-users');
 
-        $user = User::with(['permissions:id,name', 'roles:id,name'])
-            ->select(['id', 'name', 'email', 'disable_account', 'force_password_change'])
-            ->findOrFail($id);
+        $user = User::with(['permissions', 'roles'])->findOrFail($id);
 
         return Inertia::render('Admin/User/EditUserPage', [
             'user' => [
@@ -90,7 +106,6 @@ class AdminUserController extends Controller
 
         $user = User::findOrFail($id);
 
-        // Protect superuser from account status and role changes
         if ($user->isSuperUser()) {
             $currentRoleId = $user->roles->first()?->id;
             $isRoleBeingChanged = $request->role != $currentRoleId;
@@ -104,7 +119,7 @@ class AdminUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
             'role' => ['nullable', 'exists:roles,id'],
-            'permissions' => ['array'],
+            'permissions' => ['sometimes', 'array'],
             'permissions.*' => ['exists:permissions,id'],
             'disable_account' => ['boolean'],
             'force_password_change' => ['boolean'],
@@ -121,12 +136,17 @@ class AdminUserController extends Controller
             'disable_account' => $request->disable_account,
         ]);
 
-        $user->syncRoles([$request->role]);
-        $user->syncPermissions($request->permissions ?? []);
+        if ($request->filled('role')) {
+            $user->syncRoles([$request->role]);
+        }
+
+        if ($request->has('permissions')) {
+            $user->syncPermissions($request->permissions ?? []);
+        }
 
         return redirect()->back()->with('success', 'User account updated successfully');
     }
-
+    
 
     public function destroy($id)
     {

@@ -21,12 +21,14 @@ observer.observe(document.documentElement, {
 
 onUnmounted(() => observer.disconnect())
 
-const series = computed(() => props.chartData.datasets.map(dataset => ({
-    name: dataset.label,
-    data: dataset.data
-})))
+const series = computed(() =>
+    props.chartData.datasets.map(dataset => ({
+        name: dataset.label,
+        data: dataset.data
+    }))
+)
 
-const fontFamily = 'Nata Sans'
+const fontFamily = 'Zalando Sans'
 const chartOptions = computed(() => {
     const dark = isDark.value
     const textColor = dark ? '#ffffff' : '#111827'
@@ -102,29 +104,31 @@ const chartOptions = computed(() => {
             },
             x: { show: true }
         },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                title: { style: { fontSize: '14px', fontFamily } },
-                stroke: { width: 1.5 },
-                xaxis: {
-                    labels: {
-                        style: {
-                            fontSize: '10px',
-                            fontFamily
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    title: { style: { fontSize: '14px', fontFamily } },
+                    stroke: { width: 1.5 },
+                    xaxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px',
+                                fontFamily
+                            }
                         }
-                    }
-                },
-                yaxis: {
-                    labels: {
-                        style: {
-                            fontSize: '10px',
-                            fontFamily
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px',
+                                fontFamily
+                            }
                         }
                     }
                 }
             }
-        }]
+        ]
     }
 })
 </script>
@@ -132,12 +136,11 @@ const chartOptions = computed(() => {
 <template>
     <div class="w-full h-full">
         <VueApexCharts
+            :key="isDark"
             type="line"
             :height="height"
             :options="chartOptions"
             :series="series"
-            class="w-full"
-            :key="isDark"
-        />
+            class="w-full" />
     </div>
 </template>

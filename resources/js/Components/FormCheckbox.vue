@@ -1,20 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
     modelValue: {
-        type: [Boolean, Array],
-        required: true
-    },
-    value: {
-        type: [String, Number],
-        default: null
+        type: Boolean,
+        default: false
     },
     label: {
-        type: String,
-        required: true
-    },
-    name: {
         type: String,
         required: true
     },
@@ -22,60 +14,83 @@ const props = defineProps({
         type: String,
         default: null
     },
+    required: {
+        type: Boolean,
+        default: false
+    },
     error: {
         type: String,
         default: ''
+    },
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    help: {
+        type: String,
+        default: null
     }
 })
 
 const emit = defineEmits(['update:modelValue'])
+
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 
-const updateValue = (e) => {
-    if (Array.isArray(props.modelValue)) {
-        const newValue = [...props.modelValue]
-        if (e.target.checked) {
-            newValue.push(props.value)
-        } else {
-            const index = newValue.indexOf(props.value)
-            if (index > -1) {
-                newValue.splice(index, 1)
-            }
-        }
-        emit('update:modelValue', newValue)
-    } else {
-        emit('update:modelValue', e.target.checked)
-    }
+function updateValue(event) {
+    emit('update:modelValue', event.target.checked)
 }
 </script>
 
-
 <template>
-    <fieldset class="flex items-start">
+    <div>
         <label :for="inputId" class="flex items-start cursor-pointer">
-            <span class="flex items-center h-5">
-                <input 
-                    type="checkbox" 
-                    :id="inputId" 
-                    :name="name" 
-                    :value="value"
-                    :checked="Array.isArray(modelValue) ? modelValue.includes(value) : modelValue" 
-                    @change="updateValue"
-                    :aria-describedby="error ? `${inputId}-error` : undefined" 
-                    :aria-invalid="!!error"
-                    class="rounded border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-opacity-50 dark:bg-gray-800 cursor-pointer"
-                    :style="{ 
-                        '--tw-ring-color': 'var(--primary-color)', 
-                        'color': 'var(--selection-color)' 
-                    }"
-                />
-            </span>
-            <span class="ml-3 text-sm">
-                <span class="font-medium text-gray-700 dark:text-gray-300">{{ label }}</span>
-                <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1 text-sm text-red-600">
-                    {{ error }}
+            <div class="flex items-center h-5">
+                <div class="group grid size-4 grid-cols-1">
+                    <input
+                        :id="inputId"
+                        type="checkbox"
+                        :checked="modelValue"
+                        :required="required"
+                        :disabled="disabled"
+                        :aria-invalid="!!error"
+                        :aria-describedby="error ? `${inputId}-error` : undefined"
+                        class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-indigo-500 dark:checked:bg-indigo-500 dark:indeterminate:border-indigo-500 dark:indeterminate:bg-indigo-500 dark:focus-visible:outline-indigo-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:checked:bg-white/10 forced-colors:appearance-auto cursor-pointer disabled:cursor-not-allowed"
+                        @change="updateValue" />
+                    <svg
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+                        <path
+                            d="M3 8L6 11L11 3.5"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="opacity-0 group-has-checked:opacity-100" />
+                        <path
+                            d="M3 7H11"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="opacity-0 group-has-indeterminate:opacity-100" />
+                    </svg>
+                </div>
+            </div>
+            <div class="ml-3 text-sm">
+                <span class="font-medium text-[var(--color-text)]">
+                    {{ label }}{{ required ? ' *' : '' }}
+                </span>
+                <p v-if="help && !error" class="mt-1 text-[var(--color-text-muted)] text-xs">
+                    {{ help }}
                 </p>
-            </span>
+            </div>
         </label>
-    </fieldset>
+
+        <p
+            v-if="error"
+            :id="`${inputId}-error`"
+            role="alert"
+            class="mt-1 text-red-600 dark:text-red-400 text-xs">
+            {{ error }}
+        </p>
+    </div>
 </template>

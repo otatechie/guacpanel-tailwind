@@ -1,113 +1,191 @@
 function initializeTheme() {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    const userPreference = localStorage.getItem('theme')
+
+    if (userPreference === 'dark') {
         document.documentElement.classList.add('dark')
-    } else {
+        return 'dark'
+    } else if (userPreference === 'light') {
         document.documentElement.classList.remove('dark')
+        return 'light'
+    } else {
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (systemPrefersDark) {
+            document.documentElement.classList.add('dark')
+            return 'system'
+        } else {
+            document.documentElement.classList.remove('dark')
+            return 'system'
+        }
     }
 }
 
-function toggleTheme() {
-    if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-    } else {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
+function getCurrentThemePreference() {
+    const userPreference = localStorage.getItem('theme')
+    if (userPreference === 'dark' || userPreference === 'light') {
+        return userPreference
+    }
+    return 'system'
+}
+
+function getEffectiveTheme() {
+    const preference = getCurrentThemePreference()
+    if (preference === 'system') {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+    return preference
+}
+
+function setTheme(preference) {
+    switch (preference) {
+        case 'dark':
+            document.documentElement.classList.add('dark')
+            localStorage.setItem('theme', 'dark')
+            break
+        case 'light':
+            document.documentElement.classList.remove('dark')
+            localStorage.setItem('theme', 'light')
+            break
+        case 'system': {
+            localStorage.removeItem('theme')
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+            if (systemPrefersDark) {
+                document.documentElement.classList.add('dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+            break
+        }
     }
 }
 
 function setupThemeListener() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches }) => {
-        if (!('theme' in localStorage)) {
+        const currentPreference = getCurrentThemePreference()
+
+        if (currentPreference === 'system') {
             if (matches) {
-                document.documentElement.classList.add('dark');
+                document.documentElement.classList.add('dark')
             } else {
-                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.remove('dark')
             }
+
+            window.dispatchEvent(
+                new CustomEvent('themeChanged', {
+                    detail: {
+                        preference: 'system',
+                        effectiveTheme: matches ? 'dark' : 'light'
+                    }
+                })
+            )
         }
-    });
+    })
 }
-
-initializeTheme();
-setupThemeListener();
-
-function resetToSystemTheme() {
-    localStorage.removeItem('theme');
-    initializeTheme();
-}
-
-let currentPreference = localStorage.theme || 'system';
 
 function getNextTheme(current) {
     switch (current) {
         case 'light':
-            return 'dark';
+            return 'dark'
         case 'dark':
-            return 'system';
+            return 'system'
         case 'system':
-            return 'light';
+            return 'light'
+        default:
+            return 'light'
     }
 }
 
 function getNextThemeText(current) {
     switch (current) {
         case 'light':
-            return 'Dark mode';
+            return 'Dark Mode'
         case 'dark':
-            return 'System mode';
+            return 'System Mode'
         case 'system':
-            return 'Light mode';
+            return 'Light Mode'
+        default:
+            return 'Light Mode'
     }
 }
 
 function getNextThemeIcon(current) {
     switch (current) {
         case 'light':
-            return 'moon';
+            return 'moon'
         case 'dark':
-            return 'system';
+            return 'system'
         case 'system':
-            return 'sun';
+            return 'sun'
+        default:
+            return 'sun'
     }
 }
 
 function cycleTheme() {
-    const nextTheme = getNextTheme(currentPreference);
-    currentPreference = nextTheme;
+    const currentPreference = getCurrentThemePreference()
+    const nextTheme = getNextTheme(currentPreference)
 
-    switch (nextTheme) {
-        case 'light':
-            document.documentElement.classList.remove('dark');
-            localStorage.theme = 'light';
-            break;
-        case 'dark':
-            document.documentElement.classList.add('dark');
-            localStorage.theme = 'dark';
-            break;
-        case 'system':
-            localStorage.removeItem('theme');
-            initializeTheme();
-            break;
-    }
+    setTheme(nextTheme)
+
+    window.dispatchEvent(
+        new CustomEvent('themeChanged', {
+            detail: {
+                preference: nextTheme,
+                effectiveTheme: getEffectiveTheme()
+            }
+        })
+    )
 
     return {
         currentPreference: nextTheme,
+        effectiveTheme: getEffectiveTheme(),
         nextThemeText: getNextThemeText(nextTheme),
         nextThemeIcon: getNextThemeIcon(nextTheme)
-    };
+    }
 }
 
 function getCurrentThemeState() {
+    const currentPreference = getCurrentThemePreference()
+    const effectiveTheme = getEffectiveTheme()
+
     return {
         currentPreference,
+        effectiveTheme,
         nextThemeText: getNextThemeText(currentPreference),
-        nextThemeIcon: getNextThemeIcon(currentPreference)
-    };
+        nextThemeIcon: getNextThemeIcon(currentPreference),
+        isSystem: currentPreference === 'system'
+    }
 }
 
+function toggleTheme() {
+    const currentPreference = getCurrentThemePreference()
+    const nextTheme = currentPreference === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+
+    return {
+        currentPreference: nextTheme,
+        effectiveTheme: nextTheme
+    }
+}
+
+function resetToSystemTheme() {
+    setTheme('system')
+
+    return {
+        currentPreference: 'system',
+        effectiveTheme: getEffectiveTheme()
+    }
+}
+
+initializeTheme()
+setupThemeListener()
+
 export {
+    initializeTheme,
+    getCurrentThemePreference,
+    getEffectiveTheme,
+    setTheme,
     toggleTheme,
     resetToSystemTheme,
     cycleTheme,
     getCurrentThemeState
-};
+}

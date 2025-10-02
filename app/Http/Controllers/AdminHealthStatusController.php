@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Inertia\Inertia;
-use Spatie\Health\Health;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Health\ResultStores\ResultStore;
 use Spatie\Health\Commands\RunHealthChecksCommand;

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps({
     isLoading: Boolean,
@@ -9,38 +9,62 @@ const props = defineProps({
     federatedResults: Array,
     isFederatedSearching: Boolean,
     placeholder: String
-});
+})
 
-const emit = defineEmits(['search', 'focus', 'blur']);
+defineEmits(['search', 'focus', 'blur'])
 
-// Computed properties for better readability
-const showResultsContainer = computed(() =>
-    props.showResults && props.searchQuery && props.hasValidApiKey
-);
+const showResultsContainer = computed(
+    () => props.showResults && props.searchQuery && props.hasValidApiKey
+)
 
-const hasResults = computed(() =>
-    props.federatedResults && props.federatedResults.length > 0
-);
+const hasResults = computed(() => props.federatedResults && props.federatedResults.length > 0)
 </script>
 
 <template>
     <div class="typesense-search relative w-full">
         <!-- Search Input Section -->
         <div class="search-input-wrapper relative">
-            <input type="search" :disabled="isLoading" :placeholder="isLoading ? 'Loading search...' : placeholder"
-                :value="searchQuery" class="search-input" :class="{ 'loading': isLoading }"
-                @input="$emit('search', $event)" @focus="$emit('focus')" @blur="$emit('blur')" />
-            <div class="search-icon" :class="{ 'loading': isLoading }">
+            <input
+                type="search"
+                :disabled="isLoading"
+                :placeholder="isLoading ? 'Loading search...' : placeholder"
+                :value="searchQuery"
+                class="search-input"
+                :class="{ loading: isLoading }"
+                @input="$emit('search', $event)"
+                @focus="$emit('focus')"
+                @blur="$emit('blur')" />
+            <div class="search-icon" :class="{ loading: isLoading }">
                 <!-- Loading Spinner -->
-                <svg v-if="isLoading" class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none"
+                <svg
+                    v-if="isLoading"
+                    class="animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
                     viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                    <path class="opacity-75" fill="currentColor"
+                    <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4" />
+                    <path
+                        class="opacity-75"
+                        fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
                 <!-- Search Icon -->
-                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                <svg
+                    v-else
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
@@ -50,15 +74,24 @@ const hasResults = computed(() =>
         <div v-if="!hasValidApiKey && searchQuery" class="search-results-container">
             <div
                 class="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg">
-                <svg class="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                <svg
+                    class="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
                     stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div>
-                    <p class="text-sm font-medium text-amber-700 dark:text-amber-300">Search Service Unavailable</p>
-                    <p class="text-xs text-amber-600 dark:text-amber-400">Search functionality is temporarily disabled.
-                        Please try again later.</p>
+                    <p class="text-sm font-medium text-amber-700 dark:text-amber-300">
+                        Search Service Unavailable
+                    </p>
+                    <p class="text-xs text-amber-600 dark:text-amber-400">
+                        Search functionality is temporarily disabled. Please try again later.
+                    </p>
                 </div>
             </div>
         </div>
@@ -71,9 +104,21 @@ const hasResults = computed(() =>
 
             <!-- Loading State -->
             <div v-if="isFederatedSearching" class="search-loading-state">
-                <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                    <path class="opacity-75" fill="currentColor"
+                <svg
+                    class="animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24">
+                    <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4" />
+                    <path
+                        class="opacity-75"
+                        fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
                 <p>Searching...</p>
@@ -94,8 +139,15 @@ const hasResults = computed(() =>
 
                 <!-- Empty State -->
                 <div v-else class="search-empty-state">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
                             d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p>No results found for "{{ searchQuery }}"</p>

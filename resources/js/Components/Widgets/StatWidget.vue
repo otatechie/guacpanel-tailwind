@@ -1,3 +1,22 @@
+<!--
+  StatWidget - Clean stat card with icon and optional trend
+
+  Features:
+  - Displays title, value, and optional description
+  - Icon on the right with themed background
+  - Optional trend indicator at bottom (up/down)
+  - Horizontal layout optimized for dashboards
+  - Multiple color themes for icon
+
+  Usage:
+  <StatWidget
+    title="Total Users"
+    value="1,234"
+    description="Active this month"
+    :icon="userIconSVG"
+    trend="up"
+    color="blue" />
+-->
 <script setup>
 defineProps({
     title: {
@@ -19,7 +38,7 @@ defineProps({
     trend: {
         type: String,
         default: 'neutral', // can be 'up', 'down', or 'neutral'
-        validator: (value) => ['up', 'down', 'neutral'].includes(value)
+        validator: value => ['up', 'down', 'neutral'].includes(value)
     },
     color: {
         type: String,
@@ -37,42 +56,49 @@ const colorClasses = {
 </script>
 
 <template>
-    <div class="group bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600">
-        <!-- Header row with icon and trend -->
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <!-- Icon with subtle background -->
-            <div class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg border transition-all duration-300 group-hover:scale-105"
-                 :class="colorClasses[color]">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" v-html="icon"></svg>
+    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-4 sm:p-6">
+        <div class="flex items-start justify-between">
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+                <p class="text-xs sm:text-sm font-medium text-[var(--color-text-muted)] mb-1">
+                    {{ title }}
+                </p>
+                <p class="text-2xl sm:text-3xl font-semibold text-[var(--color-text)] mb-1">
+                    {{ value }}
+                </p>
+                <p v-if="description" class="text-xs sm:text-sm text-[var(--color-text-muted)]">
+                    {{ description }}
+                </p>
             </div>
 
-            <!-- Trend indicator -->
-            <div v-if="trend !== 'neutral'" class="flex items-center">
-                <div v-if="trend === 'up'" class="flex items-center space-x-1 px-2 py-1 rounded-lg bg-green-50 dark:bg-green-900/20">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    <span class="text-xs font-medium text-green-700 dark:text-green-300">+12%</span>
-                </div>
-                <div v-else class="flex items-center space-x-1 px-2 py-1 rounded-lg bg-red-50 dark:bg-red-900/20">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
-                    </svg>
-                    <span class="text-xs font-medium text-red-700 dark:text-red-300">-8%</span>
-                </div>
+            <!-- Icon -->
+            <div
+                class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg border shrink-0"
+                :class="colorClasses[color]">
+                <svg
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    v-html="icon"></svg>
             </div>
         </div>
 
-        <!-- Content section -->
-        <div>
-            <!-- Title -->
-            <h3 class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 capitalize tracking-wide">{{ title }}</h3>
-            
-            <!-- Value -->
-            <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2">{{ value }}</p>
-            
-            <!-- Description -->
-            <p v-if="description" class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{{ description }}</p>
+        <!-- Trend indicator at bottom -->
+        <div v-if="trend !== 'neutral'" class="mt-4 pt-4 border-t border-[var(--color-border)]">
+            <div v-if="trend === 'up'" class="flex items-center gap-1 text-green-600 dark:text-green-400">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <span class="text-sm font-medium">+12% from last month</span>
+            </div>
+            <div v-else class="flex items-center gap-1 text-red-600 dark:text-red-400">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
+                </svg>
+                <span class="text-sm font-medium">-8% from last month</span>
+            </div>
         </div>
     </div>
 </template>

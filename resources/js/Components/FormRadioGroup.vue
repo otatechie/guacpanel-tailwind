@@ -9,11 +9,10 @@ const props = defineProps({
     options: {
         type: Array,
         required: true,
-        validator: (value) => value.every(option =>
-            typeof option === 'object' &&
-            'label' in option &&
-            'value' in option
-        )
+        validator: value =>
+            value.every(
+                option => typeof option === 'object' && 'label' in option && 'value' in option
+            )
     },
     label: {
         type: String,
@@ -33,14 +32,16 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['update:modelValue'])
+defineEmits(['update:modelValue'])
 
-const groupName = computed(() => props.name || `radio-group-${Math.random().toString(36).substring(7)}`)
+const groupName = computed(
+    () => props.name || `radio-group-${Math.random().toString(36).substring(7)}`
+)
 </script>
 
 <template>
     <div class="space-y-3">
-        <label v-if="label" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+        <label v-if="label" class="block text-sm font-medium text-[var(--color-text)] mb-2">
             {{ label }}
             <span v-if="required" class="text-red-500">*</span>
         </label>
@@ -48,17 +49,25 @@ const groupName = computed(() => props.name || `radio-group-${Math.random().toSt
         <div class="flex flex-wrap gap-4">
             <div v-for="option in options" :key="option.value" class="relative flex items-start">
                 <div class="flex items-center h-5">
-                    <input type="radio" :id="`${groupName}-${option.value}`" :name="groupName" :value="option.value"
-                        :checked="modelValue === option.value" @change="$emit('update:modelValue', option.value)"
-                        class="h-4 w-4 text-blue-600 dark:text-blue-400 border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-400"
-                        :class="{ 'border-red-500': error }">
+                    <input
+                        :id="`${groupName}-${option.value}`"
+                        type="radio"
+                        :name="groupName"
+                        :value="option.value"
+                        :checked="modelValue === option.value"
+                        class="h-4 w-4 text-blue-600 border-[var(--color-border-strong)] focus:ring-blue-500"
+                        :class="{ 'border-red-500': error }"
+                        @change="$emit('update:modelValue', option.value)" />
                 </div>
                 <div class="ml-3 text-sm">
-                    <label :for="`${groupName}-${option.value}`"
-                        class="font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <label
+                        :for="`${groupName}-${option.value}`"
+                        class="font-medium text-[var(--color-text)] cursor-pointer">
                         {{ option.label }}
                     </label>
-                    <p v-if="option.description" class="text-gray-500 dark:text-gray-400">{{ option.description }}</p>
+                    <p v-if="option.description" class="text-[var(--color-text-muted)]">
+                        {{ option.description }}
+                    </p>
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@ import FormInput from '../../Components/FormInput.vue'
 
 const props = defineProps({
     token: String,
-    email: String,
+    email: String
 })
 
 defineOptions({
@@ -17,7 +17,7 @@ const form = useForm({
     token: props.token,
     email: props.email,
     password: '',
-    password_confirmation: '',
+    password_confirmation: ''
 })
 
 const submit = () => {
@@ -25,23 +25,25 @@ const submit = () => {
 }
 </script>
 
-
 <template>
-
     <Head title="Reset password" />
 
     <main class="max-w-[384px] mx-auto px-8" role="main">
-        <h1 class="main-heading text-center dark:text-white">
-            Reset your password
-        </h1>
+        <h1 class="main-heading text-center">Reset your password</h1>
 
-        <form @submit.prevent="submit" class="mt-6 container-border p-5 space-y-6"
-            aria-labelledby="reset-password-form">
-            <section class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md" aria-labelledby="password-requirements">
-                <h2 id="password-requirements" class="text-gray-400 dark:text-gray-400 text-sm mb-2">
+        <form
+            class="mt-6 container-border p-5 space-y-6"
+            aria-labelledby="reset-password-form"
+            @submit.prevent="submit">
+            <section
+                class="bg-[var(--color-surface-muted)] p-4 rounded-md"
+                aria-labelledby="password-requirements">
+                <h2
+                    id="password-requirements"
+                    class="text-[var(--color-text-muted)] text-sm mb-2">
                     Password must include:
                 </h2>
-                <ul class="text-gray-400 dark:text-gray-400 space-y-1 list-disc pl-5 text-sm">
+                <ul class="text-[var(--color-text-muted)] space-y-1 list-disc pl-5 text-sm">
                     <li>8+ characters</li>
                     <li>One uppercase letter</li>
                     <li>One number</li>
@@ -49,16 +51,33 @@ const submit = () => {
                 </ul>
             </section>
 
-            <input type="hidden" name="token" :value="form.token">
-            <input type="hidden" name="email" :value="form.email">
+            <input type="hidden" name="token" :value="form.token" />
+            <input type="hidden" name="email" :value="form.email" />
 
-            <FormInput v-model="form.password" label="Password" id="password" type="password" required
-                autocomplete="new-password" :error="form.errors.password" aria-describedby="password-requirements" />
+            <FormInput
+                id="password"
+                v-model="form.password"
+                label="Password"
+                type="password"
+                required
+                autocomplete="new-password"
+                :error="form.errors.password"
+                aria-describedby="password-requirements" />
 
-            <FormInput v-model="form.password_confirmation" label="Confirm password" id="password_confirmation"
-                type="password" required autocomplete="new-password" :error="form.errors.password_confirmation" />
+            <FormInput
+                id="password_confirmation"
+                v-model="form.password_confirmation"
+                label="Confirm password"
+                type="password"
+                required
+                autocomplete="new-password"
+                :error="form.errors.password_confirmation" />
 
-            <button type="submit" :disabled="form.processing" class="w-full btn-primary" aria-busy="form.processing">
+            <button
+                type="submit"
+                :disabled="form.processing"
+                class="w-full btn-primary"
+                aria-busy="form.processing">
                 {{ form.processing ? 'Please wait...' : 'Reset password' }}
             </button>
         </form>

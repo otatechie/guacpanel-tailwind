@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+ 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,13 +19,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable implements Auditable
 {
     use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
-
     use HasUlids;
-
     use \OwenIt\Auditing\Auditable;
-
     use HasRoles;
-
     use Searchable;
 
     protected $guarded = ['id'];
@@ -66,13 +62,6 @@ class User extends Authenticatable implements Auditable
     }
 
 
-    /**
-     * Format date with relative time for recent dates
-     * - Within 24 hours: "2 hours ago", "Just now"
-     * - Yesterday: "Yesterday" 
-     * - This year: "May 6"
-     * - Other years: "May 6, 2020"
-     */
     public function formatDateStyle(?Carbon $date = null): string
     {
         $date = $date ?? $this->created_at;
@@ -81,28 +70,23 @@ class User extends Authenticatable implements Auditable
             return '';
         }
 
-        // Very recent (less than 5 minutes)
         if ($date->diffInMinutes() < 5) {
             return 'Just now';
         }
 
-        // Within last 24 hours
         if ($date->isToday()) {
             return $date->diffForHumans(['short' => false, 'parts' => 1]);
         }
 
-        // Yesterday
         if ($date->isYesterday()) {
             return 'Yesterday';
         }
 
-        // This year (but not recent)
         if ($date->isCurrentYear()) {
-            return $date->format('F j'); // "May 6"
+            return $date->format('F j');
         }
 
-        // Different year - show full date
-        return $date->format('F j, Y'); // "May 6, 2020"
+        return $date->format('F j, Y');
     }
 
 

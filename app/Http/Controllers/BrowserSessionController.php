@@ -58,6 +58,7 @@ class BrowserSessionController extends Controller
         ];
     }
 
+    
     public function logoutOtherDevices(Request $request)
     {
         $request->validate([

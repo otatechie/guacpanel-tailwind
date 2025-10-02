@@ -22,14 +22,14 @@ const props = defineProps({
     }
 })
 
-// Line chart data
 const lineChartData = computed(() => ({
     labels: props.financialMetrics?.months || [],
     datasets: [
         {
             label: 'Income',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
+            data: (props.financialMetrics?.months || []).map(month =>
+                Number(props.financialMetrics?.income?.[month] || 0)
+            ),
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 1,
@@ -38,8 +38,9 @@ const lineChartData = computed(() => ({
         },
         {
             label: 'Expenses',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
+            data: (props.financialMetrics?.months || []).map(month =>
+                Number(props.financialMetrics?.expense?.[month] || 0)
+            ),
             borderColor: '#ef4444',
             backgroundColor: 'rgba(239, 68, 68, 0.1)',
             borderWidth: 1,
@@ -47,55 +48,61 @@ const lineChartData = computed(() => ({
             fill: true
         }
     ]
-}));
+}))
 
-// Doughnut chart data
 const doughnutData = computed(() => ({
     labels: ['Total Income', 'Total Expenses'],
-    datasets: [{
-        label: 'Revenue Distribution',
-        data: [
-            (props.financialMetrics?.months || [])
-                .reduce((sum, month) => sum + Number(props.financialMetrics?.income?.[month] || 0), 0),
-            (props.financialMetrics?.months || [])
-                .reduce((sum, month) => sum + Number(props.financialMetrics?.expense?.[month] || 0), 0)
-        ],
-        backgroundColor: ['#10b981', '#ef4444'],
-        borderWidth: 1
-    }]
-}));
+    datasets: [
+        {
+            label: 'Revenue Distribution',
+            data: [
+                (props.financialMetrics?.months || []).reduce(
+                    (sum, month) => sum + Number(props.financialMetrics?.income?.[month] || 0),
+                    0
+                ),
+                (props.financialMetrics?.months || []).reduce(
+                    (sum, month) => sum + Number(props.financialMetrics?.expense?.[month] || 0),
+                    0
+                )
+            ],
+            backgroundColor: ['#10b981', '#ef4444'],
+            borderWidth: 1
+        }
+    ]
+}))
 
-// Bar chart data   
 const barChartData = computed(() => ({
     labels: props.financialMetrics?.months || [],
     datasets: [
         {
             label: 'Income',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
+            data: (props.financialMetrics?.months || []).map(month =>
+                Number(props.financialMetrics?.income?.[month] || 0)
+            ),
             backgroundColor: '#10b981',
             borderColor: '#10b981',
             borderWidth: 1
         },
         {
             label: 'Expenses',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
+            data: (props.financialMetrics?.months || []).map(month =>
+                Number(props.financialMetrics?.expense?.[month] || 0)
+            ),
             backgroundColor: '#ef4444',
             borderColor: '#ef4444',
             borderWidth: 1
         }
     ]
-}));
+}))
 
-// Area chart data
 const areaChartData = computed(() => ({
     labels: props.financialMetrics?.months || [],
     datasets: [
         {
             label: 'Income',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.income?.[month] || 0)),
+            data: (props.financialMetrics?.months || []).map(month =>
+                Number(props.financialMetrics?.income?.[month] || 0)
+            ),
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 1,
@@ -104,18 +111,17 @@ const areaChartData = computed(() => ({
         },
         {
             label: 'Expenses',
-            data: (props.financialMetrics?.months || [])
-                .map(month => Number(props.financialMetrics?.expense?.[month] || 0)),
+            data: (props.financialMetrics?.months || []).map(month =>
+                Number(props.financialMetrics?.expense?.[month] || 0)
+            ),
             borderColor: '#ef4444',
-            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)'
         }
     ]
-}));
+}))
 </script>
 
-
 <template>
-
     <Head title="Dashboard" />
 
     <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -125,12 +131,16 @@ const areaChartData = computed(() => ({
                 class="mb-8 bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-4 space-y-8">
                     <div>
-                        <ApexLineChart :chart-data="lineChartData" :title="'Revenue vs Expenses (Line Chart)'"
+                        <ApexLineChart
+                            :chart-data="lineChartData"
+                            :title="'Revenue vs Expenses (Line Chart)'"
                             height="400px" />
                     </div>
-                    <hr class="border-gray-100 dark:border-gray-700">
+                    <hr class="border-gray-100 dark:border-gray-700" />
                     <div>
-                        <ApexDonutChart :chart-data="doughnutData" :title="'Revenue Distribution (Doughnut Chart)'"
+                        <ApexDonutChart
+                            :chart-data="doughnutData"
+                            :title="'Revenue Distribution (Doughnut Chart)'"
                             height="400px" />
                     </div>
                 </div>
@@ -140,12 +150,16 @@ const areaChartData = computed(() => ({
                 class="mb-8 bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700">
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-4 space-y-8">
                     <div>
-                        <ApexBarChart :chart-data="barChartData" :title="'Revenue vs Expenses (Bar Chart)'"
+                        <ApexBarChart
+                            :chart-data="barChartData"
+                            :title="'Revenue vs Expenses (Bar Chart)'"
                             height="400px" />
                     </div>
-                    <hr class="border-gray-100 dark:border-gray-700">
+                    <hr class="border-gray-100 dark:border-gray-700" />
                     <div>
-                        <ApexAreaChart :chart-data="areaChartData" :title="'Income Trend (Area Chart)'"
+                        <ApexAreaChart
+                            :chart-data="areaChartData"
+                            :title="'Income Trend (Area Chart)'"
                             height="400px" />
                     </div>
                 </div>
