@@ -51,7 +51,7 @@ const performFederatedSearch = async () => {
         const userResults = searchResponse.data.results[0].hits.map(hit => ({
             ...hit.document,
             collection_name: 'users',
-            url: `/admin/user/${hit.document.id}/edit`,
+            url: `/admin/users`,
             displayTitle:
                 hit.highlights?.length > 0 && hit.highlights[0].field === 'name'
                     ? hit.highlights[0].snippet
@@ -110,5 +110,5 @@ watch(
 </script>
 
 <template>
-    <div></div>
+    <!-- This component handles federated search logic but doesn't render anything -->
 </template>

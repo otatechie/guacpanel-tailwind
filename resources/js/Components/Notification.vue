@@ -9,7 +9,6 @@ defineProps({
 })
 
 const notificationsOpen = ref(false)
-const notificationRef = ref(null)
 
 const notifications = ref([
     {
@@ -79,7 +78,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div ref="notificationRef" class="relative">
+    <div class="relative">
         <!-- Notification Bell Button -->
         <button
             type="button"

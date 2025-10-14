@@ -75,7 +75,6 @@ const handlers = {
 const handleClickAway = event => {
     handlers.sidebar(event)
     handlers.search(event)
-    handlers.ctaButton(event)
 }
 
 const handleKeyDown = event => {
@@ -211,10 +210,6 @@ onUnmounted(() => {
                     <section
                         class="flex items-center gap-1 sm:gap-2 flex-shrink-0"
                         aria-label="User controls">
-                        <div class="hidden lg:block">
-                            <CtaButton />
-                        </div>
-
                         <ColorThemeSwitcher />
                         <Notification
                             v-if="user"

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
 use App\Models\FinancialMetric;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
