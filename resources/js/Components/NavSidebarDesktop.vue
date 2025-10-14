@@ -80,10 +80,6 @@ const navigationSections = reactive([
                         route: 'admin.permission.role.index'
                     },
                     {
-                        name: 'System Notices',
-                        route: 'admin.system-notice.index'
-                    },
-                    {
                         name: 'Personalisation',
                         route: 'admin.personalization.index'
                     },

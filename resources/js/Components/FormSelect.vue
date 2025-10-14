@@ -252,7 +252,7 @@ onBeforeUnmount(() => {
                 :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
                 :aria-activedescendant="modelValue ? `${inputId}-option-${modelValue}` : undefined"
-                :class="[selectClass]"
+                :class="[selectClass, 'capitalize']"
                 :disabled="disabled"
                 @keydown="handleKeydown" />
 
@@ -373,7 +373,7 @@ onBeforeUnmount(() => {
                         @mouseenter="highlightedIndex = index"
                         @click="selectOption(option)">
                         <div class="flex items-center justify-between">
-                            <span>{{ option[optionLabel] }}</span>
+                            <span class="capitalize">{{ option[optionLabel] }}</span>
                             <svg
                                 v-if="isOptionSelected(option)"
                                 class="w-4 h-4 text-[var(--color-text-muted)]"

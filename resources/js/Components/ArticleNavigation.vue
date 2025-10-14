@@ -21,7 +21,7 @@ const updateActiveSection = () => {
             break
         }
     }
-}a
+}
 
 const scrollToSection = sectionId => {
     const section = document.getElementById(sectionId)

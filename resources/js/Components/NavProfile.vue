@@ -15,7 +15,6 @@ const menuOpen = ref(false)
 const menuWrapper = ref(null)
 const isDark = ref(getEffectiveTheme() === 'dark')
 const themeState = ref(getCurrentThemeState())
-const hoverColor = ref('group-hover:text-[var(--primary-color)]')
 
 const menuItems = [
     {
@@ -213,14 +212,13 @@ const icons = {
                         role="menuitem"
                         @click="item.action">
                         <svg
-                            class="mr-3 h-5 w-5 text-[var(--color-text-muted)]"
-                            :class="hoverColor"
+                            class="mr-3 h-5 w-5 text-[var(--color-text-muted)] group-hover:text-[var(--primary-color)]"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
                             stroke-width="1.5"
                             v-html="icons[item.icon.value]" />
-                        <span :class="hoverColor">{{ item.label }}</span>
+                        <span class="group-hover:text-[var(--primary-color)]">{{ item.label }}</span>
                     </button>
                 </li>
 
@@ -235,13 +233,13 @@ const icons = {
                         @click="closeMenu">
                         <svg
                             class="mr-3 h-5 w-5 text-[var(--color-text-muted)]"
-                            :class="[item.label === 'Sign out' ? '' : hoverColor, item.iconClass]"
+                            :class="[item.label === 'Sign out' ? '' : 'group-hover:text-[var(--primary-color)]', item.iconClass]"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
                             stroke-width="1.5"
                             v-html="icons[item.icon]" />
-                        <span :class="item.label === 'Sign out' ? '' : hoverColor">
+                        <span :class="item.label === 'Sign out' ? '' : 'group-hover:text-[var(--primary-color)]'">
                             {{ item.label }}
                         </span>
                     </Link>
