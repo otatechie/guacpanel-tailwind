@@ -118,7 +118,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
 
                     <footer
                         v-if="$slots.footer"
-                        class="flex justify-end gap-2 sm:gap-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-800/50 px-3 sm:px-4 md:px-6 py-3 sm:py-4 rounded-b-xl flex-shrink-0">
+                        class="flex justify-end gap-8 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-800/50 px-3 sm:px-4 md:px-6 py-3 sm:py-4 rounded-b-xl flex-shrink-0">
                         <slot name="footer"></slot>
                     </footer>
                 </article>

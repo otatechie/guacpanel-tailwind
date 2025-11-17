@@ -19,7 +19,7 @@ class AdminUserController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'users');
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
 
         $users = User::query()
             ->with(['roles', 'permissions'])

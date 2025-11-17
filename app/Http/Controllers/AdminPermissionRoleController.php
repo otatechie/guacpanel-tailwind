@@ -23,7 +23,7 @@ class AdminPermissionRoleController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'permissions');
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
 
         $permissions = Permission::query()
             ->paginate($perPage)

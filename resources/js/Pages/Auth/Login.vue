@@ -168,21 +168,23 @@ const sendMagicLink = () => {
         </template>
 
         <template #footer>
-            <button
-                type="button"
-                class="cursor-pointer mr-2 text-[var(--color-text)]"
-                aria-label="Close modal"
-                @click="showMagicLinkModal = false">
-                Cancel
-            </button>
-            <button
-                :disabled="magicLinkForm.processing"
-                type="button"
-                class="btn-primary"
-                aria-busy="magicLinkForm.processing"
-                @click="sendMagicLink">
-                {{ magicLinkForm.processing ? 'Sending...' : 'Send magic link' }}
-            </button>
+            <div class="flex justify-end gap-8">
+                <button
+                    type="button"
+                    class="cursor-pointer text-[var(--color-text)]"
+                    aria-label="Close modal"
+                    @click="showMagicLinkModal = false">
+                    Cancel
+                </button>
+                <button
+                    :disabled="magicLinkForm.processing"
+                    type="button"
+                    class="btn-primary"
+                    aria-busy="magicLinkForm.processing"
+                    @click="sendMagicLink">
+                    {{ magicLinkForm.processing ? 'Sending...' : 'Send magic link' }}
+                </button>
+            </div>
         </template>
     </Modal>
 </template>

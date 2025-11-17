@@ -23,7 +23,7 @@ class AdminRoleController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'roles');
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
 
         $roles = Role::query()
             ->with('permissions')

@@ -16,7 +16,7 @@ class AdminAuditController extends Controller
     
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'audits');
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
 
         $audits = Audit::query()
             ->select('id', 'created_at', 'event', 'auditable_type', 'user_type', 'user_id')

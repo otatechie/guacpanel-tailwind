@@ -10,20 +10,21 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create superuser
-        $superuser = User::create([
-            'name' => 'Ota',
-            'email' => 'ota@example.com',
-            'password' => bcrypt('password'),
-        ]);
-        $superuser->assignRole('superuser');
+        // Disable Scout syncing during seeding to avoid Typesense configuration errors
+        User::withoutSyncingToSearch(function () {
+            $superuser = User::create([
+                'name' => 'Ota',
+                'email' => 'ota@example.com',
+                'password' => bcrypt('password'),
+            ]);
+            $superuser->assignRole('superuser');
 
-        // Create regular user
-        $user = User::create([
-            'name' => 'Regular User',
-            'email' => 'user@example.com',
-            'password' => bcrypt('password'),
-        ]);
-        $user->assignRole('user');
+            $user = User::create([
+                'name' => 'Regular User',
+                'email' => 'user@example.com',
+                'password' => bcrypt('password'),
+            ]);
+            $user->assignRole('user');
+        });
     }
 } 
