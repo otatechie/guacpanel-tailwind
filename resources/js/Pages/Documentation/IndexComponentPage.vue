@@ -656,14 +656,16 @@ const chartProps = [
                                         <FormInput v-model="demoEmail" label="Email" id="modal-email" type="email" />
                                     </div>
                                     <template #footer>
-                                        <button @click="demoIsOpen = false"
-                                            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm font-medium transition-colors">
-                                            Cancel
-                                        </button>
-                                        <button @click="demoIsOpen = false"
-                                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                                            Save
-                                        </button>
+                                        <div class="flex justify-end gap-8">
+                                            <button @click="demoIsOpen = false"
+                                                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg text-sm font-medium transition-colors">
+                                                Cancel
+                                            </button>
+                                            <button @click="demoIsOpen = false"
+                                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                                                Save
+                                            </button>
+                                        </div>
                                     </template>
                                 </Modal>
                             </div>

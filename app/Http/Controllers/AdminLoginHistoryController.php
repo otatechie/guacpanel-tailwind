@@ -18,7 +18,7 @@ class AdminLoginHistoryController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'login_history');
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
 
         $loginHistory = LoginHistory::with('user')
             ->select([

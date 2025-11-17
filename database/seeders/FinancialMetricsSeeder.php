@@ -19,14 +19,17 @@ class FinancialMetricsSeeder extends Seeder
 
         $startDate = now()->subDays(100);
 
-        for ($i = 0; $i < 100; $i++) {
-            FinancialMetric::create([
-                'date' => $startDate->copy()->addDays($i),
-                'category' => $faker->randomElement(['sales', 'marketing', 'operations', 'investment']),
-                'amount' => $faker->randomFloat(2, 1000, 100000),
-                'type' => $faker->randomElement(['income', 'expense']),
-                'description' => $faker->sentence(),
-            ]);
-        }
+        // Disable Scout syncing during seeding to avoid Typesense configuration errors
+        FinancialMetric::withoutSyncingToSearch(function () use ($faker, $startDate) {
+            for ($i = 0; $i < 100; $i++) {
+                FinancialMetric::create([
+                    'date' => $startDate->copy()->addDays($i),
+                    'category' => $faker->randomElement(['sales', 'marketing', 'operations', 'investment']),
+                    'amount' => $faker->randomFloat(2, 1000, 100000),
+                    'type' => $faker->randomElement(['income', 'expense']),
+                    'description' => $faker->sentence(),
+                ]);
+            }
+        });
     }
 }
