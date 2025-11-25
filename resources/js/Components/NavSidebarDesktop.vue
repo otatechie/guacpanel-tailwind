@@ -108,7 +108,7 @@ const navigationSections = reactive([
 </script>
 
 <template>
-    <aside data-sidebar-content class="nav-sidebar" @click.stop>
+    <aside data-sidebar-content class="nav-sidebar border-r border-[var(--color-border)]" @click.stop style="box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05);">
         <nav class="flex-1 overflow-y-auto py-2 px-2" aria-labelledby="nav-heading">
             <ul class="space-y-1">
                 <template v-for="(section, sectionIndex) in navigationSections" :key="sectionIndex">
@@ -128,9 +128,9 @@ const navigationSections = reactive([
                                     "
                                     :href="route(item.route)"
                                     :class="[
-                                        'nav-item',
+                                        'nav-item transition-colors duration-200 hover:bg-[var(--color-surface-muted)]',
                                         isCurrentRoute(item.route)
-                                            ? 'nav-item-active'
+                                            ? 'nav-item-active bg-[var(--color-surface-muted)]'
                                             : 'nav-item-default'
                                     ]">
                                     <svg
@@ -154,9 +154,9 @@ const navigationSections = reactive([
                                 <button
                                     v-else-if="item.children && hasVisibleChildren(item)"
                                     :class="[
-                                        'nav-item w-full text-left cursor-pointer',
+                                        'nav-item w-full text-left cursor-pointer transition-colors duration-200 hover:bg-[var(--color-surface-muted)]',
                                         isDropdownOpen(sectionIndex)
-                                            ? 'nav-item-active'
+                                            ? 'nav-item-active bg-[var(--color-surface-muted)]'
                                             : 'nav-item-default'
                                     ]"
                                     @click="toggleDropdown(sectionIndex)">
@@ -206,9 +206,9 @@ const navigationSections = reactive([
                                             v-if="hasPermission(child.permission)"
                                             :href="route(child.route)"
                                             :class="[
-                                                'nav-item pl-4',
+                                                'nav-item pl-4 transition-colors duration-200 hover:bg-[var(--color-surface-muted)]',
                                                 isCurrentRoute(child.route)
-                                                    ? 'nav-item-active'
+                                                    ? 'nav-item-active bg-[var(--color-surface-muted)]'
                                                     : 'nav-item-default'
                                             ]">
                                             <span class="text-sm font-medium">

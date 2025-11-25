@@ -200,14 +200,7 @@ watch(
     <!-- Terminate Session Modal -->
     <Modal :show="showTerminateModal" size="md" @close="closeModal">
         <template #title>
-            <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+            <div class="text-red-600 dark:text-red-400">
                 Terminate Session
             </div>
         </template>
@@ -247,13 +240,13 @@ watch(
             <div class="flex justify-end gap-8">
                 <button
                     type="button"
-                    class="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
+                    class="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                     @click="closeModal">
                     Cancel
                 </button>
                 <button
                     type="button"
-                    class="btn btn-danger"
+                    class="btn-danger btn-sm"
                     :disabled="form.processing"
                     @click="terminateSession">
                     Yes, terminate session

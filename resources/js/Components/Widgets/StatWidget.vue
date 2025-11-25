@@ -56,7 +56,7 @@ const colorClasses = {
 </script>
 
 <template>
-    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-4 sm:p-6">
+    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-4 sm:p-6">
         <div class="flex items-start justify-between">
             <!-- Content -->
             <div class="flex-1 min-w-0">

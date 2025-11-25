@@ -71,19 +71,19 @@ const bgColorClasses = {
 </script>
 
 <template>
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-6">
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">
             <div class="flex-1">
-                <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                <h3 class="text-sm font-medium text-[var(--color-text-muted)] mb-1">
                     {{ title }}
                 </h3>
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">
-                    {{ value }}<span class="text-lg text-gray-500 dark:text-gray-400">/{{ max }}</span>
+                <p class="text-2xl font-semibold text-[var(--color-text)]">
+                    {{ value }}<span class="text-lg text-[var(--color-text-muted)]">/{{ max }}</span>
                 </p>
             </div>
             <div v-if="showPercentage" class="text-right">
-                <span class="text-2xl font-semibold text-gray-900 dark:text-white">{{ percentage }}%</span>
+                <span class="text-2xl font-semibold text-[var(--color-text)]">{{ percentage }}%</span>
             </div>
         </div>
 
@@ -96,7 +96,7 @@ const bgColorClasses = {
         </div>
 
         <!-- Description -->
-        <p v-if="description" class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+        <p v-if="description" class="mt-3 text-sm text-[var(--color-text-muted)]">
             {{ description }}
         </p>
     </div>

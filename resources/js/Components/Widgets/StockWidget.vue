@@ -67,12 +67,12 @@ const sizeClasses = {
 
 <template>
     <article
-        class="group relative bg-white dark:bg-gray-800/50 rounded-2xl border border-gray-200/60 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
+        class="group relative bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs hover:border-opacity-70 transition-all duration-200"
         :class="sizeClasses[size].card">
         <!-- Icon -->
         <div class="mb-4">
             <div
-                class="flex items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-900/50"
+                class="flex items-center justify-center rounded-lg bg-[var(--color-surface-muted)]"
                 :class="sizeClasses[size].icon">
                 <img :src="src" :alt="alt" class="w-full h-full object-contain p-1.5" />
             </div>
@@ -81,12 +81,12 @@ const sizeClasses = {
         <!-- Stock info -->
         <div class="space-y-1 mb-4">
             <h3
-                class="font-medium text-gray-900 dark:text-white tracking-tight"
+                class="font-medium text-[var(--color-text)] tracking-tight"
                 :class="sizeClasses[size].symbol">
                 {{ stock.symbol }}
             </h3>
             <p
-                class="text-gray-500 dark:text-gray-400 font-normal"
+                class="text-[var(--color-text-muted)] font-normal"
                 :class="sizeClasses[size].name">
                 {{ stock.name }}
             </p>
@@ -94,7 +94,7 @@ const sizeClasses = {
 
         <!-- Price and change -->
         <div class="flex items-end justify-between gap-3">
-            <div class="font-semibold text-gray-900 dark:text-white tracking-tight" :class="sizeClasses[size].price">
+            <div class="font-semibold text-[var(--color-text)] tracking-tight" :class="sizeClasses[size].price">
                 {{ stock.currency }}{{ stock.price }}
             </div>
 

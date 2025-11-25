@@ -179,7 +179,7 @@ const sendMagicLink = () => {
                 <button
                     :disabled="magicLinkForm.processing"
                     type="button"
-                    class="btn-primary"
+                    class="btn-primary btn-sm"
                     aria-busy="magicLinkForm.processing"
                     @click="sendMagicLink">
                     {{ magicLinkForm.processing ? 'Sending...' : 'Send magic link' }}
