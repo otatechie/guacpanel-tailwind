@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
@@ -12,19 +11,34 @@ class UserSeeder extends Seeder
     {
         // Disable Scout syncing during seeding to avoid Typesense configuration errors
         User::withoutSyncingToSearch(function () {
-            $superuser = User::create([
-                'name' => 'Ota',
-                'email' => 'ota@example.com',
-                'password' => bcrypt('password'),
-            ]);
-            $superuser->assignRole('superuser');
 
-            $user = User::create([
-                'name' => 'Regular User',
-                'email' => 'user@example.com',
-                'password' => bcrypt('password'),
-            ]);
-            $user->assignRole('user');
+            if (config('seeders.users.superAdmin.enabled')) {
+                $seededSuperAdminEmail = config('seeders.users.superAdmin.email');
+                $superuser = User::where('email', '=', $seededSuperAdminEmail)->first();
+                if ($superuser === null) {
+                    $superuser = User::updateOrCreate([
+                        'name'              => config('seeders.users.superAdmin.name'),
+                        'email'             => $seededSuperAdminEmail,
+                        'password'          => bcrypt(config('seeders.users.superAdmin.password')),
+                        'email_verified_at' => now(),
+                    ]);
+                    $superuser->assignRole(config('seeders.users.superAdmin.role'));
+                }
+            }
+
+            if (config('seeders.users.regular.enabled')) {
+                $seededRegularEmail = config('seeders.users.regular.email');
+                $regularuser = User::where('email', '=', $seededRegularEmail)->first();
+                if ($regularuser === null) {
+                    $regularuser = User::updateOrCreate([
+                        'name'              => config('seeders.users.regular.name'),
+                        'email'             => $seededRegularEmail,
+                        'password'          => bcrypt(config('seeders.users.regular.password')),
+                        'email_verified_at' => now(),
+                    ]);
+                    $regularuser->assignRole(config('seeders.users.regular.role'));
+                }
+            }
         });
     }
 } 
