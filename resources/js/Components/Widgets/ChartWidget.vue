@@ -88,14 +88,14 @@ const isPositiveChange = computed(() => props.change > 0)
 </script>
 
 <template>
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-4 sm:p-6">
         <!-- Header -->
         <div class="mb-3 sm:mb-4">
-            <h3 class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+            <h3 class="text-xs sm:text-sm font-medium text-[var(--color-text-muted)] mb-2">
                 {{ title }}
             </h3>
             <div class="flex items-baseline gap-2 sm:gap-3">
-                <p class="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-white">
+                <p class="text-2xl sm:text-3xl font-semibold text-[var(--color-text)]">
                     {{ value }}
                 </p>
                 <span

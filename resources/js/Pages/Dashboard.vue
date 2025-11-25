@@ -3,8 +3,6 @@ import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import Default from '../Layouts/Default.vue'
 import StockWidget from '@/Components/Widgets/StockWidget.vue'
-import RetroStatWidget from '@/Components/Widgets/RetroStatWidget.vue'
-import MetricWidget from '@/Components/Widgets/MetricWidget.vue'
 import StatWidget from '@/Components/Widgets/StatWidget.vue'
 import ProgressWidget from '@/Components/Widgets/ProgressWidget.vue'
 import ChartWidget from '@/Components/Widgets/ChartWidget.vue'
@@ -109,47 +107,33 @@ const stocks = ref([
 
     <main class="min-h-screen">
         <div class="max-w-6xl mx-auto">
-            <header class="mb-6 sm:mb-8 lg:mb-10">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-3 sm:mb-2">
-                    <h1
-                        class="text-2xl sm:text-3xl font-bold text-[var(--color-text)] flex items-center gap-2 sm:gap-3">
-                        <span class="hidden sm:inline">{{ greeting }},</span>
-                        <span class="sm:hidden">{{ greeting }}</span>
-                        {{ userName }}
-                        <span class="text-blue-500 dark:text-blue-400 animate-pulse">•</span>
-                    </h1>
+            <header class="mb-6 sm:mb-8 lg:mb-10 bg-gradient-to-r from-[var(--color-surface)] to-[var(--color-surface-muted)] rounded-lg border border-[var(--color-border)] shadow-xs p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+                    <div class="flex-1">
+                        <h1
+                            class="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
+                            {{ greeting }}, {{ userName }}
+                        </h1>
+                        <p class="text-sm sm:text-base text-[var(--color-text-muted)]">
+                            Here's your portfolio overview for today
+                        </p>
+                    </div>
                     <time
-                        class="text-xs sm:text-sm font-medium text-[var(--color-text-muted)] bg-[var(--color-surface)] px-3 sm:px-4 py-2 sm:py-2.5 rounded-full shadow-sm self-start sm:self-auto">
-                        <div class="hidden sm:block">
-                            {{ formattedDate.display }}
-                        </div>
-                        <div class="sm:hidden flex items-center gap-1">
-                            <span class="font-semibold">{{ formattedDate.dayOfWeek }}</span>
-                            <span>{{ formattedDate.mobileDisplay }}</span>
+                        class="flex items-center gap-3 text-xs sm:text-sm font-medium text-[var(--color-text-muted)] bg-[var(--color-surface)] px-4 py-2.5 rounded-lg border border-[var(--color-border)] whitespace-nowrap">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <div>
+                            <div class="hidden sm:block font-semibold text-[var(--color-text)]">
+                                {{ formattedDate.display }}
+                            </div>
+                            <div class="sm:hidden">
+                                {{ formattedDate.dayOfWeek }} {{ formattedDate.mobileDisplay }}
+                            </div>
                         </div>
                     </time>
                 </div>
-                <p class="text-sm sm:text-base text-[var(--color-text-muted)]">
-                    Here's what's happening with your portfolio today.
-                </p>
             </header>
-
-            <!-- Metrics Widgets -->
-            <section class="mb-10">
-                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">
-                    Metric Widgets
-                </h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <MetricWidget title="Total Revenue" :value="84621" trend="up" :change="12.5" :svg="icons.revenue"
-                        color="emerald" />
-                    <MetricWidget title="Active Users" :value="2847" trend="up" :change="8.2" :svg="icons.users"
-                        color="blue" />
-                    <MetricWidget title="Conversion Rate" value="3.24%" trend="down" :change="-1.8"
-                        :svg="icons.conversion" color="amber" />
-                    <MetricWidget title="Avg. Response Time" value="284ms" trend="up" :change="15.3"
-                        :svg="icons.response" color="rose" />
-                </div>
-            </section>
 
             <!-- Stock Widgets -->
             <section class="mb-10">
@@ -168,24 +152,7 @@ const stocks = ref([
                 </div>
             </section>
 
-            <!-- Retro Stats Widget-->
-            <section class="mb-10">
-                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">
-                    Retro Stat Widgets
-                </h2>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 w-full mx-auto max-w-8xl">
-                    <RetroStatWidget title="Expert Chat & Call Minutes" value="75K+" viewBox="0 0 50 50"
-                        color="text-blue-500 dark:text-blue-400" :svg="icons.chatMinutes" />
-                    <RetroStatWidget title="Average Expert Rating" value="4.9" viewBox="0 0 51 50"
-                        color="text-blue-500 dark:text-blue-400" :svg="icons.expertRating" />
-                    <RetroStatWidget title="Sessions Completed" value="8900+" viewBox="0 0 50 50"
-                        color="text-blue-500 dark:text-blue-400" :svg="icons.sessionsCompleted" />
-                    <RetroStatWidget title="App Downloads" value="1.5M+" viewBox="0 0 51 50"
-                        color="text-blue-500 dark:text-blue-400" :svg="icons.appDownloads" />
-                </div>
-            </section>
-
-            <!-- Stats Widgets -->
+            <!-- Stats Overview -->
             <section class="mb-10">
                 <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">
                     Stats Overview
@@ -193,23 +160,23 @@ const stocks = ref([
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatWidget v-for="(stat, index) in stats" :key="index" :title="stat.title" :value="stat.value"
                         :trend="stat.growth.startsWith('+')
-                                ? 'up'
-                                : stat.growth.startsWith('-')
-                                    ? 'down'
-                                    : 'neutral'
+                            ? 'up'
+                            : stat.growth.startsWith('-')
+                                ? 'down'
+                                : 'neutral'
                             " :color="stat.growth.startsWith('+')
                                 ? 'green'
                                 : stat.growth.startsWith('-')
                                     ? 'red'
                                     : 'blue'
-                            " :icon="stat.title.includes('Member')
+                                " :icon="stat.title.includes('Member')
                                 ? icons.users
                                 : stat.title.includes('Growth')
                                     ? icons.performance
                                     : stat.title.includes('Session')
                                         ? icons.projects
                                         : icons.tasks
-                            " />
+                                " />
                 </div>
             </section>
 

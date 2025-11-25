@@ -48,14 +48,14 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
 
 const inputClass = computed(
     () =>
-        `w-full peer border rounded-md text-sm
+        `w-full peer border rounded-lg text-sm transition-colors duration-200 placeholder-transparent px-3 py-2
     ${
         props.disabled
-            ? 'cursor-not-allowed text-[var(--color-text-muted)]'
-            : 'bg-[var(--color-surface)] text-[var(--color-text)] caret-[var(--color-text)]'
+            ? 'cursor-not-allowed bg-[var(--color-surface-muted)] text-[var(--color-text-muted)] border-[var(--color-border)]'
+            : props.error
+            ? 'bg-[var(--color-surface)] text-[var(--color-text)] caret-red-500 border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500/20'
+            : 'bg-[var(--color-surface)] text-[var(--color-text)] caret-[var(--color-text)] border-[var(--color-border)] hover:border-[var(--color-border-strong)] focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20'
     }
-    border-[var(--color-border-strong)] placeholder-transparent px-3 py-2
-    ${props.error ? 'error' : ''}
     ${props.type === 'date' || props.type === 'time' || props.type === 'datetime-local' ? '[color-scheme:light] dark:[color-scheme:dark]' : 'dark:[color-scheme:dark]'}`
 )
 
