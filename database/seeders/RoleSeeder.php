@@ -13,6 +13,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'user']);
+        $rolename = 'user';
+        $role = Role::where('name', $rolename)->first();
+        if ($role === null) {
+            Role::create(['name' => $rolename]);
+        }
     }
 }
