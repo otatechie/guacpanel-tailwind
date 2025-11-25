@@ -2,30 +2,34 @@ import { createApp, h } from 'vue'
 import { createInertiaApp, Link, router } from '@inertiajs/vue3'
 import { ZiggyVue } from 'ziggy-js'
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-import '../css/app.css'
-import { initializeTheme } from './utils/themeInit'
+import '~/nprogress/nprogress.css'
+import '@css/app.css'
+import '@js/darkMode.js'
+import { initializeTheme } from '@js/utils/themeInit'
 import InstantSearch from 'vue-instantsearch/vue3/es'
 
 initializeTheme()
 
-import Default from './Layouts/Default.vue'
-import Auth from './Layouts/Auth.vue'
-import Public from './Layouts/Public.vue'
+import Default from '@js/Layouts/Default.vue'
+import Auth from '@js/Layouts/Auth.vue'
+import Public from '@js/Layouts/Public.vue'
 
+NProgress.configure({ showSpinner: false })
 router.on('start', () => NProgress.start())
 router.on('finish', () => NProgress.done())
 router.on('error', () => NProgress.done())
+
+const appName = import.meta.env.VITE_APP_NAME ?? 'GuacPanel'
 
 createInertiaApp({
     progress: {
         delay: 250,
         color: '#ffa500',
         includeCSS: true,
-        showSpinner: true
+        showSpinner: true,
     },
 
-    title: title => `${title} - GuacPanel`,
+    title: title => `${title} - ${appName}`,
 
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
@@ -42,7 +46,7 @@ createInertiaApp({
             Link,
             Default,
             Auth,
-            Public
+            Public,
         }
 
         Object.entries(globalComponents).forEach(([name, component]) => {
@@ -52,5 +56,5 @@ createInertiaApp({
         app.mount(el)
 
         return app
-    }
+    },
 })

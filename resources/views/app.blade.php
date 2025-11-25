@@ -49,7 +49,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Scripts and Styles -->
-    @vite(['resources/js/app.js', 'resources/js/darkMode.js', 'resources/css/app.css'])
+    @vite([
+        'resources/js/app.js',
+        'resources/css/app.css',
+    ])
     @inertiaHead
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
