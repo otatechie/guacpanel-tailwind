@@ -9,12 +9,11 @@
     <!-- Primary Meta Tags -->
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta name="title" content="GuacPanel">
-    <meta name="description"
-        content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
-    <meta name="keywords" content="Laravel, Inertia.js, Vue.js, Tailwind CSS, Admin Dashboard, SaaS">
-    <meta name="author" content="Your Name">
-    <meta name="theme-color" content="#3B82F6">
+    <meta name="title" content="{{ config('app.name', 'GuacPanel') }}">
+    <meta name="description" content="{{ config('guacpanel.meta.description') }}">
+    <meta name="keywords" content="{{ config('guacpanel.meta.keywords') }}">
+    <meta name="author" content="{{ config('guacpanel.meta.author') }}">
+    <meta name="theme-color" content="{{ config('guacpanel.meta.theme-color') }}">
     <meta name="color-scheme" content="light dark">
 
     <!-- Tailwind CSS Configuration -->
@@ -25,37 +24,37 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="http://localhost:8000">
-    <meta property="og:title" content="GuacPanel">
-    <meta property="og:description"
-        content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
+    <meta property="og:url" content="{{ config('app.url') }}">
+    <meta property="og:title" content="{{ config('app.name', 'GuacPanel') }}">
+    <meta property="og:description" content="{{ config('guacpanel.meta.description') }}">
     <meta property="og:image" content="{{ asset('images/og-image.png') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="GuacPanel">
-    <meta property="twitter:description"
-        content="A lightweight, customizable admin dashboard built with Laravel, Inertia, Vue, and Tailwind CSS.">
+    <meta property="twitter:title" content="{{ config('app.name', 'GuacPanel') }}">
+    <meta property="twitter:description" content="{{ config('guacpanel.meta.description') }}">
     <meta property="twitter:image" content="{{ asset('images/og-image.png') }}">
 
     <!-- Favicon -->
     @if($personalisation->favicon)
-    <link rel="icon" type="image/png" href="{{ asset('storage/' . $personalisation->favicon) }}">
+        <link rel="icon" type="image/png" href="{{ asset('storage/' . $personalisation->favicon) }}">
     @else
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     @endif
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Scripts and Styles -->
-    @vite(['resources/js/app.js', 'resources/js/darkMode.js', 'resources/css/app.css'])
+    @vite([
+        'resources/js/app.js',
+        'resources/css/app.css',
+    ])
     @inertiaHead
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
-
 
 <body @class(['antialiased', 'h-full' , 'bg-gray-50' , 'dark:bg-gray-900' , 'text-gray-900' , 'dark:text-gray-100' ])>
     @routes

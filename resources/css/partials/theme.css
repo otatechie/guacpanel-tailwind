@@ -1,0 +1,38 @@
+/* Theme Configuration */
+@theme {
+    --font-sans: 'Inter', sans-serif;
+    --primary-gradient-from: #0d9488;
+    --primary-gradient-to: #14b8a6;
+    --primary-color: #0d9488;
+    --primary-hover: #0f766e;
+    --primary-color-rgb: 13, 148, 136;
+    --selection-color: #3b82f6;
+    --selection-color-hover: #2563eb;
+    --selection-color-light: rgba(59, 130, 246, 0.1);
+    --selection-color-dark: rgba(37, 99, 235, 0.2);
+    --error-color: #ef4444;
+    --error-color-rgb: 239, 68, 68;
+}
+
+/* Base color variables for light/dark themes */
+:root {
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f9fafb; /* gray-50 */
+    --color-border: #e5e7eb; /* gray-200 */
+    --color-border-strong: #d1d5db; /* gray-300 */
+    --color-text: #111827; /* gray-900 */
+    --color-text-muted: #4b5563; /* gray-600 */
+}
+
+.dark {
+    --color-bg: #111827; /* gray-900 */
+    --color-surface: #1f2937; /* gray-800 */
+    --color-surface-muted: #111827; /* gray-900 */
+    --color-border: #374151; /* gray-700 */
+    --color-border-strong: #4b5563; /* gray-600 */
+    --color-text: #e5e7eb; /* gray-200 */
+    --color-text-muted: #9ca3af; /* gray-400 */
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
