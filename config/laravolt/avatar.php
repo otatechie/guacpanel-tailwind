@@ -48,7 +48,7 @@ return [
 
     // Fonts used to render text.
     // If contains more than one fonts, randomly selected based on name supplied
-    'fonts' => [__DIR__ . '/../fonts/Inter-Medium.ttf'],
+    'fonts' => [__DIR__.'/../fonts/Inter-Medium.ttf'],
 
     // List of foreground colors to be used, randomly selected based on name supplied
     'foregrounds' => [

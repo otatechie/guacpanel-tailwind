@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Models\Personalisation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Middleware;
@@ -47,38 +46,38 @@ class HandleInertiaRequests extends Middleware
             [
                 'auth' => [
                     'user' => $user ? [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email,
-                        'roles' => $user->roles->pluck('name'),
+                        'id'          => $user->id,
+                        'name'        => $user->name,
+                        'email'       => $user->email,
+                        'roles'       => $user->roles->pluck('name'),
                         'permissions' => $user->getAllPermissions()->pluck('name'),
-                        'avatar' => $user->avatar,
+                        'avatar'      => $user->avatar,
                     ] : null,
                 ],
 
                 'csrf_token' => csrf_token(),
 
                 'flash' => [
-                    'message' => fn() => $request->session()->get('message'),
-                    'success' => fn() => $request->session()->get('success'),
-                    'error' => fn() => $request->session()->get('error'),
-                    'status' => fn() => $request->session()->get('status'),
-                    'warning' => fn() => $request->session()->get('warning'),
-                    'info' => fn() => $request->session()->get('info'),
-                    'danger' => fn() => $request->session()->get('danger'),
-                    'all' => fn() => $request->session()->get('_flash.old', []),
-                    'recovery-codes-generated' => fn() => $request->session()->get('recovery-codes-generated'),
-                    'two-factor-authentication-enabled' => fn() => $request->session()->get('two-factor-authentication-enabled'),
-                    'two-factor-authentication-disabled' => fn() => $request->session()->get('two-factor-authentication-disabled'),
-                    'verification-link-sent' => fn() => $request->session()->get('verification-link-sent'),
-                    'profile-information-updated' => fn() => $request->session()->get('profile-information-updated'),
+                    'message'                            => fn () => $request->session()->get('message'),
+                    'success'                            => fn () => $request->session()->get('success'),
+                    'error'                              => fn () => $request->session()->get('error'),
+                    'status'                             => fn () => $request->session()->get('status'),
+                    'warning'                            => fn () => $request->session()->get('warning'),
+                    'info'                               => fn () => $request->session()->get('info'),
+                    'danger'                             => fn () => $request->session()->get('danger'),
+                    'all'                                => fn () => $request->session()->get('_flash.old', []),
+                    'recovery-codes-generated'           => fn () => $request->session()->get('recovery-codes-generated'),
+                    'two-factor-authentication-enabled'  => fn () => $request->session()->get('two-factor-authentication-enabled'),
+                    'two-factor-authentication-disabled' => fn () => $request->session()->get('two-factor-authentication-disabled'),
+                    'verification-link-sent'             => fn () => $request->session()->get('verification-link-sent'),
+                    'profile-information-updated'        => fn () => $request->session()->get('profile-information-updated'),
                 ],
 
                 'personalisation' => [
-                    'app_name' => $personalisation->app_name,
-                    'app_logo' => $personalisation->app_logo ? Storage::url($personalisation->app_logo) : null,
-                    'app_logo_dark' => $personalisation->app_logo_dark ? Storage::url($personalisation->app_logo_dark) : null,
-                    'favicon' => $personalisation->favicon ? Storage::url($personalisation->favicon) : null,
+                    'app_name'       => $personalisation->app_name,
+                    'app_logo'       => $personalisation->app_logo ? Storage::url($personalisation->app_logo) : null,
+                    'app_logo_dark'  => $personalisation->app_logo_dark ? Storage::url($personalisation->app_logo_dark) : null,
+                    'favicon'        => $personalisation->favicon ? Storage::url($personalisation->favicon) : null,
                     'copyright_text' => $personalisation->copyright_text,
                 ],
 

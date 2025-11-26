@@ -28,9 +28,9 @@ return [
         'morph_prefix' => 'user',
         'guards'       => [
             'web',
-            'api'
+            'api',
         ],
-        'resolver'     => OwenIt\Auditing\Resolvers\UserResolver::class
+        'resolver'     => OwenIt\Auditing\Resolvers\UserResolver::class,
     ],
 
     /*
@@ -60,7 +60,7 @@ return [
         'created',
         'updated',
         'deleted',
-        'restored'
+        'restored',
     ],
 
     /*
@@ -103,7 +103,7 @@ return [
 
     'empty_values'         => true,
     'allowed_empty_values' => [
-        'retrieved'
+        'retrieved',
     ],
 
     /*

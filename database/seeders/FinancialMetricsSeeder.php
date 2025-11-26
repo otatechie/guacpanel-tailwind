@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\FinancialMetric;
-use Carbon\Carbon;
 use Faker\Factory;
+use Illuminate\Database\Seeder;
 
 class FinancialMetricsSeeder extends Seeder
 {
@@ -23,10 +21,10 @@ class FinancialMetricsSeeder extends Seeder
         FinancialMetric::withoutSyncingToSearch(function () use ($faker, $startDate) {
             for ($i = 0; $i < 100; $i++) {
                 FinancialMetric::create([
-                    'date' => $startDate->copy()->addDays($i),
-                    'category' => $faker->randomElement(['sales', 'marketing', 'operations', 'investment']),
-                    'amount' => $faker->randomFloat(2, 1000, 100000),
-                    'type' => $faker->randomElement(['income', 'expense']),
+                    'date'        => $startDate->copy()->addDays($i),
+                    'category'    => $faker->randomElement(['sales', 'marketing', 'operations', 'investment']),
+                    'amount'      => $faker->randomFloat(2, 1000, 100000),
+                    'type'        => $faker->randomElement(['income', 'expense']),
                     'description' => $faker->sentence(),
                 ]);
             }

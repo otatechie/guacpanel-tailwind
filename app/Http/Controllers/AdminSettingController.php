@@ -12,29 +12,26 @@ class AdminSettingController extends Controller
     {
         $this->middleware('permission:manage-settings');
     }
-    
 
     public function index()
     {
         return Inertia::render('Admin/IndexSettingPage');
     }
 
-
     public function show()
     {
         $settings = Setting::first() ?? new Setting();
 
         return Inertia::render('Admin/IndexManageSettingPage', [
-            'settings' => $settings
+            'settings' => $settings,
         ]);
     }
-
 
     public function update(Request $request)
     {
         $validatedData = $request->validate([
-            'password_expiry' => ['boolean'],
-            'passwordless_login' => ['boolean'],
+            'password_expiry'           => ['boolean'],
+            'passwordless_login'        => ['boolean'],
             'two_factor_authentication' => ['boolean'],
         ]);
 

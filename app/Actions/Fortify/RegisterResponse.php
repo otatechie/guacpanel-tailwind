@@ -5,7 +5,6 @@ namespace App\Actions\Fortify;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
-use Laravel\Fortify\Fortify;
 
 class RegisterResponse implements RegisterResponseContract
 {

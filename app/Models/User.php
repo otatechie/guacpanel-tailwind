@@ -19,7 +19,11 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
+    use SoftDeletes;
     use HasUlids;
     use \OwenIt\Auditing\Auditable;
     use HasRoles;
@@ -39,13 +43,13 @@ class User extends Authenticatable implements Auditable
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'password_expiry_at' => 'datetime',
-        'password_changed_at' => 'datetime',
+        'email_verified_at'     => 'datetime',
+        'password'              => 'hashed',
+        'password_expiry_at'    => 'datetime',
+        'password_changed_at'   => 'datetime',
         'force_password_change' => 'boolean',
-        'disable_account' => 'boolean',
-        'deleted_at' => 'datetime',
+        'disable_account'       => 'boolean',
+        'deleted_at'            => 'datetime',
     ];
 
     protected $appends = ['created_at_formatted'];
@@ -55,7 +59,7 @@ class User extends Authenticatable implements Auditable
         parent::boot();
 
         static::creating(function ($user) {
-            $user->user_slug = 'user-' . Str::random(12);
+            $user->user_slug = 'user-'.Str::random(12);
             if (!$user->password) {
                 $user->password = null;
             }
@@ -110,6 +114,7 @@ class User extends Authenticatable implements Auditable
         }
 
         $expiryDate = Carbon::createFromTimestamp($this->password_expiry_at);
+
         return max(0, now()->diffInDays($expiryDate));
     }
 
@@ -151,8 +156,8 @@ class User extends Authenticatable implements Auditable
     public function toSearchableArray(): array
     {
         return array_merge($this->toArray(), [
-            'id' => (string) $this->id,
-            'created_at' => $this->created_at->timestamp,
+            'id'              => (string) $this->id,
+            'created_at'      => $this->created_at->timestamp,
             'collection_name' => 'users',
         ]);
     }
@@ -174,8 +179,7 @@ class User extends Authenticatable implements Auditable
     {
         return Attribute::make(
             get: function ($value, $attributes) {
-
-                if (! $this->email) {
+                if (!$this->email) {
                     return $this->avatar;
                 }
 

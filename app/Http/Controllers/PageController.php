@@ -10,7 +10,7 @@ class PageController extends Controller
     {
         return Inertia::render('Home');
     }
-    
+
     public function terms()
     {
         return Inertia::render('Terms');

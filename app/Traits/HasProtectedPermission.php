@@ -22,13 +22,12 @@ trait HasProtectedPermission
         ];
     }
 
-
     protected function isProtectedPermission(string $permissionName): bool
     {
         $protectedPermissions = array_map('strtolower', $this->getProtectedPermissions());
+
         return in_array(strtolower(trim($permissionName)), $protectedPermissions);
     }
-
 
     protected function getProtectedPermissionsForValidation(): string
     {

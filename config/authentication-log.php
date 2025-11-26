@@ -10,16 +10,16 @@ return [
 
     // The events the package listens for to log
     'events' => [
-        'login' => \Illuminate\Auth\Events\Login::class,
-        'failed' => \Illuminate\Auth\Events\Failed::class,
-        'logout' => \Illuminate\Auth\Events\Logout::class,
+        'login'                => \Illuminate\Auth\Events\Login::class,
+        'failed'               => \Illuminate\Auth\Events\Failed::class,
+        'logout'               => \Illuminate\Auth\Events\Logout::class,
         'logout-other-devices' => \Illuminate\Auth\Events\OtherDeviceLogout::class,
     ],
 
     'listeners' => [
-        'login' => \Rappasoft\LaravelAuthenticationLog\Listeners\LoginListener::class,
-        'failed' => \Rappasoft\LaravelAuthenticationLog\Listeners\FailedLoginListener::class,
-        'logout' => \Rappasoft\LaravelAuthenticationLog\Listeners\LogoutListener::class,
+        'login'                => \Rappasoft\LaravelAuthenticationLog\Listeners\LoginListener::class,
+        'failed'               => \Rappasoft\LaravelAuthenticationLog\Listeners\FailedLoginListener::class,
+        'logout'               => \Rappasoft\LaravelAuthenticationLog\Listeners\LogoutListener::class,
         'logout-other-devices' => \Rappasoft\LaravelAuthenticationLog\Listeners\OtherDeviceLogoutListener::class,
     ],
 
@@ -52,9 +52,9 @@ return [
 
     // If you are behind an CDN proxy, set 'behind_cdn.http_header_field' to the corresponding http header field of your cdn
     // For cloudflare you can have look at: https://developers.cloudflare.com/fundamentals/get-started/reference/http-request-headers/
-//    'behind_cdn' => [
-//        'http_header_field' => 'HTTP_CF_CONNECTING_IP' // used by Cloudflare
-//    ],
+    //    'behind_cdn' => [
+    //        'http_header_field' => 'HTTP_CF_CONNECTING_IP' // used by Cloudflare
+    //    ],
 
     // If you are not a cdn user, use false
     'behind_cdn' => false,

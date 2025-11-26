@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 
 class UserAccountController extends Controller
@@ -25,20 +25,18 @@ class UserAccountController extends Controller
         ]);
     }
 
-
     public function indexTwoFactorAuthentication()
     {
         $user = Auth::user();
 
         $data = [
-            'user' => $user,
-            'qrCodeSvg' => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
+            'user'          => $user,
+            'qrCodeSvg'     => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
             'recoveryCodes' => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
         ];
 
         return Inertia::render('UserAccount/IndexTwoFactorAuthenticationPage', $data);
     }
-
 
     public function indexPasswordExpired()
     {
@@ -50,7 +48,6 @@ class UserAccountController extends Controller
 
         return Inertia::render('UserAccount/IndexPasswordExpiredPage');
     }
-
 
     public function updateExpiredPassword(Request $request)
     {
@@ -65,28 +62,26 @@ class UserAccountController extends Controller
                     ->mixedCase()
                     ->numbers()
                     ->symbols(),
-            ]
+            ],
         ]);
-
 
         if (Hash::check($validatedData['password'], $user->password)) {
             return back()->withErrors([
-                'password' => 'Your new password cannot be the same as your current password.'
+                'password' => 'Your new password cannot be the same as your current password.',
             ]);
         }
 
         $now = now();
         $user->update([
-            'password' => Hash::make($validatedData['password']),
+            'password'            => Hash::make($validatedData['password']),
             'password_changed_at' => $now,
-            'password_expiry_at' => $now->copy()->addMonths(3),
+            'password_expiry_at'  => $now->copy()->addMonths(3),
         ]);
 
         session()->flash('success', 'Password has been updated successfully.');
 
         return redirect()->route('home');
     }
-
 
     public function session(Request $request)
     {
@@ -102,21 +97,20 @@ class UserAccountController extends Controller
 
             foreach ($sessionRecords as $session) {
                 $sessions[] = [
-                    'id' => $session->id ?? '',
-                    'agent' => $this->formatAgent($session->user_agent ?? ''),
-                    'ip' => $session->ip_address ?? '',
+                    'id'         => $session->id ?? '',
+                    'agent'      => $this->formatAgent($session->user_agent ?? ''),
+                    'ip'         => $session->ip_address ?? '',
                     'lastActive' => $session->last_activity ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '',
-                    'isCurrent' => ($session->id ?? '') === $request->session()->getId(),
+                    'isCurrent'  => ($session->id ?? '') === $request->session()->getId(),
                 ];
             }
         }
 
         return Inertia::render('UserAccount/IndexSessionPage', [
-            'user' => $user,
+            'user'     => $user,
             'sessions' => $sessions,
         ]);
     }
-
 
     protected function formatAgent($userAgent)
     {
@@ -128,12 +122,11 @@ class UserAccountController extends Controller
         $agent->setUserAgent($userAgent);
 
         return [
-            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+            'device'   => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
             'platform' => $agent->platform() ?: 'Unknown',
-            'browser' => $agent->browser() ?: 'Unknown',
+            'browser'  => $agent->browser() ?: 'Unknown',
         ];
     }
-
 
     public function deactivateAccount()
     {
@@ -147,7 +140,6 @@ class UserAccountController extends Controller
 
         return redirect()->route('login')->with('info', 'Account has been deactivated successfully.');
     }
-
 
     public function deleteAccount()
     {

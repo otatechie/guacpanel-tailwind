@@ -4,10 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
@@ -37,8 +35,9 @@ test('it denies access to users without role management permission', function ()
 test('it allows users with role management permission to view the page', function () {
     $response = $this->actingAs($this->adminUser)
         ->get(route('admin.permission.role.index'));
-    
-    $response->assertInertia(fn ($assert) => $assert
+
+    $response->assertInertia(
+        fn ($assert) => $assert
         ->component('Admin/PermissionRole/IndexPermissionRolePage')
         ->has('permissions')
         ->has('roles')
@@ -48,9 +47,9 @@ test('it allows users with role management permission to view the page', functio
 
 test('it allows users with role management permission to create roles', function () {
     $roleData = [
-        'name' => 'test-role',
+        'name'        => 'test-role',
         'permissions' => [],
-        '_token' => 'test-token'
+        '_token'      => 'test-token',
     ];
 
     $response = $this->actingAs($this->adminUser)
@@ -64,9 +63,9 @@ test('it allows users with role management permission to create roles', function
 test('it allows users with role management permission to update roles', function () {
     $role = Role::create(['name' => 'test-role']);
     $updateData = [
-        'name' => 'updated-role',
+        'name'        => 'updated-role',
         'permissions' => [],
-        '_token' => 'test-token'
+        '_token'      => 'test-token',
     ];
 
     $response = $this->actingAs($this->adminUser)
@@ -90,9 +89,9 @@ test('it allows users with role management permission to delete roles', function
 
 test('it denies role creation to users without role management permission', function () {
     $roleData = [
-        'name' => 'test-role',
+        'name'        => 'test-role',
         'permissions' => [],
-        '_token' => 'test-token'
+        '_token'      => 'test-token',
     ];
 
     $response = $this->actingAs($this->regularUser)
@@ -105,9 +104,9 @@ test('it denies role creation to users without role management permission', func
 test('it denies role update to users without role management permission', function () {
     $role = Role::create(['name' => 'test-role']);
     $updateData = [
-        'name' => 'updated-role',
+        'name'        => 'updated-role',
         'permissions' => [],
-        '_token' => 'test-token'
+        '_token'      => 'test-token',
     ];
 
     $response = $this->actingAs($this->regularUser)

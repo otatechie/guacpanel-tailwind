@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
-use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
@@ -16,7 +15,7 @@ beforeEach(function () {
     $this->userWithFullPermissions->givePermissionTo('manage-permissions');
 
     $this->userWithoutPermissions = User::factory()->create(['name' => 'No Permissions User']);
-    
+
     $this->testToken = 'test-token';
 });
 
@@ -55,9 +54,9 @@ test('it requires csrf token for all operations', function () {
 
 test('it allows authorized users to perform crud operations', function () {
     $createData = [
-        'name' => 'test-permission',
+        'name'        => 'test-permission',
         'description' => 'Test description',
-        '_token' => $this->testToken
+        '_token'      => $this->testToken,
     ];
 
     $this->actingAs($this->userWithFullPermissions)
@@ -65,16 +64,16 @@ test('it allows authorized users to perform crud operations', function () {
         ->post(route('admin.permission.store'), $createData);
 
     $this->assertDatabaseHas('permissions', [
-        'name' => 'test-permission',
-        'description' => 'Test description'
+        'name'        => 'test-permission',
+        'description' => 'Test description',
     ]);
 
     $permission = Permission::where('name', 'test-permission')->first();
 
     $updateData = [
-        'name' => 'updated-permission',
+        'name'        => 'updated-permission',
         'description' => 'Updated description',
-        '_token' => $this->testToken
+        '_token'      => $this->testToken,
     ];
 
     $this->actingAs($this->userWithFullPermissions)
@@ -83,9 +82,9 @@ test('it allows authorized users to perform crud operations', function () {
         ->assertSessionHasNoErrors();
 
     $this->assertDatabaseHas('permissions', [
-        'id' => $permission->id,
-        'name' => 'updated-permission',
-        'description' => 'Updated description'
+        'id'          => $permission->id,
+        'name'        => 'updated-permission',
+        'description' => 'Updated description',
     ]);
 
     $this->actingAs($this->userWithFullPermissions)
@@ -93,14 +92,14 @@ test('it allows authorized users to perform crud operations', function () {
         ->delete(route('admin.permission.destroy', $permission), ['_token' => $this->testToken]);
 
     $this->assertDatabaseMissing('permissions', [
-        'id' => $permission->id
+        'id' => $permission->id,
     ]);
 });
 
 test('it validates permission data correctly', function () {
     $invalidNameData = [
-        'name' => 'invalid permission name',
-        '_token' => $this->testToken
+        'name'   => 'invalid permission name',
+        '_token' => $this->testToken,
     ];
 
     $this->actingAs($this->userWithFullPermissions)
@@ -111,8 +110,8 @@ test('it validates permission data correctly', function () {
     Permission::create(['name' => 'existing-permission']);
 
     $duplicateData = [
-        'name' => 'existing-permission',
-        '_token' => $this->testToken
+        'name'   => 'existing-permission',
+        '_token' => $this->testToken,
     ];
 
     $this->actingAs($this->userWithFullPermissions)
