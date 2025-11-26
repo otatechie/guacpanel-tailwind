@@ -55,3 +55,4 @@ yarn-error.log
 /storage/pail
 docker-compose.override.yml
 composer.lock
+package-lock.json
