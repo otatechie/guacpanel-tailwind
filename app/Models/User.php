@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
- 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
+use Laravolt\Avatar\Facade as Avatar;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements Auditable
 {
@@ -61,7 +62,6 @@ class User extends Authenticatable implements Auditable
         });
     }
 
-
     public function formatDateStyle(?Carbon $date = null): string
     {
         $date = $date ?? $this->created_at;
@@ -89,12 +89,10 @@ class User extends Authenticatable implements Auditable
         return $date->format('F j, Y');
     }
 
-
     public function getCreatedAtFormattedAttribute(): string
     {
         return $this->formatDateStyle($this->created_at);
     }
-
 
     public function isPasswordExpired(): bool
     {
@@ -104,7 +102,6 @@ class User extends Authenticatable implements Auditable
 
         return $this->password_expiry_at->isPast();
     }
-
 
     public function daysUntilPasswordExpiry(): int
     {
@@ -116,48 +113,40 @@ class User extends Authenticatable implements Auditable
         return max(0, now()->diffInDays($expiryDate));
     }
 
-
     public function loginHistory()
     {
         return $this->morphMany(LoginHistory::class, 'user');
     }
-
 
     public function latestLogin()
     {
         return $this->morphOne(LoginHistory::class, 'user')->latestOfMany('login_at');
     }
 
-
     public function isLoggedIn(): bool
     {
         return $this->latestLogin?->logout_at === null;
     }
-
 
     public function isSuperUser(): bool
     {
         return $this->hasRole('superuser');
     }
 
-
     public function canBeDeleted(): bool
     {
         return !$this->isSuperUser();
     }
-
 
     public function canChangeRole(): bool
     {
         return !$this->isSuperUser();
     }
 
-
     public function canChangeAccountStatus(): bool
     {
         return !$this->isSuperUser();
     }
-
 
     public function toSearchableArray(): array
     {
@@ -166,5 +155,36 @@ class User extends Authenticatable implements Auditable
             'created_at' => $this->created_at->timestamp,
             'collection_name' => 'users',
         ]);
+    }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                return Avatar::create($this->name)
+                    ->setFontSize(48)
+                    ->setDimension(200, 200)
+                    ->setTheme('pastel')
+                    ->toBase64();
+            },
+        );
+    }
+
+    protected function gravatar(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+
+                if (! $this->email) {
+                    return $this->avatar;
+                }
+
+                return Avatar::create($this->email)->toGravatar([
+                    's' => 200,          // size
+                    'd' => 'identicon',  // default image
+                    'r' => 'g',          // rating
+                ]);
+            },
+        );
     }
 }

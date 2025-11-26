@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Middleware;
-use Laravolt\Avatar\Avatar;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -40,7 +39,6 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $avatar = new Avatar(config('laravolt.avatar'));
         $personalisation = Personalisation::first() ?? new Personalisation();
         $user = $request->user();
 
@@ -54,12 +52,7 @@ class HandleInertiaRequests extends Middleware
                         'email' => $user->email,
                         'roles' => $user->roles->pluck('name'),
                         'permissions' => $user->getAllPermissions()->pluck('name'),
-                        'avatar' => $avatar
-                            ->create($user->name)
-                            ->setTheme('pastel')
-                            ->setFontSize(48)
-                            ->setDimension(100, 100)
-                            ->toBase64(),
+                        'avatar' => $user->avatar,
                     ] : null,
                 ],
 
