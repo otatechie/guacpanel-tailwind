@@ -19,8 +19,8 @@ beforeEach(function () {
     $this->regularUser = User::factory()->create();
 
     Setting::updateOrCreate([], [
-        'password_expiry' => false,
-        'passwordless_login' => false,
+        'password_expiry'           => false,
+        'passwordless_login'        => false,
         'two_factor_authentication' => false,
     ]);
 
@@ -33,8 +33,7 @@ test('it allows admin to access settings index page', function () {
 
     $response->assertStatus(200);
     $response->assertInertia(
-        fn($page) =>
-        $page->component('Admin/IndexSettingPage')
+        fn ($page) => $page->component('Admin/IndexSettingPage')
     );
 });
 
@@ -44,8 +43,7 @@ test('it allows admin to access settings management page', function () {
 
     $response->assertStatus(200);
     $response->assertInertia(
-        fn($page) =>
-        $page->component('Admin/IndexManageSettingPage')
+        fn ($page) => $page->component('Admin/IndexManageSettingPage')
             ->has('settings')
     );
 });
@@ -54,9 +52,9 @@ test('it allows admin to update settings', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
-            '_token' => $this->testToken,
-            'password_expiry' => true,
-            'passwordless_login' => true,
+            '_token'                    => $this->testToken,
+            'password_expiry'           => true,
+            'passwordless_login'        => true,
             'two_factor_authentication' => true,
         ]);
 
@@ -64,8 +62,8 @@ test('it allows admin to update settings', function () {
     $response->assertSessionHas('success');
 
     $this->assertDatabaseHas('settings', [
-        'password_expiry' => true,
-        'passwordless_login' => true,
+        'password_expiry'           => true,
+        'passwordless_login'        => true,
         'two_factor_authentication' => true,
     ]);
 });
@@ -75,15 +73,15 @@ test('it allows admin to toggle settings individually', function () {
     $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
-            '_token' => $this->testToken,
-            'password_expiry' => true,
-            'passwordless_login' => false,
+            '_token'                    => $this->testToken,
+            'password_expiry'           => true,
+            'passwordless_login'        => false,
             'two_factor_authentication' => false,
         ]);
 
     $this->assertDatabaseHas('settings', [
-        'password_expiry' => true,
-        'passwordless_login' => false,
+        'password_expiry'           => true,
+        'passwordless_login'        => false,
         'two_factor_authentication' => false,
     ]);
 
@@ -91,15 +89,15 @@ test('it allows admin to toggle settings individually', function () {
     $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
-            '_token' => $this->testToken,
-            'password_expiry' => false,
-            'passwordless_login' => false,
+            '_token'                    => $this->testToken,
+            'password_expiry'           => false,
+            'passwordless_login'        => false,
             'two_factor_authentication' => true,
         ]);
 
     $this->assertDatabaseHas('settings', [
-        'password_expiry' => false,
-        'passwordless_login' => false,
+        'password_expiry'           => false,
+        'passwordless_login'        => false,
         'two_factor_authentication' => true,
     ]);
 });
@@ -120,7 +118,7 @@ test('it denies settings update to users without permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
-            '_token' => $this->testToken,
+            '_token'          => $this->testToken,
             'password_expiry' => true,
         ]);
 
@@ -143,17 +141,17 @@ test('it creates settings if none exist', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.setting.update'), [
-            '_token' => $this->testToken,
-            'password_expiry' => true,
-            'passwordless_login' => true,
+            '_token'                    => $this->testToken,
+            'password_expiry'           => true,
+            'passwordless_login'        => true,
             'two_factor_authentication' => true,
         ]);
 
     $response->assertRedirect();
 
     $this->assertDatabaseHas('settings', [
-        'password_expiry' => true,
-        'passwordless_login' => true,
+        'password_expiry'           => true,
+        'passwordless_login'        => true,
         'two_factor_authentication' => true,
     ]);
 });

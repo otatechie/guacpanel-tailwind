@@ -33,7 +33,8 @@ test('it allows access to users with login history permission', function () {
     $this->actingAs($this->adminUser)
         ->get(route('admin.login.history.index'))
         ->assertStatus(200)
-        ->assertInertia(fn (Assert $page) => $page
+        ->assertInertia(
+            fn (Assert $page) => $page
             ->component('Admin/IndexLoginHistoryPage')
             ->has('loginHistory')
         );

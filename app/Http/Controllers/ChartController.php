@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
-use Illuminate\Routing\Controller;
 use App\Models\FinancialMetric;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class ChartController extends Controller
 {
@@ -36,9 +36,9 @@ class ChartController extends Controller
 
         return Inertia::render('Chart', [
             'financialMetrics' => [
-                'months' => $months,
-                'income' => $income,
-                'expense' => $expense
+                'months'  => $months,
+                'income'  => $income,
+                'expense' => $expense,
             ],
         ]);
     }

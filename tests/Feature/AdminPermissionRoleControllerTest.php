@@ -10,12 +10,12 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Permission::firstOrCreate(['name' => 'view-permissions-roles']);
-    
+
     $this->adminUser = User::factory()->create();
     $this->adminUser->givePermissionTo('view-permissions-roles');
-    
+
     $this->regularUser = User::factory()->create();
-    
+
     $this->testToken = 'test-token';
 });
 
@@ -29,8 +29,8 @@ test('it allows access to users with manage permissions and roles permission', f
         ->withSession(['_token' => $this->testToken])
         ->get(route('admin.permission.role.index'))
         ->assertStatus(200)
-        ->assertInertia(fn ($page) => 
-            $page->component('Admin/PermissionRole/IndexPermissionRolePage')
+        ->assertInertia(
+            fn ($page) => $page->component('Admin/PermissionRole/IndexPermissionRolePage')
         );
 });
 
@@ -39,4 +39,4 @@ test('it denies access to users without manage permissions and roles permission'
         ->withSession(['_token' => $this->testToken])
         ->get(route('admin.permission.role.index'))
         ->assertForbidden();
-}); 
+});

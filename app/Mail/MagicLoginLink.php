@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class MagicLoginLink extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $url;
     public $isNewUser;

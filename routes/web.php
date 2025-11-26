@@ -1,28 +1,27 @@
 <?php
 
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\ChartController;
-use App\Http\Controllers\AdminRoleController;
-use App\Http\Controllers\AdminUserController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\UserAccountController;
-use App\Http\Controllers\AdminSessionController;
-use App\Http\Controllers\AdminSettingController;
-use App\Http\Controllers\DocumentationController;
-use App\Http\Controllers\Auth\MagicLinkController;
-use App\Http\Controllers\BrowserSessionController;
-use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminHealthStatusController;
 use App\Http\Controllers\AdminLoginHistoryController;
+use App\Http\Controllers\AdminPermissionController;
 use App\Http\Controllers\AdminPermissionRoleController;
-use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\AdminPersonalisationController;
+use App\Http\Controllers\AdminRoleController;
+use App\Http\Controllers\AdminSessionController;
+use App\Http\Controllers\AdminSettingController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\MagicLinkController;
+use App\Http\Controllers\BrowserSessionController;
+use App\Http\Controllers\ChartController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentationController;
+use App\Http\Controllers\ForcePasswordChangeController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\TypesenseController;
+use App\Http\Controllers\UserAccountController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');

@@ -23,6 +23,7 @@ class DataTablePaginationService
 
         if ($allowAll && is_string($raw) && strtolower($raw) === 'all') {
             $total = is_int($filteredTotal) ? $filteredTotal : $allCap;
+
             return max(1, min($total, $allCap));
         }
 
@@ -54,7 +55,7 @@ class DataTablePaginationService
     {
         return [
             'per_page' => $request->get('per_page'),
-            'page' => $request->get('page'),
+            'page'     => $request->get('page'),
         ];
     }
 }

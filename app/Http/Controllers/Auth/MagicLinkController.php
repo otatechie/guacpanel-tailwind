@@ -27,36 +27,36 @@ class MagicLinkController extends Controller
         }
     }
 
-
     public function create()
     {
         $this->checkPasswordlessEnabled();
+
         return Inertia::render('Auth/RegisterMagicLink');
     }
-
 
     public function store(Request $request)
     {
         $this->checkPasswordlessEnabled();
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
         ]);
 
         // Rate limiting for registration
-        $key = 'magic_link_registration_' . $request->ip();
+        $key = 'magic_link_registration_'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
-                'email' => "Too many registration attempts. Please try again in {$seconds} seconds."
+                'email' => "Too many registration attempts. Please try again in {$seconds} seconds.",
             ]);
         }
         RateLimiter::hit($key, 300); // 5 minutes
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'              => $validated['name'],
+            'email'             => $validated['email'],
             'email_verified_at' => now(),
         ]);
 
@@ -65,7 +65,6 @@ class MagicLinkController extends Controller
 
         return back();
     }
-
 
     public function login(Request $request)
     {
@@ -76,11 +75,12 @@ class MagicLinkController extends Controller
         ]);
 
         // Rate limiting for login attempts
-        $key = 'magic_link_login_' . $request->ip();
+        $key = 'magic_link_login_'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
-                'email' => "Too many login attempts. Please try again in {$seconds} seconds."
+                'email' => "Too many login attempts. Please try again in {$seconds} seconds.",
             ]);
         }
         RateLimiter::hit($key, 60); // 1 minute
@@ -89,7 +89,7 @@ class MagicLinkController extends Controller
 
         if (!$user) {
             return back()->withErrors([
-                'email' => 'We could not find a user with that email address.'
+                'email' => 'We could not find a user with that email address.',
             ]);
         }
 
@@ -98,7 +98,6 @@ class MagicLinkController extends Controller
 
         return back();
     }
-
 
     protected function sendLoginLink(User $user, bool $isNewUser = false)
     {
@@ -109,8 +108,8 @@ class MagicLinkController extends Controller
 
         // Store token with user ID and expiry
         Cache::put("magic_link:{$token}", [
-            'user_id' => $user->id,
-            'created_at' => now()->timestamp
+            'user_id'    => $user->id,
+            'created_at' => now()->timestamp,
         ], now()->addMinutes($expiryMinutes));
 
         $url = URL::temporarySignedRoute(
@@ -121,7 +120,6 @@ class MagicLinkController extends Controller
 
         Mail::to($user)->send(new MagicLoginLink($url, $isNewUser));
     }
-
 
     public function authenticate(Request $request)
     {
@@ -144,6 +142,7 @@ class MagicLinkController extends Controller
         $createdAt = $tokenData['created_at'] ?? 0;
         if (now()->timestamp - $createdAt > 600) { // 10 minutes in seconds
             Cache::forget($cacheKey);
+
             return redirect()->route('login')
                 ->with('error', 'This magic link has expired. Please request a new one.');
         }

@@ -19,6 +19,7 @@ class CheckPasswordExpiry
             if ($settings && $settings->password_expiry && $user->isPasswordExpired()) {
                 if (!$request->routeIs('user.password.expired') && !$request->routeIs('user.password.expired.update')) {
                     session()->flash('warning', 'Your password has expired. Please change it to continue.');
+
                     return redirect()->route('user.password.expired');
                 }
             }

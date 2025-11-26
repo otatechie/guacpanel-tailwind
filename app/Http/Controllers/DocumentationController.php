@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DocumentationController extends Controller
@@ -12,18 +11,15 @@ class DocumentationController extends Controller
         return Inertia::render('Documentation/IndexDocumentationPage');
     }
 
-
     public function installation()
     {
         return Inertia::render('Documentation/IndexInstallPage');
     }
 
-
     public function features()
     {
         return Inertia::render('Documentation/IndexFeaturePage');
     }
-
 
     public function components()
     {

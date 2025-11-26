@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Simple script to generate a search-only API key for Typesense
- * Run this script from the command line: php generate-search-key.php
+ * Run this script from the command line: php generate-search-key.php.
  */
 
 // Load environment variables from .env file
-$envFile = __DIR__ . '/.env';
+$envFile = __DIR__.'/.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
@@ -70,9 +71,9 @@ $collections = ['*']; // All collections
 $url = "{$typesenseProtocol}://{$typesenseHost}:{$typesensePort}/keys";
 $data = json_encode([
     'description' => 'Search-only API key',
-    'actions' => $searchOnlyActions,
+    'actions'     => $searchOnlyActions,
     'collections' => $collections,
-    'value' => $keyValue
+    'value'       => $keyValue,
 ]);
 
 echo "Generating search-only API key...\n";
@@ -80,11 +81,11 @@ echo "Generating search-only API key...\n";
 // Send the request to Typesense
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
-    'X-TYPESENSE-API-KEY: ' . $typesenseApiKey
+    'X-TYPESENSE-API-KEY: '.$typesenseApiKey,
 ]);
 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
@@ -99,28 +100,28 @@ if ($httpCode >= 200 && $httpCode < 300) {
     echo "✅ Search-only API key generated successfully\n";
     echo "Add this to your .env file:\n";
     echo "TYPESENSE_SEARCH_ONLY_KEY={$keyValue}\n";
-    
+
     // Ask if user wants to update .env file
     if (file_exists($envFile)) {
         echo "\nWould you like to update your .env file automatically? (y/n): ";
-        $handle = fopen("php://stdin", "r");
+        $handle = fopen('php://stdin', 'r');
         $line = fgets($handle);
         if (trim($line) === 'y') {
             $envContent = file_get_contents($envFile);
-            
+
             // Check if the key already exists
             if (strpos($envContent, 'TYPESENSE_SEARCH_ONLY_KEY=') !== false) {
                 // Replace existing key
                 $envContent = preg_replace(
                     '/TYPESENSE_SEARCH_ONLY_KEY=.*/',
-                    'TYPESENSE_SEARCH_ONLY_KEY=' . $keyValue,
+                    'TYPESENSE_SEARCH_ONLY_KEY='.$keyValue,
                     $envContent
                 );
             } else {
                 // Add new key
-                $envContent .= "\nTYPESENSE_SEARCH_ONLY_KEY=" . $keyValue;
+                $envContent .= "\nTYPESENSE_SEARCH_ONLY_KEY=".$keyValue;
             }
-            
+
             file_put_contents($envFile, $envContent);
             echo "✅ .env file updated successfully\n";
         }
@@ -134,7 +135,7 @@ if ($httpCode >= 200 && $httpCode < 300) {
         echo "cURL Error: {$curlError}\n";
     }
     echo "Response: {$response}\n";
-    
+
     if ($httpCode === 0) {
         echo "\nPossible issues:\n";
         echo "1. Typesense server is not running\n";
@@ -147,6 +148,6 @@ if ($httpCode >= 200 && $httpCode < 300) {
     } elseif ($httpCode === 403) {
         echo "\nPermission denied. Please check your API key permissions.\n";
     }
-    
+
     exit(1);
 }

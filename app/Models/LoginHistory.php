@@ -16,13 +16,13 @@ class LoginHistory extends Model
         'user_agent',
         'login_successful',
         'login_at',
-        'logout_at'
+        'logout_at',
     ];
 
     protected $casts = [
         'login_successful' => 'boolean',
-        'login_at' => 'datetime',
-        'logout_at' => 'datetime',
+        'login_at'         => 'datetime',
+        'logout_at'        => 'datetime',
     ];
 
     public function user(): MorphTo

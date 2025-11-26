@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use OwenIt\Auditing\Models\Audit;
-use App\Services\DataTablePaginationService;
 
 class AdminAuditController extends Controller
 {
@@ -12,8 +12,7 @@ class AdminAuditController extends Controller
     {
         $this->middleware('permission:view-audits');
     }
-    
-    
+
     public function index(Request $request)
     {
         $perPage = $this->pagination->resolvePerPageWithDefaults($request);
@@ -28,21 +27,21 @@ class AdminAuditController extends Controller
             ->withQueryString()
             ->through(function ($audit) {
                 return [
-                    'id' => $audit->id,
-                    'event' => $audit->event,
+                    'id'             => $audit->id,
+                    'event'          => $audit->event,
                     'auditable_type' => $audit->auditable_type,
-                    'user_type' => $audit->user_type,
-                    'user_id' => $audit->user_id,
-                    'created_at' => $audit->created_at?->toDateTimeString(),
-                    'user' => [
-                        'id' => $audit->user?->id,
+                    'user_type'      => $audit->user_type,
+                    'user_id'        => $audit->user_id,
+                    'created_at'     => $audit->created_at?->toDateTimeString(),
+                    'user'           => [
+                        'id'   => $audit->user?->id,
                         'name' => $audit->user?->name,
                     ],
                 ];
             });
 
         return inertia('Admin/IndexAuditPage', [
-            'audits' => $audits,
+            'audits'  => $audits,
             'filters' => $this->pagination->buildFilters($request),
         ]);
     }
