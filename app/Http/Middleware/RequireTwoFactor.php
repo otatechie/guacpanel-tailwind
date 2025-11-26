@@ -23,6 +23,7 @@ class RequireTwoFactor
         $user = auth()->user();
         if (!$user->two_factor_secret) {
             session()->flash('warning', 'Two-factor authentication is required. Please enable it to continue.');
+
             return redirect()->route('user.two.factor');
         }
 

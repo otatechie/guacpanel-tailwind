@@ -2,27 +2,28 @@
 
 namespace App\Providers;
 
-use Inertia\Inertia;
 use App\Models\Personalisation;
-use Spatie\Health\Facades\Health;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 use Spatie\Health\Checks\Checks\CacheCheck;
-use Spatie\Health\Checks\Checks\QueueCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Checks\Checks\EnvironmentCheck;
 use Spatie\Health\Checks\Checks\OptimizedAppCheck;
+use Spatie\Health\Checks\Checks\QueueCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
+use Spatie\Health\Facades\Health;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register(): void {
+    public function register(): void
+    {
         Health::checks([
             UsedDiskSpaceCheck::new(),
             DatabaseCheck::new(),
@@ -32,7 +33,6 @@ class AppServiceProvider extends ServiceProvider
             QueueCheck::new(),
             OptimizedAppCheck::new(),
         ]);
-
     }
 
     /**
@@ -56,9 +56,9 @@ class AppServiceProvider extends ServiceProvider
             Inertia::share([
                 'app' => [
                     'version' => config('app.version'),
-                    'name' => config('app.name'),
+                    'name'    => config('app.name'),
                 ],
-                'personalisation' => fn () => $personalisation
+                'personalisation' => fn () => $personalisation,
             ]);
         }
     }

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Inertia\Inertia;
-use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Jenssegers\Agent\Agent;
 
 class BrowserSessionController extends Controller
 {
@@ -26,20 +26,19 @@ class BrowserSessionController extends Controller
 
             foreach ($sessionRecords as $session) {
                 $sessions[] = [
-                    'id' => $session->id ?? '',
-                    'agent' => $this->formatAgent($session->user_agent ?? ''),
+                    'id'         => $session->id ?? '',
+                    'agent'      => $this->formatAgent($session->user_agent ?? ''),
                     'lastActive' => $session->last_activity ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '',
-                    'isCurrent' => ($session->id ?? '') === $request->session()->getId(),
+                    'isCurrent'  => ($session->id ?? '') === $request->session()->getId(),
                 ];
             }
         }
 
         return Inertia::render('UserAccount/IndexSessionPage', [
-            'user' => $user,
+            'user'     => $user,
             'sessions' => $sessions,
         ]);
     }
-
 
     protected function formatAgent($userAgent)
     {
@@ -51,13 +50,12 @@ class BrowserSessionController extends Controller
         $agent->setUserAgent($userAgent);
 
         return [
-            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+            'device'   => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
             'platform' => $agent->platform() ?: 'Unknown',
-            'browser' => $agent->browser() ?: 'Unknown',
+            'browser'  => $agent->browser() ?: 'Unknown',
         ];
     }
 
-    
     public function logoutOtherDevices(Request $request)
     {
         $request->validate([
@@ -71,7 +69,6 @@ class BrowserSessionController extends Controller
         return back()->with('status', 'All other sessions have been terminated successfully.');
     }
 
-
     public function destroySession(Request $request, $sessionId)
     {
         if (config('session.driver') === 'database') {
@@ -84,7 +81,6 @@ class BrowserSessionController extends Controller
 
         return back()->with('status', 'Session terminated successfully.');
     }
-
 
     private function deleteOtherSessionsFromDatabase(Request $request)
     {

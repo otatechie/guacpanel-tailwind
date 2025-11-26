@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\LoginHistory;
+use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
-use App\Services\DataTablePaginationService;
 
 class AdminLoginHistoryController extends Controller
 {
@@ -14,7 +14,6 @@ class AdminLoginHistoryController extends Controller
     {
         $this->middleware('permission:view-login-history');
     }
-
 
     public function index(Request $request)
     {
@@ -27,7 +26,7 @@ class AdminLoginHistoryController extends Controller
                 'user_type',
                 'user_agent',
                 'login_at',
-                'login_successful'
+                'login_successful',
             ])
             ->latest('login_at')
             ->paginate($perPage)
@@ -38,9 +37,9 @@ class AdminLoginHistoryController extends Controller
 
                 $item->login_at_diff = $item->login_at?->diffForHumans();
                 $item->device_info = [
-                    'device' => $agent->device() ?: 'Unknown',
+                    'device'   => $agent->device() ?: 'Unknown',
                     'platform' => $agent->platform() ?: 'Unknown',
-                    'browser' => $agent->browser() ?: 'Unknown',
+                    'browser'  => $agent->browser() ?: 'Unknown',
                 ];
 
                 $item->status = [
@@ -54,16 +53,15 @@ class AdminLoginHistoryController extends Controller
 
         return Inertia::render('Admin/IndexLoginHistoryPage', [
             'loginHistory' => $loginHistory,
-            'filters' => $this->pagination->buildFilters($request),
+            'filters'      => $this->pagination->buildFilters($request),
         ]);
     }
-
 
     public function bulkDestroy(Request $request)
     {
         $request->validate([
-            'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'exists:login_history,id']
+            'ids'   => ['required', 'array'],
+            'ids.*' => ['required', 'exists:login_history,id'],
         ]);
 
         LoginHistory::whereIn('id', $request->ids)->delete();

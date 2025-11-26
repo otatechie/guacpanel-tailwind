@@ -14,4 +14,4 @@ return [
         'superuser',
         'user',
     ],
-]; 
+];

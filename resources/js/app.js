@@ -25,7 +25,7 @@ createInertiaApp({
         delay: 250,
         color: '#ffa500',
         includeCSS: true,
-        showSpinner: true,
+        showSpinner: false,
     },
 
     title: title => `${title} - ${appName}`,

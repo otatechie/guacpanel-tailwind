@@ -11,7 +11,6 @@ class UserSeeder extends Seeder
     {
         // Disable Scout syncing during seeding to avoid Typesense configuration errors
         User::withoutSyncingToSearch(function () {
-
             if (config('seeders.users.superAdmin.enabled')) {
                 $seededSuperAdminEmail = config('seeders.users.superAdmin.email');
                 $superuser = User::where('email', '=', $seededSuperAdminEmail)->first();
