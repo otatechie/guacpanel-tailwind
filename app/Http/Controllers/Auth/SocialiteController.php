@@ -29,12 +29,12 @@ class SocialiteController extends Controller
     {
         if (
             $request->filled('denied') ||   // denied param is present and not empty
-            $request->has('error')    ||    // any error param present
-            ! $request->has('code')         // code is missing
+            $request->has('error') ||    // any error param present
+            !$request->has('code')         // code is missing
         ) {
             return redirect()
                 ->route('login')
-                ->with('error', 'Unable to login with '. Str::ucfirst($provider) .'.');
+                ->with('error', 'Unable to login with '.Str::ucfirst($provider).'.');
         }
 
         $user = Socialite::driver($provider)->user();
@@ -46,7 +46,7 @@ class SocialiteController extends Controller
 
             return redirect()
                         ->intended($this->redirectSuccessLogin)
-                        ->with('success', Str::ucfirst($provider) . ' Login Successful' );
+                        ->with('success', Str::ucfirst($provider).' Login Successful');
         }
 
         $newUser = User::create([
@@ -59,6 +59,6 @@ class SocialiteController extends Controller
 
         return redirect()
                     ->intended('/dashboard')
-                    ->with('success', Str::ucfirst($provider) . ' Registration Successful' );
+                    ->with('success', Str::ucfirst($provider).' Registration Successful');
     }
 }
