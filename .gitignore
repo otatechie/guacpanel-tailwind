@@ -54,3 +54,4 @@ yarn-error.log
 /storage/framework/views/*
 /storage/pail
 docker-compose.override.yml
+composer.lock
