@@ -6,18 +6,44 @@ import FormInput from '../../Components/FormInput.vue'
 import FormCheckbox from '../../Components/FormCheckbox.vue'
 import Modal from '../../Components/Modal.vue'
 import { ref } from 'vue'
+import Socialite from '@/components/Socialite.vue'
 
 defineOptions({
     layout: Auth
 })
 
-const { settings: { passwordlessLogin = true } = {} } = usePage().props
+const props = defineProps({
+    canResetPassword: {
+        type: Boolean,
+        required: false
+    },
+    providersConfig: {
+        type: Object,
+        required: false
+    },
+})
+
+const page = usePage()
+
+const {
+    settings: {
+        passwordlessLogin = true
+    } = {}
+} = page.props
 
 const form = useForm({
     email: 'ota@example.com',
     password: 'password',
     remember: false
 })
+
+const smLogin = (() => {
+    const providersConfig = props.providersConfig
+    if (providersConfig.providers.length === 0) {
+        return false
+    }
+    return true
+})()
 
 const showMagicLinkModal = ref(false)
 const magicLinkForm = useForm({
@@ -75,6 +101,7 @@ const sendMagicLink = () => {
                         label="Remember me"
                         name="remember" />
                     <Link
+                        v-if="canResetPassword"
                         :href="route('password.request')"
                         class="text-sm link hover:underline"
                         aria-label="Reset forgotten password">
@@ -91,15 +118,22 @@ const sendMagicLink = () => {
                 {{ form.processing ? 'Signing in...' : 'Sign in' }}
             </button>
 
-            <template v-if="passwordlessLogin">
+            <template v-if="smLogin || passwordlessLogin">
                 <div role="separator" aria-label="or separator" class="relative">
                     <hr class="border-t border-[var(--color-border)]" />
-                    <span
-                        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-[var(--color-surface)] text-[var(--color-text-muted)]">
+                    <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-[var(--color-surface)] text-[var(--color-text-muted)]">
                         OR
                     </span>
                 </div>
+            </template>
 
+            <template v-if="smLogin">
+                <Socialite
+                    :providers-config="providersConfig"
+                 />
+            </template>
+
+            <template v-if="passwordlessLogin">
                 <button
                     type="button"
                     class="w-full flex items-center justify-center gap-2 btn-secondary text-sm dark:hover:bg-gray-800 dark:text-gray-200 dark:hover:text-purple-400 transition-colors cursor-pointer"

@@ -101,6 +101,26 @@ Route::middleware(['guest', 'web'])->group(function () {
     return $next($request);
 }`,
 
+    socialConfig: `GOOGLE_ENABLED=false
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_REDIRECT=\u0024{APP_URL}/auth/social/google/callback
+
+FACEBOOK_ENABLED=false
+FACEBOOK_CLIENT_ID=your-facebook-client-id
+FACEBOOK_CLIENT_SECRET=your-facebook-client-secret
+FACEBOOK_REDIRECT=\u0024{APP_URL}/auth/social/facebook/callback
+
+GITHUB_ENABLED=false
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+GITHUB_REDIRECT=\u0024{APP_URL}/auth/social/github/callback
+
+LINKEDIN_ENABLED=false
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_SECRET=your-linkedin-client-secret
+LINKEDIN_REDIRECT=\u0024{APP_URL}/auth/social/linkedin/callback`,
+
     frontendSetup: `// resources/js/Pages/Admin/User/IndexUserPage.vue
 import { Head, router } from '@inertiajs/vue3'
 import DataTable from '@/Components/Datatable.vue'
@@ -250,7 +270,7 @@ const handleDelete = async (user) => {
 }`,
 
     bulkDelete: `// Add bulk delete functionality to your Datatable
-<Datatable 
+<Datatable
     :bulk-delete-route="route('admin.login.history.bulk-destroy')"
     @bulk-delete="handleBulkDelete">
 </Datatable>
@@ -593,6 +613,77 @@ onUnmounted(() => {
                     </div>
                 </div>
 
+                <!-- Socialite Logins -->
+                <div
+                    class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono mb-8">
+                    <div class="flex items-start mb-2">
+                        <span class="text-green-600 dark:text-green-500 mr-2">⌾</span>
+                        <h4 class="text-green-700 dark:text-green-400 font-bold">Social Login</h4>
+                    </div>
+                    <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 font-mono">
+                            Use third party authentication for your app using Laravel Socialite.
+                        </p>
+
+                        <h5 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                            .env Configuration
+                        </h5>
+                        <div class="bg-gray-800 rounded-lg mb-4">
+                            <CodeBlock :code="codeExamples.socialConfig" language="bash" />
+                        </div>
+
+                        <div
+                            class="p-3 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mb-4">
+                            <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                                <span class="flex-shrink-0 text-xl">💡</span>
+                                <span class="mt-0.5">
+                                    <strong>Note:</strong>
+                                    Enabling any provider show them on the login and register pages
+                                </span>
+                            </p>
+                        </div>
+
+                        <div
+                            class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 font-mono mb-2">
+                            <p class="text-gray-700 dark:text-gray-200 mb-4">
+                                Register your oauth2 app and obtain your credentials
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                                Providers that will work with local dev callback:
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm mb-4">
+                                <li>
+                                    <a href="https://developers.facebook.com/" target="_blank" class="link">
+                                        Facebook Developer Portal
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/settings/applications/new" target="_blank" class="link">
+                                        GitHub Developer Portal
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/developers/apps/" target="_blank" class="link">
+                                        LinkedIn Developer Portal
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                                Providers that will only work on a live URL:
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm mb-2">
+                                <li>
+                                    <a href="https://console.developers.google.com/" target="_blank" class="link">
+                                        Google Developer Portal
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Additional Auth Features -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div
@@ -626,7 +717,6 @@ onUnmounted(() => {
                             Learn more →
                         </a>
                     </div>
-
                 </div>
             </section>
 

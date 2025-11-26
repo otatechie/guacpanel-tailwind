@@ -13,10 +13,10 @@ use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\BrowserSessionController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\TypesenseController;
@@ -163,15 +163,11 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
     });
 });
 
-// Documentation Routes
-Route::prefix('documentation')->name('documentation.')->group(function () {
-    Route::controller(DocumentationController::class)->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/installation', 'installation')->name('installation');
-        Route::get('/features', 'features')->name('features');
-        Route::get('/components', 'components')->name('components');
-    });
-});
+require __DIR__.'/documentation.php';
+
+//Socialite Authentication Routes
+Route::get('/auth/social/{provider}', [SocialiteController::class, 'getSocialRedirect'])->name('social.redirect');
+Route::get('/auth/social/{provider}/callback', [SocialiteController::class, 'handleSocialCallback'])->name('social.callback');
 
 // Magic Link Authentication Routes
 Route::middleware(['guest', 'web'])->group(function () {
