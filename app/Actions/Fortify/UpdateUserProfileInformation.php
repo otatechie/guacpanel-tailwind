@@ -13,7 +13,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
+            'name'  => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
@@ -21,7 +21,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'location' => ['nullable', 'string', 'max:255'],
+            'location'   => ['nullable', 'string', 'max:255'],
             'image_type' => ['nullable', 'string', 'max:255'],
         ])->validate();
         if (
