@@ -128,9 +128,10 @@ const sendMagicLink = () => {
             </template>
 
             <template v-if="smLogin">
-                <Socialite
-                    :providers-config="providersConfig"
-                 />
+              <Socialite
+                  :providers-config="providersConfig"
+                  :iconsOnly="true"
+               />
             </template>
 
             <template v-if="passwordlessLogin">
