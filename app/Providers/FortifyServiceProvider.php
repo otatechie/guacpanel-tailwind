@@ -10,6 +10,7 @@ use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -45,12 +46,17 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
 
-        Fortify::loginView(function () {
-            return Inertia::render('Auth/Login');
+        Fortify::loginView(function (Request $request) {
+            return Inertia::render('Auth/Login', [
+                'canResetPassword' => Route::has('password.request'),
+                'providersConfig'  => $request->attributes->get('providersConfig'),
+            ]);
         });
 
-        Fortify::registerView(function () {
-            return Inertia::render('Auth/Register');
+        Fortify::registerView(function (Request $request) {
+            return Inertia::render('Auth/Register', [
+                'providersConfig' => $request->attributes->get('providersConfig'),
+            ]);
         });
 
         Fortify::requestPasswordResetLinkView(function () {

@@ -3,9 +3,17 @@ import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '../../Layouts/Auth.vue'
 import FormInput from '../../Components/FormInput.vue'
+import Socialite from '@/components/Socialite.vue'
 
 defineOptions({
     layout: Auth
+})
+
+const props = defineProps({
+    providersConfig: {
+        type: Object,
+        required: false
+    },
 })
 
 const form = useForm({
@@ -16,6 +24,14 @@ const form = useForm({
 })
 
 const { settings: { passwordlessLogin = true } = {} } = usePage().props
+
+const smLogin = (() => {
+    const providersConfig = props.providersConfig
+    if (providersConfig.providers.length === 0) {
+        return false
+    }
+    return true
+})()
 
 const submit = () => {
     form.post(route('register'))
@@ -35,7 +51,7 @@ const submit = () => {
             <FormInput
                 id="name"
                 v-model="form.name"
-                label="Legal name"
+                label="Name"
                 name="name"
                 required
                 :error="form.errors.name"
@@ -89,7 +105,7 @@ const submit = () => {
                 {{ form.processing ? 'Creating account...' : 'Create account' }}
             </button>
 
-            <template v-if="passwordlessLogin">
+            <template v-if="smLogin || passwordlessLogin">
                 <div class="relative flex items-center" role="separator" aria-label="or separator">
                     <div class="w-full border-t border-[var(--color-border)]"></div>
                     <span
@@ -97,7 +113,15 @@ const submit = () => {
                         OR
                     </span>
                 </div>
+            </template>
 
+            <template v-if="smLogin">
+                <Socialite
+                    :providers-config="providersConfig"
+                 />
+            </template>
+
+            <template v-if="passwordlessLogin">
                 <Link
                     :href="route('magic.create')"
                     class="w-full flex items-center justify-center gap-2 px-4 py-2.5 cursor-pointer text-sm btn-secondary"

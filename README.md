@@ -30,6 +30,11 @@ An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind C
 - 🔐 **Authentication & Security**
   - Secure login with [Laravel Fortify](https://laravel.com/docs/fortify)
   - Passwordless magic link authentication
+  - Social Authentication with [Laravel Socialite](https://laravel.com/docs/socialite)
+    - [Google](https://console.developers.google.com/)
+    - [GitHub](https://github.com/settings/applications/new) (Will work with local dev callback)
+    - [Facebook](https://developers.facebook.com/) (Will work with local dev callback)
+    - [LinkedIn](https://www.linkedin.com/developers/apps/) (Will work with local dev callback)
   - Two-factor authentication (2FA) via [Laravel Fortify](https://laravel.com/docs/fortify#two-factor-authentication)
   - Role-based permissions with [Spatie Permission](https://spatie.be/docs/laravel-permission)
     - Visual role and permission management
@@ -135,6 +140,8 @@ php artisan serve
 
 - [GuacPanel Documentation](https://guacpanel.com)
 - [Laravel Documentation](https://laravel.com/docs)
+- [Fortify Documentation](https://laravel.com/docs/fortify)
+- [Socialite Documentation](https://laravel.com/docs/socialite)
 - [Vue.js Documentation](https://vuejs.org/guide/introduction.html)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [Inertia.js Documentation](https://inertiajs.com/)

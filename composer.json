@@ -19,6 +19,7 @@
         "laravel/pail": "^1.2",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.15",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.9",
         "laravolt/avatar": "^5.1|^6.0",
         "owen-it/laravel-auditing": "^13.6|^14.0",

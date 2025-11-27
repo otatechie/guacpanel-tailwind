@@ -121,6 +121,19 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                         class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono">
                         <div class="flex items-start mb-2">
                             <span class="text-green-600 dark:text-green-500 mr-2">⌾</span>
+                            <h4 class="text-green-700 dark:text-green-400 font-bold">Laravel Socialite</h4>
+                        </div>
+                        <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
+                            <p class="text-gray-700 dark:text-gray-200 text-sm mb-2 font-mono">
+                                Social login with Google, Facebook, GitHub, and LinkedIn
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono">
+                        <div class="flex items-start mb-2">
+                            <span class="text-green-600 dark:text-green-500 mr-2">⌾</span>
                             <h4 class="text-green-700 dark:text-green-400 font-bold">Role & Permissions</h4>
                         </div>
                         <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
@@ -165,6 +178,19 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                         <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
                             <p class="text-gray-700 dark:text-gray-200 text-sm mb-2 font-mono">
                                 Comprehensive audit logs with Spatie Activitylog
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono">
+                        <div class="flex items-start mb-2">
+                            <span class="text-green-600 dark:text-green-500 mr-2">⌾</span>
+                            <h4 class="text-green-700 dark:text-green-400 font-bold">Users Management</h4>
+                        </div>
+                        <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
+                            <p class="text-gray-700 dark:text-gray-200 text-sm mb-2 font-mono">
+                                Built in Users Management with fully loaded CRUD
                             </p>
                         </div>
                     </div>
@@ -342,6 +368,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                     </div>
                 </div>
             </div>
+
         </section>
 
         <!-- Technologies Section -->
@@ -359,7 +386,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                     <div class="flex items-center mb-3">
                         <span class="text-red-600 dark:text-red-500 mr-2">⌾</span>
                         <h4 class="text-gray-900 dark:text-gray-100 font-bold">Laravel</h4>
-                        <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">v11.x</span>
+                        <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">v12.x</span>
                     </div>
                     <p class="text-gray-700 dark:text-gray-200 text-sm mb-3">
                         PHP framework providing the backend foundation
