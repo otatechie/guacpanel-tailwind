@@ -40,9 +40,9 @@ class UserAccountController extends Controller
         $user = Auth::user();
 
         $data = [
-            'user'          => $user,
-            'qrCodeSvg'     => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
-            'recoveryCodes' => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
+            'user'              => $user,
+            'qrCodeSvg'         => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
+            'recoveryCodes'     => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
             'twoFactorEnabled'  => Route::has('two-factor.enable'),
         ];
 
