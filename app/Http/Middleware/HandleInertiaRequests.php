@@ -6,6 +6,7 @@ use App\Models\Personalisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -41,6 +42,13 @@ class HandleInertiaRequests extends Middleware
         $personalisation = Personalisation::first() ?? new Personalisation();
         $user = $request->user();
 
+        $avatar = $user->avatar;
+        $gravatar = $user->gravatar;
+
+        if (Str::lower($user->profile_image_type) == 'gravatar') {
+            $avatar = $gravatar;
+        }
+
         return array_merge(
             parent::share($request),
             [
@@ -51,7 +59,8 @@ class HandleInertiaRequests extends Middleware
                         'email'       => $user->email,
                         'roles'       => $user->roles->pluck('name'),
                         'permissions' => $user->getAllPermissions()->pluck('name'),
-                        'avatar'      => $user->avatar,
+                        'avatar'      => $avatar,
+                        'gravatar'    => $gravatar,
                     ] : null,
                 ],
 

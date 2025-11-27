@@ -79,7 +79,6 @@ const menuItems = [
         href: route('documentation.index')
     },
     { type: 'separator' },
-
     {
         type: 'link',
         label: 'Sign Out',

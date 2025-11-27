@@ -1,7 +1,18 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3'
+import { computed } from 'vue'
+import { Head, useForm, usePage } from '@inertiajs/vue3'
 import FormInput from '@/Components/FormInput.vue'
+import FormRadioGroup from '@/Components/FormRadioGroup.vue'
 import Alert from '@/Components/Alert.vue'
+
+const page = usePage()
+const user = computed(() => page.props.auth.user)
+const avatarUrl = computed(() => user.value?.avatar)
+const gravatarUrl = computed(() => user.value?.gravatar)
+
+const safeUserName = computed(() =>
+    user.value?.name ? String(user.value.name).replace(/[<>]/g, '') : ''
+)
 
 const props = defineProps({
     user: {
@@ -17,7 +28,8 @@ const props = defineProps({
 const profileForm = useForm({
     name: props.user.name,
     email: props.user.email,
-    location: props.user.location
+    location: props.user.location,
+    image_type: props.user.profile_image_type
 })
 
 const submitProfileForm = () => {
@@ -25,6 +37,28 @@ const submitProfileForm = () => {
         preserveScroll: true
     })
 }
+
+const avatarTypes = {
+    avatar: {
+        label: 'Avatar',
+        value: 'avatar'
+    },
+    gravatar: {
+        label: 'Gravatar',
+        value: 'gravatar'
+    },
+    // image: {
+    //     label: 'Image',
+    //     value: 'image'
+    // },
+}
+
+const currentAvatarUrl = computed(() => {
+    if (profileForm?.image_type == 'gravatar') {
+        return gravatarUrl?.value;
+    }
+    return avatarUrl?.value;
+})
 
 </script>
 
@@ -49,7 +83,7 @@ const submitProfileForm = () => {
                 </p>
                 <form
                     id="profile-form"
-                    class="max-w-2xl space-y-8"
+                    class="space-y-8"
                     @submit.prevent="submitProfileForm">
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -71,7 +105,21 @@ const submitProfileForm = () => {
                             v-model="profileForm.location"
                             label="Location"
                             :error="profileForm.errors.location"
-                            placeholder="Enter your location" />
+                            placeholder="Enter your location"
+                        />
+                        <div class="flex items-end justify-between">
+                            <FormRadioGroup
+                                v-model="profileForm.image_type"
+                                label="Avatar Type"
+                                :options="avatarTypes"
+                                class="mb-2"
+                            />
+                            <img
+                                :src="currentAvatarUrl"
+                                :alt="`${safeUserName}'s avatar`"
+                                class="size-10 rounded-full ring-2 ring-white dark:ring-gray-800"
+                            />
+                        </div>
                     </div>
                 </form>
             </div>

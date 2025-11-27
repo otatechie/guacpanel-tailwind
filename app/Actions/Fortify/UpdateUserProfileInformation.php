@@ -14,7 +14,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-
             'email' => [
                 'required',
                 'string',
@@ -22,9 +21,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'location' => ['required', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'image_type' => ['nullable', 'string', 'max:255'],
         ])->validate();
-
         if (
             $input['email'] !== $user->email &&
             $user instanceof MustVerifyEmail
@@ -32,9 +31,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
-                'name'     => $input['name'],
-                'email'    => $input['email'],
-                'location' => $input['location'],
+                'name'                  => $input['name'],
+                'email'                 => $input['email'],
+                'location'              => $input['location'],
+                'profile_image_type'    => $input['image_type'],
             ])->save();
 
             session()->flash('success', 'Your profile has been updated successfully.');

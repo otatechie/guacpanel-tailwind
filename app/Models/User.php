@@ -40,6 +40,7 @@ class User extends Authenticatable implements Auditable
         'password_changed_at',
         'force_password_change',
         'disable_account',
+        'profile_image_type',
     ];
 
     protected $casts = [
@@ -49,6 +50,7 @@ class User extends Authenticatable implements Auditable
         'password_changed_at'   => 'datetime',
         'force_password_change' => 'boolean',
         'disable_account'       => 'boolean',
+        'profile_image_type'    => 'string', // This is a string to later allow other types
         'deleted_at'            => 'datetime',
     ];
 
