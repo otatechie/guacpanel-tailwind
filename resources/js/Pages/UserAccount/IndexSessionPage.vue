@@ -92,8 +92,8 @@ const getDeviceIcon = (device) => {
         <div class="container-border">
             <PageHeader title="Device Management" description="View and manage your active sessions" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'Account', href: route('user.index') },
-                { label: 'Device Management' }
+                { label: 'Account Settings', href: route('user.index') },
+                { label: 'Devices' }
             ]" />
 
             <div class="p-3 sm:p-6 dark:bg-gray-900">

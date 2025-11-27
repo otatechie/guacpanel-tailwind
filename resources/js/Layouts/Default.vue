@@ -2,14 +2,14 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePage, Link } from '@inertiajs/vue3'
 import NavSidebarDesktop from '@/Components/NavSidebarDesktop.vue'
-import NavProfile from '../Components/NavProfile.vue'
-import Notification from '../Components/Notification.vue'
-import FlashMessage from '../Components/FlashMessage.vue'
-import Footer from '../Shared/Public/Footer.vue'
-import Logo from '../Components/Logo.vue'
-import Search from '../Components/Typesense/Search.vue'
-import ColorThemeSwitcher from '../Components/ColorThemeSwitcher.vue'
-import MobileNotification from '../Components/MobileNotification.vue'
+import NavProfile from '@js/Components/NavProfile.vue'
+import Notification from '@js/Components/Notification.vue'
+import FlashMessage from '@js/Components/FlashMessage.vue'
+import Footer from '@js/Shared/Public/Footer.vue'
+import Logo from '@js/Components/Logo.vue'
+import Search from '@js/Components/Typesense/Search.vue'
+import ColorThemeSwitcher from '@js/Components/ColorThemeSwitcher.vue'
+import MobileNotification from '@js/Components/MobileNotification.vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user)

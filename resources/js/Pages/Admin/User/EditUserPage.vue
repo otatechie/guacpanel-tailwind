@@ -156,19 +156,19 @@ const deleteUser = () => {
 }
 </script>
 
-
 <template>
-
     <Head :title="`Edit User - ${props.user.name}`" />
-
     <main class="max-w-7xl mx-auto" aria-labelledby="edit-user">
         <div class="container-border">
-            <PageHeader :title="`Edit User - ${props.user.name}`"
-                description="Manage user information, roles, and permissions" :breadcrumbs="[
+            <PageHeader
+                :title="`Edit User - ${props.user.name}`"
+                description="Manage user information, roles, and permissions"
+                :breadcrumbs="[
                     { label: 'Dashboard', href: '/' },
                     { label: 'Users', href: '/admin/users' },
                     { label: props.user.name }
-                ]" />
+                ]"
+            />
 
             <section class="p-3 sm:p-6 dark:bg-gray-900">
                 <div

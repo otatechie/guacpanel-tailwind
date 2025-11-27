@@ -24,6 +24,10 @@ const props = defineProps({
         type: Array,
         required: false,
         default: () => []
+    },
+    twoFactorEnabled: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -65,21 +69,24 @@ const benefits = [
 ]
 </script>
 
-
 <template>
 
     <Head title="Two-Factor Authentication" />
+
     <main class="max-w-7xl mx-auto" aria-labelledby="2fa-settings">
         <div class="container-border">
             <PageHeader title="Two-Factor Authentication" description="Add an extra layer of security to your account" :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
+                    { label: 'Account Settings', href: route('user.index') },
                     { label: 'Two-Factor Authentication' }
                 ]" />
 
             <section class="p-4 sm:p-6 dark:bg-gray-900">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 sm:p-6">
-                    <Alert type="info">
+                    <Alert
+                        v-if="!twoFactorEnabled"
+                        type="info"
+                    >
                         For demo purposes, two-factor authentication operations have been disabled in the Fortify
                         configuration.
                     </Alert>
@@ -101,7 +108,14 @@ const benefits = [
                         </div>
 
                         <div class="flex justify-end">
-                            <button @click="enableTwoFactor" :disabled="enableForm.processing" class="btn-primary btn-sm w-full sm:w-auto" :aria-busy="enableForm.processing">{{ enableForm.processing ? 'Enabling...' : 'Enable 2FA' }}</button>
+                            <button
+                                @click="enableTwoFactor"
+                                :disabled="enableForm.processing || !twoFactorEnabled"
+                                class="btn-primary btn-sm w-full sm:w-auto"
+                                :aria-busy="enableForm.processing"
+                            >
+                                {{ enableForm.processing ? 'Enabling...' : 'Enable 2FA' }}
+                            </button>
                         </div>
                     </section>
 
@@ -286,4 +300,5 @@ const benefits = [
             </div>
         </template>
     </Modal>
+
 </template>
