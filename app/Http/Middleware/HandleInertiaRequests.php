@@ -42,10 +42,10 @@ class HandleInertiaRequests extends Middleware
         $personalisation = Personalisation::first() ?? new Personalisation();
         $user = $request->user();
 
-        $avatar = $user->avatar;
-        $gravatar = $user->gravatar;
+        $avatar = $user?->avatar;
+        $gravatar = $user?->gravatar;
 
-        if (Str::lower($user->profile_image_type) == 'gravatar') {
+        if (Str::lower($user?->profile_image_type) == 'gravatar') {
             $avatar = $gravatar;
         }
 
