@@ -211,13 +211,13 @@ watch(pagination, newPagination => {
 
 <template>
 
-    <Head title="Users" />
+    <Head title="Users Management" />
     <main class="max-w-7xl mx-auto" aria-labelledby="users-management">
         <div class="container-border">
-            <PageHeader title="Users" description="Manage system users and their access" :breadcrumbs="[
+            <PageHeader title="Users Management" description="Manage system users and their access" :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'Settings', href: route('admin.setting.index') },
-                { label: 'Users' }
+                { label: 'System Settings', href: route('admin.setting.index') },
+                { label: 'Users Management' }
             ]">
                 <template #actions>
                     <button @click="openCreateModal" class="btn-primary btn-sm">

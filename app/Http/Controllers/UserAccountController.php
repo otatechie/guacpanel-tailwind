@@ -2,27 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
 
 class UserAccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
         abort_if($user->id !== Auth::id(), 403, 'You are not authorized to access this profile.');
 
-        return Inertia::render('UserAccount/IndexPage', [
-            'user' => $user->only('name', 'email', 'location'),
-        ]);
+        $data = [
+            'user'              => $user,
+            'qrCodeSvg'         => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
+            'recoveryCodes'     => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
+            'profileEnabled'    => Route::has('user-profile-information.update'),
+            'twoFactorEnabled'  => Route::has('two-factor.enable'),
+            'passwordEnabled'   => Route::has('user-password.update'),
+            'sessions'          => $this->getUserSessionsData($user, $request->session()->getId()),
+        ];
+
+        return Inertia::render('UserAccount/IndexPage', $data);
     }
 
     public function indexTwoFactorAuthentication()
@@ -30,9 +40,10 @@ class UserAccountController extends Controller
         $user = Auth::user();
 
         $data = [
-            'user'          => $user,
-            'qrCodeSvg'     => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
-            'recoveryCodes' => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
+            'user'              => $user,
+            'qrCodeSvg'         => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
+            'recoveryCodes'     => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
+            'twoFactorEnabled'  => Route::has('two-factor.enable'),
         ];
 
         return Inertia::render('UserAccount/IndexTwoFactorAuthenticationPage', $data);
@@ -86,6 +97,15 @@ class UserAccountController extends Controller
     public function session(Request $request)
     {
         $user = Auth::user();
+
+        return Inertia::render('UserAccount/IndexSessionPage', [
+            'user'     => $user,
+            'sessions' => $this->getUserSessionsData($user, $request->session()->getId()),
+        ]);
+    }
+
+    protected function getUserSessionsData(User $user, $currentSessionId = null)
+    {
         $sessions = [];
 
         if (config('session.driver') === 'database') {
@@ -101,15 +121,12 @@ class UserAccountController extends Controller
                     'agent'      => $this->formatAgent($session->user_agent ?? ''),
                     'ip'         => $session->ip_address ?? '',
                     'lastActive' => $session->last_activity ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '',
-                    'isCurrent'  => ($session->id ?? '') === $request->session()->getId(),
+                    'isCurrent'  => ($session->id ?? '') === $currentSessionId,
                 ];
             }
         }
 
-        return Inertia::render('UserAccount/IndexSessionPage', [
-            'user'     => $user,
-            'sessions' => $sessions,
-        ]);
+        return $sessions;
     }
 
     protected function formatAgent($userAgent)

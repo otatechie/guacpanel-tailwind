@@ -1,7 +1,7 @@
 <script setup>
+import { h, ref, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
-import { h, ref, watch } from 'vue'
 import Default from '@/Layouts/Default.vue'
 import PageHeader from '@/Components/PageHeader.vue'
 import Datatable from '@/Components/Datatable.vue'
@@ -19,6 +19,7 @@ const props = defineProps({
 
 const columnHelper = createColumnHelper()
 const loading = ref(false)
+
 const pagination = ref({
     current_page: props.audits.current_page,
     per_page: Number(props.audits.per_page),
@@ -38,18 +39,31 @@ const columns = [
     columnHelper.accessor('created_at', {
         header: 'Date',
         cell: info => {
-            const date = new Date(info.getValue())
+            const raw = info.getValue()
+            const date = raw ? new Date(raw) : null
+
+            if (!date || isNaN(date.getTime())) {
+                return h(
+                    'span',
+                    { 'aria-label': 'Activity date: Unknown' },
+                    'Unknown'
+                )
+            }
+
             const formattedDate = date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             })
+
             const formattedTime = date.toLocaleTimeString('en-US', {
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
             })
+
             const fullDateTime = `${formattedDate} @ ${formattedTime}`
+
             return h(
                 'span',
                 {
@@ -65,14 +79,17 @@ const columns = [
     columnHelper.accessor(row => row.user?.name, {
         id: 'user.name',
         header: 'User',
-        cell: info =>
-            h(
+        cell: info => {
+            const value = info.getValue() || 'System'
+
+            return h(
                 'span',
                 {
-                    'aria-label': `Action performed by: ${info.getValue() || 'System'}`
+                    'aria-label': `Action performed by: ${value}`
                 },
-                info.getValue() || 'System'
-            ),
+                value
+            )
+        },
         meta: {
             ariaLabel: 'User who performed the action'
         }
@@ -80,12 +97,21 @@ const columns = [
     columnHelper.accessor('event', {
         header: 'Action',
         cell: info => {
-            const event = info.getValue()
-            const formattedEvent = event.charAt(0).toUpperCase() + event.slice(1)
+            const event = (info.getValue() || '').toString()
+            const normalizedEvent = event.toLowerCase()
+            const formattedEvent =
+                event.length > 0
+                    ? event.charAt(0).toUpperCase() + event.slice(1)
+                    : 'Unknown'
+
+            const badgeClass =
+                eventBadgeClasses[normalizedEvent] ||
+                'bg-gray-50 text-gray-700 border border-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700'
+
             return h(
                 'span',
                 {
-                    class: `px-2 py-1 rounded-full text-xs font-medium ${eventBadgeClasses[event.toLowerCase()] || 'bg-gray-50 text-gray-700 border border-gray-100'}`,
+                    class: `px-2 py-1 rounded-full text-xs font-medium ${badgeClass}`,
                     role: 'status',
                     'aria-label': `Action type: ${formattedEvent}`
                 },
@@ -98,14 +124,18 @@ const columns = [
     }),
     columnHelper.accessor('auditable_type', {
         header: 'Model',
-        cell: info =>
-            h(
+        cell: info => {
+            const full = info.getValue() || ''
+            const short = full.split('\\').pop() || full || 'Unknown'
+
+            return h(
                 'span',
                 {
-                    'aria-label': `Resource type: ${info.getValue().split('\\').pop()}`
+                    'aria-label': `Resource type: ${short}`
                 },
-                info.getValue().split('\\').pop()
-            ),
+                short
+            )
+        },
         meta: {
             ariaLabel: 'Resource type affected'
         }
@@ -116,6 +146,7 @@ watch(
     pagination,
     newPagination => {
         loading.value = true
+
         router.get(
             route('admin.audit.index'),
             {
@@ -125,7 +156,9 @@ watch(
             {
                 preserveState: true,
                 preserveScroll: true,
-                onFinish: () => (loading.value = false)
+                onFinish: () => {
+                    loading.value = false
+                }
             }
         )
     },
@@ -134,22 +167,24 @@ watch(
 </script>
 
 <template>
-    <Head title="Audit Log" />
+    <Head title="System Activity Audit Log" />
 
     <main class="max-w-7xl mx-auto" aria-labelledby="audit-log">
         <div class="container-border">
             <PageHeader
-                title="Audit Log"
+                title="Activity Audit Log"
                 description="View and monitor system activities"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Audit Log' }
-                ]" />
+                    { label: 'System Settings', href: route('admin.setting.index') },
+                    { label: 'System Activity' }
+                ]"
+            />
 
             <section class="p-6 bg-[var(--color-bg)]">
                 <div
-                    class="bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-border)] p-6">
+                    class="bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-border)] p-6"
+                >
                     <Datatable
                         :data="audits.data"
                         :columns="columns"
@@ -159,8 +194,8 @@ watch(
                         empty-message="No audit records found"
                         empty-description="System activities will appear here"
                         export-file-name="activity_log"
-                        @update:pagination="pagination = $event">
-                    </Datatable>
+                        @update:pagination="pagination = $event"
+                    />
                 </div>
             </section>
         </div>
