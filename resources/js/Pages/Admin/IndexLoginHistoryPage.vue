@@ -133,7 +133,7 @@ watch(
                 description="View and monitor login history"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
+                    { label: 'System Settings', href: route('admin.setting.index') },
                     { label: 'Login History' }
                 ]" />
 

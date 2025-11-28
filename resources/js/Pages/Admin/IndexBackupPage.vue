@@ -14,15 +14,14 @@ defineProps({
     backupInfo: {
         type: Array,
         required: true,
-        validator: value => {
-            return value.every(
+        validator: value =>
+            value.every(
                 info =>
                     'disk' in info &&
                     'storageType' in info &&
                     'storageSpace' in info &&
                     'healthy' in info
             )
-        }
     }
 })
 
@@ -35,11 +34,9 @@ const runBackup = () => {
     if (isBackupRunning.value) return
 
     isBackupRunning.value = true
+
     form.post(route('admin.backup.create'), {
         preserveScroll: true,
-        onError: () => {
-            isBackupRunning.value = false
-        },
         onFinish: () => {
             isBackupRunning.value = false
         }
@@ -48,11 +45,9 @@ const runBackup = () => {
 
 const downloadBackup = fileName => {
     if (!fileName || typeof fileName !== 'string') return
-
-    const encodedPath = window.btoa(fileName.trim())
-
     if (!fileName.match(/\.(zip|gz|sql)$/i)) return
 
+    const encodedPath = window.btoa(fileName.trim())
     window.location.href = `/admin/backup/download/${encodedPath}`
 }
 
@@ -70,12 +65,10 @@ const deleteBackup = () => {
     if (!selectedBackup.value?.path) return
 
     const encodedPath = window.btoa(selectedBackup.value.path.trim())
+
     form.delete(route('admin.backup.destroy', { path: encodedPath }), {
         preserveScroll: true,
-        onSuccess: () => {
-            closeDeleteModal()
-        },
-        onError: () => {
+        onFinish: () => {
             closeDeleteModal()
         }
     })
@@ -121,24 +114,26 @@ const getStats = info => {
 </script>
 
 <template>
-    <Head title="System Backups" />
+    <Head title="Data Backups" />
 
     <main class="max-w-7xl mx-auto" aria-labelledby="system-backups">
         <div class="container-border">
             <PageHeader
-                title="System Backups"
+                title="Data Backups"
                 description="Manage system backups and restore points"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Backups' }
-                ]">
+                    { label: 'System Settings', href: route('admin.setting.index') },
+                    { label: 'Data Backups' }
+                ]"
+            >
                 <template #actions>
                     <button
                         class="btn btn-sm btn-primary"
                         :disabled="isBackupRunning"
                         :aria-busy="isBackupRunning"
-                        @click="runBackup">
+                        @click="runBackup"
+                    >
                         {{ isBackupRunning ? 'Creating backup...' : 'Create Backup' }}
                     </button>
                 </template>
@@ -146,7 +141,8 @@ const getStats = info => {
 
             <section class="p-6 bg-[var(--color-bg)]">
                 <div
-                    class="bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-border)] p-4 sm:p-6">
+                    class="bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-border)] p-4 sm:p-6"
+                >
                     <Alert type="info">
                         If the backup process fails, you can run the command manually:
                         <span class="font-mono">php artisan backup:run</span>
@@ -157,70 +153,80 @@ const getStats = info => {
                             <article
                                 v-for="(stat, index) in getStats(info)"
                                 :key="index"
-                                class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-4">
+                                class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-4"
+                            >
                                 <div class="flex items-center gap-3 mb-1">
                                     <svg
                                         v-if="stat.icon === 'database'"
                                         :class="[stat.iconColor, 'w-5 h-5']"
                                         fill="none"
                                         viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                        stroke="currentColor"
+                                    >
                                         <path
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
                                             stroke-width="2"
-                                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
+                                        />
                                     </svg>
                                     <svg
                                         v-if="stat.icon === 'server'"
                                         :class="[stat.iconColor, 'w-5 h-5']"
                                         fill="none"
                                         viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                        stroke="currentColor"
+                                    >
                                         <path
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
                                             stroke-width="2"
-                                            d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                                            d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+                                        />
                                     </svg>
                                     <svg
                                         v-if="stat.icon === 'hard-drive'"
                                         :class="[stat.iconColor, 'w-5 h-5']"
                                         fill="none"
                                         viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                        stroke="currentColor"
+                                    >
                                         <path
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
                                             stroke-width="2"
-                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                                        />
                                     </svg>
                                     <svg
                                         v-if="stat.icon === 'check-circle'"
                                         :class="[stat.iconColor, 'w-5 h-5']"
                                         fill="none"
                                         viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                        stroke="currentColor"
+                                    >
                                         <path
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
                                             stroke-width="2"
-                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
                                     </svg>
                                     <svg
                                         v-if="stat.icon === 'alert-circle'"
                                         :class="[stat.iconColor, 'w-5 h-5']"
                                         fill="none"
                                         viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                        stroke="currentColor"
+                                    >
                                         <path
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
                                             stroke-width="2"
-                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
                                     </svg>
-                                    <h2
-                                        class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                    <h2 class="text-sm font-medium text-gray-600 dark:text-gray-400">
                                         {{ stat.title }}
                                     </h2>
                                 </div>
@@ -232,35 +238,42 @@ const getStats = info => {
                                                 : 'text-red-600 dark:text-red-400'
                                             : 'text-gray-700 dark:text-gray-200',
                                         'text-xl font-medium capitalize'
-                                    ]">
+                                    ]"
+                                >
                                     {{ stat.value }}
                                 </p>
                             </article>
                         </div>
 
+                        <!-- Desktop table -->
                         <table
                             v-if="info.backups?.length > 0"
-                            class="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg overflow-hidden divide-y divide-[var(--color-border)] md:table hidden">
+                            class="w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg overflow-hidden divide-y divide-[var(--color-border)] md:table hidden"
+                        >
                             <thead class="bg-[var(--color-surface-muted)]">
                                 <tr>
                                     <th
                                         scope="col"
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                    >
                                         Date
                                     </th>
                                     <th
                                         scope="col"
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                    >
                                         Size
                                     </th>
                                     <th
                                         scope="col"
-                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                    >
                                         File Name
                                     </th>
                                     <th
                                         scope="col"
-                                        class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                                    >
                                         Actions
                                     </th>
                                 </tr>
@@ -269,17 +282,21 @@ const getStats = info => {
                                 <tr
                                     v-for="backup in info.backups"
                                     :key="backup.path"
-                                    class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                                >
                                     <td
-                                        class="px-4 py-3 whitespace-nowrap text-sm text-[var(--color-text)]">
+                                        class="px-4 py-3 whitespace-nowrap text-sm text-[var(--color-text)]"
+                                    >
                                         {{ backup.date }}
                                     </td>
                                     <td
-                                        class="px-4 py-3 whitespace-nowrap text-sm font-medium text-[var(--color-text)]">
+                                        class="px-4 py-3 whitespace-nowrap text-sm font-medium text-[var(--color-text)]"
+                                    >
                                         {{ backup.size }}
                                     </td>
                                     <td
-                                        class="px-4 py-3 whitespace-nowrap text-sm text-[var(--color-text-muted)] font-mono truncate max-w-[200px]">
+                                        class="px-4 py-3 whitespace-nowrap text-sm text-[var(--color-text-muted)] font-mono truncate max-w-[200px]"
+                                    >
                                         {{ backup.path }}
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap text-right space-x-1">
@@ -288,18 +305,21 @@ const getStats = info => {
                                             class="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200"
                                             title="Download backup"
                                             :disabled="!backup.path"
-                                            @click="downloadBackup(backup.path)">
+                                            @click="downloadBackup(backup.path)"
+                                        >
                                             <span class="sr-only">Download backup</span>
                                             <svg
                                                 class="h-4 w-4"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
-                                                stroke="currentColor">
+                                                stroke="currentColor"
+                                            >
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
                                                     stroke-width="2"
-                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
                                             </svg>
                                         </button>
                                         <button
@@ -307,18 +327,21 @@ const getStats = info => {
                                             class="p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200"
                                             title="Delete backup"
                                             :disabled="!backup.path"
-                                            @click="confirmDelete(backup)">
+                                            @click="confirmDelete(backup)"
+                                        >
                                             <span class="sr-only">Delete backup</span>
                                             <svg
                                                 class="h-4 w-4"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
-                                                stroke="currentColor">
+                                                stroke="currentColor"
+                                            >
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
                                                     stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                />
                                             </svg>
                                         </button>
                                     </td>
@@ -326,17 +349,19 @@ const getStats = info => {
                             </tbody>
                         </table>
 
+                        <!-- Mobile cards -->
                         <div
                             v-if="info.backups?.length > 0"
-                            class="md:hidden divide-y divide-[var(--color-border)] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg">
+                            class="md:hidden divide-y divide-[var(--color-border)] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg"
+                        >
                             <div
                                 v-for="backup in info.backups"
                                 :key="backup.path"
-                                class="p-4 space-y-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                class="p-4 space-y-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                            >
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <p
-                                            class="text-sm font-medium text-[var(--color-text)]">
+                                        <p class="text-sm font-medium text-[var(--color-text)]">
                                             {{ backup.date }}
                                         </p>
                                         <p class="text-sm text-[var(--color-text-muted)]">
@@ -347,48 +372,57 @@ const getStats = info => {
                                         <button
                                             class="p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200"
                                             title="Download backup"
-                                            @click="downloadBackup(backup.path)">
+                                            @click="downloadBackup(backup.path)"
+                                        >
                                             <span class="sr-only">Download backup</span>
                                             <svg
                                                 class="h-4 w-4"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
-                                                stroke="currentColor">
+                                                stroke="currentColor"
+                                            >
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
                                                     stroke-width="2"
-                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                                                />
                                             </svg>
                                         </button>
                                         <button
                                             class="p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200"
                                             title="Delete backup"
-                                            @click="confirmDelete(backup)">
+                                            @click="confirmDelete(backup)"
+                                        >
                                             <span class="sr-only">Delete backup</span>
                                             <svg
                                                 class="h-4 w-4"
                                                 fill="none"
                                                 viewBox="0 0 24 24"
-                                                stroke="currentColor">
+                                                stroke="currentColor"
+                                            >
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
                                                     stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                />
                                             </svg>
                                         </button>
                                     </div>
                                 </div>
                                 <p
-                                    class="text-xs text-gray-500 dark:text-gray-400 font-mono truncate">
+                                    class="text-xs text-gray-500 dark:text-gray-400 font-mono truncate"
+                                >
                                     {{ backup.path }}
                                 </p>
                             </div>
                         </div>
+
                         <p
                             v-else
-                            class="text-center p-8 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] text-[var(--color-text-muted)]">
+                            class="text-center p-8 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)] text-[var(--color-text-muted)]"
+                        >
                             No backups found in this storage location
                         </p>
                     </section>
@@ -419,14 +453,16 @@ const getStats = info => {
                     type="button"
                     class="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 cursor-pointer"
                     :disabled="form.processing"
-                    @click="closeDeleteModal">
+                    @click="closeDeleteModal"
+                >
                     Cancel
                 </button>
                 <button
                     type="button"
                     class="btn-primary btn-sm"
                     :disabled="form.processing"
-                    @click="deleteBackup">
+                    @click="deleteBackup"
+                >
                     {{ form.processing ? 'Deleting...' : 'Yes, Delete Backup' }}
                 </button>
             </div>

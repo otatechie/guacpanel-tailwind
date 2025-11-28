@@ -71,14 +71,14 @@ const benefits = [
 
 <template>
 
-    <Head title="Two-Factor Authentication" />
+    <Head title="Multi-Factor Authentication" />
 
     <main class="max-w-7xl mx-auto" aria-labelledby="2fa-settings">
         <div class="container-border">
-            <PageHeader title="Two-Factor Authentication" description="Add an extra layer of security to your account" :breadcrumbs="[
+            <PageHeader title="Multi-Factor Authentication" description="Add an extra layer of security to your account" :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
                     { label: 'Account Settings', href: route('user.index') },
-                    { label: 'Two-Factor Authentication' }
+                    { label: 'MFA' }
                 ]" />
 
             <section class="p-4 sm:p-6 dark:bg-gray-900">
@@ -260,9 +260,9 @@ const benefits = [
                                 <h3 class="text-base sm:text-lg font-semibold text-red-600 dark:text-red-400 mb-4 sm:mb-6">Danger Zone</h3>
                                 <div class="p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
                                     <h4 class="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 mb-2">Disable Two-Factor Authentication</h4>
-                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">Disabling two-factor authentication will significantly reduce your account security. This action will immediately remove all 2FA protections for your account.</p>
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">Disabling multi-factor authentication will significantly reduce your account security. This action will immediately remove all 2FA protections for your account.</p>
                                     <button @click="showDisableModal = true" class="w-full sm:w-auto btn-danger btn-sm inline-flex items-center justify-center min-h-[44px] sm:min-h-0">
-                                        <span class="hidden sm:inline">Disable Two-Factor Authentication</span>
+                                        <span class="hidden sm:inline">Disable Multi-Factor Authentication</span>
                                         <span class="sm:hidden">Disable 2FA</span>
                                     </button>
                                 </div>
@@ -276,12 +276,12 @@ const benefits = [
 
     <Modal :show="showDisableModal" @close="closeModal" size="md">
         <template #title>
-            <div class="flex items-center text-red-600 dark:text-red-400">Disable Two-Factor Authentication</div>
+            <div class="flex items-center text-red-600 dark:text-red-400">Disable Multi-Factor Authentication</div>
         </template>
 
         <template #default>
             <div class="space-y-4">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Are you sure you want to disable two-factor authentication? This will remove an important security layer from your account.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Are you sure you want to disable multi-factor authentication? This will remove an important security layer from your account.</p>
                 <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
                     <div class="flex gap-2">
                         <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

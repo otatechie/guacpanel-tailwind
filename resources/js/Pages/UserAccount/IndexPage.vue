@@ -51,7 +51,7 @@ const activeTab = ref(0)
 const tabs = [
     { name: 'Profile',                      key: 'profile' },
     { name: 'Password',                     key: 'password' },
-    { name: 'Two-Factor Authentication',    key: '2fa' },
+    { name: 'MFA',    key: '2fa' },
     { name: 'Devices',                      key: 'devices' },
     { name: 'Account',                      key: 'account' },
 ]
@@ -72,8 +72,8 @@ const pageHeaderContent = computed(() => {
     let description = 'Manage your profile information, password, and account settings'
 
     if (currentTab.key == '2fa') {
-        title = 'Add an extra layer of security to your account'
-        description = 'Manage your profile information, password, and account settings'
+        title = 'Multi-Factor Authentication'
+        description = 'Add an extra layer of security to your account'
     }
 
     if (currentTab.key == 'devices') {

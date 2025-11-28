@@ -14,11 +14,11 @@ defineOptions({
     <main class="max-w-7xl mx-auto" aria-labelledby="settings">
         <div class="container-border">
             <PageHeader
-                title="Settings"
+                title="System Settings"
                 description="Manage system-wide settings and configurations"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings' }
+                    { label: 'System Settings' }
                 ]" />
             <div class="p-6 bg-[var(--color-bg)]">
                 <div

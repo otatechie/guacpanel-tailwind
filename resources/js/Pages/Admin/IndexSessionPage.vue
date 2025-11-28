@@ -175,8 +175,8 @@ watch(
                 description="Manage system user sessions"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'Sessions' }
+                    { label: 'System Settings', href: route('admin.setting.index') },
+                    { label: 'Session Management' }
                 ]" />
 
             <section class="p-6 bg-[var(--color-bg)]">

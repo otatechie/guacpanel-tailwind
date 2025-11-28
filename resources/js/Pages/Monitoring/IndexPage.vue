@@ -102,8 +102,8 @@ const runHealthChecks = () => {
                 description="Monitor system health and performance metrics"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
-                    { label: 'System Health' }
+                    { label: 'System Settings', href: route('admin.setting.index') },
+                    { label: 'Health Status' }
                 ]">
                 <template #actions>
                     <button

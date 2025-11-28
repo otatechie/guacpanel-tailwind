@@ -39,7 +39,7 @@ const submit = () => {
                 description="Configure system-wide security policies and authentication requirements"
                 :breadcrumbs="[
                     { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'Settings', href: route('admin.setting.index') },
+                    { label: 'System Settings', href: route('admin.setting.index') },
                     { label: 'Security Settings' }
                 ]" />
 
