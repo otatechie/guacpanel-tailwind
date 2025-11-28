@@ -178,7 +178,8 @@ const navItemClass = (i = '', c = false) => {
             <img
                 :src="avatarUrl"
                 :alt="`${safeUserName}'s avatar`"
-                class="size-5 rounded-full ring-2 ring-white dark:ring-gray-800" />
+                class="size-5 rounded-full ring-2 ring-white dark:ring-gray-800"
+            />
             <span
                 class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap capitalize"
                 :style="{ backgroundColor: 'var(--color-text)', color: 'var(--color-bg)' }"
@@ -255,7 +256,8 @@ const navItemClass = (i = '', c = false) => {
                             fill="none"
                             stroke="currentColor"
                             stroke-width="1.5"
-                            v-html="icons[item.icon]" />
+                            v-html="icons[item.icon]"
+                        />
                         <span :class="item.label === 'Sign out' ? '' : 'group-hover:text-[var(--primary-color)]'">
                             {{ item.label }}
                         </span>

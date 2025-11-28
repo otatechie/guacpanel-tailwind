@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePage, Link } from '@inertiajs/vue3'
-import NavSidebarDesktop from '@/Components/NavSidebarDesktop.vue'
-import NavProfile from '@js/Components/NavProfile.vue'
+import NavSidebarDesktop from '@/Components/Nav/NavSidebarDesktop.vue'
+import NavProfile from '@js/Components/Nav/NavProfile.vue'
 import Notification from '@js/Components/Notification.vue'
 import FlashMessage from '@js/Components/FlashMessage.vue'
 import Footer from '@js/Shared/Public/Footer.vue'
@@ -10,6 +10,7 @@ import Logo from '@js/Components/Logo.vue'
 import Search from '@js/Components/Typesense/Search.vue'
 import ColorThemeSwitcher from '@js/Components/ColorThemeSwitcher.vue'
 import MobileNotification from '@js/Components/MobileNotification.vue'
+import NavDarkModeToggle from '@js/Components/Nav/NavDarkModeToggle.vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
@@ -209,12 +210,15 @@ onUnmounted(() => {
 
                     <section
                         class="flex items-center gap-1 sm:gap-2 flex-shrink-0"
-                        aria-label="User controls">
+                        aria-label="User controls"
+                    >
                         <ColorThemeSwitcher />
                         <Notification
                             v-if="user"
                             :user="user"
-                            class="scale-90 sm:scale-100 z-[100]" />
+                            class="scale-90 sm:scale-100 z-[100]"
+                        />
+                        <NavDarkModeToggle />
                         <NavProfile v-if="user" :user="user" />
                         <Link
                             v-else
