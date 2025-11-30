@@ -13,11 +13,21 @@
   "bracketSpacing": true,
   "endOfLine": "lf",
   "plugins": [
-    "prettier-plugin-tailwindcss"
+    "prettier-plugin-tailwindcss",
+    "@prettier/plugin-php",
+    prettier-plugin-blade
   ],
   "overrides": [
     {
       "files": ["*.php"],
+      "options": {
+        "tabWidth": 4,
+        "printWidth": 120,
+        "phpVersion": "8.2"
+      }
+    },
+    {
+      "files": ["*.blade.php"],
       "options": {
         "tabWidth": 4
       }
