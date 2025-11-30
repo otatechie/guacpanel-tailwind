@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\UserObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -17,6 +18,7 @@ use Laravolt\Avatar\Facade as Avatar;
 use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
+#[ObservedBy(UserObserver::class)]
 class User extends Authenticatable implements Auditable
 {
     use HasApiTokens;
@@ -62,6 +64,7 @@ class User extends Authenticatable implements Auditable
 
         static::creating(function ($user) {
             $user->user_slug = 'user-'.Str::random(12);
+
             if (!$user->password) {
                 $user->password = null;
             }
