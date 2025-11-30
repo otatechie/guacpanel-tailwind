@@ -30,6 +30,7 @@ Thumbs.db
 /.vscode
 /.notes/*
 /.fleet
+.php-cs-fixer.cache
 
 ### Assets ###
 /node_modules
