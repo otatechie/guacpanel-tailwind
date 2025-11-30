@@ -643,8 +643,7 @@ watch(
                                         class="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wide">
                                         {{ getColumnHeader(cell.column.columnDef) }}
                                     </dt>
-                                    <dd
-                                        class="text-xs font-medium text-[var(--color-text)]">
+                                    <dd class="text-xs font-medium text-[var(--color-text)]">
                                         <FlexRender
                                             :render="cell.column.columnDef.cell"
                                             :props="cell.getContext()" />
@@ -699,8 +698,7 @@ watch(
                     </tr>
                 </thead>
 
-                <tbody
-                    class="bg-[var(--color-surface)] divide-y divide-[var(--color-border)]">
+                <tbody class="bg-[var(--color-surface)] divide-y divide-[var(--color-border)]">
                     <tr v-if="!table.getRowModel().rows.length" :class="styles.rowHover">
                         <td :colspan="columns.length + 1" class="px-6 py-8 text-center">
                             <p class="text-[var(--color-text-muted)] text-sm">

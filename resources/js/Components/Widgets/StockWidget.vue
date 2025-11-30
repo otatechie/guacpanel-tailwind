@@ -85,16 +85,16 @@ const sizeClasses = {
                 :class="sizeClasses[size].symbol">
                 {{ stock.symbol }}
             </h3>
-            <p
-                class="text-[var(--color-text-muted)] font-normal"
-                :class="sizeClasses[size].name">
+            <p class="text-[var(--color-text-muted)] font-normal" :class="sizeClasses[size].name">
                 {{ stock.name }}
             </p>
         </div>
 
         <!-- Price and change -->
         <div class="flex items-end justify-between gap-3">
-            <div class="font-semibold text-[var(--color-text)] tracking-tight" :class="sizeClasses[size].price">
+            <div
+                class="font-semibold text-[var(--color-text)] tracking-tight"
+                :class="sizeClasses[size].price">
                 {{ stock.currency }}{{ stock.price }}
             </div>
 
@@ -119,7 +119,10 @@ const sizeClasses = {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                     stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5 10l7-7m0 0l7 7m-7-7v18" />
                 </svg>
                 <span>{{ Math.abs(stock.change).toFixed(2) }}%</span>
             </div>

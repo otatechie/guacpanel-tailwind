@@ -43,11 +43,7 @@ const columns = [
             const date = raw ? new Date(raw) : null
 
             if (!date || isNaN(date.getTime())) {
-                return h(
-                    'span',
-                    { 'aria-label': 'Activity date: Unknown' },
-                    'Unknown'
-                )
+                return h('span', { 'aria-label': 'Activity date: Unknown' }, 'Unknown')
             }
 
             const formattedDate = date.toLocaleDateString('en-US', {
@@ -100,9 +96,7 @@ const columns = [
             const event = (info.getValue() || '').toString()
             const normalizedEvent = event.toLowerCase()
             const formattedEvent =
-                event.length > 0
-                    ? event.charAt(0).toUpperCase() + event.slice(1)
-                    : 'Unknown'
+                event.length > 0 ? event.charAt(0).toUpperCase() + event.slice(1) : 'Unknown'
 
             const badgeClass =
                 eventBadgeClasses[normalizedEvent] ||
@@ -178,13 +172,11 @@ watch(
                     { label: 'Dashboard', href: route('dashboard') },
                     { label: 'System Settings', href: route('admin.setting.index') },
                     { label: 'System Activity' }
-                ]"
-            />
+                ]" />
 
             <section class="p-6 bg-[var(--color-bg)]">
                 <div
-                    class="bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-border)] p-6"
-                >
+                    class="bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-border)] p-6">
                     <Datatable
                         :data="audits.data"
                         :columns="columns"
@@ -194,8 +186,7 @@ watch(
                         empty-message="No audit records found"
                         empty-description="System activities will appear here"
                         export-file-name="activity_log"
-                        @update:pagination="pagination = $event"
-                    />
+                        @update:pagination="pagination = $event" />
                 </div>
             </section>
         </div>

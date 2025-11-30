@@ -35,7 +35,7 @@ const props = defineProps({
     data: {
         type: Array,
         required: true,
-        validator: (arr) => arr.every(item => typeof item === 'number')
+        validator: arr => arr.every(item => typeof item === 'number')
     },
     color: {
         type: String,
@@ -64,7 +64,9 @@ const pathData = computed(() => {
     return `M ${points.join(' L ')}`
 })
 
-const gradientId = computed(() => `gradient-${props.color}-${Math.random().toString(36).substr(2, 9)}`)
+const gradientId = computed(
+    () => `gradient-${props.color}-${Math.random().toString(36).substr(2, 9)}`
+)
 
 const colorClasses = {
     blue: 'text-blue-500',
@@ -88,7 +90,8 @@ const isPositiveChange = computed(() => props.change > 0)
 </script>
 
 <template>
-    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-4 sm:p-6">
+    <div
+        class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-4 sm:p-6">
         <!-- Header -->
         <div class="mb-3 sm:mb-4">
             <h3 class="text-xs sm:text-sm font-medium text-[var(--color-text-muted)] mb-2">
@@ -101,14 +104,22 @@ const isPositiveChange = computed(() => props.change > 0)
                 <span
                     v-if="change !== 0"
                     class="text-xs sm:text-sm font-semibold flex items-center gap-1 shrink-0"
-                    :class="isPositiveChange ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                    :class="
+                        isPositiveChange
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-red-600 dark:text-red-400'
+                    ">
                     <svg
                         class="w-3 h-3 sm:w-4 sm:h-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                         :class="{ 'rotate-180': !isPositiveChange }">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2.5"
+                            d="M5 15l7-7 7 7" />
                     </svg>
                     {{ Math.abs(change) }}%
                 </span>
@@ -120,14 +131,18 @@ const isPositiveChange = computed(() => props.change > 0)
             <svg viewBox="0 0 100 60" class="w-full h-full" preserveAspectRatio="none">
                 <defs>
                     <linearGradient :id="gradientId" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" :stop-color="gradientColors[color].from" stop-opacity="0.3" />
-                        <stop offset="100%" :stop-color="gradientColors[color].to" stop-opacity="0.05" />
+                        <stop
+                            offset="0%"
+                            :stop-color="gradientColors[color].from"
+                            stop-opacity="0.3" />
+                        <stop
+                            offset="100%"
+                            :stop-color="gradientColors[color].to"
+                            stop-opacity="0.05" />
                     </linearGradient>
                 </defs>
                 <!-- Fill area -->
-                <path
-                    :d="`${pathData} L 100,60 L 0,60 Z`"
-                    :fill="`url(#${gradientId})`" />
+                <path :d="`${pathData} L 100,60 L 0,60 Z`" :fill="`url(#${gradientId})`" />
                 <!-- Line -->
                 <path
                     :d="pathData"

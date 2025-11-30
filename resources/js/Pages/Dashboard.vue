@@ -102,16 +102,16 @@ const stocks = ref([
 </script>
 
 <template>
-
     <Head title="Dashboard" />
 
     <main class="min-h-screen">
         <div class="max-w-6xl mx-auto">
-            <header class="mb-6 sm:mb-8 lg:mb-10 bg-gradient-to-r from-[var(--color-surface)] to-[var(--color-surface-muted)] rounded-lg border border-[var(--color-border)] shadow-xs p-6 sm:p-8">
-                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+            <header
+                class="mb-6 sm:mb-8 lg:mb-10 bg-gradient-to-r from-[var(--color-surface)] to-[var(--color-surface-muted)] rounded-lg border border-[var(--color-border)] shadow-xs p-6 sm:p-8">
+                <div
+                    class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
                     <div class="flex-1">
-                        <h1
-                            class="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
+                        <h1 class="text-3xl sm:text-4xl font-bold text-[var(--color-text)] mb-2">
                             {{ greeting }}, {{ userName }}
                         </h1>
                         <p class="text-sm sm:text-base text-[var(--color-text-muted)]">
@@ -120,8 +120,16 @@ const stocks = ref([
                     </div>
                     <time
                         class="flex items-center gap-3 text-xs sm:text-sm font-medium text-[var(--color-text-muted)] bg-[var(--color-surface)] px-4 py-2.5 rounded-lg border border-[var(--color-border)] whitespace-nowrap">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg
+                            class="w-4 h-4 flex-shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <div>
                             <div class="hidden sm:block font-semibold text-[var(--color-text)]">
@@ -137,46 +145,67 @@ const stocks = ref([
 
             <!-- Stock Widgets -->
             <section class="mb-10">
-                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">
-                    Stock Widgets
-                </h2>
+                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">Stock Widgets</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StockWidget :stock="stocks[0]" :src="stocks[0].icon" :alt="stocks[0].name"
-                        :bg-color="stocks[0].bgColor" size="lg" />
-                    <StockWidget :stock="stocks[1]" :src="stocks[1].icon" :alt="stocks[1].name"
-                        :bg-color="stocks[1].bgColor" size="lg" />
-                    <StockWidget :stock="stocks[2]" :src="stocks[2].icon" :alt="stocks[2].name"
-                        :bg-color="stocks[2].bgColor" size="lg" />
-                    <StockWidget :stock="stocks[3]" :src="stocks[3].icon" :alt="stocks[3].name"
-                        :bg-color="stocks[3].bgColor" size="lg" />
+                    <StockWidget
+                        :stock="stocks[0]"
+                        :src="stocks[0].icon"
+                        :alt="stocks[0].name"
+                        :bg-color="stocks[0].bgColor"
+                        size="lg" />
+                    <StockWidget
+                        :stock="stocks[1]"
+                        :src="stocks[1].icon"
+                        :alt="stocks[1].name"
+                        :bg-color="stocks[1].bgColor"
+                        size="lg" />
+                    <StockWidget
+                        :stock="stocks[2]"
+                        :src="stocks[2].icon"
+                        :alt="stocks[2].name"
+                        :bg-color="stocks[2].bgColor"
+                        size="lg" />
+                    <StockWidget
+                        :stock="stocks[3]"
+                        :src="stocks[3].icon"
+                        :alt="stocks[3].name"
+                        :bg-color="stocks[3].bgColor"
+                        size="lg" />
                 </div>
             </section>
 
             <!-- Stats Overview -->
             <section class="mb-10">
-                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">
-                    Stats Overview
-                </h2>
+                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">Stats Overview</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatWidget v-for="(stat, index) in stats" :key="index" :title="stat.title" :value="stat.value"
-                        :trend="stat.growth.startsWith('+')
-                            ? 'up'
-                            : stat.growth.startsWith('-')
-                                ? 'down'
-                                : 'neutral'
-                            " :color="stat.growth.startsWith('+')
+                    <StatWidget
+                        v-for="(stat, index) in stats"
+                        :key="index"
+                        :title="stat.title"
+                        :value="stat.value"
+                        :trend="
+                            stat.growth.startsWith('+')
+                                ? 'up'
+                                : stat.growth.startsWith('-')
+                                  ? 'down'
+                                  : 'neutral'
+                        "
+                        :color="
+                            stat.growth.startsWith('+')
                                 ? 'green'
                                 : stat.growth.startsWith('-')
-                                    ? 'red'
-                                    : 'blue'
-                                " :icon="stat.title.includes('Member')
+                                  ? 'red'
+                                  : 'blue'
+                        "
+                        :icon="
+                            stat.title.includes('Member')
                                 ? icons.users
                                 : stat.title.includes('Growth')
-                                    ? icons.performance
-                                    : stat.title.includes('Session')
-                                        ? icons.projects
-                                        : icons.tasks
-                                " />
+                                  ? icons.performance
+                                  : stat.title.includes('Session')
+                                    ? icons.projects
+                                    : icons.tasks
+                        " />
                 </div>
             </section>
 
@@ -186,31 +215,61 @@ const stocks = ref([
                     Progress Widgets
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <ProgressWidget title="Storage Used" :value="75" :max="100" description="75GB of 100GB used"
+                    <ProgressWidget
+                        title="Storage Used"
+                        :value="75"
+                        :max="100"
+                        description="75GB of 100GB used"
                         color="blue" />
-                    <ProgressWidget title="Tasks Completed" :value="42" :max="60" description="42 of 60 tasks done"
+                    <ProgressWidget
+                        title="Tasks Completed"
+                        :value="42"
+                        :max="60"
+                        description="42 of 60 tasks done"
                         color="green" />
-                    <ProgressWidget title="Project Progress" :value="88" :max="100" description="Nearly complete"
+                    <ProgressWidget
+                        title="Project Progress"
+                        :value="88"
+                        :max="100"
+                        description="Nearly complete"
                         color="purple" />
-                    <ProgressWidget title="Monthly Goals" :value="35" :max="50" description="70% achieved"
+                    <ProgressWidget
+                        title="Monthly Goals"
+                        :value="35"
+                        :max="50"
+                        description="70% achieved"
                         color="indigo" />
                 </div>
             </section>
 
             <!-- Chart Widgets -->
             <section class="mb-10">
-                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">
-                    Chart Widgets
-                </h2>
+                <h2 class="text-xl font-semibold text-[var(--color-text)] mb-4">Chart Widgets</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <ChartWidget title="Revenue" value="$45,231" :change="12.5"
-                        :data="[30, 40, 35, 50, 49, 60, 70, 91, 125]" color="emerald" />
-                    <ChartWidget title="Visitors" value="8,234" :change="8.1"
-                        :data="[20, 30, 35, 45, 40, 55, 60, 70, 65]" color="blue" />
-                    <ChartWidget title="Orders" value="1,234" :change="-3.2"
-                        :data="[50, 45, 40, 42, 38, 35, 33, 30, 28]" color="red" />
-                    <ChartWidget title="Conversion" value="3.24%" :change="5.4"
-                        :data="[15, 20, 18, 25, 30, 28, 35, 40, 42]" color="purple" />
+                    <ChartWidget
+                        title="Revenue"
+                        value="$45,231"
+                        :change="12.5"
+                        :data="[30, 40, 35, 50, 49, 60, 70, 91, 125]"
+                        color="emerald" />
+                    <ChartWidget
+                        title="Visitors"
+                        value="8,234"
+                        :change="8.1"
+                        :data="[20, 30, 35, 45, 40, 55, 60, 70, 65]"
+                        color="blue" />
+                    <ChartWidget
+                        title="Orders"
+                        value="1,234"
+                        :change="-3.2"
+                        :data="[50, 45, 40, 42, 38, 35, 33, 30, 28]"
+                        color="red" />
+                    <ChartWidget
+                        title="Conversion"
+                        value="3.24%"
+                        :change="5.4"
+                        :data="[15, 20, 18, 25, 30, 28, 35, 40, 42]"
+                        color="purple" />
                 </div>
             </section>
         </div>

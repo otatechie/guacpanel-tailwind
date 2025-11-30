@@ -131,9 +131,7 @@ const submitRecovery = () => {
                     </span>
 
                     <header class="text-center">
-                        <h2
-                            id="recovery-code-title"
-                            class="font-medium text-[var(--color-text)]">
+                        <h2 id="recovery-code-title" class="font-medium text-[var(--color-text)]">
                             Recovery code
                         </h2>
                     </header>

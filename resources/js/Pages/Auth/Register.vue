@@ -13,7 +13,7 @@ const props = defineProps({
     providersConfig: {
         type: Object,
         required: false
-    },
+    }
 })
 
 const form = useForm({
@@ -116,9 +116,7 @@ const submit = () => {
             </template>
 
             <template v-if="smLogin">
-                <Socialite
-                    :providers-config="providersConfig"
-                 />
+                <Socialite :providers-config="providersConfig" />
             </template>
 
             <template v-if="passwordlessLogin">

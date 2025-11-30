@@ -71,7 +71,8 @@ const bgColorClasses = {
 </script>
 
 <template>
-    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-6">
+    <div
+        class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-6">
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">
             <div class="flex-1">
@@ -79,16 +80,21 @@ const bgColorClasses = {
                     {{ title }}
                 </h3>
                 <p class="text-2xl font-semibold text-[var(--color-text)]">
-                    {{ value }}<span class="text-lg text-[var(--color-text-muted)]">/{{ max }}</span>
+                    {{ value }}
+                    <span class="text-lg text-[var(--color-text-muted)]">/{{ max }}</span>
                 </p>
             </div>
             <div v-if="showPercentage" class="text-right">
-                <span class="text-2xl font-semibold text-[var(--color-text)]">{{ percentage }}%</span>
+                <span class="text-2xl font-semibold text-[var(--color-text)]">
+                    {{ percentage }}%
+                </span>
             </div>
         </div>
 
         <!-- Progress Bar -->
-        <div class="relative w-full h-3 rounded-full overflow-hidden" :class="bgColorClasses[color]">
+        <div
+            class="relative w-full h-3 rounded-full overflow-hidden"
+            :class="bgColorClasses[color]">
             <div
                 class="h-full rounded-full transition-all duration-500 ease-out"
                 :class="colorClasses[color]"

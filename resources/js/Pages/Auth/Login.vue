@@ -20,16 +20,12 @@ const props = defineProps({
     providersConfig: {
         type: Object,
         required: false
-    },
+    }
 })
 
 const page = usePage()
 
-const {
-    settings: {
-        passwordlessLogin = true
-    } = {}
-} = page.props
+const { settings: { passwordlessLogin = true } = {} } = page.props
 
 const form = useForm({
     email: 'ota@example.com',
@@ -121,17 +117,15 @@ const sendMagicLink = () => {
             <template v-if="smLogin || passwordlessLogin">
                 <div role="separator" aria-label="or separator" class="relative">
                     <hr class="border-t border-[var(--color-border)]" />
-                    <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-[var(--color-surface)] text-[var(--color-text-muted)]">
+                    <span
+                        class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-[var(--color-surface)] text-[var(--color-text-muted)]">
                         OR
                     </span>
                 </div>
             </template>
 
             <template v-if="smLogin">
-              <Socialite
-                  :providers-config="providersConfig"
-                  :iconsOnly="true"
-               />
+                <Socialite :providers-config="providersConfig" :iconsOnly="true" />
             </template>
 
             <template v-if="passwordlessLogin">

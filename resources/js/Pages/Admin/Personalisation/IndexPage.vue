@@ -83,8 +83,7 @@ const handleProcessedFile = (error, file, name) => {
 const handleFileRemoved = (error, file, name) => {
     if (!error) {
         form[name] = null
-        axios.post(route('admin.personalization.delete.file'), { field: name }).then(() => {
-        })
+        axios.post(route('admin.personalization.delete.file'), { field: name }).then(() => {})
     }
 }
 

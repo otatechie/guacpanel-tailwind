@@ -48,11 +48,13 @@ onUnmounted(() => {
 
 <template>
     <aside class="hidden xl:block w-64 fixed right-6 top-20">
-        <div class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono">
+        <div
+            class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono">
             <!-- Header -->
             <div class="pb-3 border-b border-green-200 dark:border-green-800 mb-3">
                 <div class="flex items-center">
-                    <h2 class="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider">
+                    <h2
+                        class="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider">
                         Contents
                     </h2>
                 </div>
@@ -71,7 +73,9 @@ onUnmounted(() => {
                                     : 'text-gray-600 dark:text-gray-400 hover:text-green-700 dark:hover:text-green-400 hover:bg-green-50/10 dark:hover:bg-green-900/5 border-transparent hover:border-green-200 dark:hover:border-green-800'
                             ]">
                             <!-- Active indicator -->
-                            <span v-if="link.href === activeSection" class="inline-block text-green-500"></span>
+                            <span
+                                v-if="link.href === activeSection"
+                                class="inline-block text-green-500"></span>
                             {{ link.text }}
                         </a>
                     </li>

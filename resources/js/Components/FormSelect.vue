@@ -90,9 +90,7 @@ const selectClass = computed(() => {
         'hover:border-[var(--color-border-strong)] ' +
         (isOpen.value ? 'ring-2 ring-[var(--selection-color-light)] ' : '')
 
-    const borderClasses = props.error
-        ? 'border-red-500'
-        : 'border-[var(--color-border-strong)]'
+    const borderClasses = props.error ? 'border-red-500' : 'border-[var(--color-border-strong)]'
 
     const disabledClasses = props.disabled
         ? 'cursor-not-allowed text-[var(--color-text-muted)] bg-[var(--color-surface)]'

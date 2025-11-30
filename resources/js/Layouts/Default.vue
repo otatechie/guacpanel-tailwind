@@ -210,14 +210,12 @@ onUnmounted(() => {
 
                     <section
                         class="flex items-center gap-1 sm:gap-2 flex-shrink-0"
-                        aria-label="User controls"
-                    >
+                        aria-label="User controls">
                         <ColorThemeSwitcher />
                         <Notification
                             v-if="user"
                             :user="user"
-                            class="scale-90 sm:scale-100 z-[100]"
-                        />
+                            class="scale-90 sm:scale-100 z-[100]" />
                         <NavDarkModeToggle />
                         <NavProfile v-if="user" :user="user" />
                         <Link

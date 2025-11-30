@@ -151,8 +151,7 @@ watch(
                         export-file-name="login_history"
                         :bulk-delete-route="route('admin.login.history.bulk-destroy')"
                         @update:pagination="pagination = $event"
-                        @bulk-delete="handleBulkDelete">
-                    </Datatable>
+                        @bulk-delete="handleBulkDelete"></Datatable>
                 </div>
             </section>
         </div>

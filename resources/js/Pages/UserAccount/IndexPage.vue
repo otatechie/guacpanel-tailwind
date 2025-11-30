@@ -42,18 +42,18 @@ const props = defineProps({
         default: false
     },
     sessions: {
-        type: Object,
+        type: Object
     }
 })
 
 const activeTab = ref(0)
 
 const tabs = [
-    { name: 'Profile',                      key: 'profile' },
-    { name: 'Password',                     key: 'password' },
-    { name: 'MFA',    key: '2fa' },
-    { name: 'Devices',                      key: 'devices' },
-    { name: 'Account',                      key: 'account' },
+    { name: 'Profile', key: 'profile' },
+    { name: 'Password', key: 'password' },
+    { name: 'MFA', key: '2fa' },
+    { name: 'Devices', key: 'devices' },
+    { name: 'Account', key: 'account' }
 ]
 
 const breadcrumbs = computed(() => {
@@ -86,7 +86,6 @@ const pageHeaderContent = computed(() => {
         description: description
     }
 })
-
 </script>
 
 <template>
@@ -96,8 +95,7 @@ const pageHeaderContent = computed(() => {
             <PageHeader
                 :title="pageHeaderContent.title"
                 :description="pageHeaderContent.description"
-                :breadcrumbs="breadcrumbs"
-            />
+                :breadcrumbs="breadcrumbs" />
 
             <div class="px-3 sm:px-6">
                 <Tabs v-model="activeTab" :tabs="tabs" />
@@ -110,14 +108,18 @@ const pageHeaderContent = computed(() => {
             <PasswordTab v-if="activeTab === 1" :passwordEnabled="passwordEnabled" />
 
             <!-- Two-Factor -->
-            <TwoFactorTab v-if="activeTab === 2" :user="user" :qrCodeSvg="qrCodeSvg" :recoveryCodes="recoveryCodes" :twoFactorEnabled="twoFactorEnabled"/>
+            <TwoFactorTab
+                v-if="activeTab === 2"
+                :user="user"
+                :qrCodeSvg="qrCodeSvg"
+                :recoveryCodes="recoveryCodes"
+                :twoFactorEnabled="twoFactorEnabled" />
 
             <!-- Devices -->
             <DevicesTab v-if="activeTab === 3" :user="user" :sessions="sessions" />
 
             <!-- Danger Zone Section -->
             <AccountTab v-if="activeTab === 4" />
-
         </div>
     </main>
 </template>

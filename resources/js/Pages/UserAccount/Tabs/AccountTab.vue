@@ -36,7 +36,6 @@ const deleteAccount = () => {
         }
     })
 }
-
 </script>
 
 <template>
@@ -51,14 +50,12 @@ const deleteAccount = () => {
             <!-- Deactivate Account -->
             <div
                 class="mb-4 sm:mb-6 p-3 sm:p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-700">
-                <h4
-                    class="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
+                <h4 class="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
                     Deactivate Account
                 </h4>
                 <p
                     class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 leading-relaxed">
-                    Hide your profile and data temporarily. You can reactivate your account
-                    anytime.
+                    Hide your profile and data temporarily. You can reactivate your account anytime.
                 </p>
                 <button
                     class="w-full sm:w-auto btn-secondary btn-sm inline-flex items-center gap-2"
@@ -82,14 +79,13 @@ const deleteAccount = () => {
             <!-- Delete Account -->
             <div
                 class="p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
-                <h4
-                    class="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
+                <h4 class="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
                     Delete Account Permanently
                 </h4>
                 <p
                     class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 leading-relaxed">
-                    This action is permanent and cannot be undone. All your data will be
-                    permanently deleted.
+                    This action is permanent and cannot be undone. All your data will be permanently
+                    deleted.
                 </p>
                 <button
                     class="w-full sm:w-auto btn-danger btn-sm inline-flex items-center gap-2"
@@ -114,16 +110,13 @@ const deleteAccount = () => {
 
     <Modal :show="deactivateModal" size="sm" @close="deactivateModal = false">
         <template #title>
-            <div class="text-red-600 dark:text-red-400">
-                Deactivate Account
-            </div>
+            <div class="text-red-600 dark:text-red-400">Deactivate Account</div>
         </template>
 
         <template #default>
             <div class="space-y-4">
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Are you sure you want to deactivate your account? This action cannot be
-                    undone.
+                    Are you sure you want to deactivate your account? This action cannot be undone.
                 </p>
             </div>
         </template>
@@ -150,9 +143,7 @@ const deleteAccount = () => {
 
     <Modal :show="deleteModal" size="sm" @close="deleteModal = false">
         <template #title>
-            <div class="text-red-600 dark:text-red-400">
-                Delete Account
-            </div>
+            <div class="text-red-600 dark:text-red-400">Delete Account</div>
         </template>
 
         <template #default>

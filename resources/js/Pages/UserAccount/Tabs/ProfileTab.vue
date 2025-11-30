@@ -46,7 +46,7 @@ const avatarTypes = {
     gravatar: {
         label: 'Gravatar',
         value: 'gravatar'
-    },
+    }
     // image: {
     //     label: 'Image',
     //     value: 'image'
@@ -55,11 +55,10 @@ const avatarTypes = {
 
 const currentAvatarUrl = computed(() => {
     if (profileForm?.image_type == 'gravatar') {
-        return gravatarUrl?.value;
+        return gravatarUrl?.value
     }
-    return avatarUrl?.value;
+    return avatarUrl?.value
 })
-
 </script>
 
 <template>
@@ -68,12 +67,9 @@ const currentAvatarUrl = computed(() => {
         <div class="p-6 dark:bg-gray-900">
             <div
                 class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-100 dark:border-gray-700 p-6">
-                <Alert
-                    v-if="!profileEnabled"
-                    type="info"
-                    class="mb-5"
-                >
-                    For demo purposes, profile update operations have been disabled in the Fortify configuration.
+                <Alert v-if="!profileEnabled" type="info" class="mb-5">
+                    For demo purposes, profile update operations have been disabled in the Fortify
+                    configuration.
                 </Alert>
                 <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
                     Basic Profile Information
@@ -81,10 +77,7 @@ const currentAvatarUrl = computed(() => {
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
                     Update your personal information and email address
                 </p>
-                <form
-                    id="profile-form"
-                    class="space-y-8"
-                    @submit.prevent="submitProfileForm">
+                <form id="profile-form" class="space-y-8" @submit.prevent="submitProfileForm">
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <FormInput
@@ -105,20 +98,17 @@ const currentAvatarUrl = computed(() => {
                             v-model="profileForm.location"
                             label="Location"
                             :error="profileForm.errors.location"
-                            placeholder="Enter your location"
-                        />
+                            placeholder="Enter your location" />
                         <div class="flex items-end justify-between">
                             <FormRadioGroup
                                 v-model="profileForm.image_type"
                                 label="Avatar Type"
                                 :options="avatarTypes"
-                                class="mb-2"
-                            />
+                                class="mb-2" />
                             <img
                                 :src="currentAvatarUrl"
                                 :alt="`${safeUserName}'s avatar`"
-                                class="size-10 rounded-full ring-2 ring-white dark:ring-gray-800"
-                            />
+                                class="size-10 rounded-full ring-2 ring-white dark:ring-gray-800" />
                         </div>
                     </div>
                 </form>

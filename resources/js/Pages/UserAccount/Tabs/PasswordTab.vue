@@ -22,7 +22,6 @@ const submitPasswordForm = () => {
         onSuccess: () => passwordForm.reset()
     })
 }
-
 </script>
 
 <template>
@@ -31,19 +30,12 @@ const submitPasswordForm = () => {
         <div class="p-6 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
             <div
                 class="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-100 dark:border-gray-700 p-6">
-
-                <Alert
-                    v-if="!passwordEnabled"
-                    type="info"
-                    class="mb-5"
-                >
+                <Alert v-if="!passwordEnabled" type="info" class="mb-5">
                     For demo purposes, password reset operations have been disabled in the Fortify
                     configuration.
                 </Alert>
 
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-                    Password
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Password</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
                     Ensure your account is using a secure password
                 </p>

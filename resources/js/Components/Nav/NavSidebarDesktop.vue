@@ -59,8 +59,8 @@ const hasVisibleChildren = item => {
 const isChildCurrentRoute = item => {
     if (!item?.children?.length) return false
 
-    return item.children.some(child =>
-        hasPermission(child.permission) && isCurrentRoute(child.route)
+    return item.children.some(
+        child => hasPermission(child.permission) && isCurrentRoute(child.route)
     )
 }
 
@@ -227,8 +227,7 @@ const navigationSections = reactive([
         data-sidebar-content
         class="nav-sidebar border-r border-[var(--color-border)]"
         @click.stop
-        style="box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05);"
-    >
+        style="box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05)">
         <nav class="flex-1 overflow-y-auto py-2 px-2" aria-labelledby="nav-heading">
             <ul class="space-y-1">
                 <!-- Loop through sections -->
@@ -238,11 +237,7 @@ const navigationSections = reactive([
                         <!-- Loop through items inside the section -->
                         <template v-for="(item, itemIndex) in section.items" :key="itemIndex">
                             <!-- Divider item -->
-                            <li
-                                v-if="item.type === 'divider'"
-                                class="my-1.5 px-2"
-                                role="separator"
-                            >
+                            <li v-if="item.type === 'divider'" class="my-1.5 px-2" role="separator">
                                 <div class="nav-divider"></div>
                             </li>
 
@@ -260,8 +255,7 @@ const navigationSections = reactive([
                                     isChildCurrentRoute(item)
                                         ? 'nav-item-active bg-[var(--color-surface-muted)] opacity-80'
                                         : ''
-                                ]"
-                            >
+                                ]">
                                 <!-- Main clickable nav item -->
                                 <Link
                                     v-if="hasPermission(item.permission) && item.route"
@@ -272,12 +266,11 @@ const navigationSections = reactive([
                                         // Parent active: full
                                         isCurrentRoute(item.route)
                                             ? 'nav-item-active bg-[var(--color-surface-muted)]'
-                                            // Child active only: lighter
-                                            : isChildCurrentRoute(item)
-                                                ? 'nav-item-active bg-[var(--color-surface-muted)] opacity-80'
-                                                : 'nav-item-default'
-                                    ]"
-                                >
+                                            : // Child active only: lighter
+                                              isChildCurrentRoute(item)
+                                              ? 'nav-item-active bg-[var(--color-surface-muted)] opacity-80'
+                                              : 'nav-item-default'
+                                    ]">
                                     <!-- Leading icon -->
                                     <svg
                                         :class="[
@@ -292,8 +285,7 @@ const navigationSections = reactive([
                                         stroke-width="1.5"
                                         stroke="currentColor"
                                         aria-hidden="true"
-                                        v-html="item.icon"
-                                    ></svg>
+                                        v-html="item.icon"></svg>
 
                                     <!-- Item label -->
                                     <span class="text-sm font-medium flex-1">
@@ -312,13 +304,11 @@ const navigationSections = reactive([
                                         viewBox="0 0 24 24"
                                         stroke-width="1.5"
                                         stroke="currentColor"
-                                        aria-hidden="true"
-                                    >
+                                        aria-hidden="true">
                                         <path
                                             stroke-linecap="round"
                                             stroke-linejoin="round"
-                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                        />
+                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                     </svg>
                                 </Link>
                             </li>
@@ -329,8 +319,7 @@ const navigationSections = reactive([
                                     item.children &&
                                     hasVisibleChildren(item) &&
                                     isParentExpanded(item)
-                                "
-                            >
+                                ">
                                 <ul class="ml-7 space-y-1">
                                     <li v-for="child in item.children" :key="child.name">
                                         <Link
@@ -341,8 +330,7 @@ const navigationSections = reactive([
                                                 isCurrentRoute(child.route)
                                                     ? 'nav-item-active bg-[var(--color-surface-muted)]'
                                                     : 'nav-item-default'
-                                            ]"
-                                        >
+                                            ]">
                                             <span class="text-sm font-medium">
                                                 {{ child.name }}
                                             </span>

@@ -2,8 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 defineProps({
-
-user: {
+    user: {
         type: Object,
         required: true
     }

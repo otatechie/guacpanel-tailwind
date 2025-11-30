@@ -56,7 +56,8 @@ const colorClasses = {
 </script>
 
 <template>
-    <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-4 sm:p-6">
+    <div
+        class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-xs p-4 sm:p-6">
         <div class="flex items-start justify-between">
             <!-- Content -->
             <div class="flex-1 min-w-0">
@@ -87,15 +88,25 @@ const colorClasses = {
 
         <!-- Trend indicator at bottom -->
         <div v-if="trend !== 'neutral'" class="mt-4 pt-4 border-t border-[var(--color-border)]">
-            <div v-if="trend === 'up'" class="flex items-center gap-1 text-green-600 dark:text-green-400">
+            <div
+                v-if="trend === 'up'"
+                class="flex items-center gap-1 text-green-600 dark:text-green-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2.5"
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 <span class="text-sm font-medium">+12% from last month</span>
             </div>
             <div v-else class="flex items-center gap-1 text-red-600 dark:text-red-400">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2.5"
+                        d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
                 </svg>
                 <span class="text-sm font-medium">-8% from last month</span>
             </div>

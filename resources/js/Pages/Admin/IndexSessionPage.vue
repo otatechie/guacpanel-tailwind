@@ -200,9 +200,7 @@ watch(
     <!-- Terminate Session Modal -->
     <Modal :show="showTerminateModal" size="md" @close="closeModal">
         <template #title>
-            <div class="text-red-600 dark:text-red-400">
-                Terminate Session
-            </div>
+            <div class="text-red-600 dark:text-red-400">Terminate Session</div>
         </template>
 
         <template #default>

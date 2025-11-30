@@ -499,37 +499,51 @@ onUnmounted(() => {
         <div class="bg-white dark:bg-gray-900 border p-8 md:p-12 mb-12">
             <div class="text-center">
                 <div class="flex items-center justify-center mb-4">
-                    <h1 class="text-3xl md:text-4xl font-bold">
-                        Core Features
-                    </h1>
+                    <h1 class="text-3xl md:text-4xl font-bold">Core Features</h1>
                 </div>
 
                 <div class="max-w-2xl mx-auto mb-8">
                     <p class="text-gray-700 dark:text-gray-200 text-lg">
                         Build secure Laravel admin interfaces with GuacPanel's essential features:
-                        authentication, permissions, health monitoring, backups, data tables, and search.
-                        Everything you need, ready to use.
+                        authentication, permissions, health monitoring, backups, data tables, and
+                        search. Everything you need, ready to use.
                     </p>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#authentication"
+                    <a
+                        href="#authentication"
                         class="inline-flex items-center px-6 py-3 bg-green-500/20 border border-green-500 text-green-700 dark:text-green-200 hover:bg-green-500/30 transition-all font-mono uppercase tracking-wider text-sm">
-                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        <svg
+                            class="w-5 h-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    [Authentication]
-                </a>
-                    <a href="#data-tables"
+                        </svg>
+                        [Authentication]
+                    </a>
+                    <a
+                        href="#data-tables"
                         class="inline-flex items-center px-6 py-3 bg-green-500/20 border border-green-500 text-green-700 dark:text-green-200 hover:bg-green-500/30 transition-all font-mono uppercase tracking-wider text-sm">
-                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        <svg
+                            class="w-5 h-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
                                 d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                    </svg>
-                    [Data_Tables]
-                </a>
-            </div>
+                        </svg>
+                        [Data_Tables]
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -541,7 +555,8 @@ onUnmounted(() => {
                         Authentication
                     </h2>
                     <p class="text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
-                        Secure authentication system with Laravel Fortify and advanced security features
+                        Secure authentication system with Laravel Fortify and advanced security
+                        features
                     </p>
                 </div>
 
@@ -550,11 +565,14 @@ onUnmounted(() => {
                     class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono mb-8">
                     <div class="flex items-start mb-2">
                         <span class="text-green-600 dark:text-green-500 mr-2">⌾</span>
-                        <h4 class="text-green-700 dark:text-green-400 font-bold">Laravel Fortify</h4>
+                        <h4 class="text-green-700 dark:text-green-400 font-bold">
+                            Laravel Fortify
+                        </h4>
                     </div>
                     <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
                         <p class="text-gray-600 dark:text-gray-400 text-sm font-mono">
-                            Secure authentication with login, registration, 2FA, password reset, and email verification.
+                            Secure authentication with login, registration, 2FA, password reset, and
+                            email verification.
                         </p>
                     </div>
                 </div>
@@ -564,7 +582,9 @@ onUnmounted(() => {
                     class="border border-green-500/30 dark:border-green-500/20 bg-white dark:bg-gray-900 p-4 font-mono mb-8">
                     <div class="flex items-start mb-2">
                         <span class="text-green-600 dark:text-green-500 mr-2">⌾</span>
-                        <h4 class="text-green-700 dark:text-green-400 font-bold">Passwordless Login</h4>
+                        <h4 class="text-green-700 dark:text-green-400 font-bold">
+                            Passwordless Login
+                        </h4>
                     </div>
                     <div class="pl-6 border-l border-green-200 dark:border-green-800 ml-2">
                         <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 font-mono">
@@ -580,11 +600,13 @@ onUnmounted(() => {
 
                         <div
                             class="p-3 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30">
-                            <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                            <p
+                                class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                 <span class="flex-shrink-0 text-xl">💡</span>
                                 <span>
                                     <strong>Note:</strong>
-                                    Enable passwordless login in Security Settings to use this feature.
+                                    Enable passwordless login in Security Settings to use this
+                                    feature.
                                 </span>
                             </p>
                         </div>
@@ -634,7 +656,8 @@ onUnmounted(() => {
 
                         <div
                             class="p-3 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-teal-900/20 dark:to-teal-900/20 rounded-lg border border-teal-400 dark:border-teal-800/30 mb-4">
-                            <p class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
+                            <p
+                                class="text-sm text-teal-800 dark:text-teal-300 flex items-start space-x-2">
                                 <span class="flex-shrink-0 text-xl">💡</span>
                                 <span class="mt-0.5">
                                     <strong>Note:</strong>
@@ -651,19 +674,29 @@ onUnmounted(() => {
                             <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">
                                 Providers that will work with local dev callback:
                             </p>
-                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm mb-4">
+                            <ul
+                                class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm mb-4">
                                 <li>
-                                    <a href="https://developers.facebook.com/" target="_blank" class="link">
+                                    <a
+                                        href="https://developers.facebook.com/"
+                                        target="_blank"
+                                        class="link">
                                         Facebook Developer Portal
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://github.com/settings/applications/new" target="_blank" class="link">
+                                    <a
+                                        href="https://github.com/settings/applications/new"
+                                        target="_blank"
+                                        class="link">
                                         GitHub Developer Portal
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://www.linkedin.com/developers/apps/" target="_blank" class="link">
+                                    <a
+                                        href="https://www.linkedin.com/developers/apps/"
+                                        target="_blank"
+                                        class="link">
                                         LinkedIn Developer Portal
                                     </a>
                                 </li>
@@ -672,14 +705,17 @@ onUnmounted(() => {
                             <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">
                                 Providers that will only work on a live URL:
                             </p>
-                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm mb-2">
+                            <ul
+                                class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm mb-2">
                                 <li>
-                                    <a href="https://console.developers.google.com/" target="_blank" class="link">
+                                    <a
+                                        href="https://console.developers.google.com/"
+                                        target="_blank"
+                                        class="link">
                                         Google Developer Portal
                                     </a>
                                 </li>
                             </ul>
-
                         </div>
                     </div>
                 </div>
@@ -690,7 +726,9 @@ onUnmounted(() => {
                         class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 font-mono">
                         <div class="flex items-start mb-2">
                             <span class="text-teal-600 dark:text-teal-400 mr-2">⌾</span>
-                            <h4 class="text-gray-900 dark:text-gray-100 font-bold">Spatie Permissions</h4>
+                            <h4 class="text-gray-900 dark:text-gray-100 font-bold">
+                                Spatie Permissions
+                            </h4>
                         </div>
                         <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">
                             Role-based access control with visual management
@@ -706,7 +744,9 @@ onUnmounted(() => {
                         class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 font-mono">
                         <div class="flex items-start mb-2">
                             <span class="text-teal-600 dark:text-teal-400 mr-2">⌾</span>
-                            <h4 class="text-gray-900 dark:text-gray-100 font-bold">Password Security</h4>
+                            <h4 class="text-gray-900 dark:text-gray-100 font-bold">
+                                Password Security
+                            </h4>
                         </div>
                         <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">
                             Configure password expiry and enforce changes
@@ -742,7 +782,8 @@ onUnmounted(() => {
                         </a>
                         , providing role-based access control through a clean UI.
                     </p>
-                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm">
+                    <ul
+                        class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm">
                         <li>Create and assign roles visually</li>
                         <li>Set granular permissions per role</li>
                         <li>View permission inheritance</li>
@@ -763,7 +804,6 @@ onUnmounted(() => {
                 </div>
                 <div
                     class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 font-mono">
-
                     <div class="space-y-6">
                         <!-- Account Disabling -->
                         <div>
@@ -849,7 +889,8 @@ onUnmounted(() => {
                         . Create, download, and manage backups without command line.
                     </p>
 
-                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm">
+                    <ul
+                        class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2 ml-4 text-sm">
                         <li>View backup history and disk usage</li>
                         <li>One-click manual backups</li>
                         <li>Download, delete, or restore backups</li>
@@ -865,7 +906,8 @@ onUnmounted(() => {
                         System Health Monitoring
                     </h2>
                     <p class="text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
-                        Monitor system health with automated checks for database, cache, disk, and more
+                        Monitor system health with automated checks for database, cache, disk, and
+                        more
                     </p>
                 </div>
                 <div
@@ -881,7 +923,8 @@ onUnmounted(() => {
                         with real-time status monitoring and email notifications.
                     </p>
 
-                    <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm mb-6">
+                    <ul
+                        class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm mb-6">
                         <li>Disk space usage monitoring</li>
                         <li>Database connection status</li>
                         <li>Cache system health</li>
@@ -922,7 +965,9 @@ onUnmounted(() => {
                                 3. Frontend Integration
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.healthFrontend" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.healthFrontend"
+                                    language="javascript" />
                             </div>
                         </div>
                     </div>
@@ -936,7 +981,8 @@ onUnmounted(() => {
                         Data Tables
                     </h2>
                     <p class="text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
-                        Powerful data tables built on TanStack Table with sorting, filtering, and export
+                        Powerful data tables built on TanStack Table with sorting, filtering, and
+                        export
                     </p>
                 </div>
                 <div
@@ -951,7 +997,8 @@ onUnmounted(() => {
                         </a>
                         with complete data management features.
                     </p>
-                    <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm mb-6">
+                    <ul
+                        class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm mb-6">
                         <li>Row selection with bulk actions</li>
                         <li>Server-side pagination and sorting</li>
                         <li>Built-in search</li>
@@ -966,7 +1013,9 @@ onUnmounted(() => {
                                 1. Frontend Setup
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.frontendSetup" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.frontendSetup"
+                                    language="javascript" />
                             </div>
                         </div>
 
@@ -990,7 +1039,9 @@ onUnmounted(() => {
                                 3. Pagination Watcher
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.paginationWatcher" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.paginationWatcher"
+                                    language="javascript" />
                             </div>
                         </div>
 
@@ -1026,7 +1077,9 @@ onUnmounted(() => {
                                 6. Action Buttons (Optional)
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.actionButtons" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.actionButtons"
+                                    language="javascript" />
                             </div>
                         </div>
 
@@ -1074,7 +1127,8 @@ onUnmounted(() => {
                         </a>
                         for real-time search.
                     </p>
-                    <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm mb-6">
+                    <ul
+                        class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4 text-sm mb-6">
                         <li>Typo-tolerant search</li>
                         <li>Real-time results</li>
                         <li>Faceted search and filtering</li>
@@ -1110,7 +1164,9 @@ onUnmounted(() => {
                                 2. Search Configuration
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.searchConfig" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.searchConfig"
+                                    language="javascript" />
                             </div>
                         </div>
 
@@ -1122,10 +1178,13 @@ onUnmounted(() => {
                                 3. Federated Search
                             </h5>
                             <p class="text-gray-700 dark:text-gray-200 text-xs mb-3">
-                                Search across multiple collections simultaneously using FederatedSearch.vue
+                                Search across multiple collections simultaneously using
+                                FederatedSearch.vue
                             </p>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.resultStructure" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.resultStructure"
+                                    language="javascript" />
                             </div>
                         </div>
                     </div>
@@ -1162,7 +1221,9 @@ onUnmounted(() => {
                                 1. Configuration
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.configExample" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.configExample"
+                                    language="javascript" />
                             </div>
                         </div>
 
@@ -1174,40 +1235,53 @@ onUnmounted(() => {
                                 2. Script Setup
                             </h5>
                             <div class="bg-gray-800 rounded-lg">
-                                <CodeBlock :code="codeExamples.scriptExample" language="javascript" />
+                                <CodeBlock
+                                    :code="codeExamples.scriptExample"
+                                    language="javascript" />
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-
         </section>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/documentation/installation"
+            <a
+                href="/documentation/installation"
                 class="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-900 border border-gray-400 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:border-gray-600 dark:hover:border-gray-400 transition-all font-mono uppercase tracking-wider text-sm">
                 <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7" />
                 </svg>
                 [Installation]
             </a>
 
-            <a href="/documentation/components"
+            <a
+                href="/documentation/components"
                 class="inline-flex items-center px-6 py-3 bg-green-500/20 border border-green-500 text-green-700 dark:text-green-200 hover:bg-green-500/30 transition-all font-mono uppercase tracking-wider text-sm">
                 [Components]
                 <svg class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7" />
                 </svg>
             </a>
         </div>
     </div>
 
     <!-- Back to Top Button -->
-    <button v-show="showBackToTop"
+    <button
+        v-show="showBackToTop"
         class="fixed bottom-8 right-8 bg-green-500/20 border border-green-500 text-green-700 dark:text-green-200 hover:bg-green-500/30 transition-all font-mono text-sm p-3 z-50"
-        aria-label="Back to top" @click="scrollToTop">
+        aria-label="Back to top"
+        @click="scrollToTop">
         [^]
     </button>
 

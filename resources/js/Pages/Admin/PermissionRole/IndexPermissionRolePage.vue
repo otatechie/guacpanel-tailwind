@@ -57,13 +57,11 @@ const activeTab = ref(0)
                     { label: 'Dashboard', href: route('dashboard') },
                     { label: 'System Settings', href: route('admin.setting.index') },
                     { label: 'Access Control' }
-                ]"
-            />
+                ]" />
 
             <section class="px-6 pb-6 pt-4 dark:bg-gray-900">
                 <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
-                >
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
                     <div class="px-3 sm:px-6 bg-gray-50 dark:bg-gray-800">
                         <Tabs v-model="activeTab" :tabs="tabs" />
                     </div>
@@ -77,8 +75,7 @@ const activeTab = ref(0)
                                 role="tabpanel"
                                 id="roles-panel"
                                 aria-labelledby="roles-tab"
-                                class="p-3 sm:p-6"
-                            />
+                                class="p-3 sm:p-6" />
 
                             <PermissionsTab
                                 v-else-if="activeTab === 1"
@@ -88,8 +85,7 @@ const activeTab = ref(0)
                                 role="tabpanel"
                                 id="permissions-panel"
                                 aria-labelledby="permissions-tab"
-                                class="p-3 sm:p-6"
-                            />
+                                class="p-3 sm:p-6" />
                         </Transition>
                     </div>
                 </div>

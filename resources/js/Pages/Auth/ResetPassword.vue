@@ -38,9 +38,7 @@ const submit = () => {
             <section
                 class="bg-[var(--color-surface-muted)] p-4 rounded-md"
                 aria-labelledby="password-requirements">
-                <h2
-                    id="password-requirements"
-                    class="text-[var(--color-text-muted)] text-sm mb-2">
+                <h2 id="password-requirements" class="text-[var(--color-text-muted)] text-sm mb-2">
                     Password must include:
                 </h2>
                 <ul class="text-[var(--color-text-muted)] space-y-1 list-disc pl-5 text-sm">

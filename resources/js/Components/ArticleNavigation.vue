@@ -44,7 +44,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <nav class="space-y-2" aria-label="Article navigation" style="font-family: 'Courier New', monospace;">
+    <nav
+        class="space-y-2"
+        aria-label="Article navigation"
+        style="font-family: 'Courier New', monospace">
         <button
             v-for="link in links"
             :key="link.id"
@@ -55,7 +58,9 @@ onUnmounted(() => {
                     : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800/50 border-transparent hover:border-gray-400 dark:hover:border-gray-600'
             ]"
             @click="scrollToSection(link.id)">
-            <span v-if="activeSection === link.id" class="inline-block mr-2 text-teal-500">&gt;</span>
+            <span v-if="activeSection === link.id" class="inline-block mr-2 text-teal-500">
+                &gt;
+            </span>
             {{ link.title }}
         </button>
     </nav>

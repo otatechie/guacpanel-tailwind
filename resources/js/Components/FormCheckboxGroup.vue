@@ -142,9 +142,7 @@ function isChecked(optionValue) {
             </div>
         </div>
 
-        <p
-            v-if="!options?.length"
-            class="text-sm text-[var(--color-text-muted)] text-center py-2">
+        <p v-if="!options?.length" class="text-sm text-[var(--color-text-muted)] text-center py-2">
             No options available
         </p>
 

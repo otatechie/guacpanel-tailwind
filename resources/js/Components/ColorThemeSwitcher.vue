@@ -48,8 +48,9 @@ onMounted(() => {
             </svg>
             <span
                 class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-                :style="{ backgroundColor: 'var(--color-text)', color: 'var(--color-bg)' }"
-                >Theme color</span>
+                :style="{ backgroundColor: 'var(--color-text)', color: 'var(--color-bg)' }">
+                Theme color
+            </span>
         </button>
 
         <div
