@@ -19,6 +19,7 @@
         "eslint-plugin-vue": "^10.5.0",
         "laravel-vite-plugin": "^1.0.0",
         "postcss": "^8.5.1",
+        "prettier-plugin-tailwindcss": "^0.7.1",
         "tailwindcss": "^4.0.1",
         "terser": "^5.39.2",
         "vite": "^6.2.0",

@@ -21,39 +21,39 @@ router.on('error', () => NProgress.done())
 const appName = import.meta.env.VITE_APP_NAME ?? 'GuacPanel'
 
 createInertiaApp({
-    progress: {
-        delay: 250,
-        color: '#ffa500',
-        includeCSS: true,
-        showSpinner: false
-    },
+  progress: {
+    delay: 250,
+    color: '#ffa500',
+    includeCSS: true,
+    showSpinner: false,
+  },
 
-    title: title => `${title} - ${appName}`,
+  title: title => `${title} - ${appName}`,
 
-    resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-        return pages[`./Pages/${name}.vue`]
-    },
+  resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+    return pages[`./Pages/${name}.vue`]
+  },
 
-    setup({ el, App, props, plugin }) {
-        const app = createApp({ render: () => h(App, props) })
+  setup({ el, App, props, plugin }) {
+    const app = createApp({ render: () => h(App, props) })
 
-        app.use(plugin).use(ZiggyVue)
-        app.use(InstantSearch)
+    app.use(plugin).use(ZiggyVue)
+    app.use(InstantSearch)
 
-        const globalComponents = {
-            Link,
-            Default,
-            Auth,
-            Public
-        }
-
-        Object.entries(globalComponents).forEach(([name, component]) => {
-            app.component(name, component)
-        })
-
-        app.mount(el)
-
-        return app
+    const globalComponents = {
+      Link,
+      Default,
+      Auth,
+      Public,
     }
+
+    Object.entries(globalComponents).forEach(([name, component]) => {
+      app.component(name, component)
+    })
+
+    app.mount(el)
+
+    return app
+  },
 })

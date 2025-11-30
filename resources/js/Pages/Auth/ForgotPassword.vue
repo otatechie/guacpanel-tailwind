@@ -5,56 +5,56 @@ import Auth from '../../Layouts/Auth.vue'
 import FormInput from '../../Components/FormInput.vue'
 
 defineOptions({
-    layout: Auth
+  layout: Auth,
 })
 
 const form = useForm({
-    email: ''
+  email: '',
 })
 
 const submit = () => {
-    form.post(route('password.request'))
+  form.post(route('password.request'))
 }
 </script>
 
 <template>
-    <Head title="Forgot password" />
+  <Head title="Forgot password" />
 
-    <main class="max-w-[384px] mx-auto px-8" role="main">
-        <h1 class="main-heading text-center">Forgot password</h1>
+  <main class="mx-auto max-w-[384px] px-8" role="main">
+    <h1 class="main-heading text-center">Forgot password</h1>
 
-        <form
-            class="mt-6 container-border p-5 space-y-6"
-            aria-labelledby="reset-form"
-            @submit.prevent="submit">
-            <p class="text-[var(--color-text-muted)] text-sm" role="note">
-                Enter your email to receive a password reset link
-            </p>
+    <form
+      class="container-border mt-6 space-y-6 p-5"
+      aria-labelledby="reset-form"
+      @submit.prevent="submit">
+      <p class="text-sm text-[var(--color-text-muted)]" role="note">
+        Enter your email to receive a password reset link
+      </p>
 
-            <FormInput
-                id="email"
-                v-model="form.email"
-                label="Email"
-                name="email"
-                type="email"
-                required
-                autocomplete="email"
-                :error="form.errors.email" />
+      <FormInput
+        id="email"
+        v-model="form.email"
+        label="Email"
+        name="email"
+        type="email"
+        required
+        autocomplete="email"
+        :error="form.errors.email" />
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="w-full btn-primary"
-                aria-busy="form.processing">
-                {{ form.processing ? 'Please wait...' : 'Send reset email' }}
-            </button>
-        </form>
+      <button
+        type="submit"
+        :disabled="form.processing"
+        class="btn-primary w-full"
+        aria-busy="form.processing">
+        {{ form.processing ? 'Please wait...' : 'Send reset email' }}
+      </button>
+    </form>
 
-        <p class="mt-8 text-center text-sm text-[var(--color-text-muted)]">
-            Back to
-            <Link :href="route('login')" class="text-sm link" aria-label="Return to login page">
-                login
-            </Link>
-        </p>
-    </main>
+    <p class="mt-8 text-center text-sm text-[var(--color-text-muted)]">
+      Back to
+      <Link :href="route('login')" class="link text-sm" aria-label="Return to login page">
+        login
+      </Link>
+    </p>
+  </main>
 </template>
