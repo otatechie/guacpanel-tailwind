@@ -1,191 +1,262 @@
-function initializeTheme() {
-    const userPreference = localStorage.getItem('theme')
+/**
+ * Theme utilities.
+ *
+ * Theme preference:
+ *   - 'light'  → Always use light mode
+ *   - 'dark'   → Always use dark mode
+ *   - 'system' → Follow the OS-level preference
+ *
+ * Effective theme:
+ *   - 'light' | 'dark' (actual theme applied to the document)
+ */
 
-    if (userPreference === 'dark') {
-        document.documentElement.classList.add('dark')
-        return 'dark'
-    } else if (userPreference === 'light') {
-        document.documentElement.classList.remove('dark')
-        return 'light'
-    } else {
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (systemPrefersDark) {
-            document.documentElement.classList.add('dark')
-            return 'system'
-        } else {
-            document.documentElement.classList.remove('dark')
-            return 'system'
-        }
-    }
-}
+const THEME_LIGHT = "light";
+const THEME_DARK = "dark";
+const THEME_SYSTEM = "system";
+const THEME_STORAGE_KEY = "theme";
+const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
+const NEXT_THEME = {
+  [THEME_LIGHT]: THEME_DARK,
+  [THEME_DARK]: THEME_SYSTEM,
+  [THEME_SYSTEM]: THEME_LIGHT,
+};
+
+const NEXT_THEME_TEXT = {
+  [THEME_LIGHT]: "Dark Mode",
+  [THEME_DARK]: "System Mode",
+  [THEME_SYSTEM]: "Light Mode",
+};
+
+const NEXT_THEME_ICON = {
+  [THEME_LIGHT]: "moon",
+  [THEME_DARK]: "system",
+  [THEME_SYSTEM]: "sun",
+};
+
+const root = document.documentElement;
+
+const systemPrefersDark = () => window.matchMedia(DARK_MEDIA_QUERY).matches;
+
+const applyEffectiveTheme = (theme) =>
+  root.classList.toggle("dark", theme === THEME_DARK);
+
+/**
+ * Reads the user's saved theme preference from localStorage.
+ *
+ * @returns {'light' | 'dark' | 'system'}
+ */
 function getCurrentThemePreference() {
-    const userPreference = localStorage.getItem('theme')
-    if (userPreference === 'dark' || userPreference === 'light') {
-        return userPreference
-    }
-    return 'system'
+  const pref = localStorage.getItem(THEME_STORAGE_KEY);
+  return pref === THEME_DARK || pref === THEME_LIGHT ? pref : THEME_SYSTEM;
 }
 
+/**
+ * Resolves the effective theme (what is actually applied).
+ *
+ * @returns {'light' | 'dark'}
+ */
 function getEffectiveTheme() {
-    const preference = getCurrentThemePreference()
-    if (preference === 'system') {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    }
-    return preference
+  const pref = getCurrentThemePreference();
+  return pref === THEME_SYSTEM
+    ? systemPrefersDark()
+      ? THEME_DARK
+      : THEME_LIGHT
+    : pref;
 }
 
-function setTheme(preference) {
-    switch (preference) {
-        case 'dark':
-            document.documentElement.classList.add('dark')
-            localStorage.setItem('theme', 'dark')
-            break
-        case 'light':
-            document.documentElement.classList.remove('dark')
-            localStorage.setItem('theme', 'light')
-            break
-        case 'system': {
-            localStorage.removeItem('theme')
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-            if (systemPrefersDark) {
-                document.documentElement.classList.add('dark')
-            } else {
-                document.documentElement.classList.remove('dark')
-            }
-            break
-        }
-    }
-}
-
-function setupThemeListener() {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches }) => {
-        const currentPreference = getCurrentThemePreference()
-
-        if (currentPreference === 'system') {
-            if (matches) {
-                document.documentElement.classList.add('dark')
-            } else {
-                document.documentElement.classList.remove('dark')
-            }
-
-            window.dispatchEvent(
-                new CustomEvent('themeChanged', {
-                    detail: {
-                        preference: 'system',
-                        effectiveTheme: matches ? 'dark' : 'light'
-                    }
-                })
-            )
-        }
-    })
-}
-
+/**
+ * Next theme in cycle: light → dark → system → light
+ *
+ * @param {'light' | 'dark' | 'system'} current
+ * @returns {'light' | 'dark' | 'system'}
+ */
 function getNextTheme(current) {
-    switch (current) {
-        case 'light':
-            return 'dark'
-        case 'dark':
-            return 'system'
-        case 'system':
-            return 'light'
-        default:
-            return 'light'
-    }
+  return NEXT_THEME[current] || THEME_LIGHT;
 }
 
+/**
+ * Label for the next theme in the cycle.
+ *
+ * @param {'light' | 'dark' | 'system'} current
+ * @returns {string}
+ */
 function getNextThemeText(current) {
-    switch (current) {
-        case 'light':
-            return 'Dark Mode'
-        case 'dark':
-            return 'System Mode'
-        case 'system':
-            return 'Light Mode'
-        default:
-            return 'Light Mode'
-    }
+  return NEXT_THEME_TEXT[current] || NEXT_THEME_TEXT[THEME_SYSTEM];
 }
 
+/**
+ * Icon key for the next theme in the cycle.
+ *
+ * @param {'light' | 'dark' | 'system'} current
+ * @returns {string}
+ */
 function getNextThemeIcon(current) {
-    switch (current) {
-        case 'light':
-            return 'moon'
-        case 'dark':
-            return 'system'
-        case 'system':
-            return 'sun'
-        default:
-            return 'sun'
-    }
+  return NEXT_THEME_ICON[current] || NEXT_THEME_ICON[THEME_SYSTEM];
 }
 
-function cycleTheme() {
-    const currentPreference = getCurrentThemePreference()
-    const nextTheme = getNextTheme(currentPreference)
-
-    setTheme(nextTheme)
-
-    window.dispatchEvent(
-        new CustomEvent('themeChanged', {
-            detail: {
-                preference: nextTheme,
-                effectiveTheme: getEffectiveTheme()
-            }
-        })
-    )
-
-    return {
-        currentPreference: nextTheme,
-        effectiveTheme: getEffectiveTheme(),
-        nextThemeText: getNextThemeText(nextTheme),
-        nextThemeIcon: getNextThemeIcon(nextTheme)
-    }
-}
-
+/**
+ * Current theme state.
+ *
+ * @returns {{
+ *   currentPreference: 'light' | 'dark' | 'system',
+ *   effectiveTheme: 'light' | 'dark',
+ *   nextThemeText: string,
+ *   nextThemeIcon: string,
+ *   isSystem: boolean
+ * }}
+ */
 function getCurrentThemeState() {
-    const currentPreference = getCurrentThemePreference()
-    const effectiveTheme = getEffectiveTheme()
+  const currentPreference = getCurrentThemePreference();
+  const effectiveTheme = getEffectiveTheme();
 
-    return {
-        currentPreference,
+  return {
+    currentPreference,
+    effectiveTheme,
+    nextThemeText: getNextThemeText(currentPreference),
+    nextThemeIcon: getNextThemeIcon(currentPreference),
+    isSystem: currentPreference === THEME_SYSTEM,
+  };
+}
+
+/**
+ * Applies the given theme preference and persists it.
+ *
+ * @param {'light' | 'dark' | 'system'} preference
+ */
+function setTheme(preference) {
+  if (preference === THEME_DARK) {
+    localStorage.setItem(THEME_STORAGE_KEY, THEME_DARK);
+  } else if (preference === THEME_LIGHT) {
+    localStorage.setItem(THEME_STORAGE_KEY, THEME_LIGHT);
+  } else if (preference === THEME_SYSTEM) {
+    localStorage.removeItem(THEME_STORAGE_KEY);
+  } else {
+    preference = THEME_LIGHT;
+    localStorage.setItem(THEME_STORAGE_KEY, THEME_LIGHT);
+  }
+
+  applyEffectiveTheme(
+    preference === THEME_SYSTEM ? getEffectiveTheme() : preference,
+  );
+}
+
+/**
+ * Initializes the theme on first load.
+ *
+ * @returns {'light' | 'dark' | 'system'}
+ */
+function initializeTheme() {
+  const preference = getCurrentThemePreference();
+  setTheme(preference);
+  return preference;
+}
+
+/**
+ * Subscribes to system (OS-level) theme changes when using 'system'.
+ */
+function setupThemeListener() {
+  window
+    .matchMedia(DARK_MEDIA_QUERY)
+    .addEventListener("change", ({ matches }) => {
+      if (getCurrentThemePreference() !== THEME_SYSTEM) return;
+
+      const effectiveTheme = matches ? THEME_DARK : THEME_LIGHT;
+      applyEffectiveTheme(effectiveTheme);
+
+      window.dispatchEvent(
+        new CustomEvent("themeChanged", {
+          detail: {
+            preference: THEME_SYSTEM,
+            effectiveTheme,
+          },
+        }),
+      );
+    });
+}
+
+/**
+ * Cycle preference: light → dark → system → light
+ *
+ * @returns {{
+ *   currentPreference: 'light' | 'dark' | 'system',
+ *   effectiveTheme: 'light' | 'dark',
+ *   nextThemeText: string,
+ *   nextThemeIcon: string
+ * }}
+ */
+function cycleTheme() {
+  const nextTheme = getNextTheme(getCurrentThemePreference());
+  setTheme(nextTheme);
+
+  const effectiveTheme = getEffectiveTheme();
+
+  window.dispatchEvent(
+    new CustomEvent("themeChanged", {
+      detail: {
+        preference: nextTheme,
         effectiveTheme,
-        nextThemeText: getNextThemeText(currentPreference),
-        nextThemeIcon: getNextThemeIcon(currentPreference),
-        isSystem: currentPreference === 'system'
-    }
+      },
+    }),
+  );
+
+  return {
+    currentPreference: nextTheme,
+    effectiveTheme,
+    nextThemeText: getNextThemeText(nextTheme),
+    nextThemeIcon: getNextThemeIcon(nextTheme),
+  };
 }
 
+/**
+ * Toggle between light and dark (ignores 'system').
+ *
+ * @returns {{
+ *   currentPreference: 'light' | 'dark',
+ *   effectiveTheme: 'light' | 'dark'
+ * }}
+ */
 function toggleTheme() {
-    const currentPreference = getCurrentThemePreference()
-    const nextTheme = currentPreference === 'dark' ? 'light' : 'dark'
-    setTheme(nextTheme)
+  const current = getCurrentThemePreference();
+  const nextTheme = current === THEME_DARK ? THEME_LIGHT : THEME_DARK;
 
-    return {
-        currentPreference: nextTheme,
-        effectiveTheme: nextTheme
-    }
+  setTheme(nextTheme);
+
+  return {
+    currentPreference: nextTheme,
+    effectiveTheme: nextTheme,
+  };
 }
 
+/**
+ * Reset preference back to 'system'.
+ *
+ * @returns {{
+ *   currentPreference: 'system',
+ *   effectiveTheme: 'light' | 'dark'
+ * }}
+ */
 function resetToSystemTheme() {
-    setTheme('system')
+  setTheme(THEME_SYSTEM);
+  const effectiveTheme = getEffectiveTheme();
 
-    return {
-        currentPreference: 'system',
-        effectiveTheme: getEffectiveTheme()
-    }
+  return {
+    currentPreference: THEME_SYSTEM,
+    effectiveTheme,
+  };
 }
 
-initializeTheme()
-setupThemeListener()
+// Initialize immediately on load and attach system listener.
+initializeTheme();
+setupThemeListener();
 
 export {
-    initializeTheme,
-    getCurrentThemePreference,
-    getEffectiveTheme,
-    setTheme,
-    toggleTheme,
-    resetToSystemTheme,
-    cycleTheme,
-    getCurrentThemeState
-}
+  initializeTheme,
+  getCurrentThemePreference,
+  getEffectiveTheme,
+  setTheme,
+  toggleTheme,
+  resetToSystemTheme,
+  cycleTheme,
+  getCurrentThemeState,
+};
