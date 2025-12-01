@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Personalisation;
-use App\Providers\CacheEloquentUserServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;

@@ -8,11 +8,11 @@ class UserObserver
 {
     public function updated(User $user)
     {
-        cache()->forget('user_' . $user->id);
+        cache()->forget('user_'.$user->id);
     }
 
     public function deleted(User $user)
     {
-        cache()->forget('user_' . $user->id);
+        cache()->forget('user_'.$user->id);
     }
 }
