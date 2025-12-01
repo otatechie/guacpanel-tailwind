@@ -24,11 +24,16 @@ const isCurrentRoute = routeUrl => {
   return fullUrl === routeUrl || route().current(routeUrl)
 }
 
+const nextLabel = computed(() => themeState.value.nextThemeText)
+const nextIcon = computed(() => themeState.value.nextThemeIcon)
+const currentLabel = computed(() => themeState.value.currentThemeText)
+const currentIcon = computed(() => themeState.value.currentThemeIcon)
+
 const menuItems = [
   {
     type: 'theme',
-    label: computed(() => `${themeState.value.nextThemeText}`),
-    icon: computed(() => themeState.value.nextThemeIcon),
+    label: nextLabel,
+    icon: currentIcon,
     action: () => {
       const result = cycleTheme()
       themeState.value = getCurrentThemeState()
