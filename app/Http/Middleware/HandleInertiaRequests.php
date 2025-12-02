@@ -2,11 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Personalisation;
 use App\Traits\PersonalisationsHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Middleware;
 
