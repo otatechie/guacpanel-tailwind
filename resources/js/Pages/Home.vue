@@ -1,6 +1,13 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { ref, onMounted, onUnmounted } from 'vue'
+// import Default from '../Layouts/Default.vue'
+
+import FlashMessage from '@js/Components/FlashMessage.vue'
+
+// defineOptions({
+//   layout: Default,
+// })
 
 const mobileMenuOpen = ref(false)
 
@@ -41,6 +48,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <FlashMessage />
   <Head title="GuacPanel - Open Source Admin" />
   <div
     class="flex min-h-screen flex-col bg-gradient-to-br from-green-50 via-white to-white dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">

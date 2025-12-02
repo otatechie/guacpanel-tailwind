@@ -44,6 +44,14 @@ const props = defineProps({
   sessions: {
     type: Object,
   },
+  deactivateEnabled: {
+    type: Boolean,
+    default: false,
+  },
+  deleteEnabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const activeTab = ref(0)
@@ -119,7 +127,10 @@ const pageHeaderContent = computed(() => {
       <DevicesTab v-if="activeTab === 3" :user="user" :sessions="sessions" />
 
       <!-- Danger Zone Section -->
-      <AccountTab v-if="activeTab === 4" />
+      <AccountTab
+        v-if="activeTab === 4"
+        :deactivateEnabled="deactivateEnabled"
+        :deleteEnabled="deleteEnabled" />
     </div>
   </main>
 </template>

@@ -137,7 +137,7 @@ const getStats = info => {
       <section class="bg-[var(--color-bg)] p-6">
         <div
           class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm sm:p-6">
-          <Alert type="info">
+          <Alert type="warning">
             If the backup process fails, you can run the command manually:
             <span class="font-mono">php artisan backup:run</span>
           </Alert>

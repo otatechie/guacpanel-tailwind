@@ -3,38 +3,60 @@ import { ref } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import FormInput from '@/Components/FormInput.vue'
 import Modal from '@/Components/Modal.vue'
+import Alert from '@/Components/Alert.vue'
 
 const deactivateModal = ref(false)
 const deleteModal = ref(false)
 const deactivateForm = useForm({})
 const deleteForm = useForm({})
 
+const props = defineProps({
+  deactivateEnabled: {
+    type: Boolean,
+    default: false,
+  },
+  deleteEnabled: {
+    type: Boolean,
+    default: false,
+  },
+})
+
 const confirmDeactivateAccount = () => {
-  deactivateModal.value = true
+  if (props.deactivateEnabled) {
+    deactivateModal.value = true
+  }
 }
 
 const confirmDeleteAccount = () => {
-  deleteModal.value = true
+  if (props.deleteEnabled) {
+    deleteModal.value = true
+  }
 }
 
 const deactivateAccount = () => {
-  deactivateForm.post(route('user.deactivate'), {
-    preserveScroll: true,
-    onSuccess: () => {
-      deactivateModal.value = false
-      window.location.href = route('home')
-    },
-  })
+  if (props.deactivateEnabled) {
+    deactivateForm.post(route('user.deactivate'), {
+      preserveScroll: true,
+      onSuccess: () => {
+        deactivateModal.value = false
+        // window.location.href = route('home')
+      },
+    })
+  } else {
+    deactivateModal.value = false
+  }
 }
 
 const deleteAccount = () => {
-  deleteForm.post(route('user.delete'), {
-    preserveScroll: true,
-    onSuccess: () => {
-      deleteModal.value = false
-      window.location.href = route('home')
-    },
-  })
+  if (props.deleteEnabled) {
+    deleteForm.post(route('user.delete'), {
+      preserveScroll: true,
+      onSuccess: () => {
+        deleteModal.value = false
+        // window.location.href = route('home')
+      },
+    })
+  }
 }
 </script>
 
@@ -57,6 +79,7 @@ const deleteAccount = () => {
         </p>
         <button
           class="btn-secondary btn-sm inline-flex w-full items-center gap-2 sm:w-auto"
+          :disabled="!deactivateEnabled"
           @click="confirmDeactivateAccount">
           <svg
             class="h-4 w-4"
@@ -72,6 +95,11 @@ const deleteAccount = () => {
           <span class="hidden sm:inline">Deactivate account</span>
           <span class="sm:hidden">Deactivate</span>
         </button>
+        <Alert v-if="!deactivateEnabled" type="warning" class="mt-4">
+          Feature disabled in the
+          <span class="font-mono">.env</span>
+          file
+        </Alert>
       </div>
 
       <!-- Delete Account -->
@@ -85,6 +113,7 @@ const deleteAccount = () => {
         </p>
         <button
           class="btn-danger btn-sm inline-flex w-full items-center gap-2 sm:w-auto"
+          :disabled="!deleteEnabled"
           @click="confirmDeleteAccount">
           <svg
             class="h-4 w-4"
@@ -100,6 +129,11 @@ const deleteAccount = () => {
           <span class="hidden sm:inline">Permanently delete account</span>
           <span class="sm:hidden">Delete Account</span>
         </button>
+        <Alert v-if="!deleteEnabled" type="warning" class="mt-4">
+          Feature disabled in the
+          <span class="font-mono">.env</span>
+          file
+        </Alert>
       </div>
     </div>
   </div>

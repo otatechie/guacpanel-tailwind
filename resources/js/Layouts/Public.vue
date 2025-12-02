@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/vue3'
 import NavSidebarDesktop from '@/Shared/Public/NavSidebarDesktop.vue'
 import Footer from '@/Shared/Public/Footer.vue'
 import { cycleTheme, getCurrentThemeState } from '@/darkMode'
+import FlashMessage from '@js/Components/FlashMessage.vue'
 
 const sidebarStorageKey = 'sidebarOpen'
 const isMobile = () => window.innerWidth < 768
@@ -212,6 +213,7 @@ onMounted(() => {
         class="flex-1 transition-all duration-200"
         :class="['pt-16', isSidebarOpen ? 'md:ml-64 xl:mr-64' : 'md:ml-0 xl:mr-64']">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <FlashMessage />
           <article
             class="prose prose-gray dark:prose-invert prose-headings:scroll-mt-20 max-w-none py-8">
             <slot />

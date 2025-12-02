@@ -30,8 +30,9 @@ class UserAccountController extends Controller
             'twoFactorEnabled'  => Route::has('two-factor.enable'),
             'passwordEnabled'   => Route::has('user-password.update'),
             'sessions'          => $this->getUserSessionsData($user, $request->session()->getId()),
+            'deactivateEnabled' => config('guacpanel.user.account.deactivate_enabled'),
+            'deleteEnabled'     => config('guacpanel.user.account.delete_enabled'),
         ];
-
         return Inertia::render('UserAccount/IndexPage', $data);
     }
 
@@ -147,6 +148,10 @@ class UserAccountController extends Controller
 
     public function deactivateAccount()
     {
+        if (! config('guacpanel.user.account.deactivate_enabled')) {
+            return redirect()->back()->with('error', 'Feature disabled in the .env file');
+        }
+
         $user = Auth::user();
         $user->update(['disable_account' => true]);
 
@@ -155,11 +160,15 @@ class UserAccountController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('info', 'Account has been deactivated successfully.');
+        return redirect()->route('home')->with('success', 'Account has been deactivated successfully.');
     }
 
     public function deleteAccount()
     {
+        if (! config('guacpanel.user.account.delete_enabled')) {
+            return redirect()->back()->with('error', 'Feature disabled in the .env file');
+        }
+
         $user = Auth::user();
         $user->delete();
 
@@ -168,6 +177,6 @@ class UserAccountController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('info', 'Account has been deleted successfully.');
+        return redirect()->route('home')->with('success', 'Account has been deleted successfully.');
     }
 }

@@ -15,4 +15,11 @@ return [
         'author'        => env('APP_AUTHOR', 'Your Name'),
         'theme-color'   => env('APP_THEME_COLOR', '#3B82F6'),
     ],
+
+    'user' => [
+        'account' => [
+            'deactivate_enabled'  => env('USER_DEACTIVATE_ACCOUNT_ENABLED', true),
+            'delete_enabled'    => env('USER_DELETE_ACCOUNT_ENABLED', true),
+        ],
+    ],
 ];
