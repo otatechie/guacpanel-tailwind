@@ -18,6 +18,7 @@ router.on("finish", () => NProgress.done());
 router.on("error", () => NProgress.done());
 
 const appName = import.meta.env.VITE_APP_NAME ?? "GuacPanel";
+const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
 
 createInertiaApp({
   progress: {
@@ -29,29 +30,20 @@ createInertiaApp({
 
   title: (title) => `${title} - ${appName}`,
 
-  resolve: (name) => {
-    const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
-    return pages[`./Pages/${name}.vue`];
-  },
+  resolve: (name) => pages[`./Pages/${name}.vue`],
 
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) });
 
-    app.use(plugin).use(ZiggyVue);
-    app.use(InstantSearch);
-
-    const globalComponents = {
-      Link,
-      Default,
-      Auth,
-      Public,
-    };
-
-    Object.entries(globalComponents).forEach(([name, component]) => {
-      app.component(name, component);
-    });
-
-    app.mount(el);
+    app
+      .use(plugin)
+      .use(ZiggyVue)
+      .use(InstantSearch)
+      .component("Link", Link)
+      .component("Default", Default)
+      .component("Auth", Auth)
+      .component("Public", Public)
+      .mount(el);
 
     return app;
   },
