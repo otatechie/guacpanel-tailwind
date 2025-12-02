@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Personalisation;
+use App\Traits\PersonalisationsHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AdminPersonalisationController extends Controller
 {
+    use PersonalisationsHelper;
+
     public function __construct()
     {
         $this->middleware('permission:view-personalisation');
@@ -16,11 +19,27 @@ class AdminPersonalisationController extends Controller
 
     public function index()
     {
-        $personalisation = Personalisation::first();
+        $personalisation = $this->getPersonalisations();
 
         return Inertia::render('Admin/Personalisation/IndexPage', [
             'personalisation' => $personalisation,
         ]);
+    }
+
+    public function updateInfo(Request $request)
+    {
+        $this->authorize('update-personalisation');
+
+        $validated = $request->validate([
+            'app_name'       => ['nullable', 'string', 'max:100'],
+            'copyright_text' => ['nullable', 'string', 'max:50'],
+        ]);
+
+        $personalisation = Personalisation::firstOrCreate();
+
+        $personalisation->update($validated);
+
+        return redirect()->back()->with('success', 'Settings updated successfully.');
     }
 
     public function upload(Request $request)
@@ -59,22 +78,6 @@ class AdminPersonalisationController extends Controller
         }
 
         return response()->json(['error' => 'No file uploaded'], 400);
-    }
-
-    public function updateInfo(Request $request)
-    {
-        $this->authorize('update-personalisation');
-
-        $validated = $request->validate([
-            'app_name'       => ['nullable', 'string', 'max:100'],
-            'copyright_text' => ['nullable', 'string', 'max:50'],
-        ]);
-
-        $personalisation = Personalisation::firstOrCreate();
-
-        $personalisation->update($validated);
-
-        return redirect()->back()->with('success', 'Settings updated successfully.');
     }
 
     public function delete(Request $request)

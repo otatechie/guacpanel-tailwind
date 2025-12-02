@@ -3,15 +3,18 @@
 namespace App\Observers;
 
 use App\Models\Personalisation;
+use App\Traits\PersonalisationsHelper;
 
 class PersonalisationObserver
 {
+    use PersonalisationsHelper;
+
     /**
      * Handle the Personalisation "created" event.
      */
     public function created(Personalisation $personalisation): void
     {
-        cache()->forget('system_settings');
+        $this->clearPersonalisationCache();
     }
 
     /**
@@ -19,7 +22,7 @@ class PersonalisationObserver
      */
     public function updated(Personalisation $personalisation): void
     {
-        cache()->forget('system_settings');
+        $this->clearPersonalisationCache();
     }
 
     /**
@@ -27,7 +30,7 @@ class PersonalisationObserver
      */
     public function saved(Personalisation $personalisation): void
     {
-        // cache()->forget('system_settings');
+        // $this->clearPersonalisationCache();
     }
 
     /**
@@ -35,7 +38,7 @@ class PersonalisationObserver
      */
     public function deleted(Personalisation $personalisation): void
     {
-        cache()->forget('system_settings');
+        $this->clearPersonalisationCache();
     }
 
     /**
@@ -43,7 +46,7 @@ class PersonalisationObserver
      */
     public function restored(Personalisation $personalisation): void
     {
-        cache()->forget('system_settings');
+        $this->clearPersonalisationCache();
     }
 
     /**
@@ -51,6 +54,6 @@ class PersonalisationObserver
      */
     public function forceDeleted(Personalisation $personalisation): void
     {
-        cache()->forget('system_settings');
+        $this->clearPersonalisationCache();
     }
 }

@@ -3,15 +3,16 @@
 namespace App\Providers;
 
 use App\Models\Personalisation;
-use Illuminate\Support\Facades\Cache;
+use App\Traits\PersonalisationsHelper;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
 class AppPersonalisationServiceProvider extends ServiceProvider
 {
+    use PersonalisationsHelper;
+
     public function register(): void
     {
         //
@@ -36,23 +37,5 @@ class AppPersonalisationServiceProvider extends ServiceProvider
             ],
             'personalisation' => fn () => $personalisation,
         ]);
-    }
-
-    public function getPersonalisations(bool $useCaching = true): Personalisation
-    {
-        $loader = fn () => tap(
-            Personalisation::first() ?? new Personalisation(),
-            function (Personalisation $personalisation) {
-                if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
-                    $personalisation->favicon = null;
-                }
-            }
-        );
-
-        if (!$useCaching) {
-            return $loader();
-        }
-
-        return Cache::rememberForever('system_settings', $loader);
     }
 }

@@ -100,12 +100,16 @@ const flashMessageTypes = [
   },
 ]
 
-const alert = ref({
+const defaultAlertState = {
   visible: false,
   type: 'success',
   title: '',
   message: '',
   ...alertConfigs.success,
+}
+
+const alert = ref({
+  ...defaultAlertState,
 })
 
 const page = usePage()
@@ -131,7 +135,12 @@ const showAlert = (title, message, type = 'success', timeout = 10000) => {
 }
 
 const closeAlert = () => {
-  alert.value.visible = false
+  alert.value = { ...defaultAlertState }
+}
+
+if (typeof window !== 'undefined') {
+  window.$showAlert = showAlert
+  window.$closeAlert = closeAlert
 }
 
 watch(

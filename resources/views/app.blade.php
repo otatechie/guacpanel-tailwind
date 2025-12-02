@@ -35,7 +35,6 @@
         <meta property="twitter:image" content="{{ asset('images/og-image.png') }}" />
 
         <!-- Favicon -->
-
         @if ($personalisation->favicon)
             <link rel="icon" type="image/png" href="{{ asset('storage/' . $personalisation->favicon) }}" />
         @else

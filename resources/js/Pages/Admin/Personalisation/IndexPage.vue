@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
-import { useForm, usePage } from '@inertiajs/vue3'
+import { useForm, usePage, router } from '@inertiajs/vue3'
 import FilePondUploader from '@js/Components/FilePondUploader.vue'
 import FormInput from '@js/Components/FormInput.vue'
 import PageHeader from '@js/Components/PageHeader.vue'
@@ -76,22 +76,33 @@ const handleProcessedFile = (error, file, name) => {
     : typeof file === 'string'
       ? JSON.parse(file)
       : file
-
   if (response?.path) {
     form[name] = response.path
   }
 }
 
-const handleFileRemoved = (error, file, name) => {
+const handleFileRemoved = async (error, file, name) => {
   if (!error) {
     form[name] = null
-    axios.post(route('admin.personalization.delete.file'), { field: name })
+
+    try {
+      await axios.post(route('admin.personalization.delete.file'), { field: name })
+      refreshPersonalisation()
+    } catch (e) {
+      // handle error
+    }
   }
 }
 
 const submit = () => {
   form.post(route('admin.personalization.update.info'), {
     preserveScroll: true,
+  })
+}
+
+const refreshPersonalisation = () => {
+  router.reload({
+    only: ['personalisation'], // this matches the key from HandleInertiaRequests
   })
 }
 </script>
