@@ -21,6 +21,6 @@ class MagicRegistrationLink extends Mailable
     public function build()
     {
         return $this->markdown('emails.magic-registration-link')
-            ->subject('Complete your registration');
+                    ->subject('Complete your registration');
     }
 }

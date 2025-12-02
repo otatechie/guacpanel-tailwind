@@ -1,10 +1,9 @@
 <script setup>
-
 import { computed } from 'vue'
-import GoogleIcon from "./Icons/GoogleIcon.vue";
-import FacebookIcon from "./Icons/FacebookIcon.vue";
-import GitHubIcon from "./Icons/GitHubIcon.vue";
-import LinkedInIcon from "./Icons/LinkedInIcon.vue";
+import GoogleIcon from './Icons/GoogleIcon.vue'
+import FacebookIcon from './Icons/FacebookIcon.vue'
+import GitHubIcon from './Icons/GitHubIcon.vue'
+import LinkedInIcon from './Icons/LinkedInIcon.vue'
 
 const props = defineProps({
   providersConfig: {
@@ -21,35 +20,35 @@ const props = defineProps({
   },
 })
 
-const redirect = (provider) => {
-  window.location.href = route("social.redirect", { provider });
-};
+const redirect = provider => {
+  window.location.href = route('social.redirect', { provider })
+}
 
 const gridClass = computed(() => {
-  const providers = Object.keys(props.providersConfig.providers).length;
-  const onlyIcons = props.iconsOnly;
+  const providers = Object.keys(props.providersConfig.providers).length
+  const onlyIcons = props.iconsOnly
   if (providers == 1) return 'grid-cols-1'
   if (onlyIcons) {
     if (providers % 4 == 0) return 'grid-cols-4'
     if (providers % 2 == 0) return 'grid-cols-2'
-    return 'grid-cols-3';
+    return 'grid-cols-3'
   }
-  return 'grid-cols-2';
+  return 'grid-cols-2'
 })
 
-const btnWrapperClass = (i) => {
+const btnWrapperClass = i => {
   if (props.iconsOnly) return ''
-  const providers = Object.keys(props.providersConfig.providers).length;
+  const providers = Object.keys(props.providersConfig.providers).length
   if (providers % 2 == 0) {
-    return '';
+    return ''
   }
   if (i + 1 == providers) {
-    return 'col-span-2';
+    return 'col-span-2'
   }
-  return '';
-};
+  return ''
+}
 
-const providerIcon = (provider) => {
+const providerIcon = provider => {
   if (provider === 'google') {
     return GoogleIcon
   }
@@ -66,7 +65,7 @@ const providerIcon = (provider) => {
   return null
 }
 
-const providerClasses = (provider) => {
+const providerClasses = provider => {
   // if (provider == 'google') {
   //   return 'bg-red-500 hover:bg-red-600 hover:text-white text-white dark:bg-red-600 dark:hover:bg-red-700';
   // }
@@ -79,19 +78,13 @@ const providerClasses = (provider) => {
   // if (provider == 'linkedin') {
   //   return 'bg-blue-700 hover:bg-blue-800 hover:text-white text-white dark:bg-blue-800 dark:hover:bg-blue-900';
   // }
-  return null;
-};
-
+  return null
+}
 </script>
 
 <template>
-  <div
-    class="grid gap-4"
-    :class="gridClass"
-  >    <template
-      v-for="(provider, index, i) in providersConfig.providers"
-      :key="index"
-    >
+  <div class="grid gap-4" :class="gridClass">
+    <template v-for="(provider, index, i) in providersConfig.providers" :key="index">
       <span :class="btnWrapperClass(i)">
         <button
           type="button"
@@ -99,14 +92,10 @@ const providerClasses = (provider) => {
           :class="providerClasses(index)"
           :tabIndex="5"
           @click="redirect(index)"
-          class="flex items-center justify-center cursor-pointer transition-colors text-sm gap-2 p-2.5 btn-secondary w-full"
-        >
-          <component
-            :is="providerIcon(index)"
-            class="size-5.5"
-          />
+          class="btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 p-2.5 text-sm transition-colors">
+          <component :is="providerIcon(index)" class="size-5.5" />
           <span v-if="!iconsOnly">
-            {{ providersConfig.button_text.replace("{provider}", index) }}
+            {{ providersConfig.button_text.replace('{provider}', index) }}
           </span>
         </button>
       </span>

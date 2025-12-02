@@ -1,10 +1,13 @@
 {
-    "name": "laravel/laravel",
+    "name": "otatechie/guacpanel-tailwind",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A Laravel starter kit built with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "Vue.js",
+        "Inertia.js",
+        "Tailwind CSS"
     ],
     "license": "MIT",
     "require": {
@@ -34,6 +37,7 @@
         "typesense/typesense-php": "^5.1"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
@@ -69,7 +73,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "barryvdh/laravel-debugbar"
+            ]
         }
     },
     "config": {

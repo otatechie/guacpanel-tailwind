@@ -1,185 +1,185 @@
 /* Navigation Styles */
 .nav-sidebar {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-surface);
-    box-shadow:
-        0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition-property: all;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
 }
 
 .dark .nav-sidebar {
-    background-color: var(--color-surface);
+  background-color: var(--color-surface);
 }
 
 .nav-item {
-    display: flex;
-    align-items: center;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-radius: 0.5rem;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
+  display: flex;
+  align-items: center;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
 }
 
 .nav-item-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .dark .nav-item-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .nav-item-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .dark .nav-item-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .nav-item-default:hover {
-    color: var(--color-text);
-    background-color: var(--color-surface-muted);
+  color: var(--color-text);
+  background-color: var(--color-surface-muted);
 }
 
 .dark .nav-item-default:hover {
-    color: var(--color-text);
-    background-color: rgba(55, 65, 81, 0.5);
+  color: var(--color-text);
+  background-color: rgba(55, 65, 81, 0.5);
 }
 
 .nav-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 0.625rem;
-    transition-property: color;
-    transition-duration: 200ms;
-    transition-timing-function: linear;
+  width: 18px;
+  height: 18px;
+  margin-right: 0.625rem;
+  transition-property: color;
+  transition-duration: 200ms;
+  transition-timing-function: linear;
 }
 
 .nav-icon-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .dark .nav-icon-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .nav-icon-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .dark .nav-icon-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .nav-dropdown {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-radius: 0.5rem;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
-    cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+  cursor: pointer;
 }
 
 .nav-dropdown-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .dark .nav-dropdown-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .nav-dropdown-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .dark .nav-dropdown-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .nav-dropdown-default:hover {
-    color: var(--color-text);
-    background-color: var(--color-surface-muted);
+  color: var(--color-text);
+  background-color: var(--color-surface-muted);
 }
 
 .dark .nav-dropdown-default:hover {
-    color: var(--color-text);
-    background-color: rgba(55, 65, 81, 0.5);
+  color: var(--color-text);
+  background-color: rgba(55, 65, 81, 0.5);
 }
 
 .nav-child-item {
-    display: flex;
-    align-items: center;
-    padding-left: 0.375rem;
-    padding-right: 0.375rem;
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
-    border-radius: 0.5rem;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
+  display: flex;
+  align-items: center;
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  border-radius: 0.5rem;
+  transition-property: all;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
 }
 
 .nav-child-item-active {
-    color: var(--primary-color);
-    font-weight: 500;
+  color: var(--primary-color);
+  font-weight: 500;
 }
 
 .dark .nav-child-item-active {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .nav-child-item-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .dark .nav-child-item-default {
-    color: var(--color-text-muted);
+  color: var(--color-text-muted);
 }
 
 .nav-child-item-default:hover {
-    color: var(--color-text);
-    background-color: var(--color-surface-muted);
+  color: var(--color-text);
+  background-color: var(--color-surface-muted);
 }
 
 .dark .nav-child-item-default:hover {
-    color: var(--color-text);
-    background-color: rgba(55, 65, 81, 0.5);
+  color: var(--color-text);
+  background-color: rgba(55, 65, 81, 0.5);
 }
 
 .nav-divider {
-    height: 1px;
-    width: 100%;
-    background-color: var(--color-border);
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-border);
 }
 
 /* Divider color is the same in both themes via variable */
 
 .nav-footer {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-top: 1px solid var(--color-border);
-    background-color: var(--color-surface);
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
 }
 
 .dark .nav-footer {
-    border-color: var(--color-border);
-    background-color: var(--color-surface);
+  border-color: var(--color-border);
+  background-color: var(--color-surface);
 }
