@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -56,6 +57,8 @@ class SocialiteController extends Controller
         ]);
 
         Auth::login($newUser);
+
+        event(new Registered($newUser));
 
         return redirect()
                     ->intended('/dashboard')
