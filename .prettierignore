@@ -6,3 +6,5 @@ storage
 bootstrap/cache
 *.min.js
 *.min.css
+composer.json
+packages.json
