@@ -19,7 +19,7 @@ return [
     'user' => [
         'account' => [
             'deactivate_enabled'  => env('USER_DEACTIVATE_ACCOUNT_ENABLED', true),
-            'delete_enabled'    => env('USER_DELETE_ACCOUNT_ENABLED', true),
+            'delete_enabled'      => env('USER_DELETE_ACCOUNT_ENABLED', true),
         ],
     ],
 ];

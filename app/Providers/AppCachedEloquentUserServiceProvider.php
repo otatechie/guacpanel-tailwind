@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Providers\CachedEloquentUserProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 

@@ -19,7 +19,7 @@ class AppPersonalisationServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if (! Schema::hasTable((new Personalisation())->getTable())) {
+        if (!Schema::hasTable((new Personalisation())->getTable())) {
             abort(503);
         }
 
@@ -43,13 +43,13 @@ class AppPersonalisationServiceProvider extends ServiceProvider
         $loader = fn () => tap(
             Personalisation::first() ?? new Personalisation(),
             function (Personalisation $personalisation) {
-                if ($personalisation->favicon && ! Storage::disk('public')->exists($personalisation->favicon)) {
+                if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
                     $personalisation->favicon = null;
                 }
             }
         );
 
-        if (! $useCaching) {
+        if (!$useCaching) {
             return $loader();
         }
 

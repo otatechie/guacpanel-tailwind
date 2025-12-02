@@ -46,4 +46,3 @@ class UserObserver
         cache()->forget('user_'.$user->id);
     }
 }
-
