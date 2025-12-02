@@ -4,7 +4,7 @@
     @if ($isNewUser)
         Welcome! Click the button below to verify your email and access your account.
     @else
-            Click the button below to login to your account. This link will expire in 10 minutes.
+        Click the button below to login to your account. This link will expire in 10 minutes.
     @endif
 
     @component('mail::button', ['url' => $url])
