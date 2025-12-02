@@ -4,8 +4,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "optimize": "vite optimize",
     "lint": "eslint . --fix",
-    "format": "prettier --write \"resources/**/*.{js,vue,css,php,.blade.php}\""
+    "format": "prettier --write \"resources/**/*.{js,vue,css,php,.blade.php}\"",
+    "clean": "prettier --write \"resources/**/*.{js,vue,css,php,.blade.php}\""
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
