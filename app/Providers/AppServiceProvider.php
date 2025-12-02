@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Personalisation;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -24,9 +25,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        auth()->provider('cachedEloquentUser', function (Application $application, array $config) {
+            return new CachedEloquentUserProvider(
+                $application['hash'],
+                $config['model']
+            );
+        });
+
         if (Schema::hasTable((new Personalisation())->getTable())) {
+
+
             // Get personalization data
             $personalisation = Personalisation::first() ?? new Personalisation();
+
             if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
                 $personalisation->favicon = null;
             }
