@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { cycleTheme, getCurrentThemeState } from '@/darkMode'
+import { cycleTheme, getCurrentThemeState } from '@js/utils/darkMode'
 
 const props = defineProps({
   showTooltip: { type: Boolean, default: true },

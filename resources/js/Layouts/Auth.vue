@@ -1,13 +1,17 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import { usePage } from '@inertiajs/vue3'
-import Logo from '@/Components/Logo.vue'
-import FlashMessage from '@/Components/FlashMessage.vue'
+import Logo from '@js/Components/Logo.vue'
+import FlashMessage from '@js/Components/FlashMessage.vue'
 import { computed } from 'vue'
 
 const page = usePage()
 const personalisation = page.props.personalisation || {}
 const hasCustomBranding = computed(() => personalisation.appLogo)
+
+const copyrightText = computed(
+  () => personalisation.copyright_text || `© ${new Date().getFullYear()} All rights reserved.`
+)
 </script>
 
 <template>
@@ -41,7 +45,7 @@ const hasCustomBranding = computed(() => personalisation.appLogo)
 
         <p class="text-center text-xs text-[var(--color-text-muted)] md:order-1">
           {{ personalisation.app_name }}
-          {{ personalisation.copyright_text || '© 2024 All rights reserved.' }}
+          {{ copyrightText }}
         </p>
       </section>
     </footer>

@@ -1,10 +1,10 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import Default from '../../../Layouts/Default.vue'
+import Default from '@js/Layouts/Default.vue'
 import { useForm, usePage } from '@inertiajs/vue3'
-import FilePondUploader from '@/Components/FilePondUploader.vue'
-import FormInput from '@/Components/FormInput.vue'
-import PageHeader from '@/Components/PageHeader.vue'
+import FilePondUploader from '@js/Components/FilePondUploader.vue'
+import FormInput from '@js/Components/FormInput.vue'
+import PageHeader from '@js/Components/PageHeader.vue'
 import axios from 'axios'
 
 defineOptions({
@@ -49,6 +49,8 @@ const uploadConfig = {
       .then(res => res.blob())
       .then(load)
   },
+  revert: null,
+  remove: null,
 }
 
 const getInitialFiles = field => {
@@ -83,7 +85,7 @@ const handleProcessedFile = (error, file, name) => {
 const handleFileRemoved = (error, file, name) => {
   if (!error) {
     form[name] = null
-    axios.post(route('admin.personalization.delete.file'), { field: name }).then(() => {})
+    axios.post(route('admin.personalization.delete.file'), { field: name })
   }
 }
 
@@ -108,7 +110,6 @@ const submit = () => {
           { label: 'Personalization' },
         ]" />
 
-      <!-- Application Details Section -->
       <div class="p-6 dark:bg-gray-900">
         <div
           class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -170,7 +171,6 @@ const submit = () => {
         </button>
       </div>
 
-      <!-- Media Section -->
       <div class="border-t border-gray-200 p-4 sm:p-6 dark:border-gray-700 dark:bg-gray-900">
         <div
           class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6 dark:border-gray-700 dark:bg-gray-800">

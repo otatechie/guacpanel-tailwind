@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import NavSidebarDesktop from '@/Shared/Public/NavSidebarDesktop.vue'
-import Footer from '@/Shared/Public/Footer.vue'
-import { cycleTheme, getCurrentThemeState } from '@/darkMode'
+import NavSidebarDesktop from '@js/Shared/Public/NavSidebarDesktop.vue'
+import Footer from '@js/Shared/Public/Footer.vue'
+import { cycleTheme, getCurrentThemeState } from '@js/utils/darkMode'
 import FlashMessage from '@js/Components/FlashMessage.vue'
 
 const sidebarStorageKey = 'sidebarOpen'

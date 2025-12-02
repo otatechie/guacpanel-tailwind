@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { usePage, Link } from '@inertiajs/vue3'
-import { cycleTheme, getCurrentThemeState, getEffectiveTheme } from '@/darkMode'
+import { cycleTheme, getCurrentThemeState, getEffectiveTheme } from '@js/utils/darkMode'
 
 const page = usePage()
 const user = computed(() => page.props.auth.user)

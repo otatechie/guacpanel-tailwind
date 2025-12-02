@@ -10,48 +10,49 @@
  *   - 'light' | 'dark' (actual theme applied to the document)
  */
 
-const THEME_LIGHT = 'light'
-const THEME_DARK = 'dark'
-const THEME_SYSTEM = 'system'
-const THEME_STORAGE_KEY = 'theme'
-const DARK_MEDIA_QUERY = '(prefers-color-scheme: dark)'
+const THEME_LIGHT = "light";
+const THEME_DARK = "dark";
+const THEME_SYSTEM = "system";
+const THEME_STORAGE_KEY = "theme";
+const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
 const NEXT_THEME = {
   [THEME_LIGHT]: THEME_DARK,
   [THEME_DARK]: THEME_SYSTEM,
   [THEME_SYSTEM]: THEME_LIGHT,
-}
+};
 
 const NEXT_THEME_TEXT = {
-  [THEME_LIGHT]: 'Dark Mode',
-  [THEME_DARK]: 'System Mode',
-  [THEME_SYSTEM]: 'Light Mode',
-}
+  [THEME_LIGHT]: "Dark Mode",
+  [THEME_DARK]: "System Mode",
+  [THEME_SYSTEM]: "Light Mode",
+};
 
 const NEXT_THEME_ICON = {
-  [THEME_LIGHT]: 'moon',
-  [THEME_DARK]: 'system',
-  [THEME_SYSTEM]: 'sun',
-}
+  [THEME_LIGHT]: "moon",
+  [THEME_DARK]: "system",
+  [THEME_SYSTEM]: "sun",
+};
 
 // NEW: labels/icons for the *current* theme
 const CURRENT_THEME_TEXT = {
-  [THEME_LIGHT]: 'Light Mode',
-  [THEME_DARK]: 'Dark Mode',
-  [THEME_SYSTEM]: 'System Mode',
-}
+  [THEME_LIGHT]: "Light Mode",
+  [THEME_DARK]: "Dark Mode",
+  [THEME_SYSTEM]: "System Mode",
+};
 
 const CURRENT_THEME_ICON = {
-  [THEME_LIGHT]: 'sun',
-  [THEME_DARK]: 'moon',
-  [THEME_SYSTEM]: 'system',
-}
+  [THEME_LIGHT]: "sun",
+  [THEME_DARK]: "moon",
+  [THEME_SYSTEM]: "system",
+};
 
-const root = document.documentElement
+const root = document.documentElement;
 
-const systemPrefersDark = () => window.matchMedia(DARK_MEDIA_QUERY).matches
+const systemPrefersDark = () => window.matchMedia(DARK_MEDIA_QUERY).matches;
 
-const applyEffectiveTheme = theme => root.classList.toggle('dark', theme === THEME_DARK)
+const applyEffectiveTheme = (theme) =>
+  root.classList.toggle("dark", theme === THEME_DARK);
 
 /**
  * Reads the user's saved theme preference from localStorage.
@@ -59,8 +60,8 @@ const applyEffectiveTheme = theme => root.classList.toggle('dark', theme === THE
  * @returns {'light' | 'dark' | 'system'}
  */
 function getCurrentThemePreference() {
-  const pref = localStorage.getItem(THEME_STORAGE_KEY)
-  return pref === THEME_DARK || pref === THEME_LIGHT ? pref : THEME_SYSTEM
+  const pref = localStorage.getItem(THEME_STORAGE_KEY);
+  return pref === THEME_DARK || pref === THEME_LIGHT ? pref : THEME_SYSTEM;
 }
 
 /**
@@ -69,8 +70,12 @@ function getCurrentThemePreference() {
  * @returns {'light' | 'dark'}
  */
 function getEffectiveTheme() {
-  const pref = getCurrentThemePreference()
-  return pref === THEME_SYSTEM ? (systemPrefersDark() ? THEME_DARK : THEME_LIGHT) : pref
+  const pref = getCurrentThemePreference();
+  return pref === THEME_SYSTEM
+    ? systemPrefersDark()
+      ? THEME_DARK
+      : THEME_LIGHT
+    : pref;
 }
 
 /**
@@ -80,7 +85,7 @@ function getEffectiveTheme() {
  * @returns {'light' | 'dark' | 'system'}
  */
 function getNextTheme(current) {
-  return NEXT_THEME[current] || THEME_LIGHT
+  return NEXT_THEME[current] || THEME_LIGHT;
 }
 
 /**
@@ -90,7 +95,7 @@ function getNextTheme(current) {
  * @returns {string}
  */
 function getNextThemeText(current) {
-  return NEXT_THEME_TEXT[current] || NEXT_THEME_TEXT[THEME_SYSTEM]
+  return NEXT_THEME_TEXT[current] || NEXT_THEME_TEXT[THEME_SYSTEM];
 }
 
 /**
@@ -100,7 +105,7 @@ function getNextThemeText(current) {
  * @returns {string}
  */
 function getNextThemeIcon(current) {
-  return NEXT_THEME_ICON[current] || NEXT_THEME_ICON[THEME_SYSTEM]
+  return NEXT_THEME_ICON[current] || NEXT_THEME_ICON[THEME_SYSTEM];
 }
 
 /**
@@ -110,7 +115,7 @@ function getNextThemeIcon(current) {
  * @returns {string}
  */
 function getCurrentThemeTextLabel(current) {
-  return CURRENT_THEME_TEXT[current] || CURRENT_THEME_TEXT[THEME_SYSTEM]
+  return CURRENT_THEME_TEXT[current] || CURRENT_THEME_TEXT[THEME_SYSTEM];
 }
 
 /**
@@ -120,7 +125,7 @@ function getCurrentThemeTextLabel(current) {
  * @returns {string}
  */
 function getCurrentThemeIconKey(current) {
-  return CURRENT_THEME_ICON[current] || CURRENT_THEME_ICON[THEME_SYSTEM]
+  return CURRENT_THEME_ICON[current] || CURRENT_THEME_ICON[THEME_SYSTEM];
 }
 
 /**
@@ -137,8 +142,8 @@ function getCurrentThemeIconKey(current) {
  * }}
  */
 function getCurrentThemeState() {
-  const currentPreference = getCurrentThemePreference()
-  const effectiveTheme = getEffectiveTheme()
+  const currentPreference = getCurrentThemePreference();
+  const effectiveTheme = getEffectiveTheme();
 
   return {
     currentPreference,
@@ -148,7 +153,7 @@ function getCurrentThemeState() {
     currentThemeText: getCurrentThemeTextLabel(currentPreference),
     currentThemeIcon: getCurrentThemeIconKey(currentPreference),
     isSystem: currentPreference === THEME_SYSTEM,
-  }
+  };
 }
 
 /**
@@ -158,17 +163,19 @@ function getCurrentThemeState() {
  */
 function setTheme(preference) {
   if (preference === THEME_DARK) {
-    localStorage.setItem(THEME_STORAGE_KEY, THEME_DARK)
+    localStorage.setItem(THEME_STORAGE_KEY, THEME_DARK);
   } else if (preference === THEME_LIGHT) {
-    localStorage.setItem(THEME_STORAGE_KEY, THEME_LIGHT)
+    localStorage.setItem(THEME_STORAGE_KEY, THEME_LIGHT);
   } else if (preference === THEME_SYSTEM) {
-    localStorage.removeItem(THEME_STORAGE_KEY)
+    localStorage.removeItem(THEME_STORAGE_KEY);
   } else {
-    preference = THEME_LIGHT
-    localStorage.setItem(THEME_STORAGE_KEY, THEME_LIGHT)
+    preference = THEME_LIGHT;
+    localStorage.setItem(THEME_STORAGE_KEY, THEME_LIGHT);
   }
 
-  applyEffectiveTheme(preference === THEME_SYSTEM ? getEffectiveTheme() : preference)
+  applyEffectiveTheme(
+    preference === THEME_SYSTEM ? getEffectiveTheme() : preference,
+  );
 }
 
 /**
@@ -177,30 +184,32 @@ function setTheme(preference) {
  * @returns {'light' | 'dark' | 'system'}
  */
 function initializeTheme() {
-  const preference = getCurrentThemePreference()
-  setTheme(preference)
-  return preference
+  const preference = getCurrentThemePreference();
+  setTheme(preference);
+  return preference;
 }
 
 /**
  * Subscribes to system (OS-level) theme changes when using 'system'.
  */
 function setupThemeListener() {
-  window.matchMedia(DARK_MEDIA_QUERY).addEventListener('change', ({ matches }) => {
-    if (getCurrentThemePreference() !== THEME_SYSTEM) return
+  window
+    .matchMedia(DARK_MEDIA_QUERY)
+    .addEventListener("change", ({ matches }) => {
+      if (getCurrentThemePreference() !== THEME_SYSTEM) return;
 
-    const effectiveTheme = matches ? THEME_DARK : THEME_LIGHT
-    applyEffectiveTheme(effectiveTheme)
+      const effectiveTheme = matches ? THEME_DARK : THEME_LIGHT;
+      applyEffectiveTheme(effectiveTheme);
 
-    window.dispatchEvent(
-      new CustomEvent('themeChanged', {
-        detail: {
-          preference: THEME_SYSTEM,
-          effectiveTheme,
-        },
-      })
-    )
-  })
+      window.dispatchEvent(
+        new CustomEvent("themeChanged", {
+          detail: {
+            preference: THEME_SYSTEM,
+            effectiveTheme,
+          },
+        }),
+      );
+    });
 }
 
 /**
@@ -216,19 +225,19 @@ function setupThemeListener() {
  * }}
  */
 function cycleTheme() {
-  const nextTheme = getNextTheme(getCurrentThemePreference())
-  setTheme(nextTheme)
+  const nextTheme = getNextTheme(getCurrentThemePreference());
+  setTheme(nextTheme);
 
-  const effectiveTheme = getEffectiveTheme()
+  const effectiveTheme = getEffectiveTheme();
 
   window.dispatchEvent(
-    new CustomEvent('themeChanged', {
+    new CustomEvent("themeChanged", {
       detail: {
         preference: nextTheme,
         effectiveTheme,
       },
-    })
-  )
+    }),
+  );
 
   return {
     currentPreference: nextTheme,
@@ -237,7 +246,7 @@ function cycleTheme() {
     nextThemeIcon: getNextThemeIcon(nextTheme),
     currentThemeText: getCurrentThemeTextLabel(nextTheme),
     currentThemeIcon: getCurrentThemeIconKey(nextTheme),
-  }
+  };
 }
 
 /**
@@ -249,15 +258,15 @@ function cycleTheme() {
  * }}
  */
 function toggleTheme() {
-  const current = getCurrentThemePreference()
-  const nextTheme = current === THEME_DARK ? THEME_LIGHT : THEME_DARK
+  const current = getCurrentThemePreference();
+  const nextTheme = current === THEME_DARK ? THEME_LIGHT : THEME_DARK;
 
-  setTheme(nextTheme)
+  setTheme(nextTheme);
 
   return {
     currentPreference: nextTheme,
     effectiveTheme: nextTheme,
-  }
+  };
 }
 
 /**
@@ -269,18 +278,18 @@ function toggleTheme() {
  * }}
  */
 function resetToSystemTheme() {
-  setTheme(THEME_SYSTEM)
-  const effectiveTheme = getEffectiveTheme()
+  setTheme(THEME_SYSTEM);
+  const effectiveTheme = getEffectiveTheme();
 
   return {
     currentPreference: THEME_SYSTEM,
     effectiveTheme,
-  }
+  };
 }
 
 // Initialize immediately on load and attach system listener.
-initializeTheme()
-setupThemeListener()
+initializeTheme();
+setupThemeListener();
 
 export {
   initializeTheme,
@@ -291,4 +300,4 @@ export {
   resetToSystemTheme,
   cycleTheme,
   getCurrentThemeState,
-}
+};
