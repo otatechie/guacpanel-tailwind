@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\UserDeleted;
 use App\Listeners\LogFailedLogin;
 use App\Listeners\LogSuccessfulLogin;
+use App\Listeners\SendGoodbyeEmail;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Failed::class => [
             LogFailedLogin::class,
+        ],
+        UserDeleted::class => [
+            SendGoodbyeEmail::class,
         ],
     ];
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserDeleted;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -171,6 +172,9 @@ class UserAccountController extends Controller
         }
 
         $user = Auth::user();
+
+        UserDeleted::dispatch($user);
+
         $user->delete();
 
         Auth::logout();
