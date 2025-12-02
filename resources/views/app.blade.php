@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
         <!-- Primary Meta Tags -->
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'GuacPanel') }}</title>
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <meta name="title" content="{{ config('app.name', 'GuacPanel') }}" />
         <meta name="description" content="{{ config('guacpanel.meta.description') }}" />
