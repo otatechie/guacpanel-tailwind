@@ -33,6 +33,7 @@ class UserAccountController extends Controller
             'deactivateEnabled' => config('guacpanel.user.account.deactivate_enabled'),
             'deleteEnabled'     => config('guacpanel.user.account.delete_enabled'),
         ];
+
         return Inertia::render('UserAccount/IndexPage', $data);
     }
 
@@ -148,7 +149,7 @@ class UserAccountController extends Controller
 
     public function deactivateAccount()
     {
-        if (! config('guacpanel.user.account.deactivate_enabled')) {
+        if (!config('guacpanel.user.account.deactivate_enabled')) {
             return redirect()->back()->with('error', 'Feature disabled in the .env file');
         }
 
@@ -165,7 +166,7 @@ class UserAccountController extends Controller
 
     public function deleteAccount()
     {
-        if (! config('guacpanel.user.account.delete_enabled')) {
+        if (!config('guacpanel.user.account.delete_enabled')) {
             return redirect()->back()->with('error', 'Feature disabled in the .env file');
         }
 
