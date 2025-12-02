@@ -58,8 +58,7 @@
             rel="stylesheet" />
     </head>
 
-    <body
-        @class(['antialiased', 'h-full', 'bg-gray-50', 'dark:bg-gray-900', 'text-gray-900', 'dark:text-gray-100'])>
+    <body @class(['antialiased', 'h-full', 'bg-gray-50', 'dark:bg-gray-900', 'text-gray-900', 'dark:text-gray-100'])>
         @routes
         @inertia
     </body>

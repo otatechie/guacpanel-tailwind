@@ -26,4 +26,9 @@ class AppHealthServiceProvider extends ServiceProvider
             OptimizedAppCheck::new(),
         ]);
     }
+
+    public function boot(): void
+    {
+        //
+    }
 }

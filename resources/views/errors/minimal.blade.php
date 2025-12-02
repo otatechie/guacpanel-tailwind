@@ -374,25 +374,32 @@
 
                 <div class="divider"></div>
 
-                <p class="error-description">
-                    Sorry, we encountered a problem while processing your request. Please try again or return to the
-                    homepage.
-                </p>
-                <a href="/" class="action-button">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M19 12H5M12 19l-7-7 7-7" />
-                    </svg>
-                    Back to Homepage
-                </a>
+                @if (isset($exception) && $exception->getStatusCode() === 503)
+                    <p class="error-description">
+                        We're making a few improvements right now. Please reload the app or check back in a moment.
+                    </p>
+                @else
+                    <p class="error-description">
+                        Sorry, we encountered a problem while processing your request. Please try again or return to the
+                        homepage.
+                    </p>
+                    <a href="/" class="action-button">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        Back to Homepage
+                    </a>
+                @endif
+
             </div>
         </div>
     </body>

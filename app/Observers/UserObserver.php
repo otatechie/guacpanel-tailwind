@@ -11,7 +11,7 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        //
+        cache()->forget('user_'.$user->id);
     }
 
     /**
@@ -24,7 +24,6 @@ class UserObserver
 
     /**
      * Handle the User "deleted" event.
-     * Will always run, including on force delete.
      */
     public function deleted(User $user): void
     {
@@ -36,16 +35,15 @@ class UserObserver
      */
     public function restored(User $user): void
     {
-        //
+        cache()->forget('user_'.$user->id);
     }
 
     /**
      * Handle the User "forceDeleted" event.
-     * Will only run on force delete.
      */
     public function forceDeleted(User $user): void
     {
-        //
+        cache()->forget('user_'.$user->id);
     }
 }
 
