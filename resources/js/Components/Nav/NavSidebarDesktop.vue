@@ -237,12 +237,6 @@ const navigationSections = createNavItems()
     class="nav-sidebar border-r border-[var(--color-border)]"
     @click.stop
     style="box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05)">
-    {{ user.roles }}
-
-    {{ hasPermission('manage-settings') }}
-
-    {{ hasPermission('manage-users') }}
-
     <nav class="flex-1 overflow-y-auto px-2 py-2" aria-labelledby="nav-heading">
       <ul class="space-y-1">
         <!-- Loop through sections -->
