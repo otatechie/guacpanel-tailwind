@@ -108,26 +108,28 @@ const columns = [
         'button',
         {
           class:
-            'p-2 text-red-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer',
+            'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
           onClick: () => confirmTerminate(session),
+          type: 'button',
           title: 'Terminate session',
         },
         [
+          h('span', { class: 'sr-only' }, 'Terminate session'),
           h(
             'svg',
             {
-              class: 'w-4 h-4',
-              xmlns: 'http://www.w3.org/2000/svg',
+              class: 'h-4 w-4',
               fill: 'none',
               viewBox: '0 0 24 24',
-              'stroke-width': '1.5',
               stroke: 'currentColor',
+              'aria-hidden': 'true',
             },
             [
               h('path', {
                 'stroke-linecap': 'round',
                 'stroke-linejoin': 'round',
-                d: 'm20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z',
+                'stroke-width': '2',
+                d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
               }),
             ]
           ),
