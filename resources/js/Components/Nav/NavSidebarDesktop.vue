@@ -175,28 +175,31 @@ const sectionHasVisibleItems = section => {
  *
  * Note: `icon` is raw SVG path markup rendered via v-html on an <svg>.
  */
-const navigationSections = reactive([
-  {
-    items: [
-      {
-        name: 'Dashboard',
-        route: 'dashboard',
-        icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />',
-      },
-      { type: 'divider' },
-    ],
-  },
-  {
-    items: [
-      {
-        name: 'Charts',
-        route: 'chart.index',
-        icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />',
-      },
-      { type: 'divider' },
-    ],
-  },
-  {
+function createNavItems() {
+  const items = reactive([
+    {
+      items: [
+        {
+          name: 'Dashboard',
+          route: 'dashboard',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />',
+        },
+        { type: 'divider' },
+      ],
+    },
+    {
+      items: [
+        {
+          name: 'Charts',
+          route: 'chart.index',
+          icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />',
+        },
+        { type: 'divider' },
+      ],
+    },
+  ])
+
+  const systemSettingsItems = {
     items: [
       {
         name: 'System Settings',
@@ -216,8 +219,16 @@ const navigationSections = reactive([
       },
       { type: 'divider' },
     ],
-  },
-])
+  }
+
+  if (hasPermission('manage-settings')) {
+    items.push(systemSettingsItems)
+  }
+
+  return items
+}
+
+const navigationSections = createNavItems()
 </script>
 
 <template>
@@ -226,6 +237,12 @@ const navigationSections = reactive([
     class="nav-sidebar border-r border-[var(--color-border)]"
     @click.stop
     style="box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05)">
+    {{ user.roles }}
+
+    {{ hasPermission('manage-settings') }}
+
+    {{ hasPermission('manage-users') }}
+
     <nav class="flex-1 overflow-y-auto px-2 py-2" aria-labelledby="nav-heading">
       <ul class="space-y-1">
         <!-- Loop through sections -->
