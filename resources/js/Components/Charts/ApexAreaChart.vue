@@ -28,7 +28,7 @@ const series = computed(() =>
   }))
 )
 
-const fontFamily = 'Zalando Sans'
+const fontFamily = 'Inter'
 
 const chartOptions = computed(() => {
   const dark = isDark.value

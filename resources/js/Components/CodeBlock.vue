@@ -76,7 +76,6 @@ const copyToClipboard = async () => {
       copySuccess.value = false
     }, 2000)
   } catch (err) {
-    console.error('Failed to copy: ', err)
   }
 }
 
