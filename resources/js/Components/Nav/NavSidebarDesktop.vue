@@ -2,27 +2,8 @@
 import { Link, usePage } from '@inertiajs/vue3'
 import { reactive, computed, ref } from 'vue'
 
-/**
- * Sidebar navigation component
- *
- * Features:
- * - Reads authenticated user and permissions from Inertia page props.
- * - Renders sections + items + optional children for nested navigation.
- * - Highlights:
- *    - Parent active when its own route is current.
- *    - Parent slightly highlighted when a child route is current.
- * - Dropdown behavior:
- *    - Parent with children shows a caret.
- *    - Clicking parent while on its route toggles children open/closed
- *      (without navigating).
- *    - Clicking parent while NOT on its route navigates to parent and
- *      ensures children are open.
- */
-
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
-
-// --- Permissions / route helpers ------------------------------------------
 
 /**
  * Check if the current user has a given permission.
@@ -53,13 +34,17 @@ const hasVisibleChildren = item => {
 }
 
 /**
- * Check if ANY child route of this item is the current route.
+ * Check if ANY descendant route of this item is the current route.
  * Only considers children the user has permission to see.
  */
 const isChildCurrentRoute = item => {
   if (!item?.children?.length) return false
 
-  return item.children.some(child => hasPermission(child.permission) && isCurrentRoute(child.route))
+  return item.children.some(child => {
+    if (!hasPermission(child.permission)) return false
+    if (isCurrentRoute(child.route)) return true
+    return isChildCurrentRoute(child)
+  })
 }
 
 /**
@@ -69,14 +54,6 @@ const isParentOrChildActive = item => {
   return isCurrentRoute(item.route) || isChildCurrentRoute(item)
 }
 
-// --- Collapse / expand state for parents ----------------------------------
-
-/**
- * Tracks collapsed state per parent item.
- * Structure: { [parentKey]: true | false }
- * - true  => collapsed
- * - false => expanded
- */
 const collapsedParents = ref({})
 
 /**
@@ -87,45 +64,26 @@ const getParentKey = item => item.route || item.name
 
 /**
  * Determine if a parent should be rendered as expanded (children visible).
- *
- * Rules:
- * - If item has no children or no visible children → never expanded.
- * - If we're on the parent route:
- *     Use collapsedParents to allow manual toggle.
- * - If a child route is active:
- *     Always expanded to give user context of where they are.
- * - Otherwise:
- *     Not expanded.
  */
 const isParentExpanded = item => {
   if (!item?.children?.length || !hasVisibleChildren(item)) return false
 
   const key = getParentKey(item)
 
-  // If we're on the parent route, use manual collapse/expand state
   if (isCurrentRoute(item.route)) {
     const collapsed = collapsedParents.value[key] === true
     return !collapsed
   }
 
-  // If a child route is active, always expand so user sees context
   if (isChildCurrentRoute(item)) {
     return true
   }
 
-  // Otherwise (no parent/child active) it's closed
   return false
 }
 
 /**
- * Handle clicks on the parent link:
- *
- * Behavior:
- * - If item has no children → do nothing special, let Inertia navigate.
- * - If we're on the parent route:
- *     Prevent navigation and toggle expanded/collapsed.
- * - If we're NOT on the parent route:
- *     Mark as expanded for when navigation completes, then let Inertia navigate.
+ * Handle clicks on the parent link.
  */
 const onParentClick = (event, item) => {
   const hasChildren = item.children && hasVisibleChildren(item)
@@ -136,22 +94,17 @@ const onParentClick = (event, item) => {
   }
 
   if (isCurrentRoute(item.route)) {
-    // Already on parent route: toggle open/closed
     event.preventDefault()
     const collapsed = collapsedParents.value[key] === true
     collapsedParents.value[key] = !collapsed
     return
   }
 
-  // Not on parent route:
-  // Ensure that when we navigate to the parent, it will be expanded
   collapsedParents.value[key] = false
-  // Let Inertia navigate normally
 }
 
 /**
  * Check if a section has at least one visible item.
- * Used to avoid rendering empty sections.
  */
 const sectionHasVisibleItems = section => {
   if (!section?.items?.length) return false
@@ -162,20 +115,7 @@ const sectionHasVisibleItems = section => {
   )
 }
 
-// --- Navigation configuration ---------------------------------------------
-
-/**
- * navigationSections:
- * - Array of sections
- * - Each section has an `items` array.
- * - Items can be:
- *    - A regular link (name, route, icon).
- *    - A parent with children (name, route, icon, children[]).
- *    - A divider (`{ type: 'divider' }`).
- *
- * Note: `icon` is raw SVG path markup rendered via v-html on an <svg>.
- */
-function createNavItems() {
+const navigationSections = computed(() => {
   const items = reactive([
     {
       items: [
@@ -199,6 +139,19 @@ function createNavItems() {
     },
   ])
 
+  const usermanagement = {
+    name: 'User Management',
+    route: 'admin.user.index',
+    children: [],
+  }
+
+  if (
+    (page.props.deletedUsers && page.props.deletedUsers > 0) ||
+    isCurrentRoute('admin.user.deleted.index')
+  ) {
+    usermanagement.children.push({ name: 'Deleted Users', route: 'admin.user.deleted.index' })
+  }
+
   const systemSettingsItems = {
     items: [
       {
@@ -208,7 +161,7 @@ function createNavItems() {
         children: [
           { name: 'System Activity', route: 'admin.audit.index' },
           { name: 'Theme Settings', route: 'admin.personalization.index' },
-          { name: 'User Management', route: 'admin.user.index' },
+          usermanagement,
           { name: 'Data Backup', route: 'admin.backup.index' },
           { name: 'Access Control', route: 'admin.permission.role.index' },
           { name: 'Login History', route: 'admin.login.history.index' },
@@ -226,9 +179,7 @@ function createNavItems() {
   }
 
   return items
-}
-
-const navigationSections = createNavItems()
+})
 </script>
 
 <template>
@@ -239,46 +190,35 @@ const navigationSections = createNavItems()
     style="box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05)">
     <nav class="flex-1 overflow-y-auto px-2 py-2" aria-labelledby="nav-heading">
       <ul class="space-y-1">
-        <!-- Loop through sections -->
         <template v-for="(section, sectionIndex) in navigationSections" :key="sectionIndex">
-          <!-- Only render sections that have at least one visible item -->
           <template v-if="sectionHasVisibleItems(section)">
-            <!-- Loop through items inside the section -->
             <template v-for="(item, itemIndex) in section.items" :key="itemIndex">
-              <!-- Divider item -->
               <li v-if="item.type === 'divider'" class="my-1.5 px-2" role="separator">
                 <div class="nav-divider"></div>
               </li>
 
-              <!-- Parent or single item wrapper -->
               <li
                 v-else
                 :class="[
-                  // Parent itself active: full active background
                   item.children && isCurrentRoute(item.route)
                     ? 'nav-item-active bg-[var(--color-surface-muted)]'
                     : '',
-                  // Child active (but not parent): slightly lighter background
                   item.children && !isCurrentRoute(item.route) && isChildCurrentRoute(item)
                     ? 'nav-item-active bg-[var(--color-surface-muted)] opacity-80'
                     : '',
                 ]">
-                <!-- Main clickable nav item -->
                 <Link
                   v-if="hasPermission(item.permission) && item.route"
                   :href="route(item.route)"
                   @click="onParentClick($event, item)"
                   :class="[
                     'nav-item transition-colors duration-200 hover:bg-[var(--color-surface-muted)]',
-                    // Parent active: full
                     isCurrentRoute(item.route)
                       ? 'nav-item-active bg-[var(--color-surface-muted)]'
-                      : // Child active only: lighter
-                        isChildCurrentRoute(item)
+                      : isChildCurrentRoute(item)
                         ? 'nav-item-active bg-[var(--color-surface-muted)] opacity-80'
                         : 'nav-item-default',
                   ]">
-                  <!-- Leading icon -->
                   <svg
                     :class="[
                       'nav-icon',
@@ -292,12 +232,10 @@ const navigationSections = createNavItems()
                     aria-hidden="true"
                     v-html="item.icon"></svg>
 
-                  <!-- Item label -->
                   <span class="flex-1 text-sm font-medium">
                     {{ item.name }}
                   </span>
 
-                  <!-- Caret: shows when there are children; rotates when expanded -->
                   <svg
                     v-if="item.children && hasVisibleChildren(item)"
                     :class="[
@@ -318,13 +256,13 @@ const navigationSections = createNavItems()
                 </Link>
               </li>
 
-              <!-- Children: visible only when parent is "expanded" -->
               <li v-if="item.children && hasVisibleChildren(item) && isParentExpanded(item)">
                 <ul class="ml-7 space-y-1">
                   <li v-for="child in item.children" :key="child.name">
                     <Link
                       v-if="hasPermission(child.permission)"
                       :href="route(child.route)"
+                      @click="onParentClick($event, child)"
                       :class="[
                         'nav-item pl-4 transition-colors duration-200 hover:bg-[var(--color-surface-muted)]',
                         isCurrentRoute(child.route)
@@ -335,6 +273,26 @@ const navigationSections = createNavItems()
                         {{ child.name }}
                       </span>
                     </Link>
+
+                    <ul
+                      v-if="child.children && hasVisibleChildren(child) && isParentExpanded(child)"
+                      class="ml-7 space-y-1">
+                      <li v-for="grandchild in child.children" :key="grandchild.name">
+                        <Link
+                          v-if="hasPermission(grandchild.permission)"
+                          :href="route(grandchild.route)"
+                          :class="[
+                            'nav-item pl-4 transition-colors duration-200 hover:bg-[var(--color-surface-muted)]',
+                            isCurrentRoute(grandchild.route)
+                              ? 'nav-item-active bg-[var(--color-surface-muted)]'
+                              : 'nav-item-default',
+                          ]">
+                          <span class="text-sm font-medium">
+                            {{ grandchild.name }}
+                          </span>
+                        </Link>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>

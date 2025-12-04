@@ -59,5 +59,8 @@ defineProps({
         <slot name="actions"></slot>
       </aside>
     </div>
+    <span class="bottom flex-shrink-0">
+      <slot name="bottom"></slot>
+    </span>
   </header>
 </template>

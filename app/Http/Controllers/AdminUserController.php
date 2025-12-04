@@ -22,7 +22,9 @@ class AdminUserController extends Controller
         $perPage = $this->pagination->resolvePerPageWithDefaults($request);
 
         $users = User::query()
-            ->with(['roles', 'permissions'])
+            ->with(['roles:id,name', 'permissions:id,name'])
+            // ->withDeleted()
+            // ->onlyDeleted()
             ->latest()
             ->paginate($perPage)
             ->withQueryString()
@@ -36,14 +38,21 @@ class AdminUserController extends Controller
                     'force_password_change' => $user->force_password_change,
                     'created_at'            => $user->created_at,
                     'updated_at'            => $user->updated_at,
+                    'created_at_formatted'  => $user->created_at_formatted,
+                    'restore_date'          => $user->restore_date,
+                    'restore_date_full'     => $user->restore_date_full,
                     'roles'                 => $user->roles,
                     'permissions'           => $user->permissions,
                     'is_superuser'          => $user->isSuperUser(),
                 ];
             });
 
+        $deletedUsers = User::query()->onlyDeleted()->count();
+        // $deletedUsers = 0;
+
         return Inertia::render('Admin/User/IndexUserPage', [
             'users' => $users,
+            'deletedUsers' => $deletedUsers,
             'roles' => [
                 'data' => Role::select(['id', 'name'])->get(),
             ],
@@ -151,11 +160,11 @@ class AdminUserController extends Controller
         $user = User::findOrFail($id);
 
         if (!$user->canBeDeleted()) {
-            return redirect()->back()->with('error', 'Superuser cannot be deleted.');
+            return redirect()->back()->with('error', 'Super user cannot be deleted.');
         }
 
         $user->delete();
 
-        return redirect()->route('admin.user.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('admin.user.deleted.index')->with('success', 'User deleted successfully.');
     }
 }

@@ -65,6 +65,16 @@
     font-size: 0.875rem;
   }
 
+  .btn-secondary.btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .btn-secondary.btn-xxs {
+    padding: 0.1rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
   .btn-secondary:hover:not(:disabled) {
     background-color: var(--color-surface);
     border-color: var(--color-border-strong);
