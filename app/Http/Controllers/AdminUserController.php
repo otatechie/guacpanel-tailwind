@@ -51,9 +51,9 @@ class AdminUserController extends Controller
         // $deletedUsers = 0;
 
         return Inertia::render('Admin/User/IndexUserPage', [
-            'users' => $users,
+            'users'        => $users,
             'deletedUsers' => $deletedUsers,
-            'roles' => [
+            'roles'        => [
                 'data' => Role::select(['id', 'name'])->get(),
             ],
             'filters' => $this->pagination->buildFilters($request),
