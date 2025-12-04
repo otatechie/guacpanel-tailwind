@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDeletedUsersController;
 use App\Http\Controllers\AdminAuditController;
 use App\Http\Controllers\AdminBackupController;
 use App\Http\Controllers\AdminHealthStatusController;
@@ -11,9 +12,6 @@ use App\Http\Controllers\AdminRoleController;
 use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminUserController;
-
-use App\Http\Controllers\Admin\AdminDeletedUsersController;
-
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Http\Controllers\Auth\SocialiteController;
@@ -96,7 +94,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
 
                 // User Management Routes
                 Route::prefix('users')->name('user.')->group(function () {
-
                     Route::prefix('deleted')->name('deleted.')->group(function () {
                         Route::controller(AdminDeletedUsersController::class)->group(function () {
                             Route::get('/', 'index')->name('index');

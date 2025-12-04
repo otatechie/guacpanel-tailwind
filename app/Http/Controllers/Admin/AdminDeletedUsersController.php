@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AdminDeletedUsersController extends Controller
@@ -69,7 +67,7 @@ class AdminDeletedUsersController extends Controller
         $user = User::onlyTrashed()->findOrFail($id);
         $user->restore();
         $deletedUsersCount = User::query()->onlyDeleted()->count();
-        $msg = $user->name . '\'s account restored successfully';
+        $msg = $user->name.'\'s account restored successfully';
 
         if ($deletedUsersCount > 0) {
             return redirect()->back()->with('success', $msg);
@@ -91,7 +89,7 @@ class AdminDeletedUsersController extends Controller
         $user->forceDelete();
 
         $deletedUsersCount = User::query()->onlyDeleted()->count();
-        $msg = $user->name . '\'s account permanently destroyed successfully';
+        $msg = $user->name.'\'s account permanently destroyed successfully';
 
         if ($deletedUsersCount > 0) {
             return redirect()->back()->with('success', $msg);

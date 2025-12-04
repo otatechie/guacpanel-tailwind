@@ -160,6 +160,7 @@ class User extends Authenticatable implements Auditable
                 if ($this->created_at) {
                     return $this->created_at->format('m/j/Y @ g:i a');
                 }
+
                 return null;
             },
         );
@@ -190,6 +191,7 @@ class User extends Authenticatable implements Auditable
                 if ($this->deleted_at) {
                     return $this->deleted_at->format('m/j/Y @ g:i a');
                 }
+
                 return null;
             },
         );
@@ -202,6 +204,7 @@ class User extends Authenticatable implements Auditable
                 if ($this->auto_destroy && $this->auto_destroy_date) {
                     return $this->auto_destroy_date->format('m/j/Y');
                 }
+
                 return null;
             },
         );
@@ -214,6 +217,7 @@ class User extends Authenticatable implements Auditable
                 if ($this->auto_destroy && $this->auto_destroy_date) {
                     return $this->auto_destroy_date->format('m/j/Y @ g:i a');
                 }
+
                 return null;
             },
         );
@@ -226,6 +230,7 @@ class User extends Authenticatable implements Auditable
                 if ($this->restore_date) {
                     return $this->restore_date->format('m/j/Y');
                 }
+
                 return null;
             },
         );
@@ -238,6 +243,7 @@ class User extends Authenticatable implements Auditable
                 if ($this->restore_date) {
                     return $this->restore_date->format('m/j/Y @ g:i a');
                 }
+
                 return null;
             },
         );
