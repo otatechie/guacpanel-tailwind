@@ -1,27 +1,27 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
-use App\Http\Controllers\AdminAuditController;
-use App\Http\Controllers\AdminBackupController;
-use App\Http\Controllers\AdminHealthStatusController;
-use App\Http\Controllers\AdminLoginHistoryController;
-use App\Http\Controllers\AdminPermissionController;
-use App\Http\Controllers\AdminPermissionRoleController;
-use App\Http\Controllers\AdminPersonalisationController;
-use App\Http\Controllers\AdminRoleController;
-use App\Http\Controllers\AdminSessionController;
-use App\Http\Controllers\AdminSettingController;
-use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\Admin\AdminAuditController;
+use App\Http\Controllers\Admin\AdminBackupController;
+use App\Http\Controllers\Admin\AdminHealthStatusController;
+use App\Http\Controllers\Admin\AdminLoginHistoryController;
+use App\Http\Controllers\Admin\AdminPermissionController;
+use App\Http\Controllers\Admin\AdminPermissionRoleController;
+use App\Http\Controllers\Admin\AdminPersonalisationController;
+use App\Http\Controllers\Admin\AdminRoleController;
+use App\Http\Controllers\Admin\AdminSessionController;
+use App\Http\Controllers\Admin\AdminSettingController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\BrowserSessionController;
-use App\Http\Controllers\ChartsController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ForcePasswordChangeController;
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\Auth\ForcePasswordChangeController;
+use App\Http\Controllers\Pages\ChartsController;
+use App\Http\Controllers\Pages\DashboardController;
+use App\Http\Controllers\Pages\PageController;
 use App\Http\Controllers\TypesenseController;
-use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\User\BrowserSessionController;
+use App\Http\Controllers\User\UserAccountController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');

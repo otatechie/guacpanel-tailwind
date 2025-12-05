@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pages;
 
+use App\Http\Controllers\Controller as ParentController;
 use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
-class DashboardController extends Controller
+class DashboardController extends ParentController
 {
     public function index()
     {

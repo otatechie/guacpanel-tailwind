@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pages;
 
+use App\Http\Controllers\Controller as ParentController;
 use App\Models\FinancialMetric;
 use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class ChartsController extends Controller
+class ChartsController extends ParentController
 {
     public function index()
     {
