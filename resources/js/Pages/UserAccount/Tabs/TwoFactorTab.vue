@@ -1,9 +1,9 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
-import Modal from '@/Components/Modal.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Alert from '@/Components/Alert.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const props = defineProps({
   user: {

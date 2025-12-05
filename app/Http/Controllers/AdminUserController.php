@@ -87,16 +87,30 @@ class AdminUserController extends Controller
     {
         $this->authorize('edit-users');
 
-        $user = User::with(['permissions', 'roles'])->findOrFail($id);
+        $user = User::with(['permissions:id,name', 'roles:id,name'])->findOrFail($id);
 
         return Inertia::render('Admin/User/EditUserPage', [
             'user' => [
-                'id'                    => $user->id,
-                'name'                  => $user->name,
-                'email'                 => $user->email,
-                'disable_account'       => $user->disable_account,
-                'force_password_change' => $user->force_password_change,
-                'roles'                 => $user->roles,
+                'id'                            => $user->id,
+                'name'                          => $user->name,
+                'email'                         => $user->email,
+                'email_verified_at'             => $user->email_verified_at,
+                'password_expiry_at'            => $user->password_expiry_at,
+                'password_changed_at'           => $user->password_changed_at,
+                'disable_account'               => $user->disable_account,
+                'force_password_change'         => $user->force_password_change,
+                'created_at_full'               => $user->created_at_full,
+                'created_at'                    => $user->created_at,
+                'updated_at'                    => $user->updated_at,
+                'deleted_at'                    => $user->deleted_at,
+                'created_at_formatted'          => $user->created_at_formatted,
+                'deleted_at_formatted'          => $user->deleted_at_formatted,
+                'deleted_at_full'               => $user->deleted_at_full,
+                'auto_destroy'                  => $user->auto_destroy,
+                'auto_destroy_date'             => $user->auto_destroy_date,
+                'auto_destroy_date_formatted'   => $user->auto_destroy_date_formatted,
+                'auto_destroy_date_full'        => $user->auto_destroy_date_full,
+                'roles'                         => $user->roles,
                 'permissions'           => $user->permissions->map(fn ($permission) => [
                     'id'   => $permission->id,
                     'name' => $permission->name,

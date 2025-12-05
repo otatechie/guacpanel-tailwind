@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import Switch from '@/Components/Switch.vue'
-import PageHeader from '@/Components/PageHeader.vue'
+import Default from '@js/Layouts/Default.vue'
+import Switch from '@js/Components/Forms/Switch.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
 
 defineOptions({
   layout: Default,

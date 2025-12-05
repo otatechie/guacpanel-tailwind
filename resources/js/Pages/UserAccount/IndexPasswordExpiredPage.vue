@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
+import Auth from '@js/Layouts/Auth.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
 
 defineOptions({
   layout: Auth,

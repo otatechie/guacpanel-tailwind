@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { colors, applyThemeColor } from '@/utils/themeInit'
+import { colors, applyThemeColor } from '@js/utils/themeInit'
 
 const selectedColor = ref(localStorage.getItem('theme-color') || 'teal')
 const isOpen = ref(false)

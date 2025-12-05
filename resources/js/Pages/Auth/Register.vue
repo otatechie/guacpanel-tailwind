@@ -1,9 +1,9 @@
 <script setup>
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
-import Socialite from '@/components/Socialite.vue'
+import Auth from '@js/Layouts/Auth.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import Socialite from '@js/Components/Auth/Socialite.vue'
 
 defineOptions({
   layout: Auth,

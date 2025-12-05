@@ -1,11 +1,11 @@
 <script setup>
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import Default from '../Layouts/Default.vue'
-import ApexLineChart from '@/Components/Charts/ApexLineChart.vue'
-import ApexDonutChart from '@/Components/Charts/ApexDonutChart.vue'
-import ApexBarChart from '@/Components/Charts/ApexBarChart.vue'
-import ApexAreaChart from '@/Components/Charts/ApexAreaChart.vue'
+import Default from '@js/Layouts/Default.vue'
+import ApexLineChart from '@js/Components/Charts/ApexLineChart.vue'
+import ApexDonutChart from '@js/Components/Charts/ApexDonutChart.vue'
+import ApexBarChart from '@js/Components/Charts/ApexBarChart.vue'
+import ApexAreaChart from '@js/Components/Charts/ApexAreaChart.vue'
 
 defineOptions({
   layout: Default,

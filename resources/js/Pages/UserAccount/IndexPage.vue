@@ -1,14 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Tabs from '@/Components/Tabs.vue'
-import ProfileTab from '@/Pages/UserAccount/Tabs/ProfileTab.vue'
-import PasswordTab from '@/Pages/UserAccount/Tabs/PasswordTab.vue'
-import TwoFactorTab from '@/Pages/UserAccount/Tabs/TwoFactorTab.vue'
-import DevicesTab from '@/Pages/UserAccount/Tabs/DevicesTab.vue'
-import AccountTab from '@/Pages/UserAccount/Tabs/AccountTab.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Tabs from '@js/Components/Common/Tabs.vue'
+import ProfileTab from '@js/Pages/UserAccount/Tabs/ProfileTab.vue'
+import PasswordTab from '@js/Pages/UserAccount/Tabs/PasswordTab.vue'
+import TwoFactorTab from '@js/Pages/UserAccount/Tabs/TwoFactorTab.vue'
+import DevicesTab from '@js/Pages/UserAccount/Tabs/DevicesTab.vue'
+import AccountTab from '@js/Pages/UserAccount/Tabs/AccountTab.vue'
 
 defineOptions({
   layout: Default,

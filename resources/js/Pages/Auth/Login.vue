@@ -1,12 +1,12 @@
 <script setup>
+import { ref } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
-import FormCheckbox from '../../Components/FormCheckbox.vue'
-import Modal from '../../Components/Modal.vue'
-import { ref } from 'vue'
-import Socialite from '@/components/Socialite.vue'
+import Auth from '@js/Layouts/Auth.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import Socialite from '@js/Components/Auth/Socialite.vue'
 
 defineOptions({
   layout: Auth,

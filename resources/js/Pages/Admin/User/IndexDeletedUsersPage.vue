@@ -1,14 +1,14 @@
 <script setup>
 import { Head, useForm, usePage, router, Link } from '@inertiajs/vue3'
-import DataTable from '@js/Components/Datatable.vue'
+import DataTable from '@js/Components/Common/Datatable.vue'
 import Default from '@js/Layouts/Default.vue'
-import Modal from '@js/Components/Modal.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
-import PageHeader from '@js/Components/PageHeader.vue'
-import FormInput from '@js/Components/FormInput.vue'
-import FormSelect from '@js/Components/FormSelect.vue'
-import FormCheckbox from '@js/Components/FormCheckbox.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormSelect from '@js/Components/Forms/FormSelect.vue'
+import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import RolesBadges from '@js/Components/Common/RolesBadges.vue'
 
 defineOptions({

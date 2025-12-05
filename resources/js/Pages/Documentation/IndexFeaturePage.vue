@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { ref, onMounted, onUnmounted } from 'vue'
-import Public from '@/Layouts/Public.vue'
-import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import CodeBlock from '@/Components/CodeBlock.vue'
+import Public from '@js/Layouts/Public.vue'
+import ArticleNavigation from '@js/Shared/Public/ArticleNavigation.vue'
+import CodeBlock from '@js/Components/Common/CodeBlock.vue'
 
 defineOptions({
   layout: Public,
@@ -123,7 +123,7 @@ LINKEDIN_REDIRECT=\u0024{APP_URL}/auth/social/linkedin/callback`,
 
   frontendSetup: `// resources/js/Pages/Admin/User/IndexUserPage.vue
 import { Head, router } from '@inertiajs/vue3'
-import DataTable from '@/Components/Datatable.vue'
+import DataTable from '@js/Components/Common/Datatable.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref } from 'vue'
 
@@ -368,15 +368,19 @@ const handleFileRemove = (error, file) => {
 }`,
 
   // Health monitoring
-  healthChecksConfig: `// app/Providers/AppServiceProvider.php
-use Spatie\Health\Facades\Health;
+  healthChecksConfig: `// app/Providers/AppHealthServiceProvider.php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Checks\Checks\CacheCheck;
-use Spatie\Health\Checks\Checks\QueueCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Checks\Checks\EnvironmentCheck;
 use Spatie\Health\Checks\Checks\OptimizedAppCheck;
+use Spatie\Health\Checks\Checks\QueueCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
+use Spatie\Health\Facades\Health;
 
 public function register(): void {
     Health::checks([
@@ -399,13 +403,22 @@ public function index(ResultStore $resultStore)
 
     return Inertia::render('Monitoring/IndexPage', [
         'healthChecks' => [
-            'lastRanAt' => $checkResults?->finishedAt,
-            'results' => $checkResults?->storedCheckResults?->map(function ($result) {
+            'lastRanAt' => $checkResults?->finishedAt ? Carbon::parse($checkResults->finishedAt)->toIso8601String() : null,
+            'results'   => $checkResults?->storedCheckResults?->map(function ($result) {
                 return [
-                    'label' => $result->label,
-                    'status' => $result->status,
+                    'label'               => $result->label,
+                    'status'              => $result->status,
                     'notificationMessage' => $result->notificationMessage,
-                    'meta' => $result->meta,
+                    'shortSummary'        => $result->shortSummary,
+                    'meta'                => collect($result->meta)->only([
+                        'disk_usage',
+                        'message',
+                        'error',
+                        'used_memory_percentage',
+                        'used_memory',
+                        'database_size',
+                        'table_count',
+                    ])->toArray(),
                 ];
             }) ?? [],
         ],
@@ -445,7 +458,7 @@ TYPESENSE_PROTOCOL=http`,
 
   // Search configuration
   searchConfig: `{
-    collection: "users",          // Collection name
+    collection: "users",         // Collection name
     q: searchQuery,              // Search query
     query_by: "name,email",      // Fields to search
     sort_by: "_text_match:desc", // Sort order
@@ -454,7 +467,7 @@ TYPESENSE_PROTOCOL=http`,
 
   // Add new example for result structure
   resultStructure: `{
-    collection_name: 'collection_name',  // Collection identifier
+    collection_name: 'collection_name', // Collection identifier
     url: '/path/to/item',               // URL for the result
     displayTitle: 'Title',              // Main display text
     displaySubtitle: 'Subtitle'         // Secondary display text

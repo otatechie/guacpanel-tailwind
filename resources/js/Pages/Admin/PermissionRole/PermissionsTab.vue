@@ -1,10 +1,10 @@
 <script setup>
 import { ref, h, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
-import Modal from '@/Components/Modal.vue'
-import FormInput from '@/Components/FormInput.vue'
-import Datatable from '@/Components/Datatable.vue'
-import Alert from '@/Components/Alert.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import Datatable from '@js/Components/Common/Datatable.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const props = defineProps({
   permissions: {

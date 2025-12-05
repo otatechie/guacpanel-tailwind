@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\BrowserSessionController;
-use App\Http\Controllers\ChartController;
+use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForcePasswordChangeController;
 use App\Http\Controllers\PageController;
@@ -77,7 +77,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
         });
 
         // Chart Routes
-        Route::get('charts', [ChartController::class, 'index'])->name('chart.index');
+        Route::get('charts', [ChartsController::class, 'index'])->name('chart.index');
 
         // Protected Routes requiring 2FA
         Route::middleware(['require.two.factor'])->group(function () {

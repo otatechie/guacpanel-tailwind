@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class ChartController extends Controller
+class ChartsController extends Controller
 {
     public function index()
     {
@@ -34,7 +34,7 @@ class ChartController extends Controller
             }
         }
 
-        return Inertia::render('Chart', [
+        return Inertia::render('Charts', [
             'financialMetrics' => [
                 'months'  => $months,
                 'income'  => $income,

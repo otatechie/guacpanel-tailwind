@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from 'vue'
-import GoogleIcon from './Icons/GoogleIcon.vue'
-import FacebookIcon from './Icons/FacebookIcon.vue'
-import GitHubIcon from './Icons/GitHubIcon.vue'
-import LinkedInIcon from './Icons/LinkedInIcon.vue'
+import GoogleIcon from '@js/Components/Icons/GoogleIcon.vue'
+import FacebookIcon from '@js/Components/Icons/FacebookIcon.vue'
+import GitHubIcon from '@js/Components/Icons/GitHubIcon.vue'
+import LinkedInIcon from '@js/Components/Icons/LinkedInIcon.vue'
 
 const props = defineProps({
   providersConfig: {

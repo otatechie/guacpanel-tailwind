@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
 
 defineOptions({
   layout: Default,

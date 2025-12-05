@@ -1,10 +1,10 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
-import Default from '../../Layouts/Default.vue'
-import Modal from '@/Components/Modal.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import FormInput from '@/Components/FormInput.vue'
+import Default from '@js/Layouts/Default.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
 
 defineOptions({
   layout: Default,

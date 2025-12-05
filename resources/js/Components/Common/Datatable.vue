@@ -9,7 +9,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
 } from '@tanstack/vue-table'
-import Modal from '@/Components/Modal.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
 
 const selectionColor = 'var(--selection-color)'
 

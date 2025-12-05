@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
-import FormInput from '@/Components/FormInput.vue'
-import Modal from '@/Components/Modal.vue'
-import Alert from '@/Components/Alert.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const deactivateModal = ref(false)
 const deleteModal = ref(false)

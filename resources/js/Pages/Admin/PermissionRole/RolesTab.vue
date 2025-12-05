@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import Modal from '@/Components/Modal.vue'
-import FormInput from '@/Components/FormInput.vue'
-import FormTextarea from '@/Components/FormTextarea.vue'
-import FormCheckbox from '@/Components/FormCheckbox.vue'
-import Alert from '@/Components/Alert.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormTextarea from '@js/Components/Forms/FormTextarea.vue'
+import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const props = defineProps({
   roles: {

@@ -1,8 +1,8 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
-import Modal from '@/Components/Modal.vue'
-import FormInput from '@/Components/FormInput.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
 
 const props = defineProps({
   user: {
