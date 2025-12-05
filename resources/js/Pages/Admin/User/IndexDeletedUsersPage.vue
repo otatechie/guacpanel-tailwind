@@ -1,14 +1,15 @@
 <script setup>
 import { Head, useForm, usePage, router, Link } from '@inertiajs/vue3'
-import DataTable from '@/Components/Datatable.vue'
-import Default from '@/Layouts/Default.vue'
-import Modal from '@/Components/Modal.vue'
+import DataTable from '@js/Components/Datatable.vue'
+import Default from '@js/Layouts/Default.vue'
+import Modal from '@js/Components/Modal.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import FormInput from '@/Components/FormInput.vue'
-import FormSelect from '@/Components/FormSelect.vue'
-import FormCheckbox from '@/Components/FormCheckbox.vue'
+import PageHeader from '@js/Components/PageHeader.vue'
+import FormInput from '@js/Components/FormInput.vue'
+import FormSelect from '@js/Components/FormSelect.vue'
+import FormCheckbox from '@js/Components/FormCheckbox.vue'
+import RolesBadges from '@js/Components/Common/RolesBadges.vue'
 
 defineOptions({
   layout: Default,
@@ -151,6 +152,10 @@ const columns = [
         roleName
       )
     },
+  }),
+  columnHelper.accessor('email_verified_at', {
+    header: 'Verified',
+    cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
   }),
   columnHelper.accessor('disable_account', {
     header: 'Disabled',
@@ -310,6 +315,7 @@ watch(
             :search-fields="[
               'name',
               'email',
+              'email_verified_at',
               'disable_account',
               'created_at_formatted',
               'deleted_at_formatted',
@@ -368,9 +374,23 @@ watch(
             </div>
 
             <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
               <dd class="text-sm text-gray-900 dark:text-gray-100">
                 {{ userToDelete.disable_account ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                <RolesBadges :roles="userToDelete.roles" />
               </dd>
             </div>
 

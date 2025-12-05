@@ -9,6 +9,7 @@ import PageHeader from '@/Components/PageHeader.vue'
 import FormInput from '@/Components/FormInput.vue'
 import FormSelect from '@/Components/FormSelect.vue'
 import FormCheckbox from '@/Components/FormCheckbox.vue'
+import RolesBadges from '@js/Components/Common/RolesBadges.vue'
 
 defineOptions({
   layout: Default,
@@ -24,7 +25,7 @@ const props = defineProps({
     required: true,
   },
   deletedUsers: {
-    type: Object,
+    type: [Object, Number],
     // required: true,
     default: () => ({}),
   },
@@ -134,6 +135,10 @@ const columns = [
         roleName
       )
     },
+  }),
+  columnHelper.accessor('email_verified_at', {
+    header: 'Verified',
+    cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
   }),
   columnHelper.accessor('disable_account', {
     header: 'Disabled',
@@ -292,6 +297,7 @@ watch(
             :search-fields="[
               'name',
               'email',
+              'email_verified_at',
               'disable_account',
               'created_at_formatted',
               'restore_date_full',
@@ -345,6 +351,34 @@ watch(
             <div class="flex gap-2">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
               <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.email }}</dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.disable_account ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                <RolesBadges :roles="userToDelete.roles" />
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Created At:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.created_at_full }}
+              </dd>
             </div>
           </dl>
         </div>

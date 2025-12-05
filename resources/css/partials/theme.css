@@ -12,6 +12,9 @@
   --selection-color-dark: rgba(37, 99, 235, 0.2);
   --error-color: #ef4444;
   --error-color-rgb: 239, 68, 68;
+  --success-color: #48bb78;
+  --info-color: #54b4d3;
+  --warning-color: #eab308;
 }
 
 /* Base color variables for light/dark themes */

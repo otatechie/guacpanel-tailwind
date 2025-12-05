@@ -32,6 +32,8 @@ class AdminDeletedUsersController extends Controller
                     'name'                          => $user->name,
                     'email'                         => $user->email,
                     'email_verified_at'             => $user->email_verified_at,
+                    'password_expiry_at'            => $user->password_expiry_at,
+                    'password_changed_at'           => $user->password_changed_at,
                     'disable_account'               => $user->disable_account,
                     'force_password_change'         => $user->force_password_change,
                     'created_at_full'               => $user->created_at_full,
