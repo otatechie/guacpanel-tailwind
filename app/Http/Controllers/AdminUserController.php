@@ -111,7 +111,7 @@ class AdminUserController extends Controller
                 'auto_destroy_date_formatted'   => $user->auto_destroy_date_formatted,
                 'auto_destroy_date_full'        => $user->auto_destroy_date_full,
                 'roles'                         => $user->roles,
-                'permissions'           => $user->permissions->map(fn ($permission) => [
+                'permissions'                   => $user->permissions->map(fn ($permission) => [
                     'id'   => $permission->id,
                     'name' => $permission->name,
                 ]),
