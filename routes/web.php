@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminDeletedUsersController;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminBackupController;
+use App\Http\Controllers\Admin\AdminDeletedUsersController;
 use App\Http\Controllers\Admin\AdminHealthStatusController;
 use App\Http\Controllers\Admin\AdminLoginHistoryController;
 use App\Http\Controllers\Admin\AdminPermissionController;
@@ -12,10 +12,10 @@ use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminSessionController;
 use App\Http\Controllers\Admin\AdminSettingController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Pages\ChartsController;
 use App\Http\Controllers\Pages\DashboardController;
 use App\Http\Controllers\Pages\PageController;
