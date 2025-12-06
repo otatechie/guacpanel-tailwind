@@ -40,7 +40,7 @@ class AdminSettingController extends Controller
             'two_factor_authentication' => ['boolean'],
         ]);
 
-        if (! config('guacpanel.mfa_enabled')) {
+        if (!config('guacpanel.mfa_enabled')) {
             $validatedData['two_factor_authentication'] = false;
         }
 

@@ -21,7 +21,7 @@ class AdminUsersVerificationController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'User ' . ($user->email_verified_at ? 'Verified' : 'Un-Verified'));
+            ->with('success', 'User '.($user->email_verified_at ? 'Verified' : 'Un-Verified'));
     }
 
     public function send(Request $request, User $user)
@@ -30,8 +30,6 @@ class AdminUsersVerificationController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Verification Email Sent to ' . $user->email);
+            ->with('success', 'Verification Email Sent to '.$user->email);
     }
 }
-
-

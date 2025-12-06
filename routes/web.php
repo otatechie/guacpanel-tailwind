@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\EmailVerificationCheck;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
@@ -24,6 +23,7 @@ use App\Http\Controllers\Pages\PageController;
 use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
+use App\Http\Middleware\EmailVerificationCheck;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
@@ -53,7 +53,6 @@ Route::middleware([
     'auth',
     'auth.session',
 ])->group(function () {
-
     // Logout Route
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
@@ -63,7 +62,6 @@ Route::middleware([
         'password.expired',
         EmailVerificationCheck::class,
     ])->group(function () {
-
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // User Account Management Routes
@@ -125,7 +123,6 @@ Route::middleware([
 
                 // User Management Routes
                 Route::prefix('users')->name('user.')->group(function () {
-
                     Route::prefix('verification')->name('verification.')->group(function () {
                         Route::controller(AdminUsersVerificationController::class)->group(function () {
                             Route::post('/toggle/{user}', 'toggle')->name('toggle');
@@ -210,5 +207,4 @@ Route::middleware([
             Route::post('/typesense/multi-search', [TypesenseController::class, 'multiSearch']);
         });
     });
-
 });

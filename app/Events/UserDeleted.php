@@ -12,7 +12,8 @@ class UserDeleted
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public $user) {
+    public function __construct(public $user)
+    {
         //
     }
 }

@@ -344,7 +344,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function sendEmailVerificationNotification(): void
     {
-        if (! config('guacpanel.email_verification_enabled')) {
+        if (!config('guacpanel.email_verification_enabled')) {
             return;
         }
 
@@ -353,11 +353,10 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function sendUserEmailVerificationFromAdmin(): void
     {
-        if (! config('guacpanel.email_verification_enabled')) {
+        if (!config('guacpanel.email_verification_enabled')) {
             return;
         }
 
         $this->notify(new VerifyEmailFromAdminTriggered());
     }
-
 }

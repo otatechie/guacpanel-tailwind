@@ -10,7 +10,6 @@ use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -107,7 +106,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
 
         // Prevent Laravel default auto login after creating account
-        if (! config('guacpanel.auto_login_after_register')) {
+        if (!config('guacpanel.auto_login_after_register')) {
             app()->singleton(
                 \Laravel\Fortify\Contracts\RegisterResponse::class,
                 RegisterResponse::class,
