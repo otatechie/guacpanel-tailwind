@@ -1,8 +1,8 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
-import Modal from '@/Components/Modal.vue'
-import FormInput from '@/Components/FormInput.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
 
 const props = defineProps({
   user: {
@@ -286,7 +286,7 @@ const getDeviceIcon = device => {
             </p>
             <button
               @click="confirmLogoutAll"
-              class="btn-danger btn-sm flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto">
+              class="btn btn-danger btn-sm flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto">
               <span class="hidden sm:inline">Sign Out Of All Other Sessions</span>
               <span class="sm:hidden">Sign Out All</span>
             </button>
@@ -349,7 +349,7 @@ const getDeviceIcon = device => {
         <button
           @click="logoutSession"
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="logoutForm.processing">
           {{ logoutForm.processing ? 'Signing out...' : 'Yes, Sign Out' }}
         </button>
@@ -396,7 +396,7 @@ const getDeviceIcon = device => {
         <button
           @click="logoutAllSessions"
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="passwordForm.processing">
           {{ passwordForm.processing ? 'Signing out...' : 'Yes, Sign Out All' }}
         </button>

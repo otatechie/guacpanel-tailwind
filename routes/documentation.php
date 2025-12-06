@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DocumentationController;
+use App\Http\Controllers\Pages\DocumentationController;
 
 /*
 |--------------------------------------------------------------------------

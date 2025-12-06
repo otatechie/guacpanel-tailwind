@@ -1,15 +1,15 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePage, Link } from '@inertiajs/vue3'
-import NavSidebarDesktop from '@/Components/Nav/NavSidebarDesktop.vue'
+import NavSidebarDesktop from '@js/Components/Nav/NavSidebarDesktop.vue'
 import NavProfile from '@js/Components/Nav/NavProfile.vue'
-import Notification from '@js/Components/Notification.vue'
-import FlashMessage from '@js/Components/FlashMessage.vue'
+import Notification from '@js/Components/Notifications/Notification.vue'
+import FlashMessage from '@js/Components/Notifications/FlashMessage.vue'
 import Footer from '@js/Shared/Public/Footer.vue'
-import Logo from '@js/Components/Logo.vue'
+import Logo from '@js/Components/Common/Logo.vue'
 import Search from '@js/Components/Typesense/Search.vue'
-import ColorThemeSwitcher from '@js/Components/ColorThemeSwitcher.vue'
-import MobileNotification from '@js/Components/MobileNotification.vue'
+import ColorThemeSwitcher from '@js/Components/Nav/ColorThemeSwitcher.vue'
+import MobileNotification from '@js/Components/Notifications/MobileNotification.vue'
 import NavDarkModeToggle from '@js/Components/Nav/NavDarkModeToggle.vue'
 
 const page = usePage()

@@ -1,11 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Tabs from '@/Components/Tabs.vue'
-import RolesTab from './RolesTab.vue'
-import PermissionsTab from './PermissionsTab.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Tabs from '@js/Components/Common/Tabs.vue'
+import RolesTab from '@js/Pages/Admin/PermissionRole/RolesTab.vue'
+import PermissionsTab from '@js/Pages/Admin/PermissionRole/PermissionsTab.vue'
 
 defineOptions({
   layout: Default,

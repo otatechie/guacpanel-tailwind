@@ -13,29 +13,22 @@ class AppPersonalisationServiceProvider extends ServiceProvider
 {
     use PersonalisationsHelper;
 
-    public function register(): void
-    {
-        //
-    }
-
     public function boot(): void
     {
-        if (!Schema::hasTable((new Personalisation())->getTable())) {
-            abort(503);
+        if (Schema::hasTable((new Personalisation())->getTable())) {
+            $personalisation = $this->getPersonalisations();
+
+            // Share with Blade views
+            View::share('personalisation', $personalisation);
+
+            // Share with Inertia
+            Inertia::share([
+                'app' => [
+                    'version' => config('app.version'),
+                    'name'    => config('app.name'),
+                ],
+                'personalisation' => fn () => $personalisation,
+            ]);
         }
-
-        $personalisation = $this->getPersonalisations();
-
-        // Share with Blade views
-        View::share('personalisation', $personalisation);
-
-        // Share with Inertia
-        Inertia::share([
-            'app' => [
-                'version' => config('app.version'),
-                'name'    => config('app.name'),
-            ],
-            'personalisation' => fn () => $personalisation,
-        ]);
     }
 }

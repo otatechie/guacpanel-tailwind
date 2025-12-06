@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import Switch from '@/Components/Switch.vue'
-import PageHeader from '@/Components/PageHeader.vue'
+import Default from '@js/Layouts/Default.vue'
+import Switch from '@js/Components/Forms/Switch.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
 
 defineOptions({
   layout: Default,
@@ -14,6 +14,10 @@ const props = defineProps({
     type: Object,
     required: true,
     default: () => ({}),
+  },
+  twoFactorEnabled: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -119,8 +123,10 @@ const submit = () => {
                   <p class="mt-1 text-sm text-[var(--color-text-muted)]">
                     Add an extra layer of security by making two-factor authentication mandatory
                   </p>
-                  <!-- This feature is currently disabled in both frontend and backend -->
-                  <p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+
+                  <p
+                    v-if="!twoFactorEnabled"
+                    class="mt-2 text-xs text-amber-600 dark:text-amber-400">
                     <svg
                       class="-mt-0.5 mr-1 inline-block h-4 w-4"
                       fill="none"
@@ -139,7 +145,7 @@ const submit = () => {
                   <Switch
                     v-model="form.two_factor_authentication"
                     :aria-label="'Toggle two-factor authentication'"
-                    :disabled="true" />
+                    :disabled="!twoFactorEnabled" />
                 </div>
               </div>
             </div>

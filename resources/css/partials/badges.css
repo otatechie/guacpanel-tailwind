@@ -1,0 +1,31 @@
+.badge {
+  @apply inline-flex items-center justify-center rounded-md px-1 py-1 text-xs capitalize;
+
+  &.badge-primary {
+    color: #ffffff;
+    background-color: var(--primary-color);
+  }
+
+  &.badge-secondary {
+    color: var(--color-text);
+    background-color: var(--color-surface-muted);
+  }
+
+  &.badge-info {
+    background-color: var(--info-color);
+  }
+
+  &.badge-success {
+    background-color: var(--success-color);
+  }
+
+  &.badge-warning {
+    background-color: var(--warning-color);
+  }
+
+  &.badge-error,
+  &.badge-danger {
+    color: #ffffff;
+    background-color: var(--error-color);
+  }
+}

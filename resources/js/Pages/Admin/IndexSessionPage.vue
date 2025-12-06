@@ -1,10 +1,10 @@
 <script setup>
 import { Head, useForm, router } from '@inertiajs/vue3'
 import { ref, watch, h } from 'vue'
-import Default from '@/Layouts/Default.vue'
-import Modal from '@/Components/Modal.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Datatable from '@/Components/Datatable.vue'
+import Default from '@js/Layouts/Default.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Datatable from '@js/Components/Common/Datatable.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 
 defineOptions({
@@ -244,7 +244,7 @@ watch(
         </button>
         <button
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="form.processing"
           @click="terminateSession">
           Yes, terminate session

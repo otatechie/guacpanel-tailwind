@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -30,12 +31,12 @@ class SocialiteController extends Controller
     {
         if (
             $request->filled('denied') ||   // denied param is present and not empty
-            $request->has('error') ||    // any error param present
-            !$request->has('code')         // code is missing
+            $request->has('error') ||       // any error param present
+            !$request->has('code')          // code is missing
         ) {
             return redirect()
                 ->route('login')
-                ->with('error', 'Unable to login with '.Str::ucfirst($provider).'.');
+                ->with('error', __('notifications.login.sm_unable_to_login_with').Str::ucfirst($provider).'.');
         }
 
         $user = Socialite::driver($provider)->user();
@@ -47,21 +48,24 @@ class SocialiteController extends Controller
 
             return redirect()
                         ->intended($this->redirectSuccessLogin)
-                        ->with('success', Str::ucfirst($provider).' Login Successful');
+                        ->with('success', Str::ucfirst($provider).__('notifications.login.sm_login_successful'));
         }
 
         $newUser = User::create([
-            'name'      => $user->getName(),
-            'email'     => $user->getEmail(),
-            'password'  => bcrypt(Str::random(24)),
+            'name'              => $user->getName(),
+            'email'             => $user->getEmail(),
+            'password'          => bcrypt(Str::random(24)),
         ]);
+
+        $newUser->markEmailAsVerified();
+
+        event(new Registered($newUser));
+        event(new Verified($newUser));
 
         Auth::login($newUser);
 
-        event(new Registered($newUser));
-
         return redirect()
                     ->intended('/dashboard')
-                    ->with('success', Str::ucfirst($provider).' Registration Successful');
+                    ->with('success', Str::ucfirst($provider).__('notifications.register.sm_registration_successful'));
     }
 }

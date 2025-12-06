@@ -1,10 +1,10 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { ref, onMounted, onUnmounted } from 'vue'
-import Public from '@/Layouts/Public.vue'
-import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import FeatureCard from '@/Components/FeatureCard.vue'
-import TechCard from '@/Components/TechCard.vue'
+import Public from '@js/Layouts/Public.vue'
+import ArticleNavigation from '@js/Shared/Public/ArticleNavigation.vue'
+import FeatureCard from '@js/Components/Cards/FeatureCard.vue'
+import TechCard from '@js/Components/Cards/TechCard.vue'
 
 defineOptions({
   layout: Public,

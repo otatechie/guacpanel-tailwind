@@ -1,7 +1,7 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
-import FormInput from '@/Components/FormInput.vue'
-import Alert from '@/Components/Alert.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const props = defineProps({
   passwordEnabled: {

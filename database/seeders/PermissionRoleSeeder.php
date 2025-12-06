@@ -18,25 +18,36 @@ class PermissionRoleSeeder extends Seeder
     private function createPermissions(): array
     {
         $permissionData = [
+            'dashboard-view'    => 'View Dashboard',
+
             // User Management
             'manage-users' => 'Manage user accounts',
             'view-users'   => 'View user accounts',
+            'edit-users'   => 'Edit user accounts',
+            'delete-users' => 'Delete user accounts',
             'edit-profile' => 'Edit own profile',
             'ban-users'    => 'Ban/suspend user accounts',
 
             // System
-            'access-dashboard'         => 'Access admin dashboard',
-            'manage-settings'          => 'Manage system settings',
-            'manage-security-settings' => 'Manage system security settings',
+            'access-dashboard'          => 'Access admin dashboard',
+            'manage-settings'           => 'Manage system settings',
+            'manage-security-settings'  => 'Manage system security settings',
+            'view-sessions'             => 'View Sessions',
+            'view-health'               => 'View Health',
 
             // Audit & Monitoring
             'view-audits' => 'View system audit logs',
 
             // Backup Management
-            'manage-backups' => 'Create and manage system backups',
+            'manage-backups'            => 'Create and manage system backups',
+            'view-backups'              => 'View Backups',
 
-            // Personalization
-            'manage-personalization' => 'Manage system appearance and branding',
+            // Personalisation
+            'manage-personalization'        => 'Manage system appearance and branding',
+            'view-personalisation'          => 'View system appearance and branding',
+            'update-personalisation'        => 'Update system appearance and branding',
+            'upload-personalisation-files'  => 'Upload system appearance and branding files',
+            'delete-personalisation-files'  => 'Delete system appearance and branding files',
 
             // Roles & Permissions
             'manage-roles'           => 'Manage user roles',
@@ -86,6 +97,7 @@ class PermissionRoleSeeder extends Seeder
         // Regular user permissions
         $roles['user']->syncPermissions([
             $permissions['edit-profile'],
+            $permissions['dashboard-view'],
         ]);
     }
 }

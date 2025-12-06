@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Setting;
 use Closure;
 use Illuminate\Http\Request;
+use Laravel\Fortify\Features;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequireTwoFactor
@@ -16,7 +17,9 @@ class RequireTwoFactor
         }
 
         $settings = Setting::first();
-        if (!$settings || !$settings->two_factor_authentication) {
+        $twoFactorEnabled = Features::enabled(Features::twoFactorAuthentication());
+
+        if (!$settings || !$settings->two_factor_authentication || !$twoFactorEnabled) {
             return $next($request);
         }
 

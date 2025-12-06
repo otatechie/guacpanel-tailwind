@@ -3,7 +3,7 @@ import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
-import { viteCommonjs, esbuildCommonjs } from "@originjs/vite-plugin-commonjs";
+// import { viteCommonjs, esbuildCommonjs } from "@originjs/vite-plugin-commonjs";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 
 export default defineConfig(({ mode }) => {
@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       force: true,
       esbuildOptions: {
-        plugins: [esbuildCommonjs()],
+        target: "es2020",
       },
     },
     plugins: [
@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
           },
         },
       }),
-      viteCommonjs(),
+      // viteCommonjs(),
       ViteMinifyPlugin({
         removeComments: true,
         collapseWhitespace: true,

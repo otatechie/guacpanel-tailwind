@@ -2,9 +2,9 @@
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
 import { useForm, usePage, router } from '@inertiajs/vue3'
-import FilePondUploader from '@js/Components/FilePondUploader.vue'
-import FormInput from '@js/Components/FormInput.vue'
-import PageHeader from '@js/Components/PageHeader.vue'
+import FilePondUploader from '@js/Components/Forms/FilePondUploader.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
 import axios from 'axios'
 
 defineOptions({

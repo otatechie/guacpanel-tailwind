@@ -3,46 +3,48 @@
 namespace App\Observers;
 
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class UserObserver
 {
-    /**
-     * Handle the User "created" event.
-     */
     public function created(User $user): void
     {
-        cache()->forget('user_'.$user->id);
+        $this->resetUserCache($user);
     }
 
-    /**
-     * Handle the User "updated" event.
-     */
     public function updated(User $user): void
     {
-        cache()->forget('user_'.$user->id);
+        $this->resetUserCache($user);
     }
 
-    /**
-     * Handle the User "deleted" event.
-     */
     public function deleted(User $user): void
     {
-        cache()->forget('user_'.$user->id);
+        $user->update([
+            'auto_destroy_date' => Carbon::now()->addDays(90),
+            'restore_date'      => null,
+        ]);
+
+        $this->resetUserCache($user);
     }
 
-    /**
-     * Handle the User "restored" event.
-     */
     public function restored(User $user): void
     {
-        cache()->forget('user_'.$user->id);
+        $user->update([
+            'auto_destroy_date' => null,
+            'restore_date'      => Carbon::now(),
+        ]);
+
+        $this->resetUserCache($user);
     }
 
-    /**
-     * Handle the User "forceDeleted" event.
-     */
     public function forceDeleted(User $user): void
     {
-        cache()->forget('user_'.$user->id);
+        $this->resetUserCache($user);
+    }
+
+    private function resetUserCache(User $user, string $key = 'user_')
+    {
+        Cache::forget($key.$user->id);
     }
 }

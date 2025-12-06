@@ -1,8 +1,8 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
 
 defineOptions({
   layout: Default,

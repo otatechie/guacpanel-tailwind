@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmailFromAdminTriggered;
 use App\Observers\UserObserver;
 use Carbon\Carbon;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +24,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
 #[ObservedBy(UserObserver::class)]
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -44,6 +48,10 @@ class User extends Authenticatable implements Auditable
         'force_password_change',
         'disable_account',
         'profile_image_type',
+        'restore_token',
+        'auto_destroy',
+        'auto_destroy_date',
+        'restore_date',
     ];
 
     protected $casts = [
@@ -54,7 +62,13 @@ class User extends Authenticatable implements Auditable
         'force_password_change' => 'boolean',
         'disable_account'       => 'boolean',
         'profile_image_type'    => 'string', // This is a string to later allow other types
+        'restore_token'         => 'string',
+        'auto_destroy'          => 'boolean',
+        'created_at'            => 'datetime',
+        'updated_at'            => 'datetime',
         'deleted_at'            => 'datetime',
+        'auto_destroy_date'     => 'datetime',
+        'restore_date'          => 'datetime',
     ];
 
     protected $appends = ['created_at_formatted'];
@@ -69,6 +83,46 @@ class User extends Authenticatable implements Auditable
                 $user->password = null;
             }
         });
+    }
+
+    public function scopeWithDeleted(Builder $query): Builder
+    {
+        return $query->withTrashed();
+    }
+
+    public function scopeOnlyDeleted(Builder $query): Builder
+    {
+        return $query->onlyTrashed();
+    }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                return Avatar::create($this->name)
+                    ->setFontSize(48)
+                    ->setDimension(200, 200)
+                    ->setTheme('pastel')
+                    ->toBase64();
+            },
+        );
+    }
+
+    protected function gravatar(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if (!$this->email) {
+                    return $this->avatar;
+                }
+
+                return Avatar::create($this->email)->toGravatar([
+                    's' => 200,          // size
+                    'd' => 'identicon',  // default image
+                    'r' => 'g',          // rating
+                ]);
+            },
+        );
     }
 
     public function formatDateStyle(?Carbon $date = null): string
@@ -87,6 +141,10 @@ class User extends Authenticatable implements Auditable
             return $date->diffForHumans(['short' => false, 'parts' => 1]);
         }
 
+        if ($date->diffInHours() < 24) {
+            return $date->diffForHumans(['short' => false, 'parts' => 1]);
+        }
+
         if ($date->isYesterday()) {
             return 'Yesterday';
         }
@@ -98,9 +156,126 @@ class User extends Authenticatable implements Auditable
         return $date->format('F j, Y');
     }
 
-    public function getCreatedAtFormattedAttribute(): string
+    public function createdAtFull(): Attribute
     {
-        return $this->formatDateStyle($this->created_at);
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->created_at) {
+                    return $this->created_at->format('m/j/Y @ g:i A');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function createdAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                return $this->formatDateStyle($this->created_at);
+            },
+        );
+    }
+
+    public function deletedAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                return $this->formatDateStyle($this->deleted_at);
+            },
+        );
+    }
+
+    public function deletedAtFull(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->deleted_at) {
+                    return $this->deleted_at->format('m/j/Y @ g:i A');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function autoDestroyDateFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->auto_destroy && $this->auto_destroy_date) {
+                    return $this->auto_destroy_date->format('m/j/Y');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function autoDestroyDateFull(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->auto_destroy && $this->auto_destroy_date) {
+                    return $this->auto_destroy_date->format('m/j/Y @ g:i A');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function restoreDateFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->restore_date) {
+                    return $this->restore_date->format('m/j/Y');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function restoreDateFull(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->restore_date) {
+                    return $this->restore_date->format('m/j/Y @ g:i A');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function emailVerifiedAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->email_verified_at) {
+                    return $this->email_verified_at->format('m/j/Y');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function emailVerifiedAtFull(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->email_verified_at) {
+                    return $this->email_verified_at->format('m/j/Y @ g:i A');
+                }
+
+                return null;
+            },
+        );
     }
 
     public function isPasswordExpired(): bool
@@ -167,33 +342,21 @@ class User extends Authenticatable implements Auditable
         ]);
     }
 
-    protected function avatar(): Attribute
+    public function sendEmailVerificationNotification(): void
     {
-        return Attribute::make(
-            get: function ($value, $attributes) {
-                return Avatar::create($this->name)
-                    ->setFontSize(48)
-                    ->setDimension(200, 200)
-                    ->setTheme('pastel')
-                    ->toBase64();
-            },
-        );
+        if (!config('guacpanel.email_verification_enabled')) {
+            return;
+        }
+
+        $this->notify(new VerifyEmail());
     }
 
-    protected function gravatar(): Attribute
+    public function sendUserEmailVerificationFromAdmin(): void
     {
-        return Attribute::make(
-            get: function ($value, $attributes) {
-                if (!$this->email) {
-                    return $this->avatar;
-                }
+        if (!config('guacpanel.email_verification_enabled')) {
+            return;
+        }
 
-                return Avatar::create($this->email)->toGravatar([
-                    's' => 200,          // size
-                    'd' => 'identicon',  // default image
-                    'r' => 'g',          // rating
-                ]);
-            },
-        );
+        $this->notify(new VerifyEmailFromAdminTriggered());
     }
 }
