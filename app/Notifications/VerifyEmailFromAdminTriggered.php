@@ -3,12 +3,10 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\URL;
 
 class VerifyEmailFromAdminTriggered extends Notification
@@ -47,7 +45,7 @@ class VerifyEmailFromAdminTriggered extends Notification
             return call_user_func(static::$toMailCallback, $notifiable, $verificationUrl);
         }
 
-        return (new MailMessage)->markdown(
+        return (new MailMessage())->markdown(
             'emails.verify-email-from-admin-triggered',
             [
                 'verificationUrl' => $verificationUrl,
@@ -59,7 +57,8 @@ class VerifyEmailFromAdminTriggered extends Notification
     /**
      * Get the verification URL for the given notifiable.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return string
      */
     protected function verificationUrl($notifiable)
@@ -72,7 +71,7 @@ class VerifyEmailFromAdminTriggered extends Notification
             'verification.verify',
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
             [
-                'id' => $notifiable->getKey(),
+                'id'   => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
             ]
         );
@@ -81,7 +80,8 @@ class VerifyEmailFromAdminTriggered extends Notification
     /**
      * Set a callback that should be used when creating the email verification URL.
      *
-     * @param  \Closure  $callback
+     * @param \Closure $callback
+     *
      * @return void
      */
     public static function createUrlUsing($callback)
@@ -92,7 +92,8 @@ class VerifyEmailFromAdminTriggered extends Notification
     /**
      * Set a callback that should be used when building the notification mail message.
      *
-     * @param  \Closure(mixed, string): (\Illuminate\Notifications\Messages\MailMessage|\Illuminate\Contracts\Mail\Mailable)  $callback
+     * @param \Closure(mixed, string): (\Illuminate\Notifications\Messages\MailMessage|\Illuminate\Contracts\Mail\Mailable) $callback
+     *
      * @return void
      */
     public static function toMailUsing($callback)

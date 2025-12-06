@@ -17,7 +17,6 @@ class AuthServiceProvider extends ServiceProvider
          * Best to check on permissions in most cases.
          * Use with extreme caution and intention.
          **/
-
         if (config('guacpanel.allow_superuser_override')) {
             Gate::before(function ($user, $ability) {
                 return $user->hasRole('superuser') ? true : null;

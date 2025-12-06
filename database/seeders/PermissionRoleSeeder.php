@@ -39,7 +39,7 @@ class PermissionRoleSeeder extends Seeder
             'view-audits' => 'View system audit logs',
 
             // Backup Management
-            'manage-backups' => 'Create and manage system backups',
+            'manage-backups'            => 'Create and manage system backups',
             'view-backups'              => 'View Backups',
 
             // Personalisation

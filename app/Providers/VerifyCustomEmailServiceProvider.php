@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Mail\VerifyMail;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Support\ServiceProvider;
 
 class VerifyCustomEmailServiceProvider extends ServiceProvider
 {

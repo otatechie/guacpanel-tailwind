@@ -5,7 +5,7 @@ return [
     /**
      * --------------------------------------------------------------------------
      *  Non out the box application language lines
-     * --------------------------------------------------------------------------
+     * --------------------------------------------------------------------------.
      *
      * USAGE:
      *
@@ -28,14 +28,12 @@ return [
      * __('notifications.admin.user_account_updated_successfully')
      * __('notifications.admin.user_deleted_successully')
      * __('notifications.admin.new_user_created_successfully')
-     *
      */
-
     'register' => [
         'pw_success_auto_login_enabled'                         => 'Great! Your account has been created successfully.',
         'pw_success_auto_login_disabled_activation_enabled'     => 'Please verify your email by clicking the activation link we have sent you.',
         'pw_success_auto_login_disabled_activation_disabled'    => 'Welcome, you may now login!',
-        'sm_registration_successful'                           => ' Registration Successful',
+        'sm_registration_successful'                            => ' Registration Successful',
     ],
 
     'login' => [
