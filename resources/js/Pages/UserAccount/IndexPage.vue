@@ -59,9 +59,9 @@ const activeTab = ref(0)
 const tabs = [
   { name: 'Profile', key: 'profile' },
   { name: 'Password', key: 'password' },
-  { name: 'MFA', key: '2fa' },
+  { name: '2FA', key: '2fa' },
   { name: 'Devices', key: 'devices' },
-  { name: 'Account', key: 'account' },
+  { name: 'Danger Zone', key: 'account' },
 ]
 
 const breadcrumbs = computed(() => {
@@ -87,6 +87,11 @@ const pageHeaderContent = computed(() => {
   if (currentTab.key == 'devices') {
     title = 'Device Management'
     description = 'View and manage your active sessions'
+  }
+
+  if (currentTab.key == 'account') {
+    title = 'Danger Zone'
+    description = 'Deactivate or permanently delete your account'
   }
 
   return {

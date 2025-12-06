@@ -24,7 +24,7 @@ onUnmounted(() => observer.disconnect())
 const series = computed(() => props.chartData.datasets[0].data)
 const labels = computed(() => props.chartData.labels)
 
-const fontFamily = 'Zalando Sans'
+const fontFamily = 'Inter'
 const chartOptions = computed(() => {
   const dark = isDark.value
   const textColor = dark ? '#ffffff' : '#111827'

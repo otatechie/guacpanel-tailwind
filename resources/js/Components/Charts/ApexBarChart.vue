@@ -21,7 +21,7 @@ observer.observe(document.documentElement, {
 
 onUnmounted(() => observer.disconnect())
 
-const fontFamily = 'Zalando Sans'
+const fontFamily = 'Inter'
 
 const series = computed(() =>
   props.chartData.datasets.map(dataset => ({
