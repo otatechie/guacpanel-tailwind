@@ -10,7 +10,6 @@
     "clean": "prettier --write \"resources/**/*.{js,vue,css,blade.php}\""
   },
   "devDependencies": {
-    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rushstack/eslint-patch": "^1.12.0",
     "@tailwindcss/postcss": "^4.0.1",
     "@vue/compiler-sfc": "^3.4.38",
@@ -18,7 +17,7 @@
     "axios": "^1.6.4",
     "eslint": "^9.36.0",
     "eslint-formatter-compact": "^8.40.0",
-    "eslint-plugin-vue": "^10.5.0",
+    "eslint-plugin-vue": "^10.6.2",
     "laravel-vite-plugin": "^1.0.0",
     "postcss": "^8.5.1",
     "tailwindcss": "^4.0.1",
