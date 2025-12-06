@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Default from '@js/Layouts/Default.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
@@ -8,6 +8,7 @@ import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import Tabs from '@js/Components/Common/Tabs.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 defineOptions({
   layout: Default,
@@ -20,6 +21,16 @@ const props = defineProps({
   categoryMap: Object,
 })
 
+const page = usePage()
+const emailVerificationEnabled = computed(() => page.props.settings?.emailVerificationEnabled)
+const currentUser = computed(() => page.props.auth?.user)
+const isCurrentUser = computed(() => {
+  if (currentUser.value?.id == props.user?.id) {
+    return true
+  }
+  return false
+})
+
 const form = useForm({
   name: props.user.name,
   email: props.user.email,
@@ -27,6 +38,8 @@ const form = useForm({
   force_password_change: Boolean(props.user.force_password_change) || false,
   disable_account: Boolean(props.user.disable_account) || false,
   permissions: props.user.permissions?.map(permission => permission.id) || [],
+  auto_destroy: Boolean(props.user.auto_destroy) || false,
+  email_verified_at: props.user.email_verified_at,
 })
 
 const tabs = [
@@ -37,6 +50,10 @@ const tabs = [
   {
     name: 'Permissions',
     key: 'permissions',
+  },
+  {
+    name: 'Administration',
+    key: 'administration',
   },
 ]
 
@@ -127,6 +144,8 @@ const formatPermissionName = name => {
 
 const closeModal = () => {
   showDeleteModal.value = false
+  showSendVerificationModal.value = false
+  showToggleVerifyModal.value = false
 }
 
 const submit = () => {
@@ -136,6 +155,7 @@ const submit = () => {
     role: form.role,
     force_password_change: form.force_password_change,
     disable_account: form.disable_account,
+    auto_destroy: form.auto_destroy,
   }
 
   if (activeTab.value === 1) {
@@ -153,6 +173,36 @@ const deleteUser = () => {
   form.delete(route('admin.user.destroy', props.user.id), {
     onSuccess: () => {
       showDeleteModal.value = false
+    },
+  })
+}
+
+const showToggleVerifyModal = ref(false)
+const showSendVerificationModal = ref(false)
+const verificationEmailSent = ref(false)
+
+const triggerToggleVerified = () => {
+  showToggleVerifyModal.value = true
+}
+
+const triggerSendVerificationEmail = () => {
+  showSendVerificationModal.value = true
+}
+
+const sendVerificationEmail = () => {
+  form.post(route('admin.user.verification.send', { user: props.user.id }), {
+    onSuccess: () => {
+      showSendVerificationModal.value = false
+      verificationEmailSent.value = true
+    },
+  })
+}
+
+const toggleVerified = () => {
+  form.post(route('admin.user.verification.toggle', { user: props.user.id }), {
+    onSuccess: () => {
+      showToggleVerifyModal.value = false
+      verificationEmailSent.value = true
     },
   })
 }
@@ -182,7 +232,7 @@ const deleteUser = () => {
             <div class="relative">
               <form @submit.prevent="submit">
                 <Transition name="tab-fade" mode="out-in" appear>
-                  <div v-if="activeTab === 0" class="space-y-6 p-3 sm:p-6">
+                  <div v-if="activeTab === 0" class="space-y-6 px-3 sm:px-6">
                     <div class="w-full space-y-6 lg:w-2/3">
                       <div class="grid grid-cols-1 gap-6 sm:gap-6 lg:grid-cols-2">
                         <FormInput
@@ -223,7 +273,70 @@ const deleteUser = () => {
                           :error="form.errors.role" />
                       </div>
 
-                      <div class="space-y-4">
+                      <div v-if="emailVerificationEnabled" class="space-y-4">
+                        <div
+                          class="rounded-lg border border-[var(--color-border-strong)] p-3 sm:p-4">
+                          <span v-if="props.user.email_verified_at_full">
+                            <div class="grid grid-cols-1 items-center gap-4 md:grid-cols-3">
+                              <h6 class="text-success col-span-2 w-full text-xs capitalize">
+                                Email Verified at:
+                                <br />
+                                <strong class="font-bold">
+                                  {{ props.user.email_verified_at_full }}
+                                </strong>
+                              </h6>
+                              <button
+                                class="btn btn-warning btn-xs w-full"
+                                @click="triggerToggleVerified()"
+                                type="button"
+                                :disabled="isCurrentUser">
+                                Toggle Verified
+                              </button>
+                            </div>
+                            <p v-if="isCurrentUser" class="mt-3 flex justify-start text-xs">
+                              Unable to toggle yourself as verified
+                            </p>
+                          </span>
+                          <span v-else>
+                            <div class="grid grid-cols-1 items-center gap-4 sm:grid-cols-3">
+                              <h6 class="text-warning w-full text-xs font-bold capitalize">
+                                Email Not Verified
+                                <span v-if="verificationEmailSent" class="text-info">
+                                  <br />
+                                  Email Verification Sent
+                                </span>
+                              </h6>
+
+                              <div class="flex justify-end gap-4 max-sm:flex-col sm:col-span-2">
+                                <button
+                                  class="btn btn-warning btn-xs w-full"
+                                  @click="triggerToggleVerified()"
+                                  type="button"
+                                  :disabled="isCurrentUser">
+                                  Toggle Verified
+                                </button>
+
+                                <button
+                                  class="btn btn-primary btn-xs w-full"
+                                  @click="triggerSendVerificationEmail()"
+                                  type="button"
+                                  :disabled="verificationEmailSent">
+                                  {{
+                                    verificationEmailSent
+                                      ? 'Email Verification Sent'
+                                      : 'Send Verification Email'
+                                  }}
+                                </button>
+                              </div>
+                            </div>
+                            <p v-if="isCurrentUser" class="mt-3 flex justify-start text-xs">
+                              Unable to toggle yourself as verified
+                            </p>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="mb-4 space-y-4">
                         <FormCheckbox
                           v-model="form.disable_account"
                           :disabled="props.user.is_superuser"
@@ -245,40 +358,17 @@ const deleteUser = () => {
                               : 'Require new password on next login'
                           "
                           :error="form.errors.force_password_change" />
-                      </div>
-                    </div>
 
-                    <div class="space-y-4" v-if="!props.user.is_superuser">
-                      <div class="rounded-lg border border-red-200 p-4 sm:p-6 dark:border-red-800">
-                        <h3
-                          class="mb-4 text-base font-semibold text-red-600 sm:mb-6 sm:text-lg dark:text-red-400">
-                          Danger Zone
-                        </h3>
-
-                        <div
-                          class="rounded-lg border border-red-200 bg-red-50 p-3 sm:p-4 dark:border-red-700 dark:bg-red-900/20">
-                          <h4
-                            class="mb-2 text-sm font-medium text-gray-900 sm:text-base dark:text-gray-100">
-                            Delete Account Permanently
-                          </h4>
-                          <p
-                            class="mb-3 text-xs leading-relaxed text-gray-600 sm:mb-4 sm:text-sm dark:text-gray-400">
-                            This action is permanent and cannot be undone. All user data will be
-                            permanently deleted.
-                          </p>
-                          <button
-                            type="button"
-                            @click="showDeleteModal = true"
-                            class="btn-danger btn-sm inline-flex w-full items-center gap-2 sm:w-auto">
-                            <span class="hidden sm:inline">Permanently Delete Account</span>
-                            <span class="sm:hidden">Delete Account</span>
-                          </button>
-                        </div>
+                        <FormCheckbox
+                          v-model="form.auto_destroy"
+                          label="Auto destroy on timer after deleted?"
+                          help="After an account is deleted, this is the countdown timer until the record will be completely destroyed from the app automatically"
+                          :error="form.errors.auto_destroy" />
                       </div>
                     </div>
                   </div>
 
-                  <div v-else-if="activeTab === 1" class="space-y-6 p-3 sm:p-6">
+                  <div v-else-if="activeTab === 1" class="space-y-6 px-3 pb-4 sm:px-6">
                     <div
                       class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
                       <p class="text-sm text-amber-700 dark:text-amber-400">
@@ -374,7 +464,8 @@ const deleteUser = () => {
                             </span>
                           </div>
                           <span class="text-xs text-gray-500 dark:text-gray-400">
-                            {{ permissions.filter(p => isSelected(p.id)).length }} selected
+                            {{ permissions.filter(p => isSelected(p.id)).length }}
+                            selected
                           </span>
                         </button>
 
@@ -437,13 +528,85 @@ const deleteUser = () => {
                       {{ form.errors.permissions }}
                     </p>
                   </div>
+
+                  <div v-else-if="activeTab === 2" class="space-y-6 px-3 sm:px-6">
+                    <div class="space-y-4">
+                      <div class="well">
+                        <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                          User account has been previously restored
+                        </h4>
+                        <dl class="space-y-1">
+                          <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Restored On:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                              {{ props.user.restore_date_full }}
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+
+                      <div class="danger-card">
+                        <h3
+                          class="mb-4 text-base font-semibold text-red-600 sm:mb-6 sm:text-lg dark:text-red-400">
+                          Danger Zone
+                        </h3>
+
+                        <div class="danger-well">
+                          <h4
+                            class="mb-2 text-sm font-medium text-gray-900 sm:text-base dark:text-gray-100">
+                            Delete Account
+                          </h4>
+                          <p
+                            class="mb-3 text-xs leading-relaxed text-gray-600 sm:mb-4 sm:text-sm dark:text-gray-400">
+                            This action is permanent and cannot be undone. All user data will be
+                            permanently deleted.
+                          </p>
+
+                          <Alert v-if="props.user.is_superuser" type="warning">
+                            You cannot delete a super user account.
+                          </Alert>
+
+                          <button
+                            v-if="!props.user.is_superuser"
+                            type="button"
+                            @click="showDeleteModal = true"
+                            :disabled="props.user.is_superuser"
+                            class="btn btn-danger btn-sm mb-4 inline-flex w-full items-center gap-2 sm:w-auto">
+                            <span class="hidden sm:inline">Delete Account</span>
+                            <span class="sm:hidden">Delete Account</span>
+                          </button>
+
+                          <div
+                            v-if="!props.user.is_superuser"
+                            class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+                            <div class="flex gap-2">
+                              <svg
+                                class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400"
+                                fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                  clip-rule="evenodd" />
+                              </svg>
+                              <p class="text-sm text-amber-700 dark:text-amber-300">
+                                This will delete the user's account and all associated data. The
+                                account is recoverable up to the auto-delete date if it is set.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </Transition>
 
                 <div
+                  v-if="activeTab != 2"
                   class="flex flex-col items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-3 py-4 sm:flex-row sm:px-6 dark:border-gray-700 dark:bg-gray-900">
                   <button
                     type="submit"
-                    class="btn-primary btn-sm w-full sm:w-auto"
+                    class="btn btn-primary btn-sm w-full sm:w-auto"
                     :disabled="form.processing">
                     <svg
                       v-if="form.processing"
@@ -476,7 +639,7 @@ const deleteUser = () => {
 
   <Modal :show="showDeleteModal" @close="closeModal" size="sm">
     <template #title>
-      <div class="flex items-center gap-2 text-red-600">Delete User Account</div>
+      <div class="text-danger flex items-center gap-2">Delete User Account</div>
     </template>
 
     <template #default>
@@ -518,59 +681,115 @@ const deleteUser = () => {
           @click="deleteUser"
           :disabled="form.processing"
           type="button"
-          class="btn-danger btn-sm">
+          class="btn btn-danger btn-sm">
           {{ form.processing ? 'Deleting...' : 'Yes, Delete Account' }}
         </button>
       </div>
     </template>
   </Modal>
+
+  <Modal :show="showToggleVerifyModal" @close="closeModal" size="sm">
+    <template #title>
+      <div class="text-warning flex items-center gap-2">
+        <span v-if="props.user.email_verified_at">Confirm User Un-Verification</span>
+        <span v-else>Confirm User Verification</span>
+      </div>
+    </template>
+    <template #default>
+      <div class="space-y-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          <span v-if="props.user.email_verified_at">
+            Are you sure you want to
+            <strong class="uppercase">un-verify</strong>
+            {{ props.user.name }}'s email?
+          </span>
+          <span v-else>
+            Are you sure you want to
+            <strong class="uppercase">verify</strong>
+            {{ props.user.name }}'s email?
+          </span>
+        </p>
+        <div
+          class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+          <div class="flex gap-2">
+            <span class="text-sm text-amber-700 dark:text-amber-300">
+              <dl class="space-y-1">
+                <div class="flex gap-2">
+                  <dt class="text-sm text-gray-500 dark:text-gray-400">
+                    <span v-if="props.user.email_verified_at">Un-verify:</span>
+                    <span v-else>Verify:</span>
+                  </dt>
+                  <dd class="text-sm text-gray-900 dark:text-gray-100">
+                    {{ props.user.email }}
+                  </dd>
+                </div>
+              </dl>
+            </span>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex justify-end gap-8">
+        <button
+          @click="closeModal"
+          type="button"
+          class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+          Cancel
+        </button>
+        <button
+          @click="toggleVerified"
+          :disabled="form.processing"
+          type="button"
+          class="btn btn-warning btn-sm">
+          {{ form.processing ? 'Confirming...' : 'Confirm' }}
+        </button>
+      </div>
+    </template>
+  </Modal>
+
+  <Modal :show="showSendVerificationModal" @close="closeModal" size="sm">
+    <template #title>
+      <div class="text-warning flex items-center gap-2">Send User Verification</div>
+    </template>
+    <template #default>
+      <div class="space-y-4">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Are you sure you want to send an email to {{ user.name }} to verify their account?
+        </p>
+        <div
+          class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+          <div class="flex gap-2">
+            <span class="text-sm text-amber-700 dark:text-amber-300">
+              <dl class="space-y-1">
+                <div class="flex gap-2">
+                  <dt class="text-sm text-gray-500 dark:text-gray-400">Email to verify:</dt>
+                  <dd class="text-sm text-gray-900 dark:text-gray-100">
+                    {{ props.user.email }}
+                  </dd>
+                </div>
+              </dl>
+            </span>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex justify-end gap-8">
+        <button
+          @click="closeModal"
+          type="button"
+          class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+          Cancel
+        </button>
+        <button
+          @click="sendVerificationEmail"
+          :disabled="form.processing"
+          type="button"
+          class="btn btn-warning btn-sm">
+          {{ form.processing ? 'Sending...' : 'Confirm' }}
+        </button>
+      </div>
+    </template>
+  </Modal>
 </template>
-
-<style scoped>
-.tab-fade-enter-active,
-.tab-fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.tab-fade-enter-from {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-.tab-fade-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-.slide-down-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-down-leave-active {
-  transition: all 0.2s ease-in;
-}
-
-.slide-down-enter-from {
-  opacity: 0;
-  max-height: 0;
-  transform: translateY(-10px);
-}
-
-.slide-down-enter-to {
-  opacity: 1;
-  max-height: 1000px;
-  transform: translateY(0);
-}
-
-.slide-down-leave-from {
-  opacity: 1;
-  max-height: 1000px;
-  transform: translateY(0);
-}
-
-.slide-down-leave-to {
-  opacity: 0;
-  max-height: 0;
-  transform: translateY(-10px);
-}
-</style>

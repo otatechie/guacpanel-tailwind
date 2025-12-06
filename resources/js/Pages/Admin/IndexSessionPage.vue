@@ -242,7 +242,7 @@ watch(
         </button>
         <button
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="form.processing"
           @click="terminateSession">
           Yes, terminate session

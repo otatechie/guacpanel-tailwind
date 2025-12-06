@@ -105,32 +105,38 @@ const pageHeaderContent = computed(() => {
         :description="pageHeaderContent.description"
         :breadcrumbs="breadcrumbs" />
 
-      <div class="px-3 sm:px-6">
-        <Tabs v-model="activeTab" :tabs="tabs" />
+      <div class="overflow-hidden">
+        <div class="px-3 sm:px-6">
+          <Tabs v-model="activeTab" :tabs="tabs" />
+        </div>
+
+        <section class="relative">
+          <div class="relative">
+            <Transition name="tab-fade" mode="out-in" appear>
+              <div v-if="activeTab === 0">
+                <ProfileTab :user="user" :profileEnabled="profileEnabled" />
+              </div>
+
+              <div v-else-if="activeTab === 1">
+                <PasswordTab :passwordEnabled="passwordEnabled" />
+              </div>
+              <div v-else-if="activeTab === 2">
+                <TwoFactorTab
+                  :user="user"
+                  :qrCodeSvg="qrCodeSvg"
+                  :recoveryCodes="recoveryCodes"
+                  :twoFactorEnabled="twoFactorEnabled" />
+              </div>
+              <div v-else-if="activeTab === 3">
+                <DevicesTab :user="user" :sessions="sessions" />
+              </div>
+              <div v-else-if="activeTab === 4">
+                <AccountTab :deactivateEnabled="deactivateEnabled" :deleteEnabled="deleteEnabled" />
+              </div>
+            </Transition>
+          </div>
+        </section>
       </div>
-
-      <!-- Basic Information Section -->
-      <ProfileTab v-if="activeTab === 0" :user="user" :profileEnabled="profileEnabled" />
-
-      <!-- Password Section -->
-      <PasswordTab v-if="activeTab === 1" :passwordEnabled="passwordEnabled" />
-
-      <!-- Two-Factor -->
-      <TwoFactorTab
-        v-if="activeTab === 2"
-        :user="user"
-        :qrCodeSvg="qrCodeSvg"
-        :recoveryCodes="recoveryCodes"
-        :twoFactorEnabled="twoFactorEnabled" />
-
-      <!-- Devices -->
-      <DevicesTab v-if="activeTab === 3" :user="user" :sessions="sessions" />
-
-      <!-- Danger Zone Section -->
-      <AccountTab
-        v-if="activeTab === 4"
-        :deactivateEnabled="deactivateEnabled"
-        :deleteEnabled="deleteEnabled" />
     </div>
   </main>
 </template>

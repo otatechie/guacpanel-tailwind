@@ -143,16 +143,27 @@ return [
     |
     */
 
-    'features' => [
-        Features::registration(),
-        Features::resetPasswords(),
-        // Features::emailVerification(),
-        Features::updateProfileInformation(),
-        // Features::updatePasswords(),
-        // Features::twoFactorAuthentication([
-        //     //'confirmPassword' => true,
-        //     // 'window' => 0,
-        // ]),
-    ],
-
+    'features' => array_filter([
+        env('APP_REGISTRATION_ENABLED', true)
+            ? Features::registration()
+            : null,
+        env('APP_PW_RESET_ENABLED', true)
+            ? Features::resetPasswords()
+            : null,
+        env('APP_EMAIL_VERIFICATION_ENABLED', false)
+            ? Features::emailVerification()
+            : null,
+        env('APP_UPDATE_PROFILE_ENABLED', false)
+            ? Features::updateProfileInformation()
+            : false,
+        env('APP_UPDATE_PW_ENABLED', false)
+            ? Features::updatePasswords()
+            : false,
+        env('APP_MFA_ENABLED', false)
+            ? Features::twoFactorAuthentication([
+                // 'confirmPassword' => true,
+                // 'window' => 0,
+            ])
+            : null,
+    ]),
 ];

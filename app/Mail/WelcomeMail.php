@@ -22,7 +22,9 @@ class WelcomeMail extends Mailable
     public function build(): self
     {
         return $this
-                ->subject(trans('emails.welcome.subject', ['appname' => config('app.name')]))
+                ->subject(trans('emails.welcome.subject', [
+                    'appname' => config('app.name'),
+                ]))
                 ->markdown('emails.welcome');
     }
 }

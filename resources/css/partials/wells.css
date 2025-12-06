@@ -1,0 +1,7 @@
+.well {
+  @apply rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800;
+}
+
+.danger-well {
+  @apply rounded-lg border border-red-200 bg-red-50 p-3 sm:p-4 dark:border-red-700 dark:bg-red-900/20;
+}

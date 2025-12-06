@@ -300,7 +300,9 @@ watch(
           { label: 'Deleted Users' },
         ]">
         <template #actions>
-          <button @click="openDestroyAllUsersModal" class="btn-danger btn-sm">Destroy All</button>
+          <button @click="openDestroyAllUsersModal" class="btn btn-danger btn-sm">
+            Destroy All
+          </button>
         </template>
       </PageHeader>
 
@@ -366,11 +368,15 @@ watch(
           <dl class="space-y-1">
             <div class="flex gap-2">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.name }}</dd>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.name }}
+              </dd>
             </div>
             <div class="flex gap-2">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.email }}</dd>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.email }}
+              </dd>
             </div>
 
             <div class="flex gap-2">
@@ -427,7 +433,7 @@ watch(
           class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
           Cancel
         </button>
-        <button @click="destroyUser" type="button" class="btn-danger btn-sm" :disabled="false">
+        <button @click="destroyUser" type="button" class="btn btn-danger btn-sm" :disabled="false">
           Confirm
         </button>
       </div>
@@ -478,7 +484,7 @@ watch(
         <button
           @click="destroyAllUsers"
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="form.processing">
           Confirm
         </button>

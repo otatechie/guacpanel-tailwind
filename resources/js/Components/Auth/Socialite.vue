@@ -92,7 +92,7 @@ const providerClasses = provider => {
           :class="providerClasses(index)"
           :tabIndex="5"
           @click="redirect(index)"
-          class="btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 p-2.5 text-sm transition-colors">
+          class="btn btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 p-2.5 text-sm transition-colors">
           <component :is="providerIcon(index)" class="size-5.5" />
           <span v-if="!iconsOnly">
             {{ providersConfig.button_text.replace('{provider}', index) }}

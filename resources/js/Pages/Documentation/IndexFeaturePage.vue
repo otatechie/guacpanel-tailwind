@@ -242,13 +242,13 @@ columnHelper.display({
         <div class="flex items-center gap-2">
             <button
                 onClick={() => handleEdit(info.row.original)}
-                class="btn-primary-outline btn-sm"
+                class="btn btn-primary btn-outline btn-sm"
             >
                 Edit
             </button>
             <button
                 onClick={() => handleDelete(info.row.original)}
-                class="btn-danger-outline btn-sm"
+                class="btn btn-danger btn-outline btn-sm"
             >
                 Delete
             </button>

@@ -9,4 +9,8 @@
 @import '@css/partials/nav.css';
 @import '@css/partials/datatable.css';
 @import '@css/partials/badges.css';
+@import '@css/partials/tabs.css';
+@import '@css/partials/typography.css';
+@import '@css/partials/wells.css';
+@import '@css/partials/cards.css';
 @import '~/nprogress/nprogress.css';

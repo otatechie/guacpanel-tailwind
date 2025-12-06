@@ -13,11 +13,6 @@ class AppPersonalisationServiceProvider extends ServiceProvider
 {
     use PersonalisationsHelper;
 
-    public function register(): void
-    {
-        //
-    }
-
     public function boot(): void
     {
         if (Schema::hasTable((new Personalisation())->getTable())) {

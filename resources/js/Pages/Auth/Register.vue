@@ -17,10 +17,10 @@ const props = defineProps({
 })
 
 const form = useForm({
-  name: '',
-  email: '',
-  password: '',
-  password_confirmation: '',
+  name: 'jeremy',
+  email: 'jeremykenedy@gmail.com',
+  password: 'password',
+  password_confirmation: 'password',
 })
 
 const { settings: { passwordlessLogin = true } = {} } = usePage().props
@@ -98,7 +98,7 @@ const submit = () => {
       <button
         type="submit"
         :disabled="form.processing"
-        class="btn-primary w-full"
+        class="btn btn-primary w-full"
         aria-busy="form.processing">
         {{ form.processing ? 'Creating account...' : 'Create account' }}
       </button>
@@ -120,7 +120,7 @@ const submit = () => {
       <template v-if="passwordlessLogin">
         <Link
           :href="route('magic.create')"
-          class="btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 px-4 py-2.5 text-sm"
+          class="btn btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 px-4 py-2.5 text-sm"
           role="button"
           aria-label="Create account with magic link">
           <svg

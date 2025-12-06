@@ -114,7 +114,7 @@ const benefits = [
           <button
             @click="enableTwoFactor"
             :disabled="enableForm.processing || !twoFactorEnabled"
-            class="btn-primary btn-sm w-full sm:w-auto"
+            class="btn btn-primary btn-sm w-full sm:w-auto"
             :aria-busy="enableForm.processing">
             {{ enableForm.processing ? 'Enabling...' : 'Enable 2FA' }}
           </button>
@@ -290,7 +290,7 @@ const benefits = [
             <button
               @click="regenerateCodes"
               :disabled="regenerateForm.processing"
-              class="btn-secondary btn-sm inline-flex min-h-[44px] w-full items-center justify-center gap-2 sm:min-h-0 sm:w-auto"
+              class="btn btn-secondary btn-sm inline-flex min-h-[44px] w-full items-center justify-center gap-2 sm:min-h-0 sm:w-auto"
               :aria-busy="regenerateForm.processing"
               aria-label="Regenerate recovery codes">
               <svg
@@ -378,7 +378,7 @@ const benefits = [
               </p>
               <button
                 @click="showDisableModal = true"
-                class="btn-danger btn-sm inline-flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto">
+                class="btn btn-danger btn-sm inline-flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto">
                 <span class="hidden sm:inline">Disable Multi-Factor Authentication</span>
                 <span class="sm:hidden">Disable 2FA</span>
               </button>
@@ -434,7 +434,7 @@ const benefits = [
         <button
           @click="disableTwoFactor"
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="disableForm.processing">
           {{ disableForm.processing ? 'Disabling...' : 'Yes, Disable 2FA' }}
         </button>

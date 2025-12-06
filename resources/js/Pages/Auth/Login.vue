@@ -7,15 +7,24 @@ import FormInput from '@js/Components/Forms/FormInput.vue'
 import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import Socialite from '@js/Components/Auth/Socialite.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 defineOptions({
   layout: Auth,
 })
 
 const props = defineProps({
+  status: {
+    type: String,
+    default: null,
+  },
   canResetPassword: {
     type: Boolean,
-    required: false,
+    default: false,
+  },
+  canRegister: {
+    type: Boolean,
+    default: false,
   },
   providersConfig: {
     type: Object,
@@ -28,8 +37,8 @@ const page = usePage()
 const { settings: { passwordlessLogin = true } = {} } = page.props
 
 const form = useForm({
-  email: 'ota@example.com',
-  password: 'password',
+  email: '',
+  password: '',
   remember: false,
 })
 
@@ -66,11 +75,13 @@ const sendMagicLink = () => {
 
   <main class="mx-auto max-w-[384px] px-8" role="main">
     <h1 class="main-heading text-center">Login</h1>
-
     <form
       class="container-border mt-6 space-y-6 p-5"
       aria-labelledby="login-form"
       @submit.prevent="submit">
+      <Alert v-if="status" type="info" class="mb-6">
+        {{ status }}
+      </Alert>
       <FormInput
         id="email"
         v-model="form.email"
@@ -109,7 +120,7 @@ const sendMagicLink = () => {
       <button
         type="submit"
         :disabled="form.processing"
-        class="btn-primary w-full"
+        class="btn btn-primary w-full"
         aria-busy="form.processing">
         {{ form.processing ? 'Signing in...' : 'Sign in' }}
       </button>
@@ -131,7 +142,7 @@ const sendMagicLink = () => {
       <template v-if="passwordlessLogin">
         <button
           type="button"
-          class="btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 text-sm transition-colors dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-purple-400"
+          class="btn btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 text-sm transition-colors dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-purple-400"
           aria-label="Open magic link login modal"
           @click="showMagicLinkModal = true">
           <svg
@@ -155,7 +166,7 @@ const sendMagicLink = () => {
       </template>
     </form>
 
-    <p class="mt-6 text-center text-sm text-[var(--color-text-muted)]">
+    <p v-if="canRegister" class="mt-6 text-center text-sm text-[var(--color-text-muted)]">
       Don't have an account?
       <Link
         :href="route('register')"
@@ -205,7 +216,7 @@ const sendMagicLink = () => {
         <button
           :disabled="magicLinkForm.processing"
           type="button"
-          class="btn-primary btn-sm"
+          class="btn btn-primary btn-sm"
           aria-busy="magicLinkForm.processing"
           @click="sendMagicLink">
           {{ magicLinkForm.processing ? 'Sending...' : 'Send magic link' }}

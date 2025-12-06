@@ -397,7 +397,7 @@ const getStats = info => {
         </button>
         <button
           type="button"
-          class="btn-primary btn-sm"
+          class="btn btn-primary btn-sm"
           :disabled="form.processing"
           @click="deleteBackup">
           {{ form.processing ? 'Deleting...' : 'Yes, Delete Backup' }}

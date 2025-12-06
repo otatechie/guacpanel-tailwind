@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Laravel\Fortify\Features;
 
 class AdminSettingController extends Controller
 {
@@ -24,7 +25,10 @@ class AdminSettingController extends Controller
         $settings = Setting::first() ?? new Setting();
 
         return Inertia::render('Admin/IndexManageSettingPage', [
-            'settings' => $settings,
+            'settings'          => $settings,
+            'canResetPassword'  => Features::enabled(Features::resetPasswords()),
+            'canRegister'       => Features::enabled(Features::registration()),
+            'twoFactorEnabled'  => Features::enabled(Features::twoFactorAuthentication()),
         ]);
     }
 
@@ -36,10 +40,12 @@ class AdminSettingController extends Controller
             'two_factor_authentication' => ['boolean'],
         ]);
 
-        $validatedData['two_factor_authentication'] = false;
+        if (! config('guacpanel.mfa_enabled')) {
+            $validatedData['two_factor_authentication'] = false;
+        }
 
         Setting::updateOrCreate([], $validatedData);
 
-        return redirect()->back()->with('success', 'Settings updated successfully.');
+        return redirect()->back()->with('success', __('notifications.admin.settings_updated_successfully'));
     }
 }

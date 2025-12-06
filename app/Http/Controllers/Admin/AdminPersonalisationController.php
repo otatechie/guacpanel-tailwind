@@ -40,7 +40,7 @@ class AdminPersonalisationController extends Controller
 
         $personalisation->update($validated);
 
-        return redirect()->back()->with('success', 'Settings updated successfully.');
+        return redirect()->back()->with('success', __('notifications.admin.settings_updated_successfully'));
     }
 
     public function upload(Request $request)
@@ -78,7 +78,7 @@ class AdminPersonalisationController extends Controller
             return response()->json(['path' => Storage::url($path)]);
         }
 
-        return response()->json(['error' => 'No file uploaded'], 400);
+        return response()->json(['error' => __('notifications.errors.no_file_uploaded')], 400);
     }
 
     public function delete(Request $request)

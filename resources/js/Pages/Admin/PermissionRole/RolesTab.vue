@@ -151,7 +151,7 @@ const isRoleExpanded = roleId => {
       <button
         type="button"
         @click="showAddModal = true"
-        class="btn-primary btn-sm w-full sm:w-auto">
+        class="btn btn-primary btn-sm w-full sm:w-auto">
         Add Role
       </button>
     </header>
@@ -403,7 +403,7 @@ const isRoleExpanded = roleId => {
           <button
             @click="submitRole"
             type="button"
-            class="btn-primary btn-sm"
+            class="btn btn-primary btn-sm"
             :disabled="form.processing"
             :aria-busy="form.processing">
             <svg
@@ -472,7 +472,7 @@ const isRoleExpanded = roleId => {
           <button
             @click="deleteRole"
             type="button"
-            class="btn-danger btn-sm"
+            class="btn btn-danger btn-sm"
             :disabled="form.processing">
             {{ form.processing ? 'Deleting...' : 'Yes, Delete Role' }}
           </button>

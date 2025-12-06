@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmailFromAdminTriggered;
 use App\Observers\UserObserver;
 use Carbon\Carbon;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -21,7 +24,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
 #[ObservedBy(UserObserver::class)]
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -158,7 +161,7 @@ class User extends Authenticatable implements Auditable
         return Attribute::make(
             get: function ($value, $attributes) {
                 if ($this->created_at) {
-                    return $this->created_at->format('m/j/Y @ g:i a');
+                    return $this->created_at->format('m/j/Y @ g:i A');
                 }
 
                 return null;
@@ -189,7 +192,7 @@ class User extends Authenticatable implements Auditable
         return Attribute::make(
             get: function ($value, $attributes) {
                 if ($this->deleted_at) {
-                    return $this->deleted_at->format('m/j/Y @ g:i a');
+                    return $this->deleted_at->format('m/j/Y @ g:i A');
                 }
 
                 return null;
@@ -215,7 +218,7 @@ class User extends Authenticatable implements Auditable
         return Attribute::make(
             get: function ($value, $attributes) {
                 if ($this->auto_destroy && $this->auto_destroy_date) {
-                    return $this->auto_destroy_date->format('m/j/Y @ g:i a');
+                    return $this->auto_destroy_date->format('m/j/Y @ g:i A');
                 }
 
                 return null;
@@ -241,7 +244,33 @@ class User extends Authenticatable implements Auditable
         return Attribute::make(
             get: function ($value, $attributes) {
                 if ($this->restore_date) {
-                    return $this->restore_date->format('m/j/Y @ g:i a');
+                    return $this->restore_date->format('m/j/Y @ g:i A');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function emailVerifiedAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->email_verified_at) {
+                    return $this->email_verified_at->format('m/j/Y');
+                }
+
+                return null;
+            },
+        );
+    }
+
+    public function emailVerifiedAtFull(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                if ($this->email_verified_at) {
+                    return $this->email_verified_at->format('m/j/Y @ g:i A');
                 }
 
                 return null;
@@ -312,4 +341,23 @@ class User extends Authenticatable implements Auditable
             'collection_name' => 'users',
         ]);
     }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        if (! config('guacpanel.email_verification_enabled')) {
+            return;
+        }
+
+        $this->notify(new VerifyEmail());
+    }
+
+    public function sendUserEmailVerificationFromAdmin(): void
+    {
+        if (! config('guacpanel.email_verification_enabled')) {
+            return;
+        }
+
+        $this->notify(new VerifyEmailFromAdminTriggered());
+    }
+
 }

@@ -84,7 +84,7 @@ const submit = () => {
       <button
         type="submit"
         :disabled="form.processing"
-        class="btn-primary w-full"
+        class="btn btn-primary w-full"
         aria-busy="form.processing">
         {{ form.processing ? 'Updating password...' : 'Update password' }}
       </button>

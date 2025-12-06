@@ -18,7 +18,12 @@ class RegisterResponse implements RegisterResponseContract
     public function toResponse($request)
     {
         $this->guard->logout();
-        session()->flash('success', 'Please verify your email by clicking the activation link we have sent you');
+
+        if (config('guacpanel.email_verification_enabled')) {
+            session()->flash('success', __('notifications.register.pw_success_auto_login_disabled_activation_enabled'));
+        } else {
+            session()->flash('success', __('notifications.register.pw_success_auto_login_disabled_activation_disabled'));
+        }
 
         return $request->wantsJson()
             ? new JsonResponse('', 201)

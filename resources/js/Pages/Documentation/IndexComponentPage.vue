@@ -113,7 +113,7 @@ const navigationSections = reactive([
                 name: 'Settings',
                 icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94..." />',
                 children: [
-                    { name: 'Users', href: route('admin.user.index'), permission: 'users-view' },
+                    { name: 'Users', href: route('admin.user.index'), permission: 'view-users' },
                     // More child items...
                 ]
             },

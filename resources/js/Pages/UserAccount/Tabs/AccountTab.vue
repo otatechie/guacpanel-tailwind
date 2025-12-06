@@ -78,7 +78,7 @@ const deleteAccount = () => {
           Hide your profile and data temporarily. You can reactivate your account anytime.
         </p>
         <button
-          class="btn-secondary btn-sm inline-flex w-full items-center gap-2 sm:w-auto"
+          class="btn btn-secondary btn-sm inline-flex w-full items-center gap-2 sm:w-auto"
           :disabled="!deactivateEnabled"
           @click="confirmDeactivateAccount">
           <svg
@@ -112,7 +112,7 @@ const deleteAccount = () => {
           This action is permanent and cannot be undone. All your data will be permanently deleted.
         </p>
         <button
-          class="btn-danger btn-sm inline-flex w-full items-center gap-2 sm:w-auto"
+          class="btn btn-danger btn-sm inline-flex w-full items-center gap-2 sm:w-auto"
           :disabled="!deleteEnabled"
           @click="confirmDeleteAccount">
           <svg
@@ -162,7 +162,7 @@ const deleteAccount = () => {
         </button>
         <button
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="deactivateForm.processing"
           @click="deactivateAccount">
           {{ deactivateForm.processing ? 'Deactivating...' : 'Yes, deactivate' }}
@@ -196,7 +196,7 @@ const deleteAccount = () => {
         </button>
         <button
           type="button"
-          class="btn-danger btn-sm"
+          class="btn btn-danger btn-sm"
           :disabled="deleteForm.processing"
           @click="deleteAccount">
           {{ deleteForm.processing ? 'Deleting...' : 'Yes, delete' }}

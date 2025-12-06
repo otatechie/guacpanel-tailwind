@@ -32,6 +32,8 @@ class AdminDeletedUsersController extends Controller
                     'name'                          => $user->name,
                     'email'                         => $user->email,
                     'email_verified_at'             => $user->email_verified_at,
+                    'email_verified_at_formatted'   => $user->email_verified_at_formatted,
+                    'email_verified_at_full'        => $user->email_verified_at_full,
                     'password_expiry_at'            => $user->password_expiry_at,
                     'password_changed_at'           => $user->password_changed_at,
                     'disable_account'               => $user->disable_account,
@@ -47,6 +49,9 @@ class AdminDeletedUsersController extends Controller
                     'auto_destroy_date'             => $user->auto_destroy_date,
                     'auto_destroy_date_formatted'   => $user->auto_destroy_date_formatted,
                     'auto_destroy_date_full'        => $user->auto_destroy_date_full,
+                    'restore_date'                  => $user->restore_date,
+                    'restore_date_formatted'        => $user->restore_date_formatted,
+                    'restore_date_full'             => $user->restore_date_full,
                     'roles'                         => $user->roles,
                     'permissions'                   => $user->permissions,
                     'is_superuser'                  => $user->isSuperUser(),
@@ -85,7 +90,7 @@ class AdminDeletedUsersController extends Controller
         $user = User::onlyTrashed()->findOrFail($id);
 
         if (!$user->canBeDeleted()) {
-            return redirect()->back()->with('error', 'Super user cannot be deleted.');
+            return redirect()->back()->with('error', __('notifications.errors.su_cannot_be_deleted'));
         }
 
         $user->forceDelete();
@@ -108,9 +113,8 @@ class AdminDeletedUsersController extends Controller
             'confirm_destroy_all' => ['accepted', 'boolean'],
         ]);
 
-        $users = User::onlyDeleted()
-                    ->forceDelete();
+        $users = User::onlyDeleted()->forceDelete();
 
-        return redirect()->route('admin.user.index')->with('success', 'All deleted users permanently destroyed.');
+        return redirect()->route('admin.user.index')->with('success', __('notifications.admin.all_users_deleted_successfully'));
     }
 }

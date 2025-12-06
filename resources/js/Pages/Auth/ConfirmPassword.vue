@@ -45,7 +45,7 @@ const submit = () => {
       <button
         type="submit"
         :disabled="form.processing"
-        class="btn-primary h-11 w-full"
+        class="btn btn-primary h-11 w-full"
         aria-busy="form.processing">
         {{ form.processing ? 'Confirming...' : 'Confirm password' }}
       </button>

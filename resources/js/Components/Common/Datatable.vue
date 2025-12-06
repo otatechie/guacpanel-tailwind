@@ -265,7 +265,9 @@ const exportToCSV = () => {
     ...dataToExport.map(row => Object.values(row).join(',')),
   ].join('\n')
 
-  const blob = new window.Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const blob = new window.Blob([csvContent], {
+    type: 'text/csv;charset=utf-8;',
+  })
   const link = document.createElement('a')
   const url = URL.createObjectURL(blob)
 
@@ -876,7 +878,7 @@ watch(
           <button
             type="button"
             :disabled="loading"
-            class="btn-danger btn-sm"
+            class="btn btn-danger btn-sm"
             @click="handleBulkDelete">
             <template v-if="loading">
               <svg

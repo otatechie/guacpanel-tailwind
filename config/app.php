@@ -164,6 +164,7 @@ return [
          * Application Service Providers...
          */
         App\Providers\AppCachedEloquentUserServiceProvider::class,
+        App\Providers\AppHealthServiceProvider::class,
         App\Providers\AppPersonalisationServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -172,6 +173,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\VerifyCustomEmailServiceProvider::class,
     ])->toArray(),
 
     /*

@@ -12,11 +12,7 @@ class UserDeleted
     use InteractsWithSockets;
     use SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct(
-        public $user,
-    ) {
+    public function __construct(public $user) {
+        //
     }
 }

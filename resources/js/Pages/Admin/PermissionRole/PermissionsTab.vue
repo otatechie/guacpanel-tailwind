@@ -235,7 +235,7 @@ const handlePaginationUpdate = paginationData => {
       <button
         type="button"
         @click="showAddModal = true"
-        class="btn-primary btn-sm w-full sm:w-auto">
+        class="btn btn-primary btn-sm w-full sm:w-auto">
         Add Permission
       </button>
     </header>
@@ -338,7 +338,7 @@ const handlePaginationUpdate = paginationData => {
           <button
             @click="submitPermission"
             type="button"
-            class="btn-primary btn-sm"
+            class="btn btn-primary btn-sm"
             :disabled="form.processing"
             :aria-busy="form.processing">
             <svg
@@ -394,7 +394,7 @@ const handlePaginationUpdate = paginationData => {
           <button
             @click="deletePermission"
             type="button"
-            class="btn-danger btn-sm"
+            class="btn btn-danger btn-sm"
             :disabled="form.processing">
             {{ form.processing ? 'Deleting...' : 'Yes, Delete Permission' }}
           </button>
