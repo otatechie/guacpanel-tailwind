@@ -1,7 +1,12 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
 @source '../views';
-@import '@css/partials/base.css';
+
 @import '@css/partials/theme.css';
+@import '@css/partials/base.css';
 @import '@css/partials/tables.css';
 @import '@css/partials/pagination.css';
 @import '@css/partials/forms.css';

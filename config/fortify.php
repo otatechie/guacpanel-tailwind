@@ -161,6 +161,7 @@ return [
             : false,
         env('APP_MFA_ENABLED', false)
             ? Features::twoFactorAuthentication([
+                // 'confirm' => true,
                 // 'confirmPassword' => true,
                 // 'window' => 0,
             ])

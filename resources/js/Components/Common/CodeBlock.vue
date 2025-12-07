@@ -75,8 +75,7 @@ const copyToClipboard = async () => {
     setTimeout(() => {
       copySuccess.value = false
     }, 2000)
-  } catch (err) {
-  }
+  } catch (err) {}
 }
 
 onMounted(highlight)
