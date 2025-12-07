@@ -10,16 +10,18 @@ use App\Http\Middleware\ForcePasswordChange;
 use App\Http\Middleware\HandleSocialiteProviders;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\ValidateSignature;
+use App\Mail\ExceptionOccurred;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Two\InvalidStateException;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
-use Throwable;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -39,33 +41,42 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            // Laravel Passthrough overrides (Optional as of L12+)
             'auth'                  => Authenticate::class,
             'guest'                 => RedirectIfAuthenticated::class,
             'signed'                => ValidateSignature::class,
-
-            // Custom “account” middleware
             'password.expired'      => CheckPasswordExpiry::class,
             'require.two.factor'    => RequireTwoFactor::class,
             'disable.account'       => DisableAccount::class,
             'force.password.change' => ForcePasswordChange::class,
-
-            // Spatie Permission middleware
             'role'                  => RoleMiddleware::class,
             'permission'            => PermissionMiddleware::class,
             'role_or_permission'    => RoleOrPermissionMiddleware::class,
-
-            // Socialite provider switcher
             'socialite.providers'   => HandleSocialiteProviders::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+
         $exceptions->report(function (Throwable $e) {
-            //
+            if(config('exceptions.emailExceptionEnabled')) {
+                try {
+                    $content = [
+                        'message' => $e->getMessage(),
+                        'file'    => $e->getFile(),
+                        'line'    => $e->getLine(),
+                        'trace'   => $e->getTrace(),
+                        'url'     => request()?->url(),
+                        'body'    => request()?->all(),
+                        'ip'      => request()?->ip(),
+                    ];
+                    Mail::send(new ExceptionOccurred($content));
+                } catch(Throwable $ex) {
+                    // Log::error($ex);
+                }
+            }
         });
 
         $exceptions->render(function (InvalidStateException $e, Request $request) {
-            if ($request->expectsJson()) {
+            if($request->expectsJson()) {
                 return response()->json([
                     'message' => __('notifications.errors.sm_session_invalid'),
                 ], 422);
@@ -75,5 +86,5 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->route('login')
                 ->with('error', __('notifications.errors.sm_session_invalid'));
         });
-    })
-    ->create();
+
+    })->create();
