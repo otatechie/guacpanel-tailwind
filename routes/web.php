@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Pages\ChartsController;
 use App\Http\Controllers\Pages\DashboardController;
 use App\Http\Controllers\Pages\PageController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Middleware\EmailVerificationCheck;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Features;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -44,6 +46,14 @@ Route::middleware(['guest', 'web'])->group(function () {
         });
     });
 });
+
+// Override Verification route so we can add in success toast message.
+if (config('guacpanel.email_verification_enabled') && Features::enabled(Features::emailVerification())) {
+    Route::middleware(['auth', 'signed', 'throttle:6,1'])
+        ->get('/email/verify/{id}/{hash}', VerifyEmailController::class)
+        ->name('verification.verify');
+
+}
 
 require __DIR__.'/documentation.php';
 

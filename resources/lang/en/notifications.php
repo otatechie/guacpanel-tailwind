@@ -56,4 +56,9 @@ return [
         'user_deleted_successully'          => 'User deleted successfull',
         'new_user_created_successfully'     => 'New user account created successfully.',
     ],
+
+    'verify' => [
+        'already' => 'Your email address is already verified',
+        'success' => 'Thanks! Your email address has been verified',
+    ],
 ];
