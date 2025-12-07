@@ -52,7 +52,6 @@ if (config('guacpanel.email_verification_enabled') && Features::enabled(Features
     Route::middleware(['auth', 'signed', 'throttle:6,1'])
         ->get('/email/verify/{id}/{hash}', VerifyEmailController::class)
         ->name('verification.verify');
-
 }
 
 require __DIR__.'/documentation.php';
