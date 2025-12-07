@@ -147,11 +147,12 @@ const navItemClass = (i = '', c = false) => {
             :class="menuOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'">
             <li class="rounded-t-xl border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 pt-3 pb-2.5">
                 <div>
-                    <div class="text-sm font-medium text-[var(--color-text)]">
+                    <div class="text-sm font-medium text-[var(--color-text)] cursor-default">
                         {{ safeUserName }}
                     </div>
                     <p
-                        class="mt-1.5 -ml-0.5 inline-flex items-center rounded-md bg-[var(--color-surface-muted)] px-2 py-1 font-mono text-xs font-medium text-[var(--color-text-muted)] capitalize ring-1 ring-[var(--color-border)] ring-inset">
+                        v-if="primaryRole"
+                        class="cursor-default mt-1.75 -ml-0.75 inline-flex items-center rounded-md bg-[var(--color-surface-muted)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)] uppercase ring-1 ring-[var(--color-border)] ring-inset">
                         <svg class="mr-1 h-3 w-3 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="currentColor"
                             v-html="icons.check" />
                         {{ primaryRole }}
