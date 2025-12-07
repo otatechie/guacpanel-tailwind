@@ -1,14 +1,14 @@
 <?php
 
 use App\Http\Middleware\Authenticate;
-use App\Http\Middleware\HandleAppearance;
-use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\CheckPasswordExpiry;
-use App\Http\Middleware\RequireTwoFactor;
 use App\Http\Middleware\DisableAccount;
 use App\Http\Middleware\ForcePasswordChange;
+use App\Http\Middleware\HandleAppearance;
+use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HandleSocialiteProviders;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireTwoFactor;
 use App\Http\Middleware\ValidateSignature;
 use App\Mail\ExceptionOccurred;
 use Illuminate\Foundation\Application;
@@ -19,8 +19,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Two\InvalidStateException;
-use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -55,9 +55,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-
         $exceptions->report(function (Throwable $e) {
-            if(config('exceptions.emailExceptionEnabled')) {
+            if (config('exceptions.emailExceptionEnabled')) {
                 try {
                     $content = [
                         'message' => $e->getMessage(),
@@ -76,7 +75,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (InvalidStateException $e, Request $request) {
-            if($request->expectsJson()) {
+            if ($request->expectsJson()) {
                 return response()->json([
                     'message' => __('notifications.errors.sm_session_invalid'),
                 ], 422);
@@ -86,5 +85,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->route('login')
                 ->with('error', __('notifications.errors.sm_session_invalid'));
         });
-
     })->create();
