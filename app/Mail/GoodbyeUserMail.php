@@ -13,7 +13,7 @@ class GoodbyeUserMail extends Mailable
     use SerializesModels;
 
     public User $user;
-    public string $url;
+    public ?string $url;
     public bool $restoreEnabled;
     public int $daysToRestore;
     public bool $autoDestroyEnabled;
@@ -24,17 +24,17 @@ class GoodbyeUserMail extends Mailable
     {
         $this->user = $user;
         $this->url = $url;
-        $this->restoreEnabled = boolval(config('guacpanel.user.account.restore_enabled'));
-        $this->daysToRestore = intval(config('guacpanel.user.account.days_to_restore'));
-        $this->autoDestroyEnabled = $this->user?->auto_destroy;
-        $this->autoDestroyDateRaw = $this->user?->auto_destroy_date;
-        $this->autoDestroyDateParsed = $this->user?->auto_destroy_date->format('F d, Y');
+        $this->restoreEnabled = (bool) config('guacpanel.user.account.restore_enabled', false);
+        $this->daysToRestore = (int) config('guacpanel.user.account.days_to_restore', 60);
+        $this->autoDestroyEnabled = (bool) ($user->auto_destroy ?? false);
+        $this->autoDestroyDateRaw = $user->auto_destroy_date;
+        $this->autoDestroyDateParsed = $user->auto_destroy_formatted;
     }
 
-    public function build()
+    public function build(): self
     {
         return $this
-                ->subject(__('emails.goodbye.subject'))
-                ->markdown('emails.goodbye-user-mail');
+            ->subject(__('emails.goodbye.subject'))
+            ->markdown('emails.goodbye-user-mail');
     }
 }

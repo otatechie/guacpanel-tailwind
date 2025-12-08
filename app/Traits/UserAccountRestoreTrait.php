@@ -3,12 +3,13 @@
 namespace App\Traits;
 
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 trait UserAccountRestoreTrait
 {
-    private $_expireTimestamp;
+    private ?Carbon $_expireTimestamp = null;
 
     public function setupAccountRestore(User $user): string
     {
@@ -37,7 +38,7 @@ trait UserAccountRestoreTrait
 
     public function generateRestoreToken(): string
     {
-        return Str::random(64);
+        return Str::ulid();
     }
 
     public function setExpireTimestamp(): void
@@ -45,8 +46,35 @@ trait UserAccountRestoreTrait
         $this->_expireTimestamp = $this->generateExpireTimestamp();
     }
 
-    public function generateExpireTimestamp()
+    public function getDaysToRestore(): int
     {
-        return now()->addDays(intval(config('guacpanel.user.account.days_to_restore')));
+        $days = (int) config('guacpanel.user.account.days_to_restore', 30);
+
+        return $days > 0 ? $days : 30;
+    }
+
+    public function generateExpireTimestamp(): Carbon
+    {
+        return now()->addDays($this->getDaysToRestore());
+    }
+
+    public function generateDestroyThresholdTimestamp(): Carbon
+    {
+        return now()->subDays($this->getDaysToRestore());
+    }
+
+    public function calculateAutoDestroyDate(): ?Carbon
+    {
+        $deletedAt = $this->deleted_at ?? null;
+
+        if (! $deletedAt instanceof Carbon) {
+            return null;
+        }
+
+        if (! $this->auto_destroy) {
+            return null;
+        }
+
+        return $deletedAt->copy()->addDays($this->getDaysToRestore());
     }
 }

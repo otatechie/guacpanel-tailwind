@@ -18,9 +18,8 @@
 </x-mail::button>
 @endif
 
-
 <p>
-@if($user->auto_destroy && $user->auto_destroy_date)
+@if($user->auto_destroy)
 @lang('emails.goodbye.common_line_two', [ 'date' => $autoDestroyDateParsed, 'days' => $daysToRestore ])
 @endif
 
@@ -37,7 +36,6 @@
 {{ config('app.name') }}
 </p>
 
-{{-- Subcopy --}}
 @if($restoreEnabled)
 @isset($url)
 <x-slot:subcopy>

@@ -55,7 +55,7 @@ return [
         'invalid_restore_link'  => 'The link is either invalid or has expired.',
         'deleted_successfully'  => 'Account has been deleted successfully 👋',
         'already_logged_in'     => 'Unable to complete action, you are currently logged in as :username',
-        'account_restored'      => 'Welcome back 👋 Account restored successfully.',
+        'account_restored'      => 'Welcome back 👋 Account restored successfully. You can now log in.',
     ],
 
     'general' => [

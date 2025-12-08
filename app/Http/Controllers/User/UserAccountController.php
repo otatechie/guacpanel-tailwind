@@ -220,8 +220,7 @@ class UserAccountController extends Controller
 
         $user->restore();
         event(new UserRestored($user));
-        Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', __('notifications.account.account_restored'));
+        return redirect()->route($route)->with('success', __('notifications.account.account_restored'));
     }
 }

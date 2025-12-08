@@ -20,9 +20,10 @@
 @lang('emails.restored.goodbye')
 </p>
 
+<p>
 {{ config('app.name') }}
+</p>
 
-{{-- Subcopy --}}
 <x-slot:subcopy>
 @lang(
     "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".

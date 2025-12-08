@@ -7,6 +7,13 @@ return [
     |--------------------------------------------------------------------------
     |
     */
+    'general' => [
+        'greeting'  => 'Hi, :username 👋',
+        'goodbye'   => 'Thank you,',
+        'dashboard' => 'Go to Dashboard',
+        'access'    => 'Access Your Account',
+    ],
+
     'welcome' => [
         'subject'   => 'Welcome to :appname 🎉🎉',
         'greeting'  => '👋 Welcome, :username 🎉',
