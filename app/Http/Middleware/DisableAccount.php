@@ -12,7 +12,7 @@ class DisableAccount
     {
         if (auth()->check() && auth()->user()->disable_account) {
             auth()->logout();
-            session()->flash('warning', 'Account disabled. Email <a href="mailto:support@example.com" class="underline hover:text-orange-800">support@example.com</a> for help.');
+            session()->flash('warning', __('notifications.account.disabled', ['email' => config('guacpanel.admin.support_email')]));
 
             return redirect()->route('login');
         }

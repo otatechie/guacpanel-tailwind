@@ -46,8 +46,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'password_expiry_at',
         'password_changed_at',
         'force_password_change',
-        'disable_account',
         'profile_image_type',
+        'disable_account',          // This is the user disabling their account.
+        'account_locked',           // This is plug of kicking the user out of the app.
         'restore_token',
         'auto_destroy',
         'auto_destroy_date',
@@ -60,8 +61,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'password_expiry_at'    => 'datetime',
         'password_changed_at'   => 'datetime',
         'force_password_change' => 'boolean',
-        'disable_account'       => 'boolean',
-        'profile_image_type'    => 'string', // This is a string to later allow other types
+        'disable_account'       => 'boolean',   // This is the user disabling their account.
+        'profile_image_type'    => 'string',    // This is a string to later allow other types
+        'account_locked'        => 'boolean',   // This is plug of kicking the user out of the app.
         'restore_token'         => 'string',
         'auto_destroy'          => 'boolean',
         'created_at'            => 'datetime',

@@ -3,11 +3,14 @@
 namespace App\Observers;
 
 use App\Models\User;
+use App\Traits\UserAccountRestoreTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class UserObserver
 {
+    use UserAccountRestoreTrait;
+
     public function created(User $user): void
     {
         $this->resetUserCache($user);
@@ -21,7 +24,7 @@ class UserObserver
     public function deleted(User $user): void
     {
         $user->update([
-            'auto_destroy_date' => Carbon::now()->addDays(90),
+            'auto_destroy_date' => $this->generateExpireTimestamp(),
             'restore_date'      => null,
         ]);
 

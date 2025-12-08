@@ -113,7 +113,7 @@ const getStats = info => {
 <template>
   <Head title="Data Backups" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="system-backups">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="system-backups">
     <div class="container-border">
       <PageHeader
         title="Data Backups"

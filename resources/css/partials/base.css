@@ -25,3 +25,17 @@ input:focus {
   border: 1px solid var(--color-border);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
+
+.main-container {
+  @apply rounded-[var(--main-container-radius)];
+  .container-border {
+    @apply rounded-[var(--main-container-radius)];
+    > div:last-child {
+      @apply rounded-b-[var(--main-container-radius)];
+    }
+  }
+  > div,
+  > div > nav {
+    @apply rounded-t-[var(--main-container-radius)];
+  }
+}

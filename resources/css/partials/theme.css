@@ -104,6 +104,11 @@
 }
 
 :root {
+  --background: 0 0% 100%;
+  --card: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --radius: 0.5rem;
+  --main-container-radius: 0.25rem;
   --color-bg: #ffffff;
   --color-surface: #ffffff;
   --color-surface-muted: #f9fafb; /* gray-50 */

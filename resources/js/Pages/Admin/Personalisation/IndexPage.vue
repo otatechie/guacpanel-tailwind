@@ -110,7 +110,7 @@ const refreshPersonalisation = () => {
 <template>
   <Head title="Personalization Settings" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="personalization-settings">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="personalization-settings">
     <div class="container-border">
       <PageHeader
         title="Personalization Settings"

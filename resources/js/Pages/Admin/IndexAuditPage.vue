@@ -163,7 +163,7 @@ watch(
 <template>
   <Head title="System Activity Audit Log" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="audit-log">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="audit-log">
     <div class="container-border">
       <PageHeader
         title="Activity Audit Log"

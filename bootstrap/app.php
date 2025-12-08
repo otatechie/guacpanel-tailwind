@@ -3,6 +3,8 @@
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckPasswordExpiry;
 use App\Http\Middleware\DisableAccount;
+use App\Http\Middleware\EmailVerificationCheck;
+use App\Http\Middleware\EnsureAccountNotLocked;
 use App\Http\Middleware\ForcePasswordChange;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -46,7 +48,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'signed'                => ValidateSignature::class,
             'password.expired'      => CheckPasswordExpiry::class,
             'require.two.factor'    => RequireTwoFactor::class,
-            'disable.account'       => DisableAccount::class,
+            'account.disabled'      => DisableAccount::class,
+            'account.locked'        => EnsureAccountNotLocked::class,
+            'account.verified'      => EmailVerificationCheck::class,
             'force.password.change' => ForcePasswordChange::class,
             'role'                  => RoleMiddleware::class,
             'permission'            => PermissionMiddleware::class,

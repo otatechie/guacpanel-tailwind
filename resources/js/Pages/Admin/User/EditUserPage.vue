@@ -210,7 +210,7 @@ const toggleVerified = () => {
 
 <template>
   <Head :title="`Edit User - ${props.user.name}`" />
-  <main class="mx-auto max-w-7xl" aria-labelledby="edit-user">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="edit-user">
     <div class="container-border">
       <PageHeader
         :title="`Edit User - ${props.user.name}`"

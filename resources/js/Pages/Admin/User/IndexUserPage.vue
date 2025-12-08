@@ -257,7 +257,7 @@ watch(
 
 <template>
   <Head title="Users Management" />
-  <main class="mx-auto max-w-7xl" aria-labelledby="users-management">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
     <div class="container-border">
       <PageHeader
         title="Users Management"

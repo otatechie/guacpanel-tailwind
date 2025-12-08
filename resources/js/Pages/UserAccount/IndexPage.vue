@@ -103,7 +103,7 @@ const pageHeaderContent = computed(() => {
 
 <template>
   <Head title="Account Settings" />
-  <main class="mx-auto max-w-7xl" aria-labelledby="profile-settings">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="profile-settings">
     <div class="container-border">
       <PageHeader
         :title="pageHeaderContent.title"

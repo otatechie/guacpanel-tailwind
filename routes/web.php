@@ -15,45 +15,18 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUsersVerificationController;
 use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Auth\MagicLinkController;
-use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Pages\ChartsController;
 use App\Http\Controllers\Pages\DashboardController;
 use App\Http\Controllers\Pages\PageController;
 use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
-use App\Http\Middleware\EmailVerificationCheck;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
 
-//Socialite Authentication Routes
-Route::get('/auth/social/{provider}', [SocialiteController::class, 'getSocialRedirect'])->name('social.redirect');
-Route::get('/auth/social/{provider}/callback', [SocialiteController::class, 'handleSocialCallback'])->name('social.callback');
-
-// Magic Link Authentication Routes
-Route::middleware(['guest', 'web'])->group(function () {
-    Route::prefix('magic')->name('magic.')->group(function () {
-        Route::controller(MagicLinkController::class)->group(function () {
-            Route::get('/register', 'create')->name('create');
-            Route::post('/register', 'store')->name('store');
-            Route::post('/login', 'login')->name('login');
-            Route::get('/{token}', 'authenticate')->name('login.authenticate');
-        });
-    });
-});
-
-// Override Verification route so we can add in success toast message.
-if (config('guacpanel.email_verification_enabled') && Features::enabled(Features::emailVerification())) {
-    Route::middleware(['auth', 'signed', 'throttle:6,1'])
-        ->get('/email/verify/{id}/{hash}', VerifyEmailController::class)
-        ->name('verification.verify');
-}
-
+require __DIR__.'/auth.php';
 require __DIR__.'/documentation.php';
 
 // Authenticated Routes
@@ -62,55 +35,51 @@ Route::middleware([
     'auth',
     'auth.session',
 ])->group(function () {
+
     // Logout Route
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
     Route::middleware([
-        'disable.account',
+        'account.locked',
+        'account.disabled',
+        'account.verified',
         'force.password.change',
         'password.expired',
-        EmailVerificationCheck::class,
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {
+
             // Force Password Change Routes
-            Route::controller(ForcePasswordChangeController::class)->group(function () {
-                Route::get('password/change', 'edit')
-                    ->name('password.change')
-                    ->withoutMiddleware('force.password.change');
-                Route::post('password/change', 'update')
-                    ->name('password.change.update')
-                    ->withoutMiddleware('force.password.change');
+            Route::controller(ForcePasswordChangeController::class)->prefix('password')->name('password.')->group(function () {
+                Route::get('change', 'edit')->name('change')->withoutMiddleware('force.password.change');
+                Route::post('change', 'update')->name('change.update')->withoutMiddleware('force.password.change');
             });
 
             // 2FA Routes
-            Route::get('two-factor-authentication', [UserAccountController::class, 'indexTwoFactorAuthentication'])
-                ->name('two.factor');
+            Route::get('two-factor-authentication', [UserAccountController::class, 'indexTwoFactorAuthentication'])->name('two.factor');
 
             // Password Expired Routes
             Route::controller(UserAccountController::class)->group(function () {
-                Route::get('password-expired', 'indexPasswordExpired')
-                    ->name('password.expired')
-                    ->withoutMiddleware('password.expired');
-                Route::post('password-expired', 'updateExpiredPassword')
-                    ->name('password.expired.update')
-                    ->withoutMiddleware('password.expired');
+                Route::get('password-expired', 'indexPasswordExpired')->name('password.expired')->withoutMiddleware('password.expired');
+                Route::post('password-expired', 'updateExpiredPassword')->name('password.expired.update')->withoutMiddleware('password.expired');
             });
 
-            // User Account Routes
-            Route::controller(UserAccountController::class)->group(function () {
-                Route::get('account', 'index')->name('index');
-                Route::post('account/deactivate', 'deactivateAccount')->name('deactivate');
-                Route::post('account/delete', 'deleteAccount')->name('delete');
-            });
+             // User Account Routes
+            Route::prefix('account')->group(function () {
+                Route::controller(UserAccountController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::post('deactivate', 'deactivateAccount')->name('deactivate');
+                    Route::post('delete', 'deleteAccount')->name('delete');
+                });
 
-            // Browser Session Routes
-            Route::controller(BrowserSessionController::class)->group(function () {
-                Route::get('account/sessions', 'index')->name('session.index');
-                Route::post('account/sessions/logout', 'logoutOtherDevices')->name('session.logout');
-                Route::delete('account/sessions/{sessionId}', 'destroySession')->name('session.destroy');
+                // Browser Session Routes
+                Route::controller(BrowserSessionController::class)->group(function () {
+                    Route::get('sessions', 'index')->name('session.index');
+                    Route::post('sessions/logout', 'logoutOtherDevices')->name('session.logout');
+                    Route::delete('sessions/{sessionId}', 'destroySession')->name('session.destroy');
+                });
             });
         });
 
@@ -119,6 +88,7 @@ Route::middleware([
 
         // Protected Routes requiring 2FA
         Route::middleware(['require.two.factor'])->group(function () {
+
             // Admin Routes
             Route::prefix('admin')->name('admin.')->group(function () {
                 // Settings Routes

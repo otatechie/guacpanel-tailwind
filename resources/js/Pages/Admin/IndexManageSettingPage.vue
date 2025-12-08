@@ -36,7 +36,7 @@ const submit = () => {
 
 <template>
   <Head title="Security & Authentication Settings" />
-  <main class="mx-auto max-w-7xl" aria-labelledby="security-settings">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="security-settings">
     <div class="container-border">
       <PageHeader
         title="Security & Authentication"
