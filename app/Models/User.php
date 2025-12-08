@@ -111,7 +111,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     {
         return Attribute::make(
             get: function ($value, $attributes) {
-                if (! $this->email) {
+                if (!$this->email) {
                     return $this->avatar;
                 }
 
@@ -128,7 +128,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     {
         $date = $date ?? $this->created_at;
 
-        if (! $date) {
+        if (!$date) {
             return '';
         }
 
@@ -264,7 +264,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             get: function () {
                 $date = $this->calculateAutoDestroyDate();
 
-                if (! $this->auto_destroy || ! $date) {
+                if (!$this->auto_destroy || !$date) {
                     return null;
                 }
 
@@ -279,7 +279,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             get: function () {
                 $date = $this->calculateAutoDestroyDate();
 
-                if (! $this->auto_destroy || ! $date) {
+                if (!$this->auto_destroy || !$date) {
                     return null;
                 }
 
@@ -290,7 +290,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function isPasswordExpired(): bool
     {
-        if (! $this->password_expiry_at) {
+        if (!$this->password_expiry_at) {
             return false;
         }
 
@@ -299,7 +299,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function daysUntilPasswordExpiry(): int
     {
-        if (! $this->password_expiry_at) {
+        if (!$this->password_expiry_at) {
             return 0;
         }
 
@@ -332,17 +332,17 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function canBeDeleted(): bool
     {
-        return ! $this->isSuperUser();
+        return !$this->isSuperUser();
     }
 
     public function canChangeRole(): bool
     {
-        return ! $this->isSuperUser();
+        return !$this->isSuperUser();
     }
 
     public function canChangeAccountStatus(): bool
     {
-        return ! $this->isSuperUser();
+        return !$this->isSuperUser();
     }
 
     public function toSearchableArray(): array
@@ -356,7 +356,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function sendEmailVerificationNotification(): void
     {
-        if (! config('guacpanel.email_verification_enabled')) {
+        if (!config('guacpanel.email_verification_enabled')) {
             return;
         }
 
@@ -365,7 +365,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function sendUserEmailVerificationFromAdmin(): void
     {
-        if (! config('guacpanel.email_verification_enabled')) {
+        if (!config('guacpanel.email_verification_enabled')) {
             return;
         }
 
