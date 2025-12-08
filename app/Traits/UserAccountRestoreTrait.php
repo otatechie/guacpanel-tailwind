@@ -67,11 +67,11 @@ trait UserAccountRestoreTrait
     {
         $deletedAt = $this->deleted_at ?? null;
 
-        if (! $deletedAt instanceof Carbon) {
+        if (!$deletedAt instanceof Carbon) {
             return null;
         }
 
-        if (! $this->auto_destroy) {
+        if (!$this->auto_destroy) {
             return null;
         }
 
