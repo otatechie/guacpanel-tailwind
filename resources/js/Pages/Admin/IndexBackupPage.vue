@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Modal from '@/Components/Modal.vue'
-import Alert from '@/Components/Alert.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 defineOptions({
   layout: Default,
@@ -397,7 +397,7 @@ const getStats = info => {
         </button>
         <button
           type="button"
-          class="btn-primary btn-sm"
+          class="btn btn-primary btn-sm"
           :disabled="form.processing"
           @click="deleteBackup">
           {{ form.processing ? 'Deleting...' : 'Yes, Delete Backup' }}

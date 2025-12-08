@@ -31,4 +31,12 @@ return new class() extends Migration {
             $table->index('batch');
         });
     }
+
+    public function down(): void
+    {
+        $connection = (new HealthCheckResultHistoryItem())->getConnectionName();
+        $tableName = EloquentHealthResultStore::getHistoryItemInstance()->getTable();
+
+        Schema::connection($connection)->dropIfExists($tableName);
+    }
 };

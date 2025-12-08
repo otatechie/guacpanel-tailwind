@@ -1,4 +1,5 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "otatechie/guacpanel-tailwind",
     "type": "project",
     "description": "A Laravel starter kit built with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications",
@@ -17,13 +18,13 @@
         "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^3.4",
         "jenssegers/agent": "^2.6",
-        "laravel/fortify": "^1.23",
+        "jeremykenedy/laravel-exception-notifier": "^4.1",
+        "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
-        "laravel/pail": "^1.2",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.15",
         "laravel/socialite": "^5.23",
-        "laravel/tinker": "^2.9",
+        "laravel/tinker": "^2.10.1",
         "laravolt/avatar": "^5.1|^6.0",
         "owen-it/laravel-auditing": "^13.6|^14.0",
         "php-http/curl-client": "^2.3",
@@ -38,11 +39,13 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",
-        "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.18",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^8.0",
-        "pestphp/pest": "^3.8"
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.18",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.1",
+        "pestphp/pest-plugin-laravel": "^4.0"
     },
     "autoload": {
         "psr-4": {
@@ -57,6 +60,27 @@
         }
     },
     "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "npm install",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+        ],
+        "dev:ssr": [
+            "npm run build:ssr",
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr --kill-others"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -68,7 +92,12 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
     "extra": {

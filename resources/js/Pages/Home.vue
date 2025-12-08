@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { ref, onMounted, onUnmounted } from 'vue'
-// import Default from '../Layouts/Default.vue'
+// import Default from '@js/Layouts/Default.vue'
 
-import FlashMessage from '@js/Components/FlashMessage.vue'
+import FlashMessage from '@js/Components/Notifications/FlashMessage.vue'
 
 // defineOptions({
 //   layout: Default,
@@ -13,7 +13,7 @@ const mobileMenuOpen = ref(false)
 
 const code = `git clone https://github.com/otatechie/guacpanel-tailwind
 cd guacpanel-tailwind && composer install
-php artisan migrate --seed
+php artisan key:generate && php artisan migrate --seed
 npm install && npm run dev`
 
 const copied = ref(false)

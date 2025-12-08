@@ -1,9 +1,9 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue'
-import Public from '@/Layouts/Public.vue'
-import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import CodeBlock from '@/Components/CodeBlock.vue'
+import Public from '@js/Layouts/Public.vue'
+import ArticleNavigation from '@js/Shared/Public/ArticleNavigation.vue'
+import CodeBlock from '@js/Components/Common/CodeBlock.vue'
 import 'highlight.js/styles/atom-one-dark.css'
 
 defineOptions({

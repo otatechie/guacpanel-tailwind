@@ -1,10 +1,10 @@
 <script setup>
 import { ref, h, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
-import Modal from '@/Components/Modal.vue'
-import FormInput from '@/Components/FormInput.vue'
-import Datatable from '@/Components/Datatable.vue'
-import Alert from '@/Components/Alert.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import Datatable from '@js/Components/Common/Datatable.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const props = defineProps({
   permissions: {
@@ -235,7 +235,7 @@ const handlePaginationUpdate = paginationData => {
       <button
         type="button"
         @click="showAddModal = true"
-        class="btn-primary btn-sm w-full sm:w-auto">
+        class="btn btn-primary btn-sm w-full sm:w-auto">
         Add Permission
       </button>
     </header>
@@ -338,7 +338,7 @@ const handlePaginationUpdate = paginationData => {
           <button
             @click="submitPermission"
             type="button"
-            class="btn-primary btn-sm"
+            class="btn btn-primary btn-sm"
             :disabled="form.processing"
             :aria-busy="form.processing">
             <svg
@@ -394,7 +394,7 @@ const handlePaginationUpdate = paginationData => {
           <button
             @click="deletePermission"
             type="button"
-            class="btn-danger btn-sm"
+            class="btn btn-danger btn-sm"
             :disabled="form.processing">
             {{ form.processing ? 'Deleting...' : 'Yes, Delete Permission' }}
           </button>

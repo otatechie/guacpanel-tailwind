@@ -12,8 +12,15 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole('superuser') ? true : null;
-        });
+        /**
+         * This overrides all permissions checks and auth middleware.
+         * Best to check on permissions in most cases.
+         * Use with extreme caution and intention.
+         **/
+        if (config('guacpanel.allow_superuser_override')) {
+            Gate::before(function ($user, $ability) {
+                return $user->hasRole('superuser') ? true : null;
+            });
+        }
     }
 }

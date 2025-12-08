@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from 'vue'
 import { Head, useForm, usePage } from '@inertiajs/vue3'
-import FormInput from '@/Components/FormInput.vue'
-import FormRadioGroup from '@/Components/FormRadioGroup.vue'
-import Alert from '@/Components/Alert.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormRadioGroup from '@js/Components/Forms/FormRadioGroup.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth.user)

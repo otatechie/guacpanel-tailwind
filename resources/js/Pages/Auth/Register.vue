@@ -1,9 +1,9 @@
 <script setup>
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
-import Socialite from '@/components/Socialite.vue'
+import Auth from '@js/Layouts/Auth.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import Socialite from '@js/Components/Auth/Socialite.vue'
 
 defineOptions({
   layout: Auth,
@@ -98,7 +98,7 @@ const submit = () => {
       <button
         type="submit"
         :disabled="form.processing"
-        class="btn-primary w-full"
+        class="btn btn-primary w-full"
         aria-busy="form.processing">
         {{ form.processing ? 'Creating account...' : 'Create account' }}
       </button>
@@ -120,7 +120,7 @@ const submit = () => {
       <template v-if="passwordlessLogin">
         <Link
           :href="route('magic.create')"
-          class="btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 px-4 py-2.5 text-sm"
+          class="btn btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 px-4 py-2.5 text-sm"
           role="button"
           aria-label="Create account with magic link">
           <svg

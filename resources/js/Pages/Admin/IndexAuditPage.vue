@@ -2,9 +2,9 @@
 import { h, ref, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Datatable from '@/Components/Datatable.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Datatable from '@js/Components/Common/Datatable.vue'
 
 defineOptions({
   layout: Default,

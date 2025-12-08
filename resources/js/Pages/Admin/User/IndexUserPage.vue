@@ -1,14 +1,15 @@
 <script setup>
 import { Head, useForm, router, Link } from '@inertiajs/vue3'
-import DataTable from '@/Components/Datatable.vue'
-import Default from '@/Layouts/Default.vue'
-import Modal from '@/Components/Modal.vue'
+import DataTable from '@js/Components/Common/Datatable.vue'
+import Default from '@js/Layouts/Default.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { h, ref, watch } from 'vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import FormInput from '@/Components/FormInput.vue'
-import FormSelect from '@/Components/FormSelect.vue'
-import FormCheckbox from '@/Components/FormCheckbox.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormSelect from '@js/Components/Forms/FormSelect.vue'
+import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
+import RolesBadges from '@js/Components/Common/RolesBadges.vue'
 
 defineOptions({
   layout: Default,
@@ -22,6 +23,11 @@ const props = defineProps({
   roles: {
     type: Object,
     required: true,
+  },
+  deletedUsers: {
+    type: [Object, Number],
+    // required: true,
+    default: () => ({}),
   },
 })
 
@@ -130,8 +136,20 @@ const columns = [
       )
     },
   }),
+  columnHelper.accessor('email_verified_at', {
+    header: 'Verified',
+    cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
+  }),
+  columnHelper.accessor('disable_account', {
+    header: 'Disabled',
+    cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
+  }),
   columnHelper.accessor('created_at_formatted', {
     header: 'Created At',
+    cell: info => h('span', info.getValue() || '-'),
+  }),
+  columnHelper.accessor('restore_date_full', {
+    header: 'Restored At',
     cell: info => h('span', info.getValue() || '-'),
   }),
   columnHelper.display({
@@ -250,7 +268,22 @@ watch(
           { label: 'Users Management' },
         ]">
         <template #actions>
-          <button @click="openCreateModal" class="btn-primary btn-sm">Add User</button>
+          <button @click="openCreateModal" class="btn btn-primary btn-sm">Add User</button>
+        </template>
+
+        <template #bottom v-if="deletedUsers">
+          <div class="mt-3 flex items-center justify-between">
+            <span v-if="deletedUsers" class="text-xs">
+              {{ deletedUsers }} Deleted
+              {{ deletedUsers == 1 ? 'User' : 'Users' }}
+            </span>
+            <Link
+              v-if="deletedUsers"
+              :href="route('admin.user.deleted.index')"
+              class="btn btn-secondary btn-xs">
+              View Deleted {{ deletedUsers == 1 ? 'User' : 'Users' }}
+            </Link>
+          </div>
         </template>
       </PageHeader>
 
@@ -262,7 +295,14 @@ watch(
             :columns="columns"
             :loading="loading"
             :pagination="pagination"
-            :search-fields="['name', 'email', 'created_at_formatted']"
+            :search-fields="[
+              'name',
+              'email',
+              'email_verified_at',
+              'disable_account',
+              'created_at_formatted',
+              'restore_date_full',
+            ]"
             empty-message="No users found"
             empty-description="Users will appear here once created"
             export-file-name="users"
@@ -280,7 +320,7 @@ watch(
     <template #default>
       <div class="space-y-4">
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Are you sure you want to delete this user? This action cannot be undone.
+          Are you sure you want to delete this user?
         </p>
         <div
           class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
@@ -295,7 +335,8 @@ watch(
                 clip-rule="evenodd" />
             </svg>
             <p class="text-sm text-amber-700 dark:text-amber-300">
-              This will permanently delete the user's account and all associated data.
+              This will delete the user's account and all associated data. The account is
+              recoverable up to the auto-delete date if it is set.
             </p>
           </div>
         </div>
@@ -306,11 +347,43 @@ watch(
           <dl class="space-y-1">
             <div class="flex gap-2">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.name }}</dd>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.name }}
+              </dd>
             </div>
             <div class="flex gap-2">
               <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">{{ userToDelete.email }}</dd>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.email }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.disable_account ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                <RolesBadges :roles="userToDelete.roles" />
+              </dd>
+            </div>
+
+            <div class="flex gap-2">
+              <dt class="text-sm text-gray-500 dark:text-gray-400">Created At:</dt>
+              <dd class="text-sm text-gray-900 dark:text-gray-100">
+                {{ userToDelete.created_at_full }}
+              </dd>
             </div>
           </dl>
         </div>
@@ -325,7 +398,7 @@ watch(
           class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
           Cancel
         </button>
-        <button @click="deleteUser" type="button" class="btn-danger btn-sm" :disabled="false">
+        <button @click="deleteUser" type="button" class="btn btn-danger btn-sm" :disabled="false">
           Yes, Delete User
         </button>
       </div>
@@ -395,7 +468,7 @@ watch(
         <button
           @click="createUser"
           type="button"
-          class="btn-primary btn-sm"
+          class="btn btn-primary btn-sm"
           :disabled="form.processing">
           Create User
         </button>

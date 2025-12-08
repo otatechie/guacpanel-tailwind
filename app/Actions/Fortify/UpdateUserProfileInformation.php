@@ -13,7 +13,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
-            'name'  => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+
             'email' => [
                 'required',
                 'string',
@@ -23,11 +24,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ],
             'location'   => ['nullable', 'string', 'max:255'],
             'image_type' => ['nullable', 'string', 'max:255'],
-        ])->validate();
-        if (
-            $input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail
-        ) {
+        ])->validateWithBag('updateProfileInformation');
+
+        if ($input['email'] !== $user->email &&
+            $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
@@ -36,11 +36,14 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'location'              => $input['location'],
                 'profile_image_type'    => $input['image_type'],
             ])->save();
-
-            session()->flash('success', 'Your profile has been updated successfully.');
         }
     }
 
+    /**
+     * Update the given verified user's profile information.
+     *
+     * @param array<string, string> $input
+     */
     protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([

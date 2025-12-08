@@ -54,5 +54,7 @@ yarn-error.log
 /storage/framework/views/*
 /storage/pail
 docker-compose.override.yml
-composer.lock
-package-lock.json
+
+## GHA Runners require lock files.
+#composer.lock
+#package-lock.json

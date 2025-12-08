@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import Modal from '@/Components/Modal.vue'
-import FormInput from '@/Components/FormInput.vue'
-import FormTextarea from '@/Components/FormTextarea.vue'
-import FormCheckbox from '@/Components/FormCheckbox.vue'
-import Alert from '@/Components/Alert.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormTextarea from '@js/Components/Forms/FormTextarea.vue'
+import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 const props = defineProps({
   roles: {
@@ -151,7 +151,7 @@ const isRoleExpanded = roleId => {
       <button
         type="button"
         @click="showAddModal = true"
-        class="btn-primary btn-sm w-full sm:w-auto">
+        class="btn btn-primary btn-sm w-full sm:w-auto">
         Add Role
       </button>
     </header>
@@ -403,7 +403,7 @@ const isRoleExpanded = roleId => {
           <button
             @click="submitRole"
             type="button"
-            class="btn-primary btn-sm"
+            class="btn btn-primary btn-sm"
             :disabled="form.processing"
             :aria-busy="form.processing">
             <svg
@@ -472,7 +472,7 @@ const isRoleExpanded = roleId => {
           <button
             @click="deleteRole"
             type="button"
-            class="btn-danger btn-sm"
+            class="btn btn-danger btn-sm"
             :disabled="form.processing">
             {{ form.processing ? 'Deleting...' : 'Yes, Delete Role' }}
           </button>

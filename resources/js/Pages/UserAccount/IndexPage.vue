@@ -1,14 +1,14 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Head } from '@inertiajs/vue3'
-import Default from '@/Layouts/Default.vue'
-import PageHeader from '@/Components/PageHeader.vue'
-import Tabs from '@/Components/Tabs.vue'
-import ProfileTab from '@/Pages/UserAccount/Tabs/ProfileTab.vue'
-import PasswordTab from '@/Pages/UserAccount/Tabs/PasswordTab.vue'
-import TwoFactorTab from '@/Pages/UserAccount/Tabs/TwoFactorTab.vue'
-import DevicesTab from '@/Pages/UserAccount/Tabs/DevicesTab.vue'
-import AccountTab from '@/Pages/UserAccount/Tabs/AccountTab.vue'
+import Default from '@js/Layouts/Default.vue'
+import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Tabs from '@js/Components/Common/Tabs.vue'
+import ProfileTab from '@js/Pages/UserAccount/Tabs/ProfileTab.vue'
+import PasswordTab from '@js/Pages/UserAccount/Tabs/PasswordTab.vue'
+import TwoFactorTab from '@js/Pages/UserAccount/Tabs/TwoFactorTab.vue'
+import DevicesTab from '@js/Pages/UserAccount/Tabs/DevicesTab.vue'
+import AccountTab from '@js/Pages/UserAccount/Tabs/AccountTab.vue'
 
 defineOptions({
   layout: Default,
@@ -110,32 +110,38 @@ const pageHeaderContent = computed(() => {
         :description="pageHeaderContent.description"
         :breadcrumbs="breadcrumbs" />
 
-      <div class="px-3 sm:px-6">
-        <Tabs v-model="activeTab" :tabs="tabs" />
+      <div class="overflow-hidden">
+        <div class="px-3 sm:px-6">
+          <Tabs v-model="activeTab" :tabs="tabs" />
+        </div>
+
+        <section class="relative">
+          <div class="relative">
+            <Transition name="tab-fade" mode="out-in" appear>
+              <div v-if="activeTab === 0">
+                <ProfileTab :user="user" :profileEnabled="profileEnabled" />
+              </div>
+
+              <div v-else-if="activeTab === 1">
+                <PasswordTab :passwordEnabled="passwordEnabled" />
+              </div>
+              <div v-else-if="activeTab === 2">
+                <TwoFactorTab
+                  :user="user"
+                  :qrCodeSvg="qrCodeSvg"
+                  :recoveryCodes="recoveryCodes"
+                  :twoFactorEnabled="twoFactorEnabled" />
+              </div>
+              <div v-else-if="activeTab === 3">
+                <DevicesTab :user="user" :sessions="sessions" />
+              </div>
+              <div v-else-if="activeTab === 4">
+                <AccountTab :deactivateEnabled="deactivateEnabled" :deleteEnabled="deleteEnabled" />
+              </div>
+            </Transition>
+          </div>
+        </section>
       </div>
-
-      <!-- Basic Information Section -->
-      <ProfileTab v-if="activeTab === 0" :user="user" :profileEnabled="profileEnabled" />
-
-      <!-- Password Section -->
-      <PasswordTab v-if="activeTab === 1" :passwordEnabled="passwordEnabled" />
-
-      <!-- Two-Factor -->
-      <TwoFactorTab
-        v-if="activeTab === 2"
-        :user="user"
-        :qrCodeSvg="qrCodeSvg"
-        :recoveryCodes="recoveryCodes"
-        :twoFactorEnabled="twoFactorEnabled" />
-
-      <!-- Devices -->
-      <DevicesTab v-if="activeTab === 3" :user="user" :sessions="sessions" />
-
-      <!-- Danger Zone Section -->
-      <AccountTab
-        v-if="activeTab === 4"
-        :deactivateEnabled="deactivateEnabled"
-        :deleteEnabled="deleteEnabled" />
     </div>
   </main>
 </template>

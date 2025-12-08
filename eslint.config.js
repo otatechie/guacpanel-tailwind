@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import vue from "eslint-plugin-vue";
 import * as parser from "vue-eslint-parser";
+import prettier from "eslint-config-prettier/flat";
 
 export default [
   {
@@ -10,6 +11,8 @@ export default [
       "**/dist/**",
       "**/build/**",
       "**/vendor/**",
+      "**/public/**",
+      "tailwind.config.js",
     ],
   },
   {
@@ -41,6 +44,10 @@ export default [
       },
     },
     rules: {
+      indent: "off",
+      "linebreak-style": "off",
+      quotes: "off",
+      semi: "off",
       "vue/html-indent": "off",
       "vue/max-attributes-per-line": "off",
       "vue/multiline-html-element-content-newline": "off",
@@ -52,6 +59,8 @@ export default [
       "vue/multi-word-component-names": "off",
       "vue/require-default-prop": "off",
       "vue/no-v-html": "off",
+      "no-unused-vars": "off",
     },
   },
+  prettier,
 ];

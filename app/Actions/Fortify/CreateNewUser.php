@@ -40,7 +40,9 @@ class CreateNewUser implements CreatesNewUsers
             'password_expiry_at'  => $now->addMonths(3),
         ]);
 
-        session()->flash('success', 'Great! Your account has been created successfully.');
+        $user->assignRole(config('seeders.users.regular.role'));
+
+        session()->flash('success', __('notifications.register.pw_success_auto_login_enabled'));
 
         return $user;
     }

@@ -1,150 +1,170 @@
 @layer components {
-  /* Button Styles */
+  /********************
+   *** Button Base ****
+   ********************/
+
   [class*='btn-'] {
-    text-transform: capitalize;
+    @apply capitalize;
   }
 
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    font-weight: 600;
-    letter-spacing: 0.025em;
+  .btn {
     padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    letter-spacing: 0.025em;
     font-size: 1rem;
-    color: white;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-property: all;
     transition-duration: 200ms;
     transition-timing-function: ease-in-out;
-    background-color: var(--primary-color);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+    @apply relative inline-flex cursor-pointer items-center justify-center overflow-hidden font-semibold transition-all;
 
-  .btn-primary.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
+    /********************
+     *** States *********
+     ********************/
 
-  .btn-primary:hover:not(:disabled) {
-    background-color: var(--primary-hover);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    &:hover:not(:disabled) {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    &:disabled {
+      @apply cursor-not-allowed opacity-50;
+    }
 
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    color: var(--color-text);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
-    background-color: var(--color-surface-muted);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+    &.btn-outline {
+      @apply bg-transparent;
+      border: 1px solid;
+    }
 
-  .btn-secondary.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
+    /********************
+     *** Base Types ****
+     ********************/
 
-  .btn-secondary:hover:not(:disabled) {
-    background-color: var(--color-surface);
-    border-color: var(--color-border-strong);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    &.btn-primary {
+      @apply text-white;
+      background-color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      &.btn-outline {
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        background-color: transparent;
+        &:hover:not(:disabled) {
+          background-color: var(--primary-color);
+          @apply text-white;
+        }
+      }
+      &:hover:not(:disabled) {
+        background-color: var(--primary-hover);
+      }
+    }
 
-  .btn-secondary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    &.btn-secondary {
+      color: var(--color-text);
+      background-color: var(--secondary-color);
+      border: 1px solid var(--secondary-color);
+      &.btn-outline {
+        color: var(--color-text);
+        border: 1px solid var(--color-border-strong);
+        background-color: transparent;
+        &:hover:not(:disabled) {
+          background-color: var(--color-border-strong);
+          @apply text-white;
+        }
+      }
+      &:hover:not(:disabled) {
+        background-color: var(--color-surface);
+        border-color: var(--color-border-strong);
+      }
+    }
 
-  .btn-danger.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
+    &.btn-info {
+      @apply text-white;
+      background-color: var(--info-color);
+      &.btn-outline {
+        background-color: transparent;
+        color: var(--info-color);
+        border: 1px solid var(--info-color);
+        &:hover:not(:disabled) {
+          background-color: var(--info-color);
+          @apply text-white;
+        }
+      }
+      &:hover:not(:disabled) {
+        @apply brightness-105;
+      }
+    }
 
-  .btn-primary-outline.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
+    &.btn-success {
+      @apply text-white;
+      background-color: var(--success-color);
+      border: 1px solid var(--success-color);
+      &.btn-outline {
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+        background-color: transparent;
+        &:hover:not(:disabled) {
+          background-color: var(--success-color);
+          @apply text-white;
+        }
+      }
+      &:hover:not(:disabled) {
+        @apply brightness-105;
+      }
+    }
 
-  .btn-primary-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
-    background-color: transparent;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+    &.btn-warning {
+      @apply text-white;
+      text-shadow: 0 0 3px #999;
+      background-color: var(--warning-color);
+      border: 1px solid var(--warning-color);
+      &.btn-outline {
+        color: var(--warning-color);
+        border: 1px solid var(--warning-color);
+        background-color: transparent;
+        &:hover:not(:disabled) {
+          background-color: var(--warning-color);
+          @apply text-white;
+          text-shadow: 0 0 3px #999;
+        }
+      }
+      &:hover:not(:disabled) {
+        @apply brightness-105;
+      }
+    }
 
-  .btn-primary-outline:hover:not(:disabled) {
-    background-color: var(--primary-color);
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    &.btn-danger {
+      @apply text-white;
+      background-color: var(--error-color);
+      border: 1px solid var(--error-color);
+      &.btn-outline {
+        color: var(--error-color);
+        border: 1px solid var(--error-color);
+        background-color: transparent;
+        &:hover:not(:disabled) {
+          background-color: var(--error-color);
+          @apply text-white;
+        }
+      }
+      &:hover:not(:disabled) {
+        @apply brightness-105;
+      }
+    }
 
-  .btn-primary-outline:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    /********************
+     *** Sizes **********
+     ********************/
 
-  .btn-danger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    color: white;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
-    background-color: rgb(239 68 68);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+    &.btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
 
-  .btn-danger:hover:not(:disabled) {
-    background-color: rgb(220 38 38);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    &.btn-xs {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.7rem;
+    }
 
-  .btn-danger:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    &.btn-xxs {
+      padding: 0.1rem 0.5rem;
+      font-size: 0.65rem;
+    }
   }
 }

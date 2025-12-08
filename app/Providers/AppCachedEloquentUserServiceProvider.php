@@ -7,11 +7,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppCachedEloquentUserServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-        //
-    }
-
     public function boot(): void
     {
         auth()->provider('cachedEloquentUser', function (Application $application, array $config) {

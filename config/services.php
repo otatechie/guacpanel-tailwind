@@ -25,6 +25,10 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'resend' => [
+        'key' => env('RESEND_KEY'),
+    ],
+
     'paystack' => [
         'public_key' => env('PAYSTACK_PUBLIC_KEY'),
         'secret_key' => env('PAYSTACK_SECRET_KEY'),
@@ -38,6 +42,13 @@ return [
 
     'acoustid' => [
         'key' => env('ACOUSTID_API_KEY'),
+    ],
+
+    'slack' => [
+        'notifications' => [
+            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+            'channel'              => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+        ],
     ],
 
     /*

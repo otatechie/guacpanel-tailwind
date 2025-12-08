@@ -1,11 +1,11 @@
 <script setup>
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
-import Default from '../Layouts/Default.vue'
-import StockWidget from '@/Components/Widgets/StockWidget.vue'
-import StatWidget from '@/Components/Widgets/StatWidget.vue'
-import ProgressWidget from '@/Components/Widgets/ProgressWidget.vue'
-import ChartWidget from '@/Components/Widgets/ChartWidget.vue'
+import Default from '@js/Layouts/Default.vue'
+import StockWidget from '@js/Components/Widgets/StockWidget.vue'
+import StatWidget from '@js/Components/Widgets/StatWidget.vue'
+import ProgressWidget from '@js/Components/Widgets/ProgressWidget.vue'
+import ChartWidget from '@js/Components/Widgets/ChartWidget.vue'
 
 defineOptions({
   layout: Default,

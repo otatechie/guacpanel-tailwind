@@ -1,8 +1,8 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
-import Auth from '../../Layouts/Auth.vue'
-import FormInput from '../../Components/FormInput.vue'
+import Auth from '@js/Layouts/Auth.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
 
 defineOptions({
   layout: Auth,
@@ -91,7 +91,7 @@ const submitRecovery = () => {
           <button
             type="submit"
             :disabled="codeForm.processing"
-            class="btn-primary h-10 w-full rounded-lg disabled:cursor-not-allowed disabled:opacity-50"
+            class="btn btn-primary h-10 w-full rounded-lg disabled:cursor-not-allowed disabled:opacity-50"
             aria-busy="codeForm.processing">
             {{ codeForm.processing ? 'Verifying...' : 'Verify code' }}
           </button>
@@ -146,7 +146,7 @@ const submitRecovery = () => {
           <button
             type="submit"
             :disabled="recoveryCodeForm.processing"
-            class="btn-primary h-10 w-full disabled:cursor-not-allowed disabled:opacity-50"
+            class="btn btn-primary h-10 w-full disabled:cursor-not-allowed disabled:opacity-50"
             aria-busy="recoveryCodeForm.processing">
             {{ recoveryCodeForm.processing ? 'Verifying...' : 'Use recovery code' }}
           </button>

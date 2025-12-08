@@ -1,12 +1,12 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import Public from '@/Layouts/Public.vue'
-import ArticleNavigation from '@/Shared/Public/ArticleNavigation.vue'
-import CodeBlock from '@/Components/CodeBlock.vue'
-import FormInput from '@/Components/FormInput.vue'
-import FormSelect from '@/Components/FormSelect.vue'
-import Modal from '@/Components/Modal.vue'
+import Public from '@js/Layouts/Public.vue'
+import ArticleNavigation from '@js/Shared/Public/ArticleNavigation.vue'
+import CodeBlock from '@js/Components/Common/CodeBlock.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
+import FormSelect from '@js/Components/Forms/FormSelect.vue'
+import Modal from '@js/Components/Notifications/Modal.vue'
 
 defineOptions({
   layout: Public,
@@ -113,7 +113,7 @@ const navigationSections = reactive([
                 name: 'Settings',
                 icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94..." />',
                 children: [
-                    { name: 'Users', href: route('admin.user.index'), permission: 'users-view' },
+                    { name: 'Users', href: route('admin.user.index'), permission: 'view-users' },
                     // More child items...
                 ]
             },
