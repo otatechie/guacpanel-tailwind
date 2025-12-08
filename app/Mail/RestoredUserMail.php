@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -27,7 +26,7 @@ class RestoredUserMail extends Mailable
     public function build()
     {
         return $this
-                ->subject(__('emails.restored.subject', [ 'appname' => config('app.name') ]))
+                ->subject(__('emails.restored.subject', ['appname' => config('app.name')]))
                 ->markdown('emails.account-restored');
     }
 }

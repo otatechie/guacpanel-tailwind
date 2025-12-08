@@ -193,23 +193,24 @@ class UserAccountController extends Controller
     {
         $route = auth()->user()?->name ? 'dashboard' : 'login';
 
-        if (! config('guacpanel.user.account.restore_enabled')) {
+        if (!config('guacpanel.user.account.restore_enabled')) {
             return redirect()->route($route)->with('warning', __('notifications.account.invalid_restore_link'));
         }
 
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             $route = auth()->user()?->name ? 'dashboard' : 'login';
+
             return redirect()->route($route)->with('warning', __('notifications.account.invalid_restore_link'));
         }
 
         if (auth()->user()) {
-            return redirect()->route($route)->with('error', __('notifications.account.already_logged_in', [ 'username' => auth()->user()?->name ]));
+            return redirect()->route($route)->with('error', __('notifications.account.already_logged_in', ['username' => auth()->user()?->name]));
         }
 
         $token = $request->token;
         $user = User::onlyTrashed()->whereRestoreToken($token)->first();
 
-        if (! $user) {
+        if (!$user) {
             return redirect()->route($route)->with('warning', __('notifications.account.invalid_restore_link'));
         }
 
@@ -223,5 +224,4 @@ class UserAccountController extends Controller
 
         return redirect()->route('dashboard')->with('success', __('notifications.account.account_restored'));
     }
-
 }

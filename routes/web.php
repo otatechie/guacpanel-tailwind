@@ -35,7 +35,6 @@ Route::middleware([
     'auth',
     'auth.session',
 ])->group(function () {
-
     // Logout Route
     Route::post('logout', [LogoutController::class, 'destroy'])->name('logout');
 
@@ -50,7 +49,6 @@ Route::middleware([
 
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {
-
             // Force Password Change Routes
             Route::controller(ForcePasswordChangeController::class)->prefix('password')->name('password.')->group(function () {
                 Route::get('change', 'edit')->name('change')->withoutMiddleware('force.password.change');
@@ -66,7 +64,7 @@ Route::middleware([
                 Route::post('password-expired', 'updateExpiredPassword')->name('password.expired.update')->withoutMiddleware('password.expired');
             });
 
-             // User Account Routes
+            // User Account Routes
             Route::prefix('account')->group(function () {
                 Route::controller(UserAccountController::class)->group(function () {
                     Route::get('/', 'index')->name('index');
@@ -88,7 +86,6 @@ Route::middleware([
 
         // Protected Routes requiring 2FA
         Route::middleware(['require.two.factor'])->group(function () {
-
             // Admin Routes
             Route::prefix('admin')->name('admin.')->group(function () {
                 // Settings Routes

@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -21,7 +20,7 @@ class GoodbyeUserMail extends Mailable
     public $autoDestroyDateRaw;
     public $autoDestroyDateParsed;
 
-    public function __construct(User $user, string $url = null)
+    public function __construct(User $user, ?string $url = null)
     {
         $this->user = $user;
         $this->url = $url;

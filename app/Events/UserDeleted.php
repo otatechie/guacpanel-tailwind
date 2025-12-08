@@ -16,7 +16,7 @@ class UserDeleted
     public User $user;
     public string $url;
 
-    public function __construct(User $user, string $url = null)
+    public function __construct(User $user, ?string $url = null)
     {
         $this->user = $user;
         $this->url = $url;
