@@ -1,12 +1,8 @@
 <x-mail::message>
 
 <h1>
-@lang('emails.general.greeting', [ 'username' => $user->name])
-</h1>
-
-<p>
 {{ $isNewUser ? 'Complete Your Registration' : 'Login to Your Account' }}
-</p>
+</h1>
 
 <p>
 @if ($isNewUser)
@@ -32,12 +28,13 @@ If you did not request this link, no action is required.
 {{ config('app.name') }}
 </p>
 
+{{-- Subcopy --}}
 <x-slot:subcopy>
 @lang(
     "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
     'into your web browser:',
     [
-        'actionText' => ($isNewUser ? 'Access Your Account' : 'Login Now')),
+        'actionText' => ($isNewUser ? 'Access Your Account' : 'Login Now'),
     ]
 ) <span class="break-all">[{{ $url }}]({{ $url }})</span>
 </x-slot:subcopy>
