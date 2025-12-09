@@ -114,7 +114,6 @@ onUnmounted(() => {
     :class="{ 'opacity-0': !isLayoutReady }">
     <!-- Mobile Notification -->
     <MobileNotification />
-
     <div
       v-if="isSidebarOpen && isMobile()"
       class="fixed inset-0 z-30 bg-black/30"

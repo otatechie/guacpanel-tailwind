@@ -89,4 +89,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->route('login')
                 ->with('error', __('notifications.errors.sm_session_invalid'));
         });
-    })->create();
+    })
+    ->withEvents(
+        discover: [],
+        // discover: [
+        //     app_path('Listeners'), // keep generic ones
+        // ],
+    )
+    ->create();

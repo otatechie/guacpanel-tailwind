@@ -16,3 +16,6 @@ class SendWelcomeEmail implements ShouldQueue
         Mail::to($user->email)->send(new WelcomeMail($user));
     }
 }
+
+// How to use
+// EventServiceProvider::disableEventDiscovery()

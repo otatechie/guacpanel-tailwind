@@ -3,15 +3,17 @@
 namespace App\Providers;
 
 // use App\Events\UserDeleted;
-use App\Listeners\LogFailedLogin;
-use App\Listeners\LogSuccessfulLogin;
+// use App\Listeners\LogFailedLogin;
+// use App\Listeners\LogSuccessfulLogin;
+// use App\Listeners\LogSuccessfulLogout;
 // use App\Listeners\SendGoodbyeEmail;
-use App\Listeners\SendWelcomeEmail;
-use Illuminate\Auth\Events\Failed;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+// use App\Listeners\SendWelcomeEmail;
+// use Illuminate\Auth\Events\Failed;
+// use Illuminate\Auth\Events\Login;
+// use Illuminate\Auth\Events\Logout;
+// use Illuminate\Auth\Events\Registered;
+// use Illuminate\Auth\Events\Verified;
+// use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -23,21 +25,26 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-        Login::class => [
-            LogSuccessfulLogin::class,
-        ],
-        Failed::class => [
-            LogFailedLogin::class,
-        ],
+        // Laravel is listening for these event automatically somewhere already...
+
+        // Verified::class => [
+        //     SendWelcomeEmail::class,
+        // ],
+        // Registered::class => [
+        //     SendEmailVerificationNotification::class,
+        // ],
+        // Failed::class => [
+        //     LogFailedLogin::class,
+        // ],
+        // Login::class => [
+        //     LogSuccessfulLogin::class,
+        // ],
+        // Logout::class => [
+        //     LogSuccessfulLogout::class,
+        // ],
         // UserDeleted::class => [
         //     SendGoodbyeEmail::class,
         // ],
-        Verified::class => [
-            SendWelcomeEmail::class,
-        ],
     ];
 
     /**
@@ -46,13 +53,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-    }
-
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     */
-    public function shouldDiscoverEvents(): bool
-    {
-        return false;
     }
 }

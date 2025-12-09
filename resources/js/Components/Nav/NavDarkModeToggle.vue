@@ -7,7 +7,7 @@ const props = defineProps({
   showLabelText: { type: Boolean, default: false }, // extra inline label option
   wrapperClass: {
     type: String,
-    default: 'theme-dropdown relative hidden lg:block',
+    default: 'theme-dropdown relative flex lg:block mr-1.5 lg:mr-0',
   },
   buttonClass: {
     type: String,
