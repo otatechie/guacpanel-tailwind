@@ -45,6 +45,7 @@ return [
     'verify' => [
         'already' => 'Your email address is already verified',
         'success' => 'Thanks! Your email address has been verified',
+        'login'   => 'Please log in to verify your email address.',
     ],
 
     'account' => [

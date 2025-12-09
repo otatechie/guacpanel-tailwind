@@ -25,7 +25,7 @@ Route::middleware(['guest', 'web'])->group(function () {
 
 // Override Verification route so we can add in success toast message.
 if (config('guacpanel.email_verification_enabled') && Features::enabled(Features::emailVerification())) {
-    Route::middleware(['auth', 'signed', 'throttle:6,1'])
+    Route::middleware(['verify.auth', 'signed', 'throttle:6,1'])
         ->get('/email/verify/{id}/{hash}', VerifyEmailController::class)
         ->name('verification.verify');
 }

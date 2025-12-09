@@ -10,6 +10,7 @@ use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HandleSocialiteProviders;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireAuthForVerification;
 use App\Http\Middleware\RequireTwoFactor;
 use App\Http\Middleware\ValidateSignature;
 use App\Mail\ExceptionOccurred;
@@ -44,6 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'auth'                  => Authenticate::class,
+            'verify.auth'           => RequireAuthForVerification::class,
             'guest'                 => RedirectIfAuthenticated::class,
             'signed'                => ValidateSignature::class,
             'password.expired'      => CheckPasswordExpiry::class,
