@@ -10,9 +10,9 @@ class VerifyCustomEmailServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        // VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-        //     return (new VerifyMail($notifiable, $url))
-        //         ->to($notifiable->email, $notifiable->name ?? null);
-        // });
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            return (new VerifyMail($notifiable, $url))
+                ->to($notifiable->email, $notifiable->name ?? null);
+        });
     }
 }

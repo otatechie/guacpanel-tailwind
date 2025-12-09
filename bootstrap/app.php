@@ -90,10 +90,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->with('error', __('notifications.errors.sm_session_invalid'));
         });
     })
-    ->withEvents(
-        discover: [],
-        // discover: [
-        //     app_path('Listeners'), // keep generic ones
-        // ],
-    )
     ->create();

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\Features;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
@@ -354,14 +355,27 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         ]);
     }
 
-    // public function sendEmailVerificationNotification(): void
-    // {
-    //     if (!config('guacpanel.email_verification_enabled')) {
-    //         return;
-    //     }
+    // There is Fortify/Laravel conflict that we cannot resolve on the app side.
+    // Per-request guard: only send once for this user
+    public function sendEmailVerificationNotification(): void
+    {
+        if (
+            ! config('guacpanel.email_verification_enabled')
+            || ! Features::enabled(Features::emailVerification())
+        ) {
+            return;
+        }
 
-    //     $this->notify(new VerifyEmail());
-    // }
+        $key = 'guacpanel.verification_sent_for';
+
+        if (app()->bound($key) && app($key) === $this->getKey()) {
+            return;
+        }
+
+        app()->instance($key, $this->getKey());
+
+        $this->notify(new VerifyEmail());
+    }
 
     public function sendUserEmailVerificationFromAdmin(): void
     {

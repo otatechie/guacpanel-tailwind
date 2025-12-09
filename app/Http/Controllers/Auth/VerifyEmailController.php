@@ -10,32 +10,16 @@ class VerifyEmailController
 {
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
+
+dd('do it');
+
         $redirectTo = Fortify::redirects('email-verification') ?? config('fortify.home', '/');
-
-// dd($redirectTo);
-
-// verification.verify
-dd('bender');
-
-return redirect()->route('login')->with('info', __('notifications.verify.already'));
-
-// redirect()->route('verification.verify')->with('info', __('notifications.verify.already'));
-
-
-
-return redirect()
-    ->intended($redirectTo)
-    ->with('info', __('notifications.verify.already'));
-
 
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()
                 ->intended($redirectTo)
                 ->with('info', __('notifications.verify.already'));
         }
-
-
-dd($redirectTo);
 
         $request->fulfill();
 

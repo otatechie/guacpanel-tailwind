@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseEventProvider;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,8 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Turn OFF automatic event discovery globally
-        // EventServiceProvider causes conflict with L12 auto-discovery
-        // BaseEventProvider::disableEventDiscovery();
+        //
     }
 }
