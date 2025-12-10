@@ -14,6 +14,5 @@ class EmailVerificationRequest extends BaseEmailVerificationRequest
         $this->setUserResolver(function () use ($user) {
             return $user;
         });
-
     }
 }

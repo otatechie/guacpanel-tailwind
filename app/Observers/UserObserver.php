@@ -13,11 +13,11 @@ class UserObserver
 
     public function creating(User $user): void
     {
-        if (! $user->user_slug) {
+        if (!$user->user_slug) {
             $user->user_slug = 'user-'.Str::ulid();
         }
 
-        if (! $user->password) {
+        if (!$user->password) {
             $user->password = null;
         }
     }
