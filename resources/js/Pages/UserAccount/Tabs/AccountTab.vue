@@ -70,7 +70,7 @@ const deleteAccount = () => {
 
       <!-- Deactivate Account -->
       <div
-        class="mb-4 rounded-lg border border-orange-200 bg-orange-50 p-3 sm:mb-6 sm:p-4 dark:border-orange-700 dark:bg-orange-900/20">
+        class="mb-4 rounded border border-orange-200 bg-orange-50 p-3 sm:mb-6 sm:p-4 dark:border-orange-700 dark:bg-orange-900/20">
         <h4 class="mb-2 text-sm font-medium text-gray-900 sm:text-base dark:text-gray-100">
           Deactivate Account
         </h4>
@@ -104,7 +104,7 @@ const deleteAccount = () => {
 
       <!-- Delete Account -->
       <div
-        class="rounded-lg border border-red-200 bg-red-50 p-3 sm:p-4 dark:border-red-700 dark:bg-red-900/20">
+        class="rounded border border-red-200 bg-red-50 p-3 sm:p-4 dark:border-red-700 dark:bg-red-900/20">
         <h4 class="mb-2 text-sm font-medium text-gray-900 sm:text-base dark:text-gray-100">
           Delete Account Permanently
         </h4>

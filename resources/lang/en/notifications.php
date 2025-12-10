@@ -7,27 +7,12 @@ return [
      *  Non out the box application language lines
      * --------------------------------------------------------------------------.
      *
-     * USAGE:
+     * Usage Example:
      *
      * __('notifications.register.pw_success_auto_login_enabled')
-     * __('notifications.register.pw_success_auto_login_disabled_activation_enabled')
-     * __('notifications.register.pw_success_auto_login_disabled_activation_disabled')
-     * __('notifications.register.sm_registration_successful')
+     * __('notifications.account.disabled', ['email' => config('guacpanel.admin.support_email')])
      *
-     * __('notifications.login.sm_login_successful')
-     * __('notifications.login.sm_unable_to_login_with')
-     *
-     * __('notifications.errors.social_session_invalid')
-     * __('notifications.errors.no_file_uploaded')
-     * __('notifications.errors.su_cannot_be_deleted')
-     * __('notifications.errors.su_status_cannot_be_modified')
-     * __('notifications.errors.user_cannot_be_disabled_and_force_change_pw')
-     *
-     * __('notifications.admin.settings_updated_successfully')
-     * __('notifications.admin.all_users_deleted_successfully')
-     * __('notifications.admin.user_account_updated_successfully')
-     * __('notifications.admin.user_deleted_successully')
-     * __('notifications.admin.new_user_created_successfully')
+     * --------------------------------------------------------------------------
      */
     'register' => [
         'pw_success_auto_login_enabled'                         => 'Great! Your account has been created successfully.',
@@ -60,5 +45,20 @@ return [
     'verify' => [
         'already' => 'Your email address is already verified',
         'success' => 'Thanks! Your email address has been verified',
+    ],
+
+    'account' => [
+        'disabled'              => 'Account currently disabled. Email <a href="mailto::email" class="underline hover:text-orange-800">:email</a> for help.',
+        'locked'                => 'Account Locked. Email <a href="mailto::email" class="underline hover:text-orange-800">:email</a> for help.',
+        'force_pw_change'       => 'You must change your password before continuing.',
+        'two_factor_required'   => 'Two-factor authentication is required. Please enable it to continue.',
+        'invalid_restore_link'  => 'The link is either invalid or has expired.',
+        'deleted_successfully'  => 'Account has been deleted successfully 👋',
+        'already_logged_in'     => 'Unable to complete action, you are currently logged in as :username',
+        'account_restored'      => 'Welcome back 👋 Account restored successfully. You can now log in.',
+    ],
+
+    'general' => [
+        'feature_disabled' => 'Feature disabled in the .env file',
     ],
 ];

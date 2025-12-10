@@ -48,7 +48,7 @@ const activeTab = ref(0)
 <template>
   <Head title="Permissions & Roles" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="permissions-roles-title">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="permissions-roles-title">
     <div class="container-border">
       <PageHeader
         title="Access Control Management"

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Events\UserDeleted;
+use App\Events\UserRestored;
 use App\Models\User;
+use App\Traits\UserAccountRestoreTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -17,6 +19,8 @@ use Jenssegers\Agent\Agent;
 
 class UserAccountController extends Controller
 {
+    use UserAccountRestoreTrait;
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -165,23 +169,58 @@ class UserAccountController extends Controller
         return redirect()->route('home')->with('success', 'Account has been deactivated successfully.');
     }
 
+    public function reactivateAccount()
+    {
+        // TODO :: HERE
+    }
+
     public function deleteAccount()
     {
         if (!config('guacpanel.user.account.delete_enabled')) {
-            return redirect()->back()->with('error', 'Feature disabled in the .env file');
+            return redirect()->back()->with('error', __('notifications.general.feature_disabled'));
         }
 
         $user = Auth::user();
-
-        UserDeleted::dispatch($user);
-
+        $url = $this->setupAccountRestore($user);
         $user->delete();
+        event(new UserDeleted($user, $url));
+        auth()->logout();
 
-        Auth::logout();
-        $request = request();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        return redirect()->route('home')->with('success', __('notifications.account.deleted_successfully'));
+    }
 
-        return redirect()->route('home')->with('success', 'Account has been deleted successfully.');
+    public function restoreAccount(Request $request)
+    {
+        $route = auth()->user()?->name ? 'dashboard' : 'login';
+
+        if (!config('guacpanel.user.account.restore_enabled')) {
+            return redirect()->route($route)->with('warning', __('notifications.account.invalid_restore_link'));
+        }
+
+        if (!$request->hasValidSignature()) {
+            $route = auth()->user()?->name ? 'dashboard' : 'login';
+
+            return redirect()->route($route)->with('warning', __('notifications.account.invalid_restore_link'));
+        }
+
+        if (auth()->user()) {
+            return redirect()->route($route)->with('error', __('notifications.account.already_logged_in', ['username' => auth()->user()?->name]));
+        }
+
+        $token = $request->token;
+        $user = User::onlyTrashed()->whereRestoreToken($token)->first();
+
+        if (!$user) {
+            return redirect()->route($route)->with('warning', __('notifications.account.invalid_restore_link'));
+        }
+
+        if ($user->account_locked) {
+            return redirect()->route($route)->with('error', __('notifications.account.locked', ['email' => config('guacpanel.admin.support_email')]));
+        }
+
+        $user->restore();
+        event(new UserRestored($user));
+
+        return redirect()->route($route)->with('success', __('notifications.account.account_restored'));
     }
 }

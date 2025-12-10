@@ -7,18 +7,16 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserDeleted
+class UserRestored
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
 
     public User $user;
-    public string $url;
 
-    public function __construct(User $user, ?string $url = null)
+    public function __construct(User $user)
     {
         $this->user = $user;
-        $this->url = $url;
     }
 }

@@ -72,7 +72,7 @@ const benefits = [
 <template>
   <Head title="Multi-Factor Authentication" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="2fa-settings">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="2fa-settings">
     <div class="container-border">
       <PageHeader
         title="Multi-Factor Authentication"

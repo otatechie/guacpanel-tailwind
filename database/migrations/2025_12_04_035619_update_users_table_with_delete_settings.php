@@ -16,13 +16,9 @@ return new class() extends Migration {
                 ->default(1)
                 ->after('restore_token');
 
-            $table->datetime('auto_destroy_date')
-                ->nullable()
-                ->after('deleted_at');
-
             $table->datetime('restore_date')
                 ->nullable()
-                ->after('auto_destroy_date');
+                ->after('deleted_at');
         });
     }
 
@@ -31,7 +27,6 @@ return new class() extends Migration {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('restore_token');
             $table->dropColumn('auto_destroy');
-            $table->dropColumn('auto_destroy_date');
             $table->dropColumn('restore_date');
         });
     }

@@ -95,7 +95,7 @@ const runHealthChecks = () => {
 <template>
   <Head title="System Health" />
 
-  <main class="mx-auto max-w-7xl" role="main">
+  <main class="main-container mx-auto max-w-7xl" role="main">
     <div class="container-border">
       <PageHeader
         title="System Health"

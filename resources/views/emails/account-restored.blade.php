@@ -1,23 +1,23 @@
 <x-mail::message>
 
 <h1>
-@lang('emails.welcome.greeting', ['username' => $user->name])
+@lang('emails.restored.greeting', [ 'username' => $user->name])
 </h1>
 
 <p>
-@lang('emails.welcome.msg_upper', ['appname' => config('app.name')])
+@lang('emails.restored.line_one', [ 'appname' => config('app.name'), 'date' => $restoreDateParsed ])
 </p>
 
 <x-mail::button :url="route('dashboard')">
-@lang('emails.welcome.btn')
+@lang('emails.restored.btn')
 </x-mail::button>
 
 <p>
-@lang('emails.welcome.msg_lower')
+@lang('emails.restored.line_two', [ 'email' => config('guacpanel.admin.support_email') ])
 </p>
 
 <p>
-@lang('emails.welcome.goodbye')
+@lang('emails.restored.goodbye')
 </p>
 
 <p>
@@ -29,7 +29,7 @@
     "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
     'into your web browser:',
     [
-        'actionText' => __('emails.welcome.btn'),
+        'actionText' => __('emails.restored.btn'),
     ]
 ) <span class="break-all">[{{ route('dashboard') }}]({{ route('dashboard') }})</span>
 </x-slot:subcopy>

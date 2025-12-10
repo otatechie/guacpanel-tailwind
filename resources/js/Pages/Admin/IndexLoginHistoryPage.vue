@@ -126,7 +126,7 @@ watch(
 <template>
   <Head title="Login History" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="login-history">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="login-history">
     <div class="container-border">
       <PageHeader
         title="Login History"

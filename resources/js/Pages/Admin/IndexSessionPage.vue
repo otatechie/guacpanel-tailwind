@@ -171,7 +171,7 @@ watch(
 <template>
   <Head title="Active Sessions" />
 
-  <main class="mx-auto max-w-7xl" aria-labelledby="active-sessions">
+  <main class="main-container mx-auto max-w-7xl" aria-labelledby="active-sessions">
     <div class="container-border">
       <PageHeader
         title="Active Sessions"

@@ -6,15 +6,18 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class DisableAccount
+class EnsureAccountNotLocked
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->disable_account) {
-            auth()->logout();
-            session()->flash('warning', __('notifications.account.disabled', ['email' => config('guacpanel.admin.support_email')]));
+        $user = $request->user();
 
-            return redirect()->route('login');
+        abort_unless($user, 404);
+
+        if ($user->account_locked) {
+            auth()->logout();
+
+            return redirect()->route('login')->with('error', __('notifications.account.locked', ['email' => config('guacpanel.admin.support_email')]));
         }
 
         return $next($request);

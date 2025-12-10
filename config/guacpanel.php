@@ -22,13 +22,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Type Settings
+    |--------------------------------------------------------------------------
+    */
+    'admin' => [
+        'support_email' => env('APP_HELP_EMAIL', 'support@example.com'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | User Account Settings
     |--------------------------------------------------------------------------
     */
     'user' => [
         'account' => [
-            'deactivate_enabled'  => env('APP_USER_DEACTIVATE_ACCOUNT_ENABLED', true),
-            'delete_enabled'      => env('APP_USER_DELETE_ACCOUNT_ENABLED', true),
+            'deactivate_enabled'    => env('APP_USER_DEACTIVATE_ACCOUNT_ENABLED', true),
+            'delete_enabled'        => env('APP_USER_DELETE_ACCOUNT_ENABLED', true),
+            'restore_enabled'       => env('APP_USER_RESTORE_ACCOUNT_ENABLED', true),
+            'days_to_restore'       => env('APP_USER_DAYS_TO_RESTORE_ACCOUNT', 60),
+            'restore_route'         => 'uac.restore',
         ],
     ],
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\VerifyEmailFromAdminTriggered;
 use App\Observers\UserObserver;
+use App\Traits\UserAccountRestoreTrait;
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -15,7 +16,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
@@ -28,13 +28,14 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
-    use SoftDeletes;
-    use HasUlids;
-    use \OwenIt\Auditing\Auditable;
     use HasRoles;
+    use HasUlids;
+    use Notifiable;
+    use \OwenIt\Auditing\Auditable;
     use Searchable;
+    use SoftDeletes;
+    use TwoFactorAuthenticatable;
+    use UserAccountRestoreTrait;
 
     protected $guarded = ['id'];
 
@@ -46,11 +47,11 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'password_expiry_at',
         'password_changed_at',
         'force_password_change',
-        'disable_account',
         'profile_image_type',
+        'disable_account',          // This is the user disabling their account.
+        'account_locked',           // This is plug of kicking the user out of the app.
         'restore_token',
         'auto_destroy',
-        'auto_destroy_date',
         'restore_date',
     ];
 
@@ -60,30 +61,18 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'password_expiry_at'    => 'datetime',
         'password_changed_at'   => 'datetime',
         'force_password_change' => 'boolean',
-        'disable_account'       => 'boolean',
-        'profile_image_type'    => 'string', // This is a string to later allow other types
+        'disable_account'       => 'boolean',   // This is the user disabling their account.
+        'profile_image_type'    => 'string',    // This is a string to later allow other types.
+        'account_locked'        => 'boolean',   // This is plug of kicking the user out of the app.
         'restore_token'         => 'string',
         'auto_destroy'          => 'boolean',
         'created_at'            => 'datetime',
         'updated_at'            => 'datetime',
         'deleted_at'            => 'datetime',
-        'auto_destroy_date'     => 'datetime',
         'restore_date'          => 'datetime',
     ];
 
     protected $appends = ['created_at_formatted'];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            $user->user_slug = 'user-'.Str::random(12);
-            if (!$user->password) {
-                $user->password = null;
-            }
-        });
-    }
 
     public function scopeWithDeleted(Builder $query): Builder
     {
@@ -93,6 +82,16 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     public function scopeOnlyDeleted(Builder $query): Builder
     {
         return $query->onlyTrashed();
+    }
+
+    public function scopeAutoDestroyable(Builder $query): Builder
+    {
+        $thresholdDate = $this->generateDestroyThresholdTimestamp();
+
+        return $query
+            ->onlyTrashed()
+            ->where('auto_destroy', true)
+            ->where('deleted_at', '<=', $thresholdDate);
     }
 
     protected function avatar(): Attribute
@@ -117,9 +116,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
                 }
 
                 return Avatar::create($this->email)->toGravatar([
-                    's' => 200,          // size
-                    'd' => 'identicon',  // default image
-                    'r' => 'g',          // rating
+                    's' => 200,
+                    'd' => 'identicon',
+                    'r' => 'g',
                 ]);
             },
         );
@@ -200,32 +199,6 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         );
     }
 
-    public function autoDestroyDateFormatted(): Attribute
-    {
-        return Attribute::make(
-            get: function ($value, $attributes) {
-                if ($this->auto_destroy && $this->auto_destroy_date) {
-                    return $this->auto_destroy_date->format('m/j/Y');
-                }
-
-                return null;
-            },
-        );
-    }
-
-    public function autoDestroyDateFull(): Attribute
-    {
-        return Attribute::make(
-            get: function ($value, $attributes) {
-                if ($this->auto_destroy && $this->auto_destroy_date) {
-                    return $this->auto_destroy_date->format('m/j/Y @ g:i A');
-                }
-
-                return null;
-            },
-        );
-    }
-
     public function restoreDateFormatted(): Attribute
     {
         return Attribute::make(
@@ -278,6 +251,43 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         );
     }
 
+    public function autoDestroyDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->calculateAutoDestroyDate(),
+        );
+    }
+
+    public function autoDestroyDateFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $date = $this->calculateAutoDestroyDate();
+
+                if (!$this->auto_destroy || !$date) {
+                    return null;
+                }
+
+                return $date->format('m/j/Y');
+            },
+        );
+    }
+
+    public function autoDestroyDateFull(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $date = $this->calculateAutoDestroyDate();
+
+                if (!$this->auto_destroy || !$date) {
+                    return null;
+                }
+
+                return $date->format('m/j/Y @ g:i A');
+            },
+        );
+    }
+
     public function isPasswordExpired(): bool
     {
         if (!$this->password_expiry_at) {
@@ -293,7 +303,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             return 0;
         }
 
-        $expiryDate = Carbon::createFromTimestamp($this->password_expiry_at);
+        $expiryDate = $this->password_expiry_at instanceof Carbon
+            ? $this->password_expiry_at
+            : Carbon::parse($this->password_expiry_at);
 
         return max(0, now()->diffInDays($expiryDate));
     }

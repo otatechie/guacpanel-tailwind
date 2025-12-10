@@ -1,17 +1,42 @@
-@component('mail::message')
-    # {{ $isNewUser ? 'Complete Your Registration' : 'Login to Your Account' }}
+<x-mail::message>
 
-    @if ($isNewUser)
-        Welcome! Click the button below to verify your email and access your account.
-    @else
-            Click the button below to login to your account. This link will expire in 10 minutes.
-    @endif
+<h1>
+{{ $isNewUser ? 'Complete Your Registration' : 'Login to Your Account' }}
+</h1>
 
-    @component('mail::button', ['url' => $url])
-        {{ $isNewUser ? 'Access Your Account' : 'Login Now' }}
-    @endcomponent
+<p>
+@if ($isNewUser)
+Welcome! Click the button below to verify your email and access your account.
+@else
+Click the button below to login to your account. This link will expire in 10 minutes.
+@endif
+</p>
 
-    If you did not request this link, no action is required. Thanks,
-    <br />
-    {{ config('app.name') }}
-@endcomponent
+<x-mail::button :url="$url">
+{{ $isNewUser ? 'Access Your Account' : 'Login Now' }}
+</x-mail::button>
+
+<p>
+If you did not request this link, no action is required.
+</p>
+
+<p>
+@lang('emails.general.goodbye')
+</p>
+
+<p>
+{{ config('app.name') }}
+</p>
+
+{{-- Subcopy --}}
+<x-slot:subcopy>
+@lang(
+    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
+    'into your web browser:',
+    [
+        'actionText' => ($isNewUser ? 'Access Your Account' : 'Login Now'),
+    ]
+) <span class="break-all">[{{ $url }}]({{ $url }})</span>
+</x-slot:subcopy>
+
+</x-mail::message>
