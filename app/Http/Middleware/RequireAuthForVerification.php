@@ -11,7 +11,7 @@ class RequireAuthForVerification
     public function handle(Request $request, Closure $next): Response
     {
         if (config('guacpanel.auth_required_to_verify_email')) {
-            if (! auth()->check()) {
+            if (!auth()->check()) {
                 session()->put('url.intended', $request->fullUrl());
 
                 return redirect()

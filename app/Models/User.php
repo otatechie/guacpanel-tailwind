@@ -359,8 +359,8 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         if (
-            ! config('guacpanel.email_verification_enabled')
-            || ! Features::enabled(Features::emailVerification())
+            !config('guacpanel.email_verification_enabled')
+            || !Features::enabled(Features::emailVerification())
         ) {
             return;
         }

@@ -39,7 +39,7 @@ class VerifyEmailController
         $isAuthenticated = auth()->check();
 
         $routeName = $redirectTo === '/dashboard' ? 'dashboard' : 'login';
-        if (! $isAuthenticated) {
+        if (!$isAuthenticated) {
             $routeName = 'login';
         }
 

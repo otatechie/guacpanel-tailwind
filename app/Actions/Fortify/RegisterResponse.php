@@ -17,7 +17,7 @@ class RegisterResponse implements RegisterResponseContract
 
     public function toResponse($request)
     {
-        if (! config('guacpanel.auto_login_after_register')) {
+        if (!config('guacpanel.auto_login_after_register')) {
             $this->guard->logout();
         }
 
