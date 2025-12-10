@@ -17,10 +17,10 @@ const props = defineProps({
 })
 
 const form = useForm({
-  name: 'jeremy',
-  email: 'jeremykenedy@gmail.com',
-  password: 'password',
-  password_confirmation: 'password',
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
 })
 
 const { settings: { passwordlessLogin = true } = {} } = usePage().props

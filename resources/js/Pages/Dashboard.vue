@@ -17,11 +17,6 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
-  livestocks: {
-    type: Array,
-    required: true,
-    default: () => [],
-  },
 })
 
 const page = usePage()
@@ -153,23 +148,6 @@ const stocks = ref([
       <section class="mb-10">
         <h2 class="mb-4 text-xl font-semibold text-[var(--color-text)]">Stock Widgets</h2>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <!-- {{ livestocks }} -->
-
-          <!-- {{ livestocks.symbol }}
-{{ livestocks.name }}
-{{ livestocks.price }}
-{{ livestocks.change }}
-{{ livestocks.icon }}
-{{ livestocks.bgColor }} -->
-
-          <!-- { symbol: 'AAPL', name: 'Apple Inc', price: '173.25', change: 0.86, currency: '$' } -->
-
-          <StockWidget
-            :stock="livestocks"
-            :src="livestocks.icon"
-            :alt="livestocks.name"
-            size="lg" />
-          <!--
           <StockWidget
             :stock="stocks[0]"
             :src="stocks[0].icon"
@@ -194,12 +172,11 @@ const stocks = ref([
             :alt="stocks[3].name"
             :bg-color="stocks[3].bgColor"
             size="lg" />
- -->
         </div>
       </section>
 
       <!-- Stats Overview -->
-      <!--       <section class="mb-10">
+      <section class="mb-10">
         <h2 class="mb-4 text-xl font-semibold text-[var(--color-text)]">Stats Overview</h2>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatWidget
@@ -224,9 +201,9 @@ const stocks = ref([
             " />
         </div>
       </section>
- -->
+
       <!-- Progress Widgets -->
-      <!--       <section class="mb-10">
+      <section class="mb-10">
         <h2 class="mb-4 text-xl font-semibold text-[var(--color-text)]">Progress Widgets</h2>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ProgressWidget
@@ -255,9 +232,9 @@ const stocks = ref([
             color="indigo" />
         </div>
       </section>
- -->
+
       <!-- Chart Widgets -->
-      <!--       <section class="mb-10">
+      <section class="mb-10">
         <h2 class="mb-4 text-xl font-semibold text-[var(--color-text)]">Chart Widgets</h2>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ChartWidget
@@ -285,7 +262,7 @@ const stocks = ref([
             :data="[15, 20, 18, 25, 30, 28, 35, 40, 42]"
             color="purple" />
         </div>
-      </section> -->
+      </section>
     </div>
   </main>
 </template>

@@ -45,6 +45,11 @@ class FortifyServiceProvider extends ServiceProvider
                 'canRegister'       => Features::enabled(Features::registration()),
                 'status'            => $request->session()->get('status'),
                 'providersConfig'   => $request->attributes->get('providersConfig'),
+                'demo'              => [
+                    'enabled'   => config('guacpanel.demo.enabled'),
+                    'username'  => config('guacpanel.demo.login.username'),
+                    'password'  => config('guacpanel.demo.login.password'),
+                ],
             ]);
         });
 
