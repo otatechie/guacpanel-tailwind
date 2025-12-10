@@ -62,4 +62,19 @@ return [
     'general' => [
         'feature_disabled' => 'Feature disabled in the .env file',
     ],
+
+    'account' => [
+        'disabled'              => 'Account currently disabled. Email <a href="mailto::email" class="underline hover:text-orange-800">:email</a> for help.',
+        'locked'                => 'Account Locked. Email <a href="mailto::email" class="underline hover:text-orange-800">:email</a> for help.',
+        'force_pw_change'       => 'You must change your password before continuing.',
+        'two_factor_required'   => 'Two-factor authentication is required. Please enable it to continue.',
+        'invalid_restore_link'  => 'The link is either invalid or has expired.',
+        'deleted_successfully'  => 'Account has been deleted successfully 👋',
+        'already_logged_in'     => 'Unable to complete action, you are currently logged in as :username',
+        'account_restored'      => 'Welcome back 👋 Account restored successfully. You can now log in.',
+    ],
+
+    'general' => [
+        'feature_disabled' => 'Feature disabled in the .env file',
+    ],
 ];
