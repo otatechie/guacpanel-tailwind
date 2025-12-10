@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Events\UserDeleted;
+use App\Events\UserRestored;
 use App\Listeners\LogFailedLogin;
 use App\Listeners\LogSuccessfulLogin;
 use App\Listeners\LogSuccessfulLogout;
 use App\Listeners\SendGoodbyeEmail;
+use App\Listeners\SendRestoredEmail;
 use App\Listeners\SendWelcomeEmail;
 use App\Listeners\SendWelcomeEmailVerified;
 use Illuminate\Auth\Events\Failed;
@@ -53,6 +55,11 @@ class EventListenerRegistrar
         $this->events->listen(
             UserDeleted::class,
             SendGoodbyeEmail::class,
+        );
+
+        $this->events->listen(
+            UserRestored::class,
+            SendRestoredEmail::class,
         );
     }
 }
