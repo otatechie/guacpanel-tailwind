@@ -92,4 +92,5 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->with('error', __('notifications.errors.sm_session_invalid'));
         });
     })
+    ->withEvents(false) // turn off folder auto scanning, manually define events outide of Laravel's default.
     ->create();

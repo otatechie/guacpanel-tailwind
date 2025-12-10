@@ -17,9 +17,18 @@ return [
     'welcome' => [
         'subject'   => 'Welcome to :appname 🎉🎉',
         'greeting'  => '👋 Welcome, :username 🎉',
-        'msg_upper' => 'Thanks for registering at :appname.',
+        'line_one'  => 'Thanks for registering at :appname.',
         'btn'       => 'Go to Dashboard',
-        'msg_lower' => 'If you have any questions, just reply to this email.',
+        'line_two'  => 'If you have any questions, just reply to this email.',
+        'goodbye'   => 'Cheers! 🙏',
+    ],
+
+    'welcome-verified' => [
+        'subject'   => 'Welcome to :appname - Account Verified 🎉🎉',
+        'greeting'  => '👋 Welcome, :username 🎉',
+        'line_one'  => 'Your account is now verified. Welcome to :appname.',
+        'btn'       => 'Go to Dashboard',
+        'line_two'  => 'If you have any questions, just reply to this email.',
         'goodbye'   => 'Cheers! 🙏',
     ],
 

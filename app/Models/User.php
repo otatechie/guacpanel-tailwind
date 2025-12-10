@@ -355,8 +355,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         ]);
     }
 
-    // There is Fortify/Laravel conflict that we cannot resolve on the app side.
-    // Per-request guard: only send once for this user
+    // Multiple Listeners Safety Net Override
     public function sendEmailVerificationNotification(): void
     {
         if (

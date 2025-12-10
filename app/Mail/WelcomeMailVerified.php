@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeMail extends Mailable
+class WelcomeMailVerified extends Mailable
 {
     use Queueable;
     use SerializesModels;
@@ -23,9 +23,9 @@ class WelcomeMail extends Mailable
     public function build(): self
     {
         return $this
-                ->subject(trans('emails.welcome.subject', [
+                ->subject(trans('emails.welcome-verified.subject', [
                     'appname' => config('app.name'),
                 ]))
-                ->markdown('emails.welcome');
+                ->markdown('emails.welcome-verified');
     }
 }
