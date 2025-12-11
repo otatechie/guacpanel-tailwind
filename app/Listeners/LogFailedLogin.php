@@ -7,17 +7,6 @@ use Illuminate\Auth\Events\Failed;
 
 class LogFailedLogin
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     */
     public function handle(Failed $event): void
     {
         if (isset($event->user)) {

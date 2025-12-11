@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -30,6 +30,14 @@ const props = defineProps({
     type: Object,
     required: false,
   },
+  demo: {
+    type: Object,
+    default: () => ({
+      enabled: false,
+      username: '',
+      password: '',
+    }),
+  },
 })
 
 const page = usePage()
@@ -41,6 +49,24 @@ const form = useForm({
   password: '',
   remember: false,
 })
+
+onMounted(() => {
+  if (props.demo.enabled) {
+    form.email = props.demo.username
+    form.password = props.demo.password
+  }
+})
+
+watch(
+  () => props.demo,
+  newDemo => {
+    if (newDemo && newDemo.enabled) {
+      form.email = newDemo.username
+      form.password = newDemo.password
+    }
+  },
+  { deep: true }
+)
 
 const smLogin = (() => {
   const providersConfig = props.providersConfig
@@ -72,7 +98,6 @@ const sendMagicLink = () => {
 
 <template>
   <Head title="Login" />
-
   <main class="mx-auto max-w-[384px] px-8" role="main">
     <h1 class="main-heading text-center">Login</h1>
     <form

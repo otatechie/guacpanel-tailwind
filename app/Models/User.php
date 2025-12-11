@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\Features;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
@@ -354,11 +355,23 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         ]);
     }
 
+    // Multiple Listeners Safety Net Override
     public function sendEmailVerificationNotification(): void
     {
-        if (!config('guacpanel.email_verification_enabled')) {
+        if (
+            !config('guacpanel.email_verification_enabled')
+            || !Features::enabled(Features::emailVerification())
+        ) {
             return;
         }
+
+        $key = 'guacpanel.verification_sent_for';
+
+        if (app()->bound($key) && app($key) === $this->getKey()) {
+            return;
+        }
+
+        app()->instance($key, $this->getKey());
 
         $this->notify(new VerifyEmail());
     }

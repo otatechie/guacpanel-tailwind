@@ -3,12 +3,14 @@
 namespace App\Observers;
 
 use App\Models\User;
+use App\Traits\UserCachingTrait;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class UserObserver
 {
+    use UserCachingTrait;
+
     public function creating(User $user): void
     {
         if (!$user->user_slug) {
@@ -51,10 +53,5 @@ class UserObserver
     public function forceDeleted(User $user): void
     {
         $this->resetUserCache($user);
-    }
-
-    private function resetUserCache(User $user, string $key = 'user_'): void
-    {
-        Cache::forget($key.$user->id);
     }
 }

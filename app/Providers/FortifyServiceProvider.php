@@ -18,17 +18,11 @@ use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         $this->configureActions();
@@ -37,18 +31,12 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureContracts();
     }
 
-    /**
-     * Configure Fortify actions.
-     */
     private function configureActions(): void
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
     }
 
-    /**
-     * Configure Fortify views.
-     */
     private function configureViews(): void
     {
         Fortify::loginView(function (Request $request) {
@@ -57,6 +45,11 @@ class FortifyServiceProvider extends ServiceProvider
                 'canRegister'       => Features::enabled(Features::registration()),
                 'status'            => $request->session()->get('status'),
                 'providersConfig'   => $request->attributes->get('providersConfig'),
+                'demo'              => [
+                    'enabled'   => config('guacpanel.demo.enabled'),
+                    'username'  => config('guacpanel.demo.login.username'),
+                    'password'  => config('guacpanel.demo.login.password'),
+                ],
             ]);
         });
 
@@ -84,9 +77,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::confirmPasswordView(fn () => Inertia::render('Auth/ConfirmPassword'));
     }
 
-    /**
-     * Configure rate limiting.
-     */
     private function configureRateLimiting(): void
     {
         RateLimiter::for('two-factor', function (Request $request) {
