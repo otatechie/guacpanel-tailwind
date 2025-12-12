@@ -23,6 +23,9 @@ use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
 use Illuminate\Support\Facades\Route;
 
+
+use App\Http\Controllers\AppNotificationController;
+
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
 
@@ -184,3 +187,45 @@ Route::middleware([
         });
     });
 });
+
+
+
+
+Route::prefix('api')->middleware('auth')->group(function () {
+    Route::get('/notifications', [AppNotificationController::class, 'index']);
+    Route::post('/notifications/{notification}/read', [AppNotificationController::class, 'markRead']);
+    Route::post('/notifications/read-all', [AppNotificationController::class, 'markAllRead']);
+});
+
+
+
+
+// Temp Testing Routes
+
+use App\Events\AppNotificationRequested;
+
+Route::post('/_test/notify/user', function () {
+    event(new AppNotificationRequested(
+        userId: (string) auth()->id(),
+        message: 'User notification test (DB + Broadcast).',
+        data: [],
+        scope: 'user',
+        type: 'success',
+        title: 'Test: User',
+    ));
+
+    return response()->noContent();
+})->middleware('auth');
+
+Route::post('/_test/notify/system', function () {
+    event(new AppNotificationRequested(
+        userId: null,
+        message: 'System notification test (DB + Broadcast).',
+        data: [],
+        scope: 'system',
+        type: 'info',
+        title: 'Test: System',
+    ));
+
+    return response()->noContent();
+})->middleware('auth');

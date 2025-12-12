@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import apiFetch from '@js/utils/apiFetch'
 
-defineProps({
+const props = defineProps({
   user: {
     type: Object,
     required: true,
@@ -9,53 +10,136 @@ defineProps({
 })
 
 const notificationsOpen = ref(false)
+const notifications = ref([])
+const isLoading = ref(false)
 
-const notifications = ref([
-  {
-    id: 1,
-    title: 'New Update Available',
-    description: 'A new software update is available for installation',
-    time: '5 min ago',
-    read: false,
-    priority: 'high',
-  },
-  {
-    id: 2,
-    title: 'Welcome to Platform',
-    description: 'Thanks for joining! Take a quick tour of our features',
-    time: '1 hour ago',
-    read: false,
-    priority: 'normal',
-  },
-  {
-    id: 3,
-    title: 'System Maintenance',
-    description: 'Scheduled maintenance in 2 hours',
-    time: '2 hours ago',
-    read: true,
-    priority: 'low',
-  },
-])
+let userChannel = null
+let systemChannel = null
 
-const toggleNotifications = () => {
-  notificationsOpen.value = !notificationsOpen.value
+const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
+
+const typeToPriority = type => {
+  if (type === 'error') return 'critical'
+  if (type === 'warning') return 'high'
+  if (type === 'success') return 'normal'
+  return 'low'
 }
 
-const markAsRead = notificationId => {
-  const notification = notifications.value.find(n => n.id === notificationId)
-  if (notification) {
-    notification.read = true
+const relativeTime = iso => {
+  if (!iso) return ''
+  const then = new Date(iso).getTime()
+  const now = Date.now()
+  const diff = Math.max(0, Math.floor((now - then) / 1000))
+
+  if (diff < 10) return 'just now'
+  if (diff < 60) return `${diff}s ago`
+  const mins = Math.floor(diff / 60)
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h ago`
+  const days = Math.floor(hrs / 24)
+  return `${days}d ago`
+}
+
+const normalize = n => ({
+  id: n.id,
+  title: n.title || (n.scope === 'system' ? 'System' : 'Notification'),
+  description: n.message,
+  created_at: n.created_at,
+  time: relativeTime(n.created_at),
+  is_read: !!n.is_read,
+  read_at: n.read_at,
+  scope: n.scope,
+  type: n.type,
+  priority: typeToPriority(n.type),
+  data: n.data ?? null,
+})
+
+const fetchNotifications = async () => {
+  isLoading.value = true
+
+  try {
+    const res = await apiFetch('/api/notifications')
+
+    if (!res.ok) {
+      return
+    }
+
+    const json = await res.json()
+    notifications.value = Array.isArray(json?.data) ? json.data.map(normalize) : []
+  } finally {
+    isLoading.value = false
   }
+}
+
+const toggleNotifications = async () => {
+  notificationsOpen.value = !notificationsOpen.value
+
+  if (notificationsOpen.value) {
+    await fetchNotifications()
+  }
+}
+
+const markAsRead = async notification => {
+  if (!notification || notification.is_read) return
+
+  notification.is_read = true
+
+  const res = await apiFetch(`/api/notifications/${notification.id}/read`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  })
+
+  if (!res.ok) {
+    notification.is_read = false
+  }
+}
+
+const markAllRead = async () => {
+  const original = notifications.value
+  notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
+
+  const res = await apiFetch('/api/notifications/read-all', {
+    method: 'POST',
+    body: JSON.stringify({}),
+  })
+
+  if (!res.ok) {
+    notifications.value = original
+  }
+}
+
+const upsertIncoming = payload => {
+  if (!payload?.id) return
+
+  const item = normalize({
+    id: payload.id,
+    scope: payload.scope,
+    type: payload.type,
+    title: payload.title,
+    message: payload.message,
+    data: payload.data,
+    created_at: payload.created_at,
+    read_at: payload.read_at ?? null,
+    is_read: false,
+  })
+
+  const existingIndex = notifications.value.findIndex(n => n.id === item.id)
+
+  if (existingIndex >= 0) {
+    notifications.value.splice(existingIndex, 1, item)
+    return
+  }
+
+  notifications.value.unshift(item)
+  notifications.value = notifications.value.slice(0, 25)
 }
 
 const handleClickAway = event => {
   const notificationButton = document.querySelector('[data-notification-button]')
   const notificationDropdown = document.querySelector('[data-notification-dropdown]')
 
-  if (
-    !notificationButton?.contains(event.target) &&
-    !notificationDropdown?.contains(event.target)
-  ) {
+  if (!notificationButton?.contains(event.target) && !notificationDropdown?.contains(event.target)) {
     notificationsOpen.value = false
   }
 }
@@ -66,20 +150,45 @@ const handleEscapeKey = event => {
   }
 }
 
-onMounted(() => {
+const subscribeRealtime = () => {
+  if (!window.Echo || !props.user?.id) return
+
+  userChannel = window.Echo.private(`users.${props.user.id}`).listen(
+    '.app-notification.created',
+    upsertIncoming,
+  )
+
+  systemChannel = window.Echo.private('system').listen('.app-notification.created', upsertIncoming)
+}
+
+const unsubscribeRealtime = () => {
+  if (!window.Echo || !props.user?.id) return
+
+  window.Echo.leave(`private-users.${props.user.id}`)
+  window.Echo.leave('private-system')
+
+  userChannel = null
+  systemChannel = null
+}
+
+onMounted(async () => {
   document.addEventListener('click', handleClickAway)
   document.addEventListener('keydown', handleEscapeKey)
+
+  await fetchNotifications()
+  subscribeRealtime()
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickAway)
   document.removeEventListener('keydown', handleEscapeKey)
+
+  unsubscribeRealtime()
 })
 </script>
 
 <template>
   <div class="relative">
-    <!-- Notification Bell Button -->
     <button
       type="button"
       data-notification-button
@@ -94,26 +203,41 @@ onUnmounted(() => {
           stroke-width="1.5"
           d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
       </svg>
+
+      <span
+        v-if="unreadCount > 0"
+        class="absolute -top-1 -right-1 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+        {{ unreadCount > 9 ? '9+' : unreadCount }}
+      </span>
+
       <span
         class="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-[var(--color-text)] px-2 py-1 text-xs whitespace-nowrap text-[var(--color-bg)] opacity-0 transition-opacity group-hover:opacity-100">
         Notifications
       </span>
     </button>
 
-    <!-- Notification Dropdown -->
     <div
       v-show="notificationsOpen"
       data-notification-dropdown
       class="ring-opacity-5 absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-[var(--color-surface)] py-2 shadow-lg ring-1 ring-[var(--color-border)]">
-      <!-- Dropdown Header -->
-      <div class="border-b border-[var(--color-border)] px-4 py-2">
+      <div class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-2">
         <h3 class="text-sm font-semibold text-[var(--color-text)]">Notifications</h3>
+
+        <button
+          type="button"
+          class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+          @click="markAllRead">
+          Mark all read
+        </button>
       </div>
 
-      <!-- Notification List -->
       <div class="max-h-96 overflow-y-auto">
+        <div v-if="isLoading" class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
+          Loading…
+        </div>
+
         <div
-          v-if="notifications.length === 0"
+          v-else-if="notifications.length === 0"
           class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
           No notifications
         </div>
@@ -124,14 +248,14 @@ onUnmounted(() => {
             :key="notification.id"
             class="cursor-pointer px-4 py-3 transition-colors hover:bg-[var(--color-surface-muted)]"
             :class="{
-              'bg-blue-50/50 dark:bg-blue-900/20': !notification.read,
+              'bg-blue-50/50 dark:bg-blue-900/20': !notification.is_read,
               'border-l-4': true,
               'border-red-500': notification.priority === 'critical',
               'border-yellow-500': notification.priority === 'high',
               'border-blue-500': notification.priority === 'normal',
               'border-gray-500': notification.priority === 'low',
             }"
-            @click="markAsRead(notification.id)">
+            @click="markAsRead(notification)">
             <div class="flex gap-3">
               <div class="min-w-0 flex-1">
                 <h4 class="text-sm font-medium text-[var(--color-text)]">
@@ -144,8 +268,9 @@ onUnmounted(() => {
                   {{ notification.time }}
                 </time>
               </div>
+
               <div
-                v-if="!notification.read"
+                v-if="!notification.is_read"
                 class="mt-2 h-2 w-2 rounded-full bg-blue-500"
                 aria-hidden="true"></div>
             </div>

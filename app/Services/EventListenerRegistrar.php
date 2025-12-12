@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Events\AppNotificationRequested;
 use App\Events\UserDeleted;
 use App\Events\UserRestored;
+use App\Listeners\CreateAppNotification;
 use App\Listeners\LogFailedLogin;
 use App\Listeners\LogSuccessfulLogin;
 use App\Listeners\LogSuccessfulLogout;
@@ -60,6 +62,11 @@ class EventListenerRegistrar
         $this->events->listen(
             UserRestored::class,
             SendRestoredEmail::class,
+        );
+
+        $this->events->listen(
+            AppNotificationRequested::class,
+            CreateAppNotification::class,
         );
     }
 }
