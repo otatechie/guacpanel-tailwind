@@ -20,11 +20,11 @@ class CreateAppNotification
 
         $notification = AppNotification::create([
             'user_id' => $userId,
-            'scope' => $scope,
-            'type' => $event->type,
-            'title' => $event->title,
+            'scope'   => $scope,
+            'type'    => $event->type,
+            'title'   => $event->title,
             'message' => $event->message,
-            'data' => $event->data ?: null,
+            'data'    => $event->data ?: null,
             'read_at' => null,
         ]);
 

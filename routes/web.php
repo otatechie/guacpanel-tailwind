@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AdminSessionController;
 use App\Http\Controllers\Admin\AdminSettingController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUsersVerificationController;
+use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Pages\ChartsController;
@@ -22,9 +23,6 @@ use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
 use Illuminate\Support\Facades\Route;
-
-
-use App\Http\Controllers\AppNotificationController;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/', [PageController::class, 'home'])->name('home');
@@ -188,17 +186,11 @@ Route::middleware([
     });
 });
 
-
-
-
 Route::prefix('api')->middleware('auth')->group(function () {
     Route::get('/notifications', [AppNotificationController::class, 'index']);
     Route::post('/notifications/{notification}/read', [AppNotificationController::class, 'markRead']);
     Route::post('/notifications/read-all', [AppNotificationController::class, 'markAllRead']);
 });
-
-
-
 
 // Temp Testing Routes
 

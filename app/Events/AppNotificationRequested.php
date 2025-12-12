@@ -7,7 +7,8 @@ use Illuminate\Queue\SerializesModels;
 
 class AppNotificationRequested
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public function __construct(
         public ?string $userId,     // ULID string, nullable for system
@@ -16,5 +17,6 @@ class AppNotificationRequested
         public string $scope = 'user', // user|system
         public string $type = 'info',  // info|success|warning|error
         public ?string $title = null,
-    ) {}
+    ) {
+    }
 }

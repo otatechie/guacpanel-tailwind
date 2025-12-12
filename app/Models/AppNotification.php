@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\AppNotificationRead;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 
