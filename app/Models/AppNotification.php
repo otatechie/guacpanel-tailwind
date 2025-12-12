@@ -20,11 +20,13 @@ class AppNotification extends Model
         'message',
         'data',
         'read_at',
+        'dismissed_at',
     ];
 
     protected $casts = [
-        'data'      => 'array',
-        'read_at'   => 'datetime',
+        'data'          => 'array',
+        'read_at'       => 'datetime',
+        'dismissed_at'  => 'datetime',
     ];
 
     public function user()

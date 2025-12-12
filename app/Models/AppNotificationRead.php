@@ -16,10 +16,12 @@ class AppNotificationRead extends Model
         'app_notification_id',
         'user_id',
         'read_at',
+        'dismissed_at',
     ];
 
     protected $casts = [
-        'read_at' => 'datetime',
+        'read_at'       => 'datetime',
+        'dismissed_at'  => 'datetime',
     ];
 
     public function notification()

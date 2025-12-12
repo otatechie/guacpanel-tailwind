@@ -48,6 +48,14 @@ Route::middleware([
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        // ✅ Notifications routes moved INSIDE the authenticated "web/auth.session" stack
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [AppNotificationController::class, 'index']);
+            Route::post('/read-all', [AppNotificationController::class, 'markAllRead']);
+            Route::post('/{notification}/read', [AppNotificationController::class, 'markRead']);
+            Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss']);
+        });
+
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {
             // Force Password Change Routes
@@ -184,12 +192,6 @@ Route::middleware([
             Route::post('/typesense/multi-search', [TypesenseController::class, 'multiSearch']);
         });
     });
-});
-
-Route::prefix('api')->middleware('auth')->group(function () {
-    Route::get('/notifications', [AppNotificationController::class, 'index']);
-    Route::post('/notifications/{notification}/read', [AppNotificationController::class, 'markRead']);
-    Route::post('/notifications/read-all', [AppNotificationController::class, 'markAllRead']);
 });
 
 // Temp Testing Routes

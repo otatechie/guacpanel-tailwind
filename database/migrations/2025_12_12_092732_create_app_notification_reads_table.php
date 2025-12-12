@@ -19,10 +19,13 @@ return new class() extends Migration {
                 ->cascadeOnDelete();
 
             $table->timestamp('read_at')->nullable();
+            $table->timestamp('dismissed_at')->nullable();
+
             $table->timestamps();
 
             $table->unique(['app_notification_id', 'user_id']);
             $table->index(['user_id', 'read_at']);
+            $table->index(['user_id', 'dismissed_at']);
         });
     }
 

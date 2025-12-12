@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
 
 const props = defineProps({
@@ -9,12 +10,15 @@ const props = defineProps({
   },
 })
 
+const page = usePage()
+
 const notificationsOpen = ref(false)
 const notifications = ref([])
 const isLoading = ref(false)
 
 let userChannel = null
 let systemChannel = null
+let reconcileTimer = null
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
 
@@ -55,20 +59,30 @@ const normalize = n => ({
   data: n.data ?? null,
 })
 
-const fetchNotifications = async () => {
-  isLoading.value = true
+const hydrateFromPageProps = () => {
+  const initial = page.props?.notifications?.data
+  notifications.value = Array.isArray(initial) ? initial.map(normalize) : []
+}
+
+const fetchNotifications = async ({ silent = false } = {}) => {
+  if (!silent) {
+    isLoading.value = true
+  }
 
   try {
-    const res = await apiFetch('/api/notifications')
+    const res = await apiFetch('/notifications')
 
     if (!res.ok) {
       return
     }
 
     const json = await res.json()
-    notifications.value = Array.isArray(json?.data) ? json.data.map(normalize) : []
+    const next = Array.isArray(json?.data) ? json.data.map(normalize) : []
+    notifications.value = next
   } finally {
-    isLoading.value = false
+    if (!silent) {
+      isLoading.value = false
+    }
   }
 }
 
@@ -76,7 +90,7 @@ const toggleNotifications = async () => {
   notificationsOpen.value = !notificationsOpen.value
 
   if (notificationsOpen.value) {
-    await fetchNotifications()
+    await fetchNotifications({ silent: true })
   }
 }
 
@@ -85,7 +99,7 @@ const markAsRead = async notification => {
 
   notification.is_read = true
 
-  const res = await apiFetch(`/api/notifications/${notification.id}/read`, {
+  const res = await apiFetch(`/notifications/${notification.id}/read`, {
     method: 'POST',
     body: JSON.stringify({}),
   })
@@ -99,7 +113,28 @@ const markAllRead = async () => {
   const original = notifications.value
   notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
 
-  const res = await apiFetch('/api/notifications/read-all', {
+  const res = await apiFetch('/notifications/read-all', {
+    method: 'POST',
+    body: JSON.stringify({}),
+  })
+
+  if (!res.ok) {
+    notifications.value = original
+  }
+}
+
+const dismissNotification = async (notification, event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
+  if (!notification?.id) return
+
+  const original = notifications.value
+  notifications.value = notifications.value.filter(n => n.id !== notification.id)
+
+  const res = await apiFetch(`/notifications/${notification.id}/dismiss`, {
     method: 'POST',
     body: JSON.stringify({}),
   })
@@ -171,18 +206,38 @@ const unsubscribeRealtime = () => {
   systemChannel = null
 }
 
+const startReconcile = () => {
+  if (reconcileTimer) return
+
+  reconcileTimer = setInterval(() => {
+    fetchNotifications({ silent: true })
+  }, 60000)
+}
+
+const stopReconcile = () => {
+  if (!reconcileTimer) return
+  clearInterval(reconcileTimer)
+  reconcileTimer = null
+}
+
 onMounted(async () => {
   document.addEventListener('click', handleClickAway)
   document.addEventListener('keydown', handleEscapeKey)
 
-  await fetchNotifications()
+  hydrateFromPageProps()
   subscribeRealtime()
+  startReconcile()
+
+  setTimeout(() => {
+    fetchNotifications({ silent: true })
+  }, 750)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickAway)
   document.removeEventListener('keydown', handleEscapeKey)
 
+  stopReconcile()
   unsubscribeRealtime()
 })
 </script>
@@ -246,7 +301,7 @@ onUnmounted(() => {
           <li
             v-for="notification in notifications"
             :key="notification.id"
-            class="cursor-pointer px-4 py-3 transition-colors hover:bg-[var(--color-surface-muted)]"
+            class="px-4 py-3 transition-colors hover:bg-[var(--color-surface-muted)]"
             :class="{
               'bg-blue-50/50 dark:bg-blue-900/20': !notification.is_read,
               'border-l-4': true,
@@ -254,13 +309,37 @@ onUnmounted(() => {
               'border-yellow-500': notification.priority === 'high',
               'border-blue-500': notification.priority === 'normal',
               'border-gray-500': notification.priority === 'low',
+              'cursor-pointer' : notification.is_read == false,
+              'cursor-default' : notification.is_read == true,
             }"
             @click="markAsRead(notification)">
             <div class="flex gap-3">
               <div class="min-w-0 flex-1">
-                <h4 class="text-sm font-medium text-[var(--color-text)]">
-                  {{ notification.title }}
-                </h4>
+                <div class="flex items-start justify-between gap-3">
+                  <h4 class="text-sm font-medium text-[var(--color-text)]">
+                    {{ notification.title }}
+                  </h4>
+
+                  <button
+                    type="button"
+                    class="rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] cursor-pointer"
+                    aria-label="Dismiss notification"
+                    @click="dismissNotification(notification, $event)">
+                    <svg
+                      class="size-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path d="M18 6 6 18" />
+                      <path d="M6 6 18 18" />
+                    </svg>
+                  </button>
+                </div>
+
                 <p class="truncate text-sm text-[var(--color-text-muted)]">
                   {{ notification.description }}
                 </p>
