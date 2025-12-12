@@ -25,7 +25,7 @@ trait AppNotificationsHelperTrait
     {
         $user = $request->user();
 
-        if (! $user) {
+        if (!$user) {
             return ['data' => []];
         }
 
@@ -95,7 +95,7 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (! $notification->read_at) {
+            if (!$notification->read_at) {
                 $notification->update(['read_at' => $now]);
             }
 
@@ -168,7 +168,7 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (! $notification->dismissed_at) {
+            if (!$notification->dismissed_at) {
                 $notification->update(['dismissed_at' => $now]);
             }
 
