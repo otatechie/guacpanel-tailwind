@@ -303,7 +303,7 @@ onUnmounted(() => {
             v-if="hasUnreadNotifications"
             type="button"
             class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-            @click="markAllRead">
+            @click.stop="markAllRead">
             Mark all read
           </button>
 
@@ -311,7 +311,7 @@ onUnmounted(() => {
             v-if="hasAnyNotifications"
             type="button"
             class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-            @click="dismissAll">
+            @click.stop="dismissAll">
             Dismiss all
           </button>
         </div>
@@ -343,7 +343,7 @@ onUnmounted(() => {
               'cursor-pointer': notification.is_read == false,
               'cursor-default': notification.is_read == true,
             }"
-            @click="markAsRead(notification)">
+            @click.stop="markAsRead(notification)">
             <div class="flex gap-3">
               <div class="min-w-0 flex-1">
                 <div class="flex items-start justify-between gap-3">
