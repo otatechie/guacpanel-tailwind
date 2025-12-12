@@ -40,15 +40,15 @@ class AppNotificationController extends Controller
                 : $readMap->get($n->id)?->read_at;
 
             return [
-                'id' => $n->id,
-                'scope' => $n->scope,
-                'type' => $n->type,
-                'title' => $n->title,
-                'message' => $n->message,
-                'data' => $n->data,
+                'id'         => $n->id,
+                'scope'      => $n->scope,
+                'type'       => $n->type,
+                'title'      => $n->title,
+                'message'    => $n->message,
+                'data'       => $n->data,
                 'created_at' => optional($n->created_at)?->toISOString(),
-                'read_at' => optional($readAt)?->toISOString(),
-                'is_read' => (bool) $readAt,
+                'read_at'    => optional($readAt)?->toISOString(),
+                'is_read'    => (bool) $readAt,
             ];
         });
 
@@ -63,7 +63,7 @@ class AppNotificationController extends Controller
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === (string) $user->id, 403);
 
-            if (! $notification->read_at) {
+            if (!$notification->read_at) {
                 $notification->update(['read_at' => $now]);
             }
 
@@ -75,7 +75,7 @@ class AppNotificationController extends Controller
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
-                'user_id' => (string) $user->id,
+                'user_id'             => (string) $user->id,
             ],
             ['read_at' => $now],
         );
@@ -102,10 +102,10 @@ class AppNotificationController extends Controller
         if ($systemIds->isNotEmpty()) {
             $rows = $systemIds->map(fn ($id) => [
                 'app_notification_id' => (string) $id,
-                'user_id' => (string) $user->id,
-                'read_at' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'user_id'             => (string) $user->id,
+                'read_at'             => $now,
+                'created_at'          => $now,
+                'updated_at'          => $now,
             ])->all();
 
             // bulk upsert instead of foreach updateOrCreate
