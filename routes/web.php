@@ -48,10 +48,11 @@ Route::middleware([
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // ✅ Notifications routes moved INSIDE the authenticated "web/auth.session" stack
+        // In App Notifications
         Route::prefix('notifications')->group(function () {
             Route::get('/', [AppNotificationController::class, 'index']);
             Route::post('/read-all', [AppNotificationController::class, 'markAllRead']);
+            Route::post('/dismiss-all', [AppNotificationController::class, 'dismissAll']);
             Route::post('/{notification}/read', [AppNotificationController::class, 'markRead']);
             Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss']);
         });

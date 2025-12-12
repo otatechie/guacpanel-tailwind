@@ -38,4 +38,11 @@ class AppNotificationController extends Controller
 
         return response()->json(['ok' => true]);
     }
+
+    public function dismissAll(Request $request): JsonResponse
+    {
+        $this->dismissAllNotificationsForUser($request);
+
+        return response()->json(['ok' => true]);
+    }
 }

@@ -67,7 +67,7 @@ const sizeClasses = {
 
 <template>
   <article
-    class="group hover:border-opacity-70 relative rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xs transition-all duration-200"
+    class="group hover:border-opacity-70 relative rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xs transition-all duration-200 overflow-auto"
     :class="sizeClasses[size].card">
     <!-- Icon -->
     <div class="mb-4">

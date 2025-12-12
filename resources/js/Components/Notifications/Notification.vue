@@ -21,6 +21,8 @@ let systemChannel = null
 let reconcileTimer = null
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
+const hasAnyNotifications = computed(() => notifications.value.length > 0)
+const hasUnreadNotifications = computed(() => unreadCount.value > 0)
 
 const typeToPriority = type => {
   if (type === 'error') return 'critical'
@@ -110,6 +112,8 @@ const markAsRead = async notification => {
 }
 
 const markAllRead = async () => {
+  if (!hasUnreadNotifications.value) return
+
   const original = notifications.value
   notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
 
@@ -135,6 +139,22 @@ const dismissNotification = async (notification, event) => {
   notifications.value = notifications.value.filter(n => n.id !== notification.id)
 
   const res = await apiFetch(`/notifications/${notification.id}/dismiss`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  })
+
+  if (!res.ok) {
+    notifications.value = original
+  }
+}
+
+const dismissAll = async () => {
+  if (!hasAnyNotifications.value) return
+
+  const original = notifications.value
+  notifications.value = []
+
+  const res = await apiFetch('/notifications/dismiss-all', {
     method: 'POST',
     body: JSON.stringify({}),
   })
@@ -278,12 +298,23 @@ onUnmounted(() => {
       <div class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-2">
         <h3 class="text-sm font-semibold text-[var(--color-text)]">Notifications</h3>
 
-        <button
-          type="button"
-          class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-          @click="markAllRead">
-          Mark all read
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            v-if="hasUnreadNotifications"
+            type="button"
+            class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+            @click="markAllRead">
+            Mark all read
+          </button>
+
+          <button
+            v-if="hasAnyNotifications"
+            type="button"
+            class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+            @click="dismissAll">
+            Dismiss all
+          </button>
+        </div>
       </div>
 
       <div class="max-h-96 overflow-y-auto">
@@ -309,8 +340,8 @@ onUnmounted(() => {
               'border-yellow-500': notification.priority === 'high',
               'border-blue-500': notification.priority === 'normal',
               'border-gray-500': notification.priority === 'low',
-              'cursor-pointer' : notification.is_read == false,
-              'cursor-default' : notification.is_read == true,
+              'cursor-pointer': notification.is_read == false,
+              'cursor-default': notification.is_read == true,
             }"
             @click="markAsRead(notification)">
             <div class="flex gap-3">

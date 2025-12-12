@@ -60,7 +60,7 @@ const colorClasses = {
 
 <template>
   <div
-    class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs sm:p-6">
+    class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs sm:p-6 overflow-auto">
     <div class="flex items-start justify-between">
       <!-- Content -->
       <div class="min-w-0 flex-1">

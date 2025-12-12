@@ -6,7 +6,6 @@ use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 trait AppNotificationsHelperTrait
 {
@@ -122,7 +121,6 @@ trait AppNotificationsHelperTrait
         $now = Carbon::now();
         $userId = (string) $user->id;
 
-        // user-scoped: only those not dismissed
         AppNotification::query()
             ->where('scope', 'user')
             ->where('user_id', $userId)
@@ -130,7 +128,6 @@ trait AppNotificationsHelperTrait
             ->whereNull('read_at')
             ->update(['read_at' => $now]);
 
-        // system-scoped: only those not dismissed for this user (left join)
         $systemIds = AppNotification::query()
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
@@ -188,6 +185,45 @@ trait AppNotificationsHelperTrait
             [
                 'dismissed_at' => $now,
             ],
+        );
+    }
+
+    protected function dismissAllNotificationsForUser(Request $request): void
+    {
+        $user = $request->user();
+        $now = Carbon::now();
+        $userId = (string) $user->id;
+
+        // Dismiss all user-scoped notifications for this user
+        AppNotification::query()
+            ->where('scope', 'user')
+            ->where('user_id', $userId)
+            ->whereNull('dismissed_at')
+            ->update(['dismissed_at' => $now]);
+
+        // Dismiss all system-scoped notifications for this user via receipts
+        $systemIds = AppNotification::query()
+            ->where('scope', 'system')
+            ->whereNull('user_id')
+            ->pluck('id')
+            ->map(fn ($id) => (string) $id);
+
+        if ($systemIds->isEmpty()) {
+            return;
+        }
+
+        $rows = $systemIds->map(fn ($id) => [
+            'app_notification_id' => $id,
+            'user_id'             => $userId,
+            'dismissed_at'        => $now,
+            'created_at'          => $now,
+            'updated_at'          => $now,
+        ])->all();
+
+        AppNotificationRead::upsert(
+            $rows,
+            ['app_notification_id', 'user_id'],
+            ['dismissed_at', 'updated_at'],
         );
     }
 }
