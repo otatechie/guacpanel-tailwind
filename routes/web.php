@@ -52,14 +52,14 @@ Route::middleware([
 
         /**
          * Notifications (Page)
-         * view-notifications OR manage-notifications
+         * view-notifications OR manage-notifications.
          */
         Route::get('/notifications/all', [AppNotificationPageController::class, 'index'])
             ->name('notifications.index')
             ->middleware('permission:view-notifications|manage-notifications');
 
         /**
-         * Notifications (API)
+         * Notifications (API).
          */
         Route::prefix('notifications')->group(function () {
             // List payload used by dropdown + page reconciliation
