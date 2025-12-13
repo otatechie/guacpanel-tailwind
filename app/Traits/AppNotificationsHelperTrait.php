@@ -8,7 +8,6 @@ use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 trait AppNotificationsHelperTrait
 {
@@ -36,7 +35,7 @@ trait AppNotificationsHelperTrait
     {
         $user = $request->user();
 
-        if (! $user) {
+        if (!$user) {
             return ['data' => []];
         }
 
@@ -184,6 +183,7 @@ trait AppNotificationsHelperTrait
     {
         if ($isRead) {
             $this->markNotificationReadForUser($request, $notification);
+
             return;
         }
 
@@ -194,6 +194,7 @@ trait AppNotificationsHelperTrait
     {
         if ($isDismissed) {
             $this->dismissNotificationForUser($request, $notification);
+
             return;
         }
 
@@ -205,7 +206,7 @@ trait AppNotificationsHelperTrait
         // Normalize into request input so the existing bulk method can read it consistently.
         $request->merge([
             'action' => $validated['action'] ?? null,
-            'ids' => $validated['ids'] ?? [],
+            'ids'    => $validated['ids'] ?? [],
         ]);
 
         $this->bulkNotificationsForUser($request);
@@ -247,7 +248,7 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (! $notification->read_at) {
+            if (!$notification->read_at) {
                 $notification->update(['read_at' => $now]);
             }
 
@@ -372,6 +373,7 @@ trait AppNotificationsHelperTrait
 
         if ($systemIds->isEmpty()) {
             $this->broadcastBulk($userId, 'read-all');
+
             return;
         }
 
@@ -401,7 +403,7 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (! $notification->dismissed_at) {
+            if (!$notification->dismissed_at) {
                 $notification->update(['dismissed_at' => $now]);
             }
 
@@ -525,6 +527,7 @@ trait AppNotificationsHelperTrait
 
         if ($systemIds->isEmpty()) {
             $this->broadcastBulk($userId, 'dismiss-all');
+
             return;
         }
 
@@ -565,8 +568,8 @@ trait AppNotificationsHelperTrait
             ->whereIn('id', $ids->all())
             ->get(['id', 'scope', 'user_id'])
             ->map(fn ($n) => [
-                'id' => (string) $n->id,
-                'scope' => $n->scope,
+                'id'      => (string) $n->id,
+                'scope'   => $n->scope,
                 'user_id' => $n->user_id ? (string) $n->user_id : null,
             ]);
 
@@ -604,6 +607,7 @@ trait AppNotificationsHelperTrait
             }
 
             $this->broadcastBulk($userId, 'bulk', $ids->all());
+
             return;
         }
 
@@ -631,6 +635,7 @@ trait AppNotificationsHelperTrait
             }
 
             $this->broadcastBulk($userId, 'bulk', $ids->all());
+
             return;
         }
 
@@ -658,6 +663,7 @@ trait AppNotificationsHelperTrait
             }
 
             $this->broadcastBulk($userId, 'bulk', $ids->all());
+
             return;
         }
     }

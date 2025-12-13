@@ -99,7 +99,7 @@ class AppNotificationController extends Controller
     public function destroy(Request $request, AppNotification $notification): JsonResponse
     {
         $user = $request->user();
-        $canDelete = (bool) ($user?->can('delete-notifications'));
+        $canDelete = (bool) $user?->can('delete-notifications');
 
         $this->deleteNotificationForUser($request, $notification, $canDelete);
 

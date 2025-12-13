@@ -24,7 +24,7 @@ class AppNotificationsBulkChanged implements ShouldBroadcastNow
 
     public function broadcastOn(): Channel|array
     {
-        return new PrivateChannel('users.' . $this->userId);
+        return new PrivateChannel('users.'.$this->userId);
     }
 
     public function broadcastAs(): string
