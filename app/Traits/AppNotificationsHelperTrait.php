@@ -6,7 +6,6 @@ use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 trait AppNotificationsHelperTrait
 {
@@ -26,7 +25,7 @@ trait AppNotificationsHelperTrait
     {
         $user = $request->user();
 
-        if (! $user) {
+        if (!$user) {
             return ['data' => []];
         }
 
@@ -96,7 +95,7 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (! $notification->read_at) {
+            if (!$notification->read_at) {
                 $notification->update(['read_at' => $now]);
             }
 
@@ -197,7 +196,7 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (! $notification->dismissed_at) {
+            if (!$notification->dismissed_at) {
                 $notification->update(['dismissed_at' => $now]);
             }
 
@@ -309,8 +308,8 @@ trait AppNotificationsHelperTrait
             ->whereIn('id', $ids->all())
             ->get(['id', 'scope', 'user_id'])
             ->map(fn ($n) => [
-                'id' => (string) $n->id,
-                'scope' => $n->scope,
+                'id'      => (string) $n->id,
+                'scope'   => $n->scope,
                 'user_id' => $n->user_id ? (string) $n->user_id : null,
             ]);
 
@@ -422,6 +421,7 @@ trait AppNotificationsHelperTrait
             abort_unless((string) $notification->user_id === $userId, 403);
 
             $notification->delete();
+
             return;
         }
 
@@ -430,6 +430,7 @@ trait AppNotificationsHelperTrait
         if ($canManage) {
             // hard delete globally
             $notification->delete();
+
             return;
         }
 
