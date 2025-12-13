@@ -95,8 +95,21 @@ const del = async url => {
   }
 }
 
+const isReloading = ref(false)
+
 const refresh = () => {
-  router.reload({ preserveScroll: true, preserveState: true })
+  if (isReloading.value) return
+
+  isReloading.value = true
+
+  router.reload({
+    only: ['notifications'],
+    preserveScroll: true,
+    preserveState: true,
+    onFinish: () => {
+      isReloading.value = false
+    },
+  })
 }
 
 const markRead = async row => {
@@ -156,7 +169,7 @@ const scheduleRefresh = () => {
   refreshTimer = setTimeout(() => {
     refreshTimer = null
     refresh()
-  }, 250)
+  }, 200)
 }
 
 const upsertIncoming = payload => {
@@ -417,7 +430,9 @@ onUnmounted(() => {
                 </td>
 
                 <td class="p-3 align-top">
-                  <span class="inline-flex items-center" :title="row.scope === 'system' ? 'System' : 'User'">
+                  <span
+                    class="inline-flex items-center"
+                    :title="row.scope === 'system' ? 'System' : 'User'">
                     <svg
                       v-if="scopeIconName(row.scope) === 'user'"
                       class="size-4 text-[var(--color-text-muted)]"

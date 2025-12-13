@@ -77,7 +77,10 @@ const normalize = n => ({
 
 const hydrateFromPageProps = () => {
   const initial = page.props?.notifications?.data
-  notifications.value = Array.isArray(initial) ? initial.map(normalize) : []
+
+  notifications.value = Array.isArray(initial)
+    ? initial.filter(n => !n.is_dismissed).map(normalize)
+    : []
 }
 
 const fetchNotifications = async ({ silent = false } = {}) => {
@@ -442,8 +445,20 @@ onUnmounted(() => {
 
           <div
             v-else-if="notifications.length === 0"
-            class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
-            No notifications
+            class="flex flex-col items-center justify-center gap-2 px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-10">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53" />
+            </svg>
+            No new notifications
           </div>
 
           <ul v-else class="divide-y divide-gray-400">
@@ -646,7 +661,8 @@ onUnmounted(() => {
               isViewAllActive
                 ? 'font-semibold text-[var(--color-text)]'
                 : 'text-[var(--color-text-muted)]'
-            ">
+            "
+            @click="closeDropdown">
             View all notifications
           </Link>
         </div>
