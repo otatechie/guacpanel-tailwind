@@ -65,7 +65,6 @@ const activeTab = ref(0)
           <div class="bg-gray-50 px-3 sm:px-6 dark:bg-gray-800">
             <Tabs v-model="activeTab" :tabs="tabs" />
           </div>
-
           <div class="relative">
             <Transition name="tab-fade" mode="out-in" appear>
               <RolesTab

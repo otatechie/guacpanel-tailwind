@@ -24,7 +24,8 @@ class AdminPermissionRoleController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
+        // $perPage = $this->pagination->resolvePerPageWithDefaults($request);
+        $perPage = 10000000; // Just get them all so can fully update a role.
 
         $permissions = Permission::query()
             ->paginate($perPage)

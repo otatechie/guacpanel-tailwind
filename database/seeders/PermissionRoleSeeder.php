@@ -56,6 +56,14 @@ class PermissionRoleSeeder extends Seeder
 
             // Login History
             'view-login-history' => 'View user login history',
+
+            // App Notifications
+            'view-notifications'    => 'User Can View Notifications',
+            'edit-notifications'    => 'User Can Edit, Mark as Read, and Dismiss Notifications',
+            'create-notifications'  => 'User Can Create Notifications',
+            'delete-notifications'  => 'User Can Delete Notifications',
+
+            'manage-notifications'  => 'Admin Can Manage Notifications',
         ];
 
         $permissions = [];
@@ -98,6 +106,10 @@ class PermissionRoleSeeder extends Seeder
         $roles['user']->syncPermissions([
             $permissions['edit-profile'],
             $permissions['dashboard-view'],
+            $permissions['view-notifications'],
+            $permissions['edit-notifications'],
+            $permissions['create-notifications'],
+            $permissions['delete-notifications'],
         ]);
     }
 }

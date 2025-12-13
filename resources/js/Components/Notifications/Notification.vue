@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { usePage } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
 
 const props = defineProps({
@@ -23,6 +23,11 @@ let reconcileTimer = null
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
 const hasAnyNotifications = computed(() => notifications.value.length > 0)
 const hasUnreadNotifications = computed(() => unreadCount.value > 0)
+
+const permissions = computed(() => page.props?.auth?.user?.permissions ?? [])
+const canViewAll = computed(
+  () => permissions.value.includes('manage-notifications') || permissions.value.includes('view-notifications'),
+)
 
 const typeToPriority = type => {
   if (type === 'error') return 'critical'
@@ -303,7 +308,7 @@ onUnmounted(() => {
             v-if="hasUnreadNotifications"
             type="button"
             class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-            @click.stop="markAllRead">
+            @click="markAllRead">
             Mark all read
           </button>
 
@@ -311,7 +316,7 @@ onUnmounted(() => {
             v-if="hasAnyNotifications"
             type="button"
             class="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-            @click.stop="dismissAll">
+            @click="dismissAll">
             Dismiss all
           </button>
         </div>
@@ -343,7 +348,7 @@ onUnmounted(() => {
               'cursor-pointer': notification.is_read == false,
               'cursor-default': notification.is_read == true,
             }"
-            @click.stop="markAsRead(notification)">
+            @click="markAsRead(notification)">
             <div class="flex gap-3">
               <div class="min-w-0 flex-1">
                 <div class="flex items-start justify-between gap-3">
@@ -386,6 +391,16 @@ onUnmounted(() => {
             </div>
           </li>
         </ul>
+
+        <div
+          v-if="canViewAll"
+          class="border-t border-[var(--color-border)] px-4 py-2">
+          <Link
+            href="/notifications/all"
+            class="block text-center text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+            View all notifications
+          </Link>
+        </div>
       </div>
     </div>
   </div>

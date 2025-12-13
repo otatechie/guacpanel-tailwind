@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\AppNotificationRequested;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
@@ -13,9 +14,10 @@ use App\Http\Controllers\Admin\AdminSessionController;
 use App\Http\Controllers\Admin\AdminSettingController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUsersVerificationController;
-use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Notifications\AppNotificationController;
+use App\Http\Controllers\Notifications\AppNotificationPageController;
 use App\Http\Controllers\Pages\ChartsController;
 use App\Http\Controllers\Pages\DashboardController;
 use App\Http\Controllers\Pages\PageController;
@@ -48,13 +50,48 @@ Route::middleware([
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // In App Notifications
+        /**
+         * Notifications (Page)
+         * view-notifications OR manage-notifications
+         */
+        Route::get('/notifications/all', [AppNotificationPageController::class, 'index'])
+            ->name('notifications.index')
+            ->middleware('permission:view-notifications|manage-notifications');
+
+        /**
+         * Notifications (API)
+         */
         Route::prefix('notifications')->group(function () {
-            Route::get('/', [AppNotificationController::class, 'index']);
-            Route::post('/read-all', [AppNotificationController::class, 'markAllRead']);
-            Route::post('/dismiss-all', [AppNotificationController::class, 'dismissAll']);
-            Route::post('/{notification}/read', [AppNotificationController::class, 'markRead']);
-            Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss']);
+            // List payload used by dropdown + page reconciliation
+            Route::get('/', [AppNotificationController::class, 'index'])
+                ->middleware('permission:view-notifications|manage-notifications');
+
+            // Edit actions
+            Route::post('/read-all', [AppNotificationController::class, 'markAllRead'])
+                ->middleware('permission:edit-notifications|manage-notifications');
+
+            Route::post('/dismiss-all', [AppNotificationController::class, 'dismissAll'])
+                ->middleware('permission:edit-notifications|manage-notifications');
+
+            Route::post('/{notification}/read', [AppNotificationController::class, 'markRead'])
+                ->middleware('permission:edit-notifications|manage-notifications');
+
+            Route::post('/{notification}/unread', [AppNotificationController::class, 'markUnread'])
+                ->middleware('permission:edit-notifications|manage-notifications');
+
+            Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss'])
+                ->middleware('permission:edit-notifications|manage-notifications');
+
+            Route::post('/{notification}/undismiss', [AppNotificationController::class, 'undismiss'])
+                ->middleware('permission:edit-notifications|manage-notifications');
+
+            // Bulk (edit OR delete OR manage)
+            Route::post('/bulk', [AppNotificationController::class, 'bulk'])
+                ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
+
+            // Delete (delete OR manage)
+            Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
+                ->middleware('permission:delete-notifications|manage-notifications');
         });
 
         // User Account Management Routes
@@ -196,9 +233,6 @@ Route::middleware([
 });
 
 // Temp Testing Routes
-
-use App\Events\AppNotificationRequested;
-
 Route::post('/_test/notify/user', function () {
     event(new AppNotificationRequested(
         userId: (string) auth()->id(),
