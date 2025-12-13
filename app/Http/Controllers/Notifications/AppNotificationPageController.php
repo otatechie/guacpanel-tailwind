@@ -24,7 +24,7 @@ class AppNotificationPageController extends Controller
         ];
 
         return Inertia::render('Notifications/NotificationsIndex', [
-            'filters' => $filters,
+            'filters'       => $filters,
             'notifications' => fn () => $this->resolveNotifications($request, 100, $filters),
         ]);
     }
