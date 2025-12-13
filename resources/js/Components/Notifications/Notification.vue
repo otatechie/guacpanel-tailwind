@@ -1,7 +1,7 @@
 <!-- resources/js/Components/Notifications/Notification.vue -->
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
 
 const props = defineProps({
@@ -13,6 +13,8 @@ const props = defineProps({
 
 const page = usePage()
 
+const rootEl = ref(null)
+
 const notificationsOpen = ref(false)
 const notifications = ref([])
 const isLoading = ref(false)
@@ -21,16 +23,15 @@ let userChannel = null
 let systemChannel = null
 let reconcileTimer = null
 
+let removeInertiaStart = null
+let removeInertiaNavigate = null
+
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
 const hasAnyNotifications = computed(() => notifications.value.length > 0)
 const hasUnreadNotifications = computed(() => unreadCount.value > 0)
 
 const permissions = computed(() => page.props?.auth?.user?.permissions ?? [])
-const canViewAll = computed(
-  () =>
-    permissions.value.includes('manage-notifications') ||
-    permissions.value.includes('view-notifications')
-)
+const canViewAll = computed(() => permissions.value.includes('view-notifications'))
 
 const isViewAllActive = computed(() => {
   const url = page.url || ''
@@ -126,7 +127,28 @@ const markAsRead = async (notification, event) => {
   }
 }
 
-const markAllRead = async () => {
+const undoMarkAsRead = async (notification, event) => {
+  event?.preventDefault()
+  event?.stopPropagation()
+
+  if (!notification || !notification.is_read) return
+
+  const original = notification.is_read
+  notification.is_read = false
+
+  const res = await apiFetch(`/notifications/${notification.id}/unread`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  })
+
+  if (!res.ok) {
+    notification.is_read = original
+  }
+}
+
+const markAllRead = async event => {
+  event?.stopPropagation()
+
   if (!hasUnreadNotifications.value) return
 
   const original = notifications.value
@@ -163,7 +185,9 @@ const dismissNotification = async (notification, event) => {
   }
 }
 
-const dismissAll = async () => {
+const dismissAll = async event => {
+  event?.stopPropagation()
+
   if (!hasAnyNotifications.value) return
 
   const original = notifications.value
@@ -243,13 +267,10 @@ const handleBulkChanged = payload => {
   fetchNotifications({ silent: true })
 }
 
-/**
- * Heroicons (inline SVG) helpers
- */
 const scopeIconName = scope => {
   if (scope === 'system') return 'cpu'
   if (scope === 'user') return 'user'
-  return 'tag' // fallback
+  return 'tag'
 }
 
 const priorityIconName = priority => {
@@ -266,21 +287,21 @@ const priorityIconClass = priority => {
   return 'text-[var(--color-text-muted)]'
 }
 
-const handleClickAway = event => {
-  const notificationButton = document.querySelector('[data-notification-button]')
-  const notificationDropdown = document.querySelector('[data-notification-dropdown]')
+const closeDropdown = () => {
+  notificationsOpen.value = false
+}
 
-  if (
-    !notificationButton?.contains(event.target) &&
-    !notificationDropdown?.contains(event.target)
-  ) {
-    notificationsOpen.value = false
+const handleClickAway = event => {
+  const el = rootEl.value
+  if (!el) return
+  if (!el.contains(event.target)) {
+    closeDropdown()
   }
 }
 
 const handleEscapeKey = event => {
   if (event.key === 'Escape') {
-    notificationsOpen.value = false
+    closeDropdown()
   }
 }
 
@@ -319,9 +340,23 @@ const stopReconcile = () => {
   reconcileTimer = null
 }
 
+const subscribeNavigationClose = () => {
+  removeInertiaStart = router.on('start', () => closeDropdown())
+  removeInertiaNavigate = router.on('navigate', () => closeDropdown())
+}
+
+const unsubscribeNavigationClose = () => {
+  if (typeof removeInertiaStart === 'function') removeInertiaStart()
+  if (typeof removeInertiaNavigate === 'function') removeInertiaNavigate()
+  removeInertiaStart = null
+  removeInertiaNavigate = null
+}
+
 onMounted(async () => {
   document.addEventListener('click', handleClickAway)
   document.addEventListener('keydown', handleEscapeKey)
+
+  subscribeNavigationClose()
 
   hydrateFromPageProps()
   subscribeRealtime()
@@ -336,13 +371,15 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickAway)
   document.removeEventListener('keydown', handleEscapeKey)
 
+  unsubscribeNavigationClose()
+
   stopReconcile()
   unsubscribeRealtime()
 })
 </script>
 
 <template>
-  <div class="relative">
+  <div ref="rootEl" class="relative">
     <button
       type="button"
       data-notification-button
@@ -398,7 +435,6 @@ onUnmounted(() => {
       </div>
 
       <div class="flex max-h-96 flex-col">
-        <!-- Scroll area -->
         <div class="min-h-0 flex-1 overflow-y-auto">
           <div v-if="isLoading" class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
             Loading…
@@ -430,11 +466,9 @@ onUnmounted(() => {
                 <div class="min-w-0 flex-1">
                   <div class="flex items-start justify-between gap-3">
                     <div class="flex min-w-0 items-start gap-2">
-                      <!-- Scope icon (small, just before priority icon) -->
                       <span
                         class="mt-0.5 shrink-0 text-[var(--color-text-muted)]"
                         aria-hidden="true">
-                        <!-- User -->
                         <svg
                           v-if="scopeIconName(notification.scope) === 'user'"
                           class="size-4"
@@ -448,7 +482,6 @@ onUnmounted(() => {
                           <path d="M4.5 20.25a7.5 7.5 0 0115 0" />
                         </svg>
 
-                        <!-- CpuChip -->
                         <svg
                           v-else-if="scopeIconName(notification.scope) === 'cpu'"
                           xmlns="http://www.w3.org/2000/svg"
@@ -463,7 +496,6 @@ onUnmounted(() => {
                             d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
                         </svg>
 
-                        <!-- Tag (fallback) -->
                         <svg
                           v-else
                           class="size-4"
@@ -479,9 +511,7 @@ onUnmounted(() => {
                         </svg>
                       </span>
 
-                      <!-- Priority icon -->
                       <span class="mt-0.5 shrink-0" aria-hidden="true">
-                        <!-- XCircle -->
                         <svg
                           v-if="priorityIconName(notification.priority) === 'x-circle'"
                           class="size-4"
@@ -496,7 +526,6 @@ onUnmounted(() => {
                           <path d="M9.75 9.75l4.5 4.5M14.25 9.75l-4.5 4.5" />
                         </svg>
 
-                        <!-- ExclamationTriangle -->
                         <svg
                           v-else-if="
                             priorityIconName(notification.priority) === 'exclamation-triangle'
@@ -513,7 +542,6 @@ onUnmounted(() => {
                             d="M12 9v4m0 4h.01M10.29 3.86a2.25 2.25 0 013.42 0l8.22 10.18A2.25 2.25 0 0120.22 18H3.78a2.25 2.25 0 01-1.71-3.96l8.22-10.18z" />
                         </svg>
 
-                        <!-- InformationCircle -->
                         <svg
                           v-else-if="
                             priorityIconName(notification.priority) === 'information-circle'
@@ -531,7 +559,6 @@ onUnmounted(() => {
                           <path d="M12 8.25h.01" />
                         </svg>
 
-                        <!-- Bell -->
                         <svg
                           v-else
                           class="size-4"
@@ -552,24 +579,45 @@ onUnmounted(() => {
                       </h4>
                     </div>
 
-                    <button
-                      type="button"
-                      class="cursor-pointer rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
-                      aria-label="Dismiss notification"
-                      @click="dismissNotification(notification, $event)">
-                      <svg
-                        class="size-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M18 6 6 18" />
-                        <path d="M6 6 18 18" />
-                      </svg>
-                    </button>
+                    <div class="flex items-center gap-1">
+                      <button
+                        type="button"
+                        class="cursor-pointer rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                        aria-label="Dismiss notification"
+                        @click="dismissNotification(notification, $event)">
+                        <svg
+                          class="size-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M18 6 6 18" />
+                          <path d="M6 6 18 18" />
+                        </svg>
+                      </button>
+                      <button
+                        v-if="notification.is_read"
+                        type="button"
+                        class="-mt-0.5 mr-0.5 ml-2 cursor-pointer rounded-md p-0.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                        aria-label="Undo mark as read"
+                        @click="undoMarkAsRead(notification, $event)">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-3">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9 15 3 9m0 0 6-6M3 9h9a6 6 0 1 1 0 12h-3" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
                   <p class="truncate text-sm text-[var(--color-text-muted)]">
@@ -582,14 +630,14 @@ onUnmounted(() => {
 
                 <div
                   v-if="!notification.is_read"
-                  class="mt-2 h-2 w-2 rounded-full bg-blue-500"
-                  aria-hidden="true"></div>
+                  class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded bg-gray-900">
+                  <div class="h-2.5 w-2.5 rounded-full bg-blue-500" aria-hidden="true"></div>
+                </div>
               </div>
             </li>
           </ul>
         </div>
 
-        <!-- Footer is OUTSIDE the overflow area, so it always shows -->
         <div v-if="canViewAll" class="border-t border-[var(--color-border)]">
           <Link
             href="/notifications/all"

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
 import Default from '@js/Layouts/Default.vue'
@@ -17,7 +17,6 @@ const serverFilters = page.props.filters ?? {}
 const filters = reactive({
   scope: serverFilters.scope ?? 'all',
   read: serverFilters.read ?? 'all',
-  dismissed: serverFilters.dismissed ?? 'undismissed',
   type: serverFilters.type ?? 'all',
   search: serverFilters.search ?? '',
   sort: serverFilters.sort ?? 'newest',
@@ -138,6 +137,78 @@ const bulk = async action => {
     refresh()
   }
 }
+
+const scopeIconName = scope => {
+  if (scope === 'system') return 'cpu'
+  if (scope === 'user') return 'user'
+  return 'tag'
+}
+
+const readIconName = isRead => (isRead ? 'check' : 'dot')
+
+let userChannel = null
+let systemChannel = null
+let refreshTimer = null
+
+const scheduleRefresh = () => {
+  if (refreshTimer) return
+
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null
+    refresh()
+  }, 250)
+}
+
+const upsertIncoming = payload => {
+  if (!payload?.id) return
+  scheduleRefresh()
+}
+
+const handleStateChanged = payload => {
+  if (!payload?.id) return
+  scheduleRefresh()
+}
+
+const handleBulkChanged = payload => {
+  if (!payload?.action) return
+  scheduleRefresh()
+}
+
+const subscribeRealtime = () => {
+  const userId = page.props?.auth?.user?.id
+  if (!window.Echo || !userId) return
+
+  userChannel = window.Echo.private(`users.${userId}`)
+    .listen('.app-notification.created', upsertIncoming)
+    .listen('.app-notification.state', handleStateChanged)
+    .listen('.app-notification.bulk', handleBulkChanged)
+
+  systemChannel = window.Echo.private('system')
+    .listen('.app-notification.created', upsertIncoming)
+    .listen('.app-notification.state', handleStateChanged)
+    .listen('.app-notification.bulk', handleBulkChanged)
+}
+
+const unsubscribeRealtime = () => {
+  const userId = page.props?.auth?.user?.id
+  if (!window.Echo || !userId) return
+
+  window.Echo.leave(`private-users.${userId}`)
+  window.Echo.leave('private-system')
+
+  userChannel = null
+  systemChannel = null
+}
+
+onMounted(() => {
+  subscribeRealtime()
+})
+
+onUnmounted(() => {
+  if (refreshTimer) clearTimeout(refreshTimer)
+  refreshTimer = null
+  unsubscribeRealtime()
+})
 </script>
 
 <template>
@@ -176,17 +247,6 @@ const bulk = async action => {
                 <option value="all">All</option>
                 <option value="unread">Unread</option>
                 <option value="read">Read</option>
-              </select>
-            </div>
-
-            <div class="md:col-span-1">
-              <label class="text-xs text-[var(--color-text-muted)]">Dismissed</label>
-              <select
-                v-model="filters.dismissed"
-                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
-                <option value="all">All</option>
-                <option value="undismissed">Undismissed</option>
-                <option value="dismissed">Dismissed</option>
               </select>
             </div>
 
@@ -326,9 +386,9 @@ const bulk = async action => {
                     @change="toggleSelectAll" />
                 </th>
                 <th class="p-3">Title</th>
-                <th class="p-3">Scope</th>
+                <th class="w-16 p-3">Scope</th>
                 <th class="p-3">Type</th>
-                <th class="p-3">Read</th>
+                <th class="w-16 p-3">Read</th>
                 <th class="p-3">Dismissed</th>
                 <th class="p-3">Actions</th>
               </tr>
@@ -356,13 +416,88 @@ const bulk = async action => {
                   </div>
                 </td>
 
-                <td class="p-3 align-top text-[var(--color-text)]">{{ row.scope }}</td>
-                <td class="p-3 align-top text-[var(--color-text)]">{{ row.type }}</td>
                 <td class="p-3 align-top">
-                  <span class="text-[var(--color-text)]">
-                    {{ row.is_read ? 'read' : 'unread' }}
+                  <span class="inline-flex items-center" :title="row.scope === 'system' ? 'System' : 'User'">
+                    <svg
+                      v-if="scopeIconName(row.scope) === 'user'"
+                      class="size-4 text-[var(--color-text-muted)]"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                      <path d="M4.5 20.25a7.5 7.5 0 0115 0" />
+                    </svg>
+
+                    <svg
+                      v-else-if="scopeIconName(row.scope) === 'cpu'"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-4 text-[var(--color-text-muted)]"
+                      aria-hidden="true">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                    </svg>
+
+                    <svg
+                      v-else
+                      class="size-4 text-[var(--color-text-muted)]"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path
+                        d="M9.568 3.75H6.75A3 3 0 003.75 6.75v2.818a3 3 0 00.879 2.121l8.38 8.38a3 3 0 004.242 0l2.999-2.999a3 3 0 000-4.242l-8.38-8.38A3 3 0 009.568 3.75z" />
+                      <path d="M7.5 7.5h.008v.008H7.5V7.5z" />
+                    </svg>
                   </span>
                 </td>
+
+                <td class="p-3 align-top text-[var(--color-text)]">{{ row.type }}</td>
+
+                <td class="p-3 align-top">
+                  <span class="inline-flex items-center" :title="row.is_read ? 'Read' : 'Unread'">
+                    <svg
+                      v-if="readIconName(row.is_read) === 'check'"
+                      class="size-4 text-[var(--color-text-muted)]"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                      <path d="M9 12.75l2.25 2.25L15 10.5" />
+                    </svg>
+
+                    <svg
+                      v-else
+                      class="size-4 text-[var(--color-text-muted)]"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                      <path d="M12 12h.01" />
+                    </svg>
+                  </span>
+                </td>
+
                 <td class="p-3 align-top">
                   <span class="text-[var(--color-text)]">
                     {{ row.is_dismissed ? 'dismissed' : 'undismissed' }}

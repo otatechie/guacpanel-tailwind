@@ -14,8 +14,18 @@ class AppNotificationPageController extends Controller
 
     public function index(Request $request): Response
     {
+        $filters = [
+            'scope'     => (string) $request->query('scope', 'all'),
+            'read'      => (string) $request->query('read', 'all'),
+            'dismissed' => 'all',
+            'type'      => (string) $request->query('type', 'all'),
+            'search'    => (string) $request->query('search', ''),
+            'sort'      => (string) $request->query('sort', 'newest'),
+        ];
+
         return Inertia::render('Notifications/NotificationsIndex', [
-            'notifications' => fn () => $this->resolveNotifications($request, 100),
+            'filters' => $filters,
+            'notifications' => fn () => $this->resolveNotifications($request, 100, $filters),
         ]);
     }
 }
