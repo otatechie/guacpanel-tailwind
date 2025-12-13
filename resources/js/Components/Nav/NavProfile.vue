@@ -158,7 +158,8 @@ const navItemClass = (i = '', c = false) => {
       <li
         class="rounded-t-xl border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 pt-3 pb-2.5">
         <div class="flex justify-between">
-          <div class="cursor-default text-sm font-medium text-[var(--color-text)] overflow-auto mr-1.5">
+          <div
+            class="mr-1.5 cursor-default overflow-auto text-sm font-medium text-[var(--color-text)]">
             {{ safeUserName }}
           </div>
           <p

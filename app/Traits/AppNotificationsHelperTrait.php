@@ -2,10 +2,13 @@
 
 namespace App\Traits;
 
+use App\Events\AppNotificationsBulkChanged;
+use App\Events\AppNotificationStateChanged;
 use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 trait AppNotificationsHelperTrait
 {
@@ -19,37 +22,122 @@ trait AppNotificationsHelperTrait
      *   - user: app_notifications.read_at
      *   - system: app_notification_reads.read_at
      *
+     * Supported filters (optional):
+     * - scope: all|user|system
+     * - read: all|read|unread
+     * - dismissed: all|dismissed|undismissed
+     * - type: all|info|success|warning|error
+     * - search: string
+     * - sort: newest|oldest
+     *
      * @return array{data: array<int, array<string, mixed>>}
      */
-    protected function resolveNotifications(Request $request, int $limit = 25): array
+    protected function resolveNotifications(Request $request, int $limit = 25, array $filters = []): array
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return ['data' => []];
         }
 
         $limit = max(1, min($limit, 250));
         $userId = (string) $user->id;
 
-        $rows = AppNotification::query()
+        $scope = (string) ($filters['scope'] ?? 'all');
+        $read = (string) ($filters['read'] ?? 'all');
+        $dismissed = (string) ($filters['dismissed'] ?? 'undismissed');
+        $type = (string) ($filters['type'] ?? 'all');
+        $search = trim((string) ($filters['search'] ?? ''));
+        $sort = (string) ($filters['sort'] ?? 'newest');
+
+        $query = AppNotification::query()
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
                 $join->on('anr.app_notification_id', '=', 'an.id')
                     ->where('anr.user_id', '=', $userId);
             })
             ->where(function ($q) use ($userId) {
+                // user scoped (owned by user)
                 $q->where(function ($q) use ($userId) {
                     $q->where('an.scope', '=', 'user')
-                        ->where('an.user_id', '=', $userId)
+                        ->where('an.user_id', '=', $userId);
+                })
+                // system scoped (global, per-user reads/dismissals)
+                ->orWhere(function ($q) {
+                    $q->where('an.scope', '=', 'system')
+                        ->whereNull('an.user_id');
+                });
+            });
+
+        if (in_array($scope, ['user', 'system'], true)) {
+            $query->where('an.scope', '=', $scope);
+        }
+
+        if ($type !== 'all' && in_array($type, ['info', 'success', 'warning', 'error'], true)) {
+            $query->where('an.type', '=', $type);
+        }
+
+        if ($search !== '') {
+            $like = '%'.str_replace('%', '\\%', $search).'%';
+            $query->where(function ($q) use ($like) {
+                $q->where('an.title', 'like', $like)
+                    ->orWhere('an.message', 'like', $like);
+            });
+        }
+
+        // dismissed filter (applies differently per scope)
+        if ($dismissed === 'undismissed') {
+            $query->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('an.scope', '=', 'user')
                         ->whereNull('an.dismissed_at');
                 })->orWhere(function ($q) {
                     $q->where('an.scope', '=', 'system')
-                        ->whereNull('an.user_id')
                         ->whereNull('anr.dismissed_at');
                 });
-            })
-            ->orderByDesc('an.created_at')
+            });
+        } elseif ($dismissed === 'dismissed') {
+            $query->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('an.scope', '=', 'user')
+                        ->whereNotNull('an.dismissed_at');
+                })->orWhere(function ($q) {
+                    $q->where('an.scope', '=', 'system')
+                        ->whereNotNull('anr.dismissed_at');
+                });
+            });
+        }
+
+        // read filter (applies differently per scope)
+        if ($read === 'unread') {
+            $query->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('an.scope', '=', 'user')
+                        ->whereNull('an.read_at');
+                })->orWhere(function ($q) {
+                    $q->where('an.scope', '=', 'system')
+                        ->whereNull('anr.read_at');
+                });
+            });
+        } elseif ($read === 'read') {
+            $query->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('an.scope', '=', 'user')
+                        ->whereNotNull('an.read_at');
+                })->orWhere(function ($q) {
+                    $q->where('an.scope', '=', 'system')
+                        ->whereNotNull('anr.read_at');
+                });
+            });
+        }
+
+        if ($sort === 'oldest') {
+            $query->orderBy('an.created_at');
+        } else {
+            $query->orderByDesc('an.created_at');
+        }
+
+        $rows = $query
             ->limit($limit)
             ->get([
                 'an.id',
@@ -70,20 +158,84 @@ trait AppNotificationsHelperTrait
                 ? $row->user_read_at
                 : $row->system_read_at;
 
+            $dismissedAt = $row->scope === 'user'
+                ? $row->user_dismissed_at
+                : $row->system_dismissed_at;
+
             return [
-                'id'         => (string) $row->id,
-                'scope'      => $row->scope,
-                'type'       => $row->type,
-                'title'      => $row->title,
-                'message'    => $row->message,
-                'data'       => $row->data,
-                'created_at' => optional($row->created_at)?->toISOString(),
-                'read_at'    => optional($readAt)?->toISOString(),
-                'is_read'    => (bool) $readAt,
+                'id'           => (string) $row->id,
+                'scope'        => $row->scope,
+                'type'         => $row->type,
+                'title'        => $row->title,
+                'message'      => $row->message,
+                'data'         => $row->data,
+                'created_at'   => optional($row->created_at)?->toISOString(),
+                'read_at'      => optional($readAt)?->toISOString(),
+                'dismissed_at' => optional($dismissedAt)?->toISOString(),
+                'is_read'      => (bool) $readAt,
+                'is_dismissed' => (bool) $dismissedAt,
             ];
         })->values()->all();
 
         return ['data' => $data];
+    }
+
+    protected function setNotificationReadStateForUser(Request $request, AppNotification $notification, bool $isRead): void
+    {
+        if ($isRead) {
+            $this->markNotificationReadForUser($request, $notification);
+            return;
+        }
+
+        $this->markNotificationUnreadForUser($request, $notification);
+    }
+
+    protected function setNotificationDismissedStateForUser(Request $request, AppNotification $notification, bool $isDismissed): void
+    {
+        if ($isDismissed) {
+            $this->dismissNotificationForUser($request, $notification);
+            return;
+        }
+
+        $this->undismissNotificationForUser($request, $notification);
+    }
+
+    protected function bulkActionForUser(Request $request, array $validated): void
+    {
+        // Normalize into request input so the existing bulk method can read it consistently.
+        $request->merge([
+            'action' => $validated['action'] ?? null,
+            'ids' => $validated['ids'] ?? [],
+        ]);
+
+        $this->bulkNotificationsForUser($request);
+    }
+
+    protected function broadcastNotificationState(
+        string $userId,
+        string $notificationId,
+        string $scope,
+        ?Carbon $readAt,
+        ?Carbon $dismissedAt,
+        string $action
+    ): void {
+        event(new AppNotificationStateChanged(
+            userId: $userId,
+            notificationId: $notificationId,
+            scope: $scope,
+            readAt: optional($readAt)?->toISOString(),
+            dismissedAt: optional($dismissedAt)?->toISOString(),
+            action: $action,
+        ));
+    }
+
+    protected function broadcastBulk(string $userId, string $action, array $ids = []): void
+    {
+        event(new AppNotificationsBulkChanged(
+            userId: $userId,
+            action: $action,
+            ids: $ids,
+        ));
     }
 
     protected function markNotificationReadForUser(Request $request, AppNotification $notification): void
@@ -95,9 +247,20 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (!$notification->read_at) {
+            if (! $notification->read_at) {
                 $notification->update(['read_at' => $now]);
             }
+
+            $fresh = $notification->fresh();
+
+            $this->broadcastNotificationState(
+                $userId,
+                (string) $notification->id,
+                'user',
+                $fresh?->read_at,
+                $fresh?->dismissed_at,
+                'read',
+            );
 
             return;
         }
@@ -113,6 +276,20 @@ trait AppNotificationsHelperTrait
                 'read_at' => $now,
             ],
         );
+
+        $readRow = AppNotificationRead::query()
+            ->where('app_notification_id', (string) $notification->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        $this->broadcastNotificationState(
+            $userId,
+            (string) $notification->id,
+            'system',
+            $readRow?->read_at,
+            $readRow?->dismissed_at,
+            'read',
+        );
     }
 
     protected function markNotificationUnreadForUser(Request $request, AppNotification $notification): void
@@ -127,6 +304,17 @@ trait AppNotificationsHelperTrait
                 $notification->update(['read_at' => null]);
             }
 
+            $fresh = $notification->fresh();
+
+            $this->broadcastNotificationState(
+                $userId,
+                (string) $notification->id,
+                'user',
+                $fresh?->read_at,
+                $fresh?->dismissed_at,
+                'unread',
+            );
+
             return;
         }
 
@@ -140,6 +328,20 @@ trait AppNotificationsHelperTrait
             [
                 'read_at' => null,
             ],
+        );
+
+        $readRow = AppNotificationRead::query()
+            ->where('app_notification_id', (string) $notification->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        $this->broadcastNotificationState(
+            $userId,
+            (string) $notification->id,
+            'system',
+            $readRow?->read_at,
+            $readRow?->dismissed_at,
+            'unread',
         );
     }
 
@@ -169,6 +371,7 @@ trait AppNotificationsHelperTrait
             ->map(fn ($id) => (string) $id);
 
         if ($systemIds->isEmpty()) {
+            $this->broadcastBulk($userId, 'read-all');
             return;
         }
 
@@ -185,6 +388,8 @@ trait AppNotificationsHelperTrait
             ['app_notification_id', 'user_id'],
             ['read_at', 'updated_at'],
         );
+
+        $this->broadcastBulk($userId, 'read-all');
     }
 
     protected function dismissNotificationForUser(Request $request, AppNotification $notification): void
@@ -196,9 +401,20 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            if (!$notification->dismissed_at) {
+            if (! $notification->dismissed_at) {
                 $notification->update(['dismissed_at' => $now]);
             }
+
+            $fresh = $notification->fresh();
+
+            $this->broadcastNotificationState(
+                $userId,
+                (string) $notification->id,
+                'user',
+                $fresh?->read_at,
+                $fresh?->dismissed_at,
+                'dismiss',
+            );
 
             return;
         }
@@ -214,6 +430,20 @@ trait AppNotificationsHelperTrait
                 'dismissed_at' => $now,
             ],
         );
+
+        $readRow = AppNotificationRead::query()
+            ->where('app_notification_id', (string) $notification->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        $this->broadcastNotificationState(
+            $userId,
+            (string) $notification->id,
+            'system',
+            $readRow?->read_at,
+            $readRow?->dismissed_at,
+            'dismiss',
+        );
     }
 
     protected function undismissNotificationForUser(Request $request, AppNotification $notification): void
@@ -228,6 +458,17 @@ trait AppNotificationsHelperTrait
                 $notification->update(['dismissed_at' => null]);
             }
 
+            $fresh = $notification->fresh();
+
+            $this->broadcastNotificationState(
+                $userId,
+                (string) $notification->id,
+                'user',
+                $fresh?->read_at,
+                $fresh?->dismissed_at,
+                'undismiss',
+            );
+
             return;
         }
 
@@ -241,6 +482,20 @@ trait AppNotificationsHelperTrait
             [
                 'dismissed_at' => null,
             ],
+        );
+
+        $readRow = AppNotificationRead::query()
+            ->where('app_notification_id', (string) $notification->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        $this->broadcastNotificationState(
+            $userId,
+            (string) $notification->id,
+            'system',
+            $readRow?->read_at,
+            $readRow?->dismissed_at,
+            'undismiss',
         );
     }
 
@@ -269,6 +524,7 @@ trait AppNotificationsHelperTrait
             ->map(fn ($id) => (string) $id);
 
         if ($systemIds->isEmpty()) {
+            $this->broadcastBulk($userId, 'dismiss-all');
             return;
         }
 
@@ -285,6 +541,8 @@ trait AppNotificationsHelperTrait
             ['app_notification_id', 'user_id'],
             ['dismissed_at', 'updated_at'],
         );
+
+        $this->broadcastBulk($userId, 'dismiss-all');
     }
 
     protected function bulkNotificationsForUser(Request $request): void
@@ -303,13 +561,12 @@ trait AppNotificationsHelperTrait
             return;
         }
 
-        // Split the ids by scope/ownership using a single query
         $rows = AppNotification::query()
             ->whereIn('id', $ids->all())
             ->get(['id', 'scope', 'user_id'])
             ->map(fn ($n) => [
-                'id'      => (string) $n->id,
-                'scope'   => $n->scope,
+                'id' => (string) $n->id,
+                'scope' => $n->scope,
                 'user_id' => $n->user_id ? (string) $n->user_id : null,
             ]);
 
@@ -346,6 +603,7 @@ trait AppNotificationsHelperTrait
                 );
             }
 
+            $this->broadcastBulk($userId, 'bulk', $ids->all());
             return;
         }
 
@@ -372,18 +630,17 @@ trait AppNotificationsHelperTrait
                 );
             }
 
+            $this->broadcastBulk($userId, 'bulk', $ids->all());
             return;
         }
 
         if ($action === 'delete') {
-            // user scope: user can delete their own user-scoped notifications
             if ($userScoped->isNotEmpty()) {
                 AppNotification::query()
                     ->whereIn('id', $userScoped->all())
                     ->delete();
             }
 
-            // system scope: "delete" == dismiss for this user (unless manage uses hard delete via destroy())
             if ($systemScoped->isNotEmpty()) {
                 $rowsToUpsert = $systemScoped->map(fn ($id) => [
                     'app_notification_id' => (string) $id,
@@ -400,6 +657,7 @@ trait AppNotificationsHelperTrait
                 );
             }
 
+            $this->broadcastBulk($userId, 'bulk', $ids->all());
             return;
         }
     }
@@ -420,7 +678,17 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
+            $notificationId = (string) $notification->id;
             $notification->delete();
+
+            $this->broadcastNotificationState(
+                $userId,
+                $notificationId,
+                'user',
+                null,
+                null,
+                'deleted',
+            );
 
             return;
         }
@@ -428,13 +696,21 @@ trait AppNotificationsHelperTrait
         abort_unless($notification->scope === 'system' && $notification->user_id === null, 403);
 
         if ($canManage) {
-            // hard delete globally
+            $notificationId = (string) $notification->id;
             $notification->delete();
+
+            $this->broadcastNotificationState(
+                $userId,
+                $notificationId,
+                'system',
+                null,
+                null,
+                'deleted',
+            );
 
             return;
         }
 
-        // normal delete == dismiss for this user
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
@@ -443,6 +719,20 @@ trait AppNotificationsHelperTrait
             [
                 'dismissed_at' => $now,
             ],
+        );
+
+        $readRow = AppNotificationRead::query()
+            ->where('app_notification_id', (string) $notification->id)
+            ->where('user_id', $userId)
+            ->first();
+
+        $this->broadcastNotificationState(
+            $userId,
+            (string) $notification->id,
+            'system',
+            $readRow?->read_at,
+            $readRow?->dismissed_at,
+            'dismiss',
         );
     }
 }

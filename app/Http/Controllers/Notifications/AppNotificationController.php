@@ -14,6 +14,23 @@ class AppNotificationController extends Controller
 {
     use AppNotificationsHelperTrait;
 
+    public function __construct()
+    {
+        $this->middleware('permission:view-notifications')->only(['index']);
+
+        $this->middleware('permission:edit-notifications')->only([
+            'markRead',
+            'markUnread',
+            'markAllRead',
+            'dismiss',
+            'undismiss',
+            'dismissAll',
+            'bulk',
+        ]);
+
+        $this->middleware('permission:delete-notifications')->only(['destroy']);
+    }
+
     public function index(ListNotificationsRequest $request): JsonResponse
     {
         return response()->json(
@@ -65,15 +82,13 @@ class AppNotificationController extends Controller
 
     public function bulk(BulkNotificationsRequest $request): JsonResponse
     {
-        $action = $request->validated('action');
+        $action = (string) $request->validated('action');
         $user = $request->user();
 
-        if (in_array($action, ['read', 'unread', 'dismiss', 'undismiss'], true)) {
-            abort_unless($user?->can('manage-notifications') || $user?->can('edit-notifications'), 403);
-        }
-
         if ($action === 'delete') {
-            abort_unless($user?->can('manage-notifications') || $user?->can('delete-notifications'), 403);
+            abort_unless($user?->can('delete-notifications'), 403);
+        } else {
+            abort_unless($user?->can('edit-notifications'), 403);
         }
 
         $this->bulkNotificationsForUser($request);
@@ -84,9 +99,9 @@ class AppNotificationController extends Controller
     public function destroy(Request $request, AppNotification $notification): JsonResponse
     {
         $user = $request->user();
-        $canManage = (bool) $user?->can('manage-notifications');
+        $canDelete = (bool) ($user?->can('delete-notifications'));
 
-        $this->deleteNotificationForUser($request, $notification, $canManage);
+        $this->deleteNotificationForUser($request, $notification, $canDelete);
 
         return response()->json(['ok' => true]);
     }

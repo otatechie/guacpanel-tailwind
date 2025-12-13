@@ -50,14 +50,18 @@ const toggleRow = id => {
 }
 
 const applyFilters = () => {
-  router.get('/notifications/all', { ...filters }, {
-    preserveScroll: true,
-    preserveState: true,
-    replace: true,
-    onSuccess: () => {
-      selected.value = new Set()
-    },
-  })
+  router.get(
+    '/notifications/all',
+    { ...filters },
+    {
+      preserveScroll: true,
+      preserveState: true,
+      replace: true,
+      onSuccess: () => {
+        selected.value = new Set()
+      },
+    }
+  )
 }
 
 const clearSearch = () => {
@@ -142,20 +146,22 @@ const bulk = async action => {
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="audit-log">
     <div class="container-border">
       <PageHeader
-        title="Notifications"
+        title="All Notifications"
         description="Filter, mark read/unread, dismiss/undismiss, or delete notifications"
         :breadcrumbs="[
           { label: 'Dashboard', href: route('dashboard') },
-          { label: 'Notifications' },
+          { label: 'All Notifications' },
         ]" />
 
       <section class="bg-[var(--color-bg)] p-6">
-
-        <div class="mb-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+        <div
+          class="mb-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
           <div class="grid grid-cols-1 gap-3 md:grid-cols-6">
             <div class="md:col-span-1">
               <label class="text-xs text-[var(--color-text-muted)]">Scope</label>
-              <select v-model="filters.scope" class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+              <select
+                v-model="filters.scope"
+                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
                 <option value="all">All</option>
                 <option value="user">User</option>
                 <option value="system">System</option>
@@ -164,7 +170,9 @@ const bulk = async action => {
 
             <div class="md:col-span-1">
               <label class="text-xs text-[var(--color-text-muted)]">Read</label>
-              <select v-model="filters.read" class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+              <select
+                v-model="filters.read"
+                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
                 <option value="all">All</option>
                 <option value="unread">Unread</option>
                 <option value="read">Read</option>
@@ -173,7 +181,9 @@ const bulk = async action => {
 
             <div class="md:col-span-1">
               <label class="text-xs text-[var(--color-text-muted)]">Dismissed</label>
-              <select v-model="filters.dismissed" class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+              <select
+                v-model="filters.dismissed"
+                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
                 <option value="all">All</option>
                 <option value="undismissed">Undismissed</option>
                 <option value="dismissed">Dismissed</option>
@@ -182,7 +192,9 @@ const bulk = async action => {
 
             <div class="md:col-span-1">
               <label class="text-xs text-[var(--color-text-muted)]">Type</label>
-              <select v-model="filters.type" class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+              <select
+                v-model="filters.type"
+                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
                 <option value="all">All</option>
                 <option value="info">Info</option>
                 <option value="success">Success</option>
@@ -193,7 +205,9 @@ const bulk = async action => {
 
             <div class="md:col-span-1">
               <label class="text-xs text-[var(--color-text-muted)]">Sort</label>
-              <select v-model="filters.sort" class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+              <select
+                v-model="filters.sort"
+                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
               </select>
@@ -201,7 +215,9 @@ const bulk = async action => {
 
             <div class="md:col-span-1">
               <label class="text-xs text-[var(--color-text-muted)]">Per page</label>
-              <select v-model="filters.per_page" class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+              <select
+                v-model="filters.per_page"
+                class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
                 <option :value="10">10</option>
                 <option :value="25">25</option>
                 <option :value="50">50</option>
@@ -294,7 +310,8 @@ const bulk = async action => {
           </div>
         </div>
 
-        <div class="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+        <div
+          class="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
           <div v-if="!hasRows" class="p-6 text-sm text-[var(--color-text-muted)]">
             No notifications match your filters.
           </div>
@@ -330,18 +347,26 @@ const bulk = async action => {
                 </td>
 
                 <td class="p-3 align-top">
-                  <div class="font-medium text-[var(--color-text)]">{{ row.title || 'Notification' }}</div>
+                  <div class="font-medium text-[var(--color-text)]">
+                    {{ row.title || 'Notification' }}
+                  </div>
                   <div class="mt-1 text-[var(--color-text-muted)]">{{ row.message }}</div>
-                  <div class="mt-1 text-xs text-[var(--color-text-muted)]">{{ row.created_at }}</div>
+                  <div class="mt-1 text-xs text-[var(--color-text-muted)]">
+                    {{ row.created_at }}
+                  </div>
                 </td>
 
                 <td class="p-3 align-top text-[var(--color-text)]">{{ row.scope }}</td>
                 <td class="p-3 align-top text-[var(--color-text)]">{{ row.type }}</td>
                 <td class="p-3 align-top">
-                  <span class="text-[var(--color-text)]">{{ row.is_read ? 'read' : 'unread' }}</span>
+                  <span class="text-[var(--color-text)]">
+                    {{ row.is_read ? 'read' : 'unread' }}
+                  </span>
                 </td>
                 <td class="p-3 align-top">
-                  <span class="text-[var(--color-text)]">{{ row.is_dismissed ? 'dismissed' : 'undismissed' }}</span>
+                  <span class="text-[var(--color-text)]">
+                    {{ row.is_dismissed ? 'dismissed' : 'undismissed' }}
+                  </span>
                 </td>
 
                 <td class="p-3 align-top">
@@ -382,14 +407,16 @@ const bulk = async action => {
             :key="l.label"
             type="button"
             class="rounded-md border border-[var(--color-border)] px-3 py-2 text-sm"
-            :class="l.active ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'"
+            :class="
+              l.active
+                ? 'text-[var(--color-text)]'
+                : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
+            "
             :disabled="!l.url || isWorking"
             v-html="l.label"
             @click="l.url && router.visit(l.url, { preserveScroll: true, preserveState: true })" />
         </div>
-
       </section>
     </div>
   </main>
-
 </template>
