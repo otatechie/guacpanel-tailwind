@@ -29,3 +29,18 @@
     background-color: var(--error-color);
   }
 }
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center rounded-full font-medium;
+  }
+  .badge-xxs {
+    @apply text-xxs px-1.5 py-0.5;
+  }
+  .badge-xs {
+    @apply px-2 py-0.5 text-xs;
+  }
+  .badge-sm {
+    @apply px-2.5 py-1 text-sm;
+  }
+}

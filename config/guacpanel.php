@@ -80,4 +80,14 @@ return [
             'password' => env('APP_DEMO_LOGIN_PASSWORD', null),
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notification Settings
+    |--------------------------------------------------------------------------
+    */
+    'notifications' => [
+        'enabled' => env('APP_NOTIFICATIONS_ENABLED', true),
+        'in_demo' => env('APP_NOTIFICATIONS_IN_DEMO_MODE', true),
+    ],
 ];

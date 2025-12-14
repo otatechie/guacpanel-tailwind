@@ -59,6 +59,7 @@ class SocialiteController extends Controller
 
         $newUser->markEmailAsVerified();
 
+        $newUser->assignRole(config('seeders.users.regular.role'));
         event(new Registered($newUser));
         event(new Verified($newUser));
 

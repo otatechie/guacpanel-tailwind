@@ -50,49 +50,47 @@ Route::middleware([
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        /**
-         * Notifications (Page)
-         * view-notifications OR manage-notifications.
-         */
-        Route::get('/notifications/all', [AppNotificationPageController::class, 'index'])
-            ->name('notifications.index')
-            ->middleware('permission:view-notifications|manage-notifications');
-
-        /**
-         * Notifications (API).
-         */
-        Route::prefix('notifications')->group(function () {
-            // List payload used by dropdown + page reconciliation
-            Route::get('/', [AppNotificationController::class, 'index'])
+        // Notification
+        if (config('guacpanel.notifications.enabled')) {
+            // Notifications (Page)
+            Route::get('/notifications/all', [AppNotificationPageController::class, 'index'])
+                ->name('notifications.index')
                 ->middleware('permission:view-notifications|manage-notifications');
 
-            // Edit actions
-            Route::post('/read-all', [AppNotificationController::class, 'markAllRead'])
-                ->middleware('permission:edit-notifications|manage-notifications');
+            // Notifications (API).
+            Route::prefix('notifications')->group(function () {
+                // List payload used by dropdown + page reconciliation
+                Route::get('/', [AppNotificationController::class, 'index'])
+                    ->middleware('permission:view-notifications|manage-notifications');
 
-            Route::post('/dismiss-all', [AppNotificationController::class, 'dismissAll'])
-                ->middleware('permission:edit-notifications|manage-notifications');
+                // Edit actions
+                Route::post('/read-all', [AppNotificationController::class, 'markAllRead'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
 
-            Route::post('/{notification}/read', [AppNotificationController::class, 'markRead'])
-                ->middleware('permission:edit-notifications|manage-notifications');
+                Route::post('/dismiss-all', [AppNotificationController::class, 'dismissAll'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
 
-            Route::post('/{notification}/unread', [AppNotificationController::class, 'markUnread'])
-                ->middleware('permission:edit-notifications|manage-notifications');
+                Route::post('/{notification}/read', [AppNotificationController::class, 'markRead'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
 
-            Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss'])
-                ->middleware('permission:edit-notifications|manage-notifications');
+                Route::post('/{notification}/unread', [AppNotificationController::class, 'markUnread'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
 
-            Route::post('/{notification}/undismiss', [AppNotificationController::class, 'undismiss'])
-                ->middleware('permission:edit-notifications|manage-notifications');
+                Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
 
-            // Bulk (edit OR delete OR manage)
-            Route::post('/bulk', [AppNotificationController::class, 'bulk'])
-                ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
+                Route::post('/{notification}/undismiss', [AppNotificationController::class, 'undismiss'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
 
-            // Delete (delete OR manage)
-            Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
-                ->middleware('permission:delete-notifications|manage-notifications');
-        });
+                // Bulk (edit OR delete OR manage)
+                Route::post('/bulk', [AppNotificationController::class, 'bulk'])
+                    ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
+
+                // Delete (delete OR manage)
+                Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
+                    ->middleware('permission:delete-notifications|manage-notifications');
+            });
+        }
 
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {

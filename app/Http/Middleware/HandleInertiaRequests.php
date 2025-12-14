@@ -64,13 +64,19 @@ class HandleInertiaRequests extends Middleware
             ],
 
             'settings' => [
-                'passwordlessLogin'        => DB::table('settings')->value('passwordless_login') ?? true,
-                'emailVerificationEnabled' => config('guacpanel.email_verification_enabled'),
+                'passwordlessLogin'         => DB::table('settings')->value('passwordless_login') ?? true,
+                'emailVerificationEnabled'  => config('guacpanel.email_verification_enabled'),
+                'notificationEnabled'       => config('guacpanel.notifications.enabled'),
+                'notificationInDemoMode'    => config('guacpanel.notifications.in_demo'),
             ],
 
             'notifications' => fn () => $this->resolveNotifications($request, 25, [
                 'dismissed' => 'undismissed',
             ]),
+
+            'demo' => [
+                'notifications_enabled' => config('guacpanel.demo.notifications.enabled'),
+            ],
         ]);
     }
 }

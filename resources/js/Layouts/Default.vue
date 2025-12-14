@@ -4,6 +4,7 @@ import { usePage, Link } from '@inertiajs/vue3'
 import NavSidebarDesktop from '@js/Components/Nav/NavSidebarDesktop.vue'
 import NavProfile from '@js/Components/Nav/NavProfile.vue'
 import Notification from '@js/Components/Notifications/Notification.vue'
+import DemoNotifications from '@js/Components/Notifications/DemoNotifications.vue'
 import FlashMessage from '@js/Components/Notifications/FlashMessage.vue'
 import Footer from '@js/Shared/Public/Footer.vue'
 import Logo from '@js/Components/Common/Logo.vue'
@@ -17,6 +18,8 @@ const user = computed(() => page.props.auth?.user)
 const isSidebarOpen = ref(false)
 const isMobileSearchOpen = ref(false)
 const isLayoutReady = ref(false)
+const notificationEnabled = computed(() => page.props.settings?.notificationEnabled)
+const notificationInDemoMode = computed(() => page.props.settings?.notificationInDemoMode)
 
 const isMobile = () => window.innerWidth < 768
 const searchPlaceholder = 'Search...'
@@ -214,7 +217,14 @@ onUnmounted(() => {
             class="flex flex-shrink-0 items-center gap-1 sm:gap-2"
             aria-label="User controls">
             <ColorThemeSwitcher />
-            <Notification v-if="user" :user="user" class="z-[100] scale-90 sm:scale-100" />
+            <Notification
+              v-if="user && notificationEnabled && !notificationInDemoMode"
+              :user="user"
+              class="z-[100] scale-90 sm:scale-100" />
+            <DemoNotifications
+              v-else-if="user && notificationEnabled && notificationInDemoMode"
+              :user="user"
+              class="z-[100] scale-90 sm:scale-100" />
             <NavDarkModeToggle />
             <NavProfile v-if="user" :user="user" />
             <Link

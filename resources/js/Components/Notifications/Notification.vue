@@ -1,7 +1,7 @@
 <!-- resources/js/Components/Notifications/Notification.vue -->
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { Link, router, usePage } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
 
 const props = defineProps({
@@ -22,9 +22,6 @@ const isLoading = ref(false)
 let userChannel = null
 let systemChannel = null
 let reconcileTimer = null
-
-let removeInertiaStart = null
-let removeInertiaNavigate = null
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
 const hasAnyNotifications = computed(() => notifications.value.length > 0)
@@ -105,7 +102,10 @@ const fetchNotifications = async ({ silent = false } = {}) => {
   }
 }
 
-const toggleNotifications = async () => {
+const toggleNotifications = async event => {
+  event?.preventDefault()
+  event?.stopPropagation()
+
   notificationsOpen.value = !notificationsOpen.value
 
   if (notificationsOpen.value) {
@@ -150,6 +150,7 @@ const undoMarkAsRead = async (notification, event) => {
 }
 
 const markAllRead = async event => {
+  event?.preventDefault()
   event?.stopPropagation()
 
   if (!hasUnreadNotifications.value) return
@@ -168,10 +169,8 @@ const markAllRead = async event => {
 }
 
 const dismissNotification = async (notification, event) => {
-  if (event) {
-    event.preventDefault()
-    event.stopPropagation()
-  }
+  event?.preventDefault()
+  event?.stopPropagation()
 
   if (!notification?.id) return
 
@@ -189,6 +188,7 @@ const dismissNotification = async (notification, event) => {
 }
 
 const dismissAll = async event => {
+  event?.preventDefault()
   event?.stopPropagation()
 
   if (!hasAnyNotifications.value) return
@@ -316,7 +316,10 @@ const subscribeRealtime = () => {
     .listen('.app-notification.state', handleStateChanged)
     .listen('.app-notification.bulk', handleBulkChanged)
 
-  systemChannel = window.Echo.private('system').listen('.app-notification.created', upsertIncoming)
+  systemChannel = window.Echo.private('system')
+    .listen('.app-notification.created', upsertIncoming)
+    .listen('.app-notification.state', handleStateChanged)
+    .listen('.app-notification.bulk', handleBulkChanged)
 }
 
 const unsubscribeRealtime = () => {
@@ -343,23 +346,9 @@ const stopReconcile = () => {
   reconcileTimer = null
 }
 
-const subscribeNavigationClose = () => {
-  removeInertiaStart = router.on('start', () => closeDropdown())
-  removeInertiaNavigate = router.on('navigate', () => closeDropdown())
-}
-
-const unsubscribeNavigationClose = () => {
-  if (typeof removeInertiaStart === 'function') removeInertiaStart()
-  if (typeof removeInertiaNavigate === 'function') removeInertiaNavigate()
-  removeInertiaStart = null
-  removeInertiaNavigate = null
-}
-
 onMounted(async () => {
   document.addEventListener('click', handleClickAway)
   document.addEventListener('keydown', handleEscapeKey)
-
-  subscribeNavigationClose()
 
   hydrateFromPageProps()
   subscribeRealtime()
@@ -373,8 +362,6 @@ onMounted(async () => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickAway)
   document.removeEventListener('keydown', handleEscapeKey)
-
-  unsubscribeNavigationClose()
 
   stopReconcile()
   unsubscribeRealtime()
@@ -413,7 +400,8 @@ onUnmounted(() => {
     <div
       v-show="notificationsOpen"
       data-notification-dropdown
-      class="ring-opacity-5 absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-[var(--color-surface)] shadow-lg ring-1 ring-[var(--color-border)]">
+      class="ring-opacity-5 absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-[var(--color-surface)] shadow-lg ring-1 ring-[var(--color-border)]"
+      @click.stop>
       <div
         class="flex items-center justify-between rounded-t-xl border-b border-[var(--color-border)] bg-gray-100 px-4 py-3 dark:bg-gray-900">
         <h3 class="text-sm font-semibold text-[var(--color-text)]">Notifications</h3>
@@ -613,6 +601,7 @@ onUnmounted(() => {
                           <path d="M6 6 18 18" />
                         </svg>
                       </button>
+
                       <button
                         v-if="notification.is_read"
                         type="button"
@@ -645,7 +634,7 @@ onUnmounted(() => {
 
                 <div
                   v-if="!notification.is_read"
-                  class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded bg-gray-900">
+                  class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse hover:bg-gray-900">
                   <div class="h-2.5 w-2.5 rounded-full bg-blue-500" aria-hidden="true"></div>
                 </div>
               </div>
