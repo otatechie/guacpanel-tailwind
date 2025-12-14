@@ -1,4 +1,3 @@
-<!-- resources/js/Components/Notifications/Notification.vue -->
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'

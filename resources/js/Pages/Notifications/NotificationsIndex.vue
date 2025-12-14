@@ -1,4 +1,3 @@
-<!-- resources/js/Pages/Notifications/NotificationsIndex.vue -->
 <script setup>
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
