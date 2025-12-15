@@ -21,16 +21,16 @@ trait AppNotificationsHelperTrait
 
         if (!$user) {
             return [
-                'data' => [],
+                'data'  => [],
                 'links' => [],
-                'meta' => [
-                    'total' => 0,
-                    'per_page' => $limit,
+                'meta'  => [
+                    'total'        => 0,
+                    'per_page'     => $limit,
                     'current_page' => 1,
-                    'last_page' => 1,
-                    'from' => null,
-                    'to' => null,
-                    'total_all' => 0,
+                    'last_page'    => 1,
+                    'from'         => null,
+                    'to'           => null,
+                    'total_all'    => 0,
                 ],
             ];
         }
