@@ -21,16 +21,16 @@ trait AppNotificationsHelperTrait
 
         if (!$user) {
             return [
-                'data' => [],
+                'data'  => [],
                 'links' => [],
-                'meta' => [
-                    'total' => 0,
-                    'per_page' => $limit,
+                'meta'  => [
+                    'total'        => 0,
+                    'per_page'     => $limit,
                     'current_page' => 1,
-                    'last_page' => 1,
-                    'from' => null,
-                    'to' => null,
-                    'total_all' => 0,
+                    'last_page'    => 1,
+                    'from'         => null,
+                    'to'           => null,
+                    'total_all'    => 0,
                 ],
             ];
         }
@@ -172,16 +172,16 @@ trait AppNotificationsHelperTrait
                 $dismissedAt = $row->scope === 'user' ? $row->user_dismissed_at : $row->system_dismissed_at;
 
                 return [
-                    'id' => (string) $row->id,
-                    'scope' => $row->scope,
-                    'type' => $row->type,
-                    'title' => $row->title,
-                    'message' => $row->message,
-                    'data' => $row->data,
-                    'created_at' => optional($row->created_at)?->toISOString(),
-                    'read_at' => optional($readAt)?->toISOString(),
+                    'id'           => (string) $row->id,
+                    'scope'        => $row->scope,
+                    'type'         => $row->type,
+                    'title'        => $row->title,
+                    'message'      => $row->message,
+                    'data'         => $row->data,
+                    'created_at'   => optional($row->created_at)?->toISOString(),
+                    'read_at'      => optional($readAt)?->toISOString(),
                     'dismissed_at' => optional($dismissedAt)?->toISOString(),
-                    'is_read' => (bool) $readAt,
+                    'is_read'      => (bool) $readAt,
                     'is_dismissed' => (bool) $dismissedAt,
                 ];
             })
@@ -244,7 +244,7 @@ trait AppNotificationsHelperTrait
     {
         $request->merge([
             'action' => $validated['action'] ?? null,
-            'ids' => $validated['ids'] ?? [],
+            'ids'    => $validated['ids'] ?? [],
         ]);
 
         $this->bulkNotificationsForUser($request);
@@ -309,10 +309,10 @@ trait AppNotificationsHelperTrait
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
-                'user_id' => $userId,
+                'user_id'             => $userId,
             ],
             [
-                'read_at' => $now,
+                'read_at'    => $now,
                 'deleted_at' => null,
             ],
         );
@@ -363,10 +363,10 @@ trait AppNotificationsHelperTrait
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
-                'user_id' => $userId,
+                'user_id'             => $userId,
             ],
             [
-                'read_at' => null,
+                'read_at'    => null,
                 'deleted_at' => null,
             ],
         );
@@ -422,11 +422,11 @@ trait AppNotificationsHelperTrait
 
         $rows = $systemIds->map(fn ($id) => [
             'app_notification_id' => $id,
-            'user_id' => $userId,
-            'read_at' => $now,
-            'deleted_at' => null,
-            'created_at' => $now,
-            'updated_at' => $now,
+            'user_id'             => $userId,
+            'read_at'             => $now,
+            'deleted_at'          => null,
+            'created_at'          => $now,
+            'updated_at'          => $now,
         ])->all();
 
         AppNotificationRead::upsert(
@@ -470,11 +470,11 @@ trait AppNotificationsHelperTrait
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
-                'user_id' => $userId,
+                'user_id'             => $userId,
             ],
             [
                 'dismissed_at' => $now,
-                'deleted_at' => null,
+                'deleted_at'   => null,
             ],
         );
 
@@ -524,11 +524,11 @@ trait AppNotificationsHelperTrait
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
-                'user_id' => $userId,
+                'user_id'             => $userId,
             ],
             [
                 'dismissed_at' => null,
-                'deleted_at' => null,
+                'deleted_at'   => null,
             ],
         );
 
@@ -582,11 +582,11 @@ trait AppNotificationsHelperTrait
 
         $rows = $systemIds->map(fn ($id) => [
             'app_notification_id' => $id,
-            'user_id' => $userId,
-            'dismissed_at' => $now,
-            'deleted_at' => null,
-            'created_at' => $now,
-            'updated_at' => $now,
+            'user_id'             => $userId,
+            'dismissed_at'        => $now,
+            'deleted_at'          => null,
+            'created_at'          => $now,
+            'updated_at'          => $now,
         ])->all();
 
         AppNotificationRead::upsert(
@@ -619,8 +619,8 @@ trait AppNotificationsHelperTrait
             ->whereIn('id', $ids->all())
             ->get(['id', 'scope', 'user_id'])
             ->map(fn ($n) => [
-                'id' => (string) $n->id,
-                'scope' => $n->scope,
+                'id'      => (string) $n->id,
+                'scope'   => $n->scope,
                 'user_id' => $n->user_id ? (string) $n->user_id : null,
             ]);
 
@@ -644,11 +644,11 @@ trait AppNotificationsHelperTrait
             if ($systemScoped->isNotEmpty()) {
                 $rowsToUpsert = $systemScoped->map(fn ($id) => [
                     'app_notification_id' => (string) $id,
-                    'user_id' => $userId,
-                    'read_at' => $action === 'read' ? $now : null,
-                    'deleted_at' => null,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'user_id'             => $userId,
+                    'read_at'             => $action === 'read' ? $now : null,
+                    'deleted_at'          => null,
+                    'created_at'          => $now,
+                    'updated_at'          => $now,
                 ])->all();
 
                 AppNotificationRead::upsert(
@@ -673,11 +673,11 @@ trait AppNotificationsHelperTrait
             if ($systemScoped->isNotEmpty()) {
                 $rowsToUpsert = $systemScoped->map(fn ($id) => [
                     'app_notification_id' => (string) $id,
-                    'user_id' => $userId,
-                    'dismissed_at' => $action === 'dismiss' ? $now : null,
-                    'deleted_at' => null,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'user_id'             => $userId,
+                    'dismissed_at'        => $action === 'dismiss' ? $now : null,
+                    'deleted_at'          => null,
+                    'created_at'          => $now,
+                    'updated_at'          => $now,
                 ])->all();
 
                 AppNotificationRead::upsert(
@@ -702,10 +702,10 @@ trait AppNotificationsHelperTrait
             if ($systemScoped->isNotEmpty()) {
                 $rowsToUpsert = $systemScoped->map(fn ($id) => [
                     'app_notification_id' => (string) $id,
-                    'user_id' => $userId,
-                    'deleted_at' => $now,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                    'user_id'             => $userId,
+                    'deleted_at'          => $now,
+                    'created_at'          => $now,
+                    'updated_at'          => $now,
                 ])->all();
 
                 AppNotificationRead::upsert(
@@ -766,7 +766,7 @@ trait AppNotificationsHelperTrait
         AppNotificationRead::updateOrCreate(
             [
                 'app_notification_id' => (string) $notification->id,
-                'user_id' => $userId,
+                'user_id'             => $userId,
             ],
             [
                 'deleted_at' => $now,
