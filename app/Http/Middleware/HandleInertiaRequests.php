@@ -64,6 +64,7 @@ class HandleInertiaRequests extends Middleware
             ],
 
             'settings' => [
+                'appName'                   => config('app.name'),
                 'passwordlessLogin'         => DB::table('settings')->value('passwordless_login') ?? true,
                 'emailVerificationEnabled'  => config('guacpanel.email_verification_enabled'),
                 'notificationEnabled'       => config('guacpanel.notifications.enabled'),

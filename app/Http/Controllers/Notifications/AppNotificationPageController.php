@@ -17,10 +17,11 @@ class AppNotificationPageController extends Controller
         $filters = [
             'scope'     => (string) $request->query('scope', 'all'),
             'read'      => (string) $request->query('read', 'all'),
-            'dismissed' => 'all',
+            'dismissed' => (string) $request->query('dismissed', 'all'),
             'type'      => (string) $request->query('type', 'all'),
             'search'    => (string) $request->query('search', ''),
             'sort'      => (string) $request->query('sort', 'newest'),
+            'per_page'  => (int) $request->query('per_page', 25),
         ];
 
         return Inertia::render('Notifications/NotificationsIndex', [

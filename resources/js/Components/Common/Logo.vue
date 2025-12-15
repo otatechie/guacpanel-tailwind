@@ -14,6 +14,10 @@ const darkLogoUrl = computed(() => {
   return path ? (path.startsWith('/storage/') ? path : `/storage/${path}`) : null
 })
 
+const appName = computed(
+  () => page.props.personalisation?.app_name ?? page.props.settings?.appName ?? 'GuacPanel'
+)
+
 const props = defineProps({
   size: {
     type: String,
@@ -71,7 +75,7 @@ onMounted(() => {
 
     <!-- Fallback -->
     <h1 v-else class="text-center text-3xl font-extrabold text-gray-800 dark:text-white">
-      {{ page.props.personalisation?.app_name || 'GuacPanel' }}
+      {{ appName }}
     </h1>
   </figure>
 </template>

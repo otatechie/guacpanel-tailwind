@@ -190,3 +190,13 @@
     @apply h-10 px-4 text-base;
   }
 }
+
+a,
+.btn,
+button {
+  @apply cursor-pointer;
+  &:disabled,
+  &.disabled {
+    @apply cursor-not-allowed;
+  }
+}

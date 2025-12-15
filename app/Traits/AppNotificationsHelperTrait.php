@@ -28,6 +28,7 @@ trait AppNotificationsHelperTrait
      * - type: all|info|success|warning|error
      * - search: string
      * - sort: newest|oldest
+     * - per_page: int
      *
      * @return array{data: array<int, array<string, mixed>>}
      */
@@ -39,12 +40,28 @@ trait AppNotificationsHelperTrait
             return ['data' => []];
         }
 
-        $limit = max(1, min($limit, 250));
         $userId = (string) $user->id;
+
+        // Always honor query-string inputs (Inertia filters) even if controllers pass partial $filters.
+        // Controller-provided $filters win when keys overlap.
+        $requestFilters = $request->only([
+            'scope',
+            'read',
+            'dismissed',
+            'type',
+            'search',
+            'sort',
+            'per_page',
+        ]);
+
+        $filters = array_merge($requestFilters, $filters);
+
+        $perPage = (int) ($filters['per_page'] ?? $limit);
+        $limit = max(1, min($perPage > 0 ? $perPage : $limit, 250));
 
         $scope = (string) ($filters['scope'] ?? 'all');
         $read = (string) ($filters['read'] ?? 'all');
-        $dismissed = (string) ($filters['dismissed'] ?? 'undismissed');
+        $dismissed = (string) ($filters['dismissed'] ?? 'all');
         $type = (string) ($filters['type'] ?? 'all');
         $search = trim((string) ($filters['search'] ?? ''));
         $sort = (string) ($filters['sort'] ?? 'newest');
@@ -56,13 +73,10 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->where(function ($q) use ($userId) {
-                // user scoped (owned by user)
                 $q->where(function ($q) use ($userId) {
                     $q->where('an.scope', '=', 'user')
                         ->where('an.user_id', '=', $userId);
-                })
-                // system scoped (global, per-user reads/dismissals)
-                ->orWhere(function ($q) {
+                })->orWhere(function ($q) {
                     $q->where('an.scope', '=', 'system')
                         ->whereNull('an.user_id');
                 });
@@ -77,14 +91,13 @@ trait AppNotificationsHelperTrait
         }
 
         if ($search !== '') {
-            $like = '%'.str_replace('%', '\\%', $search).'%';
+            $like = '%' . str_replace('%', '\\%', $search) . '%';
             $query->where(function ($q) use ($like) {
                 $q->where('an.title', 'like', $like)
                     ->orWhere('an.message', 'like', $like);
             });
         }
 
-        // dismissed filter (applies differently per scope)
         if ($dismissed === 'undismissed') {
             $query->where(function ($q) {
                 $q->where(function ($q) {
@@ -107,7 +120,6 @@ trait AppNotificationsHelperTrait
             });
         }
 
-        // read filter (applies differently per scope)
         if ($read === 'unread') {
             $query->where(function ($q) {
                 $q->where(function ($q) {
@@ -203,7 +215,6 @@ trait AppNotificationsHelperTrait
 
     protected function bulkActionForUser(Request $request, array $validated): void
     {
-        // Normalize into request input so the existing bulk method can read it consistently.
         $request->merge([
             'action' => $validated['action'] ?? null,
             'ids'    => $validated['ids'] ?? [],

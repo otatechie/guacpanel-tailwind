@@ -387,7 +387,7 @@ onUnmounted(() => {
       <span
         v-if="unreadCount > 0"
         class="absolute -top-1 -right-1 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-        {{ unreadCount > 9 ? '9+' : unreadCount }}
+        {{ unreadCount > 99 ? '99+' : unreadCount }}
       </span>
 
       <span
