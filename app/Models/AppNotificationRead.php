@@ -20,8 +20,8 @@ class AppNotificationRead extends Model
     ];
 
     protected $casts = [
-        'read_at'       => 'datetime',
-        'dismissed_at'  => 'datetime',
+        'read_at'      => 'datetime',
+        'dismissed_at' => 'datetime',
     ];
 
     public function notification()

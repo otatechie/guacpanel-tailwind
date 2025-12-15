@@ -49,10 +49,10 @@ defineProps({
       class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0">
       <div class="min-w-0 flex-1">
         <h1 class="sub-heading text-lg sm:text-xl">
-          {{ title }}
+          <span v-dompurify-html="title"></span>
         </h1>
         <p v-if="description" class="mt-1 text-sm text-[var(--color-text-muted)]">
-          {{ description }}
+          <span v-dompurify-html="description"></span>
         </p>
       </div>
       <aside class="actions flex-shrink-0">

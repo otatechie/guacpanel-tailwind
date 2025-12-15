@@ -23,7 +23,7 @@ const defaultFilters = () => ({
   type: 'all',
   search: '',
   sort: 'newest',
-  per_page: 25,
+  per_page: 100,
 })
 
 const filters = reactive({
@@ -34,7 +34,7 @@ const filters = reactive({
   type: serverFilters.value.type ?? 'all',
   search: serverFilters.value.search ?? '',
   sort: serverFilters.value.sort ?? 'newest',
-  per_page: serverFilters.value.per_page ?? 25,
+  per_page: serverFilters.value.per_page ?? 100,
 })
 
 const selected = ref(new Set())
@@ -100,6 +100,18 @@ const hasRows = computed(() => rows.value.length > 0)
 const selectedCount = computed(() => selected.value.size)
 
 const showingCount = computed(() => rows.value.length)
+
+const totalAllCount = computed(() => {
+  const total = meta.value?.total_all
+  return typeof total === 'number' ? total : null
+})
+
+const pageHeaderTitle = computed(() => {
+  const total = totalAllCount.value
+  if (typeof total === 'number') return `All Notifications <span class="text-success text-xs float-right mt-2">(${total} Total)</span>`
+  return 'All Notifications'
+})
+
 const totalCount = computed(() => {
   const total = meta.value?.total
   return typeof total === 'number' ? total : null
@@ -539,14 +551,7 @@ const unsubscribeRealtime = () => {
 }
 
 watch(
-  () => [
-    filters.scope,
-    filters.read,
-    filters.dismissed,
-    filters.type,
-    filters.sort,
-    filters.per_page,
-  ],
+  () => [filters.scope, filters.read, filters.dismissed, filters.type, filters.sort, filters.per_page],
   () => applyFilters(),
   { deep: false }
 )
@@ -580,7 +585,7 @@ onUnmounted(() => {
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="notifications">
     <div class="container-border">
       <PageHeader
-        title="All Notifications"
+        :title="pageHeaderTitle"
         description="Filter, mark read/unread, dismiss/undismiss, or delete notifications"
         :breadcrumbs="[
           { label: 'Dashboard', href: route('dashboard') },

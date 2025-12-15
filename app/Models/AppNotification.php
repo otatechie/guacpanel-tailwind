@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppNotification extends Model
 {
     use HasUlids;
+    use SoftDeletes;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -21,12 +23,14 @@ class AppNotification extends Model
         'data',
         'read_at',
         'dismissed_at',
+        'deleted_at',
     ];
 
     protected $casts = [
-        'data'          => 'array',
-        'read_at'       => 'datetime',
-        'dismissed_at'  => 'datetime',
+        'data'         => 'array',
+        'read_at'      => 'datetime',
+        'dismissed_at' => 'datetime',
+        'deleted_at'   => 'datetime',
     ];
 
     public function user()

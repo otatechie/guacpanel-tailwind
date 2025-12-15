@@ -6,44 +6,38 @@ use App\Events\AppNotificationsBulkChanged;
 use App\Events\AppNotificationStateChanged;
 use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 trait AppNotificationsHelperTrait
 {
     /**
-     * Canonical notifications payload (used by Inertia hydration AND API endpoint).
-     *
-     * Rules:
-     * - user notifications: dismissed via app_notifications.dismissed_at
-     * - system notifications: dismissed per-user via app_notification_reads.dismissed_at
-     * - read status:
-     *   - user: app_notifications.read_at
-     *   - system: app_notification_reads.read_at
-     *
-     * Supported filters (optional):
-     * - scope: all|user|system
-     * - read: all|read|unread
-     * - dismissed: all|dismissed|undismissed
-     * - type: all|info|success|warning|error
-     * - search: string
-     * - sort: newest|oldest
-     * - per_page: int
-     *
-     * @return array{data: array<int, array<string, mixed>>}
+     * @return array{data: array<int, array<string, mixed>>, links?: array<int, array<string, mixed>>, meta?: array<string, mixed>}
      */
     protected function resolveNotifications(Request $request, int $limit = 25, array $filters = []): array
     {
         $user = $request->user();
 
         if (!$user) {
-            return ['data' => []];
+            return [
+                'data' => [],
+                'links' => [],
+                'meta' => [
+                    'total' => 0,
+                    'per_page' => $limit,
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'from' => null,
+                    'to' => null,
+                    'total_all' => 0,
+                ],
+            ];
         }
 
         $userId = (string) $user->id;
+        $totalAll = $this->countAllNotificationsForUser($userId);
 
-        // Always honor query-string inputs (Inertia filters) even if controllers pass partial $filters.
-        // Controller-provided $filters win when keys overlap.
         $requestFilters = $request->only([
             'scope',
             'read',
@@ -67,11 +61,13 @@ trait AppNotificationsHelperTrait
         $sort = (string) ($filters['sort'] ?? 'newest');
 
         $query = AppNotification::query()
+            ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
                 $join->on('anr.app_notification_id', '=', 'an.id')
                     ->where('anr.user_id', '=', $userId);
             })
+            ->whereNull('an.deleted_at')
             ->where(function ($q) use ($userId) {
                 $q->where(function ($q) use ($userId) {
                     $q->where('an.scope', '=', 'user')
@@ -148,47 +144,68 @@ trait AppNotificationsHelperTrait
             $query->orderByDesc('an.created_at');
         }
 
-        $rows = $query
-            ->limit($limit)
-            ->get([
-                'an.id',
-                'an.scope',
-                'an.type',
-                'an.title',
-                'an.message',
-                'an.data',
-                'an.created_at',
-                'an.read_at as user_read_at',
-                'an.dismissed_at as user_dismissed_at',
-                'anr.read_at as system_read_at',
-                'anr.dismissed_at as system_dismissed_at',
-            ]);
+        $paginator = $query->paginate($limit, [
+            'an.id',
+            'an.scope',
+            'an.type',
+            'an.title',
+            'an.message',
+            'an.data',
+            'an.created_at',
+            'an.read_at as user_read_at',
+            'an.dismissed_at as user_dismissed_at',
+            'anr.read_at as system_read_at',
+            'anr.dismissed_at as system_dismissed_at',
+        ])->withQueryString();
 
-        $data = $rows->map(function ($row) {
-            $readAt = $row->scope === 'user'
-                ? $row->user_read_at
-                : $row->system_read_at;
+        $paginator->setCollection(
+            $paginator->getCollection()->map(function ($row) {
+                $readAt = $row->scope === 'user'
+                    ? $row->user_read_at
+                    : $row->system_read_at;
 
-            $dismissedAt = $row->scope === 'user'
-                ? $row->user_dismissed_at
-                : $row->system_dismissed_at;
+                $dismissedAt = $row->scope === 'user'
+                    ? $row->user_dismissed_at
+                    : $row->system_dismissed_at;
 
-            return [
-                'id'           => (string) $row->id,
-                'scope'        => $row->scope,
-                'type'         => $row->type,
-                'title'        => $row->title,
-                'message'      => $row->message,
-                'data'         => $row->data,
-                'created_at'   => optional($row->created_at)?->toISOString(),
-                'read_at'      => optional($readAt)?->toISOString(),
-                'dismissed_at' => optional($dismissedAt)?->toISOString(),
-                'is_read'      => (bool) $readAt,
-                'is_dismissed' => (bool) $dismissedAt,
-            ];
-        })->values()->all();
+                return [
+                    'id'           => (string) $row->id,
+                    'scope'        => $row->scope,
+                    'type'         => $row->type,
+                    'title'        => $row->title,
+                    'message'      => $row->message,
+                    'data'         => $row->data,
+                    'created_at'   => optional($row->created_at)?->toISOString(),
+                    'read_at'      => optional($readAt)?->toISOString(),
+                    'dismissed_at' => optional($dismissedAt)?->toISOString(),
+                    'is_read'      => (bool) $readAt,
+                    'is_dismissed' => (bool) $dismissedAt,
+                ];
+            })
+        );
 
-        return ['data' => $data];
+        $payload = $paginator->toArray();
+
+        $payload['meta'] = array_merge($payload['meta'] ?? [], [
+            'total_all' => $totalAll,
+        ]);
+
+        return $payload;
+    }
+
+    protected function countAllNotificationsForUser(string $userId): int
+    {
+        return (int) AppNotification::query()
+            ->where(function ($q) use ($userId) {
+                $q->where(function ($q) use ($userId) {
+                    $q->where('scope', '=', 'user')
+                        ->where('user_id', '=', $userId);
+                })->orWhere(function ($q) {
+                    $q->where('scope', '=', 'system')
+                        ->whereNull('user_id');
+                });
+            })
+            ->count();
     }
 
     protected function setNotificationReadStateForUser(Request $request, AppNotification $notification, bool $isRead): void
@@ -371,11 +388,13 @@ trait AppNotificationsHelperTrait
             ->update(['read_at' => $now]);
 
         $systemIds = AppNotification::query()
+            ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
                 $join->on('anr.app_notification_id', '=', 'an.id')
                     ->where('anr.user_id', '=', $userId);
             })
+            ->whereNull('an.deleted_at')
             ->where('an.scope', 'system')
             ->whereNull('an.user_id')
             ->whereNull('anr.dismissed_at')
@@ -525,11 +544,13 @@ trait AppNotificationsHelperTrait
             ->update(['dismissed_at' => $now]);
 
         $systemIds = AppNotification::query()
+            ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
                 $join->on('anr.app_notification_id', '=', 'an.id')
                     ->where('anr.user_id', '=', $userId);
             })
+            ->whereNull('an.deleted_at')
             ->where('an.scope', 'system')
             ->whereNull('an.user_id')
             ->whereNull('anr.dismissed_at')
@@ -679,13 +700,6 @@ trait AppNotificationsHelperTrait
         }
     }
 
-    /**
-     * Delete semantics:
-     * - user scope: hard delete if owned
-     * - system scope:
-     *   - if manage: hard delete globally
-     *   - else: treat as per-user dismiss
-     */
     protected function deleteNotificationForUser(Request $request, AppNotification $notification, bool $canManage = false): void
     {
         $user = $request->user();
