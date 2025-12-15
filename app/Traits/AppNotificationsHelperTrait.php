@@ -91,7 +91,7 @@ trait AppNotificationsHelperTrait
         }
 
         if ($search !== '') {
-            $like = '%' . str_replace('%', '\\%', $search) . '%';
+            $like = '%'.str_replace('%', '\\%', $search).'%';
             $query->where(function ($q) use ($like) {
                 $q->where('an.title', 'like', $like)
                     ->orWhere('an.message', 'like', $like);
