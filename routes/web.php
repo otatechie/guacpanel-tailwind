@@ -86,6 +86,10 @@ Route::middleware([
                 Route::post('/bulk', [AppNotificationController::class, 'bulk'])
                     ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
 
+                // Expire (manage)
+                Route::post('/expire', [AppNotificationController::class, 'expire'])
+                    ->middleware('permission:manage-notifications');
+
                 // Delete (delete OR manage)
                 Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
                     ->middleware('permission:delete-notifications|manage-notifications');

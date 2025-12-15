@@ -21,6 +21,7 @@ return new class() extends Migration {
             $table->text('message');
             $table->json('data')->nullable();
 
+            $table->timestamp('auto_expire_on')->nullable();
             $table->timestamp('read_at')->nullable();
             $table->timestamp('dismissed_at')->nullable();
 
@@ -30,6 +31,7 @@ return new class() extends Migration {
             $table->index(['user_id', 'read_at']);
             $table->index(['user_id', 'dismissed_at']);
             $table->index(['scope', 'created_at']);
+            $table->index('auto_expire_on');
             $table->index('deleted_at');
         });
     }

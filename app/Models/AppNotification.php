@@ -22,16 +22,18 @@ class AppNotification extends Model
         'title',
         'message',
         'data',
+        'auto_expire_on',
         'read_at',
         'dismissed_at',
         'deleted_at',
     ];
 
     protected $casts = [
-        'data'         => 'array',
-        'read_at'      => 'datetime',
-        'dismissed_at' => 'datetime',
-        'deleted_at'   => 'datetime',
+        'data'              => 'array',
+        'auto_expire_on'    => 'datetime',
+        'read_at'           => 'datetime',
+        'dismissed_at'      => 'datetime',
+        'deleted_at'        => 'datetime',
     ];
 
     public function user()

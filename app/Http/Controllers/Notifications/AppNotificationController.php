@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Notifications;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Notifications\BulkNotificationsRequest;
+use App\Http\Requests\Notifications\ExpireNotificationsRequest;
 use App\Http\Requests\Notifications\ListNotificationsRequest;
 use App\Models\AppNotification;
 use App\Traits\AppNotificationsHelperTrait;
@@ -29,6 +30,33 @@ class AppNotificationController extends Controller
         ]);
 
         $this->middleware('permission:delete-notifications|manage-notifications')->only(['destroy']);
+
+        $this->middleware('permission:manage-notifications')->only(['expire']);
+    }
+
+    public function expire(ExpireNotificationsRequest $request): JsonResponse
+    {
+        $ids = collect((array) $request->validated('ids', []))
+            ->map(fn ($id) => (string) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        if (!$ids) {
+            return response()->json(['ok' => true]);
+        }
+
+        AppNotification::query()
+            ->whereIn('id', $ids)
+            ->update([
+                'auto_expire_on' => now(),
+                'updated_at'     => now(),
+            ]);
+
+        $userId = (string) $request->user()->id;
+        $this->broadcastBulk($userId, 'expire', $ids);
+
+        return response()->json(['ok' => true]);
     }
 
     public function index(ListNotificationsRequest $request): JsonResponse
