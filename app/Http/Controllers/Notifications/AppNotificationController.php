@@ -16,9 +16,9 @@ class AppNotificationController extends Controller
 
     public function __construct()
     {
-        $this->middleware('permission:view-notifications')->only(['index']);
+        $this->middleware('permission:view-notifications|manage-notifications')->only(['index']);
 
-        $this->middleware('permission:edit-notifications')->only([
+        $this->middleware('permission:edit-notifications|manage-notifications')->only([
             'markRead',
             'markUnread',
             'markAllRead',
@@ -28,13 +28,15 @@ class AppNotificationController extends Controller
             'bulk',
         ]);
 
-        $this->middleware('permission:delete-notifications')->only(['destroy']);
+        $this->middleware('permission:delete-notifications|manage-notifications')->only(['destroy']);
     }
 
     public function index(ListNotificationsRequest $request): JsonResponse
     {
         return response()->json(
-            $this->resolveNotifications($request, 25)
+            $this->resolveNotifications($request, 1000, [
+                'dismissed' => 'undismissed',
+            ])
         );
     }
 
@@ -86,9 +88,9 @@ class AppNotificationController extends Controller
         $user = $request->user();
 
         if ($action === 'delete') {
-            abort_unless($user?->can('delete-notifications'), 403);
+            abort_unless($user?->can('delete-notifications') || $user?->can('manage-notifications'), 403);
         } else {
-            abort_unless($user?->can('edit-notifications'), 403);
+            abort_unless($user?->can('edit-notifications') || $user?->can('manage-notifications'), 403);
         }
 
         $this->bulkNotificationsForUser($request);
@@ -99,7 +101,7 @@ class AppNotificationController extends Controller
     public function destroy(Request $request, AppNotification $notification): JsonResponse
     {
         $user = $request->user();
-        $canDelete = (bool) $user?->can('delete-notifications');
+        $canDelete = (bool) ($user?->can('delete-notifications') || $user?->can('manage-notifications'));
 
         $this->deleteNotificationForUser($request, $notification, $canDelete);
 

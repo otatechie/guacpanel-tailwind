@@ -14,6 +14,10 @@ class AppNotificationPageController extends Controller
 
     public function index(Request $request): Response
     {
+        $perPageRaw = $request->query('per_page', 25);
+        $perPage = $perPageRaw === 'all' ? 'all' : (int) $perPageRaw;
+        $perPage = $perPage === 'all' ? 'all' : ($perPage > 0 ? $perPage : 25);
+
         $filters = [
             'scope'     => (string) $request->query('scope', 'all'),
             'read'      => (string) $request->query('read', 'all'),
@@ -21,7 +25,7 @@ class AppNotificationPageController extends Controller
             'type'      => (string) $request->query('type', 'all'),
             'search'    => (string) $request->query('search', ''),
             'sort'      => (string) $request->query('sort', 'newest'),
-            'per_page'  => (int) $request->query('per_page', 100),
+            'per_page'  => $perPage,
         ];
 
         return Inertia::render('Notifications/NotificationsIndex', [

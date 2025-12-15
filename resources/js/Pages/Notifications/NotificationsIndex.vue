@@ -16,6 +16,12 @@ const page = usePage()
 const notificationsProp = computed(() => page.props.notifications)
 const serverFilters = computed(() => page.props.filters ?? {})
 
+const normalizePerPage = v => {
+  if (v === 'all') return 'all'
+  const n = Number.parseInt(v, 10)
+  return Number.isFinite(n) ? n : 25
+}
+
 const defaultFilters = () => ({
   scope: 'all',
   read: 'all',
@@ -23,7 +29,7 @@ const defaultFilters = () => ({
   type: 'all',
   search: '',
   sort: 'newest',
-  per_page: 100,
+  per_page: 25,
 })
 
 const filters = reactive({
@@ -34,7 +40,7 @@ const filters = reactive({
   type: serverFilters.value.type ?? 'all',
   search: serverFilters.value.search ?? '',
   sort: serverFilters.value.sort ?? 'newest',
-  per_page: serverFilters.value.per_page ?? 100,
+  per_page: normalizePerPage(serverFilters.value.per_page ?? 25),
 })
 
 const selected = ref(new Set())
@@ -44,6 +50,11 @@ const isFiltering = ref(false)
 const rows = ref([])
 const links = ref([])
 const meta = ref(null)
+
+const notifyTopnavRefresh = () => {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent('app-notifications:refresh'))
+}
 
 const hydrateFromPageProps = () => {
   const p = notificationsProp.value
@@ -91,7 +102,7 @@ watch(
     syncFilterIfPresent(next, 'type', v => (filters.type = v))
     syncFilterIfPresent(next, 'search', v => (filters.search = v ?? ''))
     syncFilterIfPresent(next, 'sort', v => (filters.sort = v))
-    syncFilterIfPresent(next, 'per_page', v => (filters.per_page = v))
+    syncFilterIfPresent(next, 'per_page', v => (filters.per_page = normalizePerPage(v)))
   },
   { deep: true }
 )
@@ -108,7 +119,8 @@ const totalAllCount = computed(() => {
 
 const pageHeaderTitle = computed(() => {
   const total = totalAllCount.value
-  if (typeof total === 'number') return `All Notifications <span class="text-success text-xs float-right mt-2">(${total} Total)</span>`
+  if (typeof total === 'number')
+    return `All Notifications <span class="text-success text-xs float-right mt-2">(${total} Total)</span>`
   return 'All Notifications'
 })
 
@@ -119,9 +131,17 @@ const totalCount = computed(() => {
 
 const showingLabel = computed(() => {
   const shown = showingCount.value
-  const total = totalCount.value
+  const total = totalAllCount.value
   if (typeof total === 'number') return `Showing ${shown} of ${total}`
-  return `Showing ${shown}`
+  return `${shown}`
+})
+
+const pageHeaderTitleTotalLabel = computed(() => {
+  const total = totalAllCount.value
+  const label = showingLabel.value
+  if (typeof total === 'number')
+    return `All Notifications <span class="text-success text-xs max-xs:block max-xs:mb-0.5 xs:float-right mt-0.5 xs:mt-2">${label}</span>`
+  return 'All Notifications'
 })
 
 const toggleSelectAll = () => {
@@ -298,6 +318,8 @@ const markRead = async row => {
     showToast('Error', 'Failed to mark notification as read.', 'danger')
     return
   }
+
+  notifyTopnavRefresh()
 }
 
 const markUnread = async row => {
@@ -312,6 +334,8 @@ const markUnread = async row => {
     showToast('Error', 'Failed to mark notification as unread.', 'danger')
     return
   }
+
+  notifyTopnavRefresh()
 }
 
 const dismiss = async row => {
@@ -326,6 +350,8 @@ const dismiss = async row => {
     showToast('Error', 'Failed to dismiss notification.', 'danger')
     return
   }
+
+  notifyTopnavRefresh()
 }
 
 const undismiss = async row => {
@@ -340,6 +366,8 @@ const undismiss = async row => {
     showToast('Error', 'Failed to undismiss notification.', 'danger')
     return
   }
+
+  notifyTopnavRefresh()
 }
 
 const scopeIconName = scope => {
@@ -385,6 +413,9 @@ const tooltipStyle = {
 const tooltipClass =
   'absolute -bottom-8 -left-2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100'
 
+const actionTooltipClass =
+  'absolute -bottom-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100'
+
 const bulkButtonClasses = 'sm:hidden lg:inline'
 
 const showDeleteModal = ref(false)
@@ -426,6 +457,7 @@ const destroyRow = async () => {
 
   closeDeleteModal()
   showToast('Success', 'Notification deleted.', 'success')
+  notifyTopnavRefresh()
 }
 
 const bulk = async action => {
@@ -468,6 +500,8 @@ const bulk = async action => {
     showToast('Success', 'Selected notifications marked as unread.', 'success')
   if (action === 'dismiss') showToast('Success', 'Selected notifications dismissed.', 'success')
   if (action === 'undismiss') showToast('Success', 'Selected notifications undismissed.', 'success')
+
+  notifyTopnavRefresh()
 }
 
 const runBulkDelete = async () => {
@@ -489,6 +523,7 @@ const runBulkDelete = async () => {
 
   closeBulkDeleteModal()
   showToast('Success', 'Selected notifications deleted.', 'success')
+  notifyTopnavRefresh()
 }
 
 let userChannel = null
@@ -551,7 +586,14 @@ const unsubscribeRealtime = () => {
 }
 
 watch(
-  () => [filters.scope, filters.read, filters.dismissed, filters.type, filters.sort, filters.per_page],
+  () => [
+    filters.scope,
+    filters.read,
+    filters.dismissed,
+    filters.type,
+    filters.sort,
+    filters.per_page,
+  ],
   () => applyFilters(),
   { deep: false }
 )
@@ -585,7 +627,7 @@ onUnmounted(() => {
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="notifications">
     <div class="container-border">
       <PageHeader
-        :title="pageHeaderTitle"
+        :title="pageHeaderTitleTotalLabel"
         description="Filter, mark read/unread, dismiss/undismiss, or delete notifications"
         :breadcrumbs="[
           { label: 'Dashboard', href: route('dashboard') },
@@ -663,6 +705,8 @@ onUnmounted(() => {
                   <option :value="25">25</option>
                   <option :value="50">50</option>
                   <option :value="100">100</option>
+                  <option :value="1000">1000</option>
+                  <option value="all">All</option>
                 </select>
               </div>
             </div>
@@ -731,10 +775,6 @@ onUnmounted(() => {
               <span class="text-xs text-[var(--color-text-muted)]">
                 Selected: {{ selectedCount }}
               </span>
-            </div>
-
-            <div class="ml-2 text-xs text-[var(--color-text-muted)]">
-              {{ showingLabel }}
             </div>
           </div>
 
@@ -822,7 +862,7 @@ onUnmounted(() => {
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M21 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061A1.125 1.125 0 0 1 21 8.689v8.122ZM11.25 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061a1.125 1.125 0 0 1 1.683.977v8.122Z" />
+                    d="M21 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061A1.125 1.125 0 0 1 21 8.689v8.122ZM11.25 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061A1.125 1.125 0 0 1 11.25 8.689v8.122Z" />
                 </svg>
 
                 <span :class="bulkButtonClasses">Undismiss</span>
@@ -1063,6 +1103,7 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
+
             <div class="w-full overflow-x-auto">
               <table
                 class="hidden w-full min-w-max table-auto border-collapse text-left text-sm sm:table">
@@ -1077,8 +1118,8 @@ onUnmounted(() => {
                     <th class="p-3">Notification</th>
                     <th class="w-20 p-3">Scope</th>
                     <th class="w-24 p-3">Type</th>
-                    <th class="w-20 p-3">Read</th>
-                    <th class="w-28 p-3">Dismissed</th>
+                    <th class="w-20 p-3 text-center">Read</th>
+                    <th class="w-28 p-3 text-center">Dismissed</th>
                     <th class="w-40 p-3 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -1168,8 +1209,8 @@ onUnmounted(() => {
                       </span>
                     </td>
 
-                    <td class="p-3 align-middle">
-                      <span class="group relative inline-flex items-center">
+                    <td class="p-3 text-center align-middle">
+                      <span class="group relative inline-flex items-center justify-center">
                         <svg
                           v-if="readIconName(row.is_read) === 'check'"
                           class="size-4 text-[var(--color-text-muted)]"
@@ -1202,8 +1243,8 @@ onUnmounted(() => {
                       </span>
                     </td>
 
-                    <td class="p-3 align-middle">
-                      <span class="group relative inline-flex items-center">
+                    <td class="p-3 text-center align-middle">
+                      <span class="group relative inline-flex items-center justify-center">
                         <svg
                           v-if="dismissedIconName(row.is_dismissed) === 'x'"
                           class="size-4 text-[var(--color-text-muted)]"
@@ -1236,10 +1277,10 @@ onUnmounted(() => {
                       </span>
                     </td>
 
-                    <td class="p-3 align-middle">
-                      <div class="flex justify-end">
+                    <td class="overflow-visible p-3 align-middle">
+                      <div class="flex justify-end overflow-visible">
                         <div
-                          class="inline-flex overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
+                          class="inline-flex overflow-visible rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
                           <button
                             type="button"
                             class="group relative cursor-pointer px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
@@ -1268,7 +1309,7 @@ onUnmounted(() => {
                               <path d="M20 6 9 17l-5-5" />
                             </svg>
 
-                            <span :class="tooltipClass" :style="tooltipStyle">
+                            <span :class="actionTooltipClass" :style="tooltipStyle">
                               {{ row.is_read ? 'Mark unread' : 'Mark read' }}
                             </span>
                           </button>
@@ -1305,7 +1346,7 @@ onUnmounted(() => {
                               <path d="M6 6 18 18" />
                             </svg>
 
-                            <span :class="tooltipClass" :style="tooltipStyle">
+                            <span :class="actionTooltipClass" :style="tooltipStyle">
                               {{ row.is_dismissed ? 'Undismiss' : 'Dismiss' }}
                             </span>
                           </button>
@@ -1333,7 +1374,7 @@ onUnmounted(() => {
                               <path d="M4 7h16" />
                             </svg>
 
-                            <span :class="tooltipClass" :style="tooltipStyle">Delete</span>
+                            <span :class="actionTooltipClass" :style="tooltipStyle">Delete</span>
                           </button>
                         </div>
                       </div>

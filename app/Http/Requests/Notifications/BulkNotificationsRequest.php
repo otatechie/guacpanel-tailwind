@@ -12,7 +12,6 @@ class BulkNotificationsRequest extends FormRequest
         $user = $this->user();
 
         return (bool) $user && (
-            $user->can('manage-notifications') ||
             $user->can('edit-notifications') ||
             $user->can('delete-notifications')
         );

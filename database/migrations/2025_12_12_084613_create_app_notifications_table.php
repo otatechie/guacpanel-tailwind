@@ -4,22 +4,27 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration {
+return new class() extends Migration
+{
     public function up(): void
     {
         Schema::create('app_notifications', function (Blueprint $table) {
             $table->ulid('id')->primary();
+
             $table->foreignUlid('user_id')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
-            $table->string('scope')->default('user'); // user|system (optional but nice)
-            $table->string('type')->default('info');  // info|success|warning|error
+
+            $table->string('scope')->default('user'); // user|system
+            $table->string('type')->default('info'); // info|success|warning|error
             $table->string('title')->nullable();
             $table->text('message');
             $table->json('data')->nullable();
+
             $table->timestamp('read_at')->nullable();
             $table->timestamp('dismissed_at')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
 

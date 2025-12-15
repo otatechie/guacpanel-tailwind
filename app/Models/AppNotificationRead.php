@@ -10,6 +10,7 @@ class AppNotificationRead extends Model
     use HasUlids;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -17,11 +18,13 @@ class AppNotificationRead extends Model
         'user_id',
         'read_at',
         'dismissed_at',
+        'deleted_at',
     ];
 
     protected $casts = [
-        'read_at'      => 'datetime',
+        'read_at' => 'datetime',
         'dismissed_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function notification()

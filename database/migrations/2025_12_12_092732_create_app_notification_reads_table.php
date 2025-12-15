@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration {
+return new class() extends Migration
+{
     public function up(): void
     {
         Schema::create('app_notification_reads', function (Blueprint $table) {
@@ -21,11 +22,16 @@ return new class() extends Migration {
             $table->timestamp('read_at')->nullable();
             $table->timestamp('dismissed_at')->nullable();
 
+            // Per-user "deleted" for system notifications (does not affect other users)
+            $table->timestamp('deleted_at')->nullable();
+
             $table->timestamps();
 
             $table->unique(['app_notification_id', 'user_id']);
+
             $table->index(['user_id', 'read_at']);
             $table->index(['user_id', 'dismissed_at']);
+            $table->index(['user_id', 'deleted_at']);
         });
     }
 

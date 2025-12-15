@@ -12,6 +12,7 @@ class AppNotification extends Model
     use SoftDeletes;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -27,10 +28,10 @@ class AppNotification extends Model
     ];
 
     protected $casts = [
-        'data'         => 'array',
-        'read_at'      => 'datetime',
+        'data' => 'array',
+        'read_at' => 'datetime',
         'dismissed_at' => 'datetime',
-        'deleted_at'   => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function user()

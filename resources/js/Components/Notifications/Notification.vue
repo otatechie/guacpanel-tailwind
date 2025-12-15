@@ -57,6 +57,13 @@ const relativeTime = iso => {
   return `${days}d ago`
 }
 
+const typeLabel = type => {
+  if (type === 'error') return 'Error'
+  if (type === 'warning') return 'Warning'
+  if (type === 'success') return 'Success'
+  return 'Info'
+}
+
 const normalize = n => ({
   id: n.id,
   title: n.title || (n.scope === 'system' ? 'System' : 'Notification'),
@@ -64,7 +71,9 @@ const normalize = n => ({
   created_at: n.created_at,
   time: relativeTime(n.created_at),
   is_read: !!n.is_read,
-  read_at: n.read_at,
+  read_at: n.read_at ?? null,
+  is_dismissed: !!n.is_dismissed,
+  dismissed_at: n.dismissed_at ?? null,
   scope: n.scope,
   type: n.type,
   priority: typeToPriority(n.type),
@@ -93,7 +102,7 @@ const fetchNotifications = async ({ silent = false } = {}) => {
 
     const json = await res.json()
     const next = Array.isArray(json?.data) ? json.data.map(normalize) : []
-    notifications.value = next
+    notifications.value = next.filter(n => !n.is_dismissed)
   } finally {
     if (!silent) {
       isLoading.value = false
@@ -217,8 +226,15 @@ const upsertIncoming = payload => {
     data: payload.data,
     created_at: payload.created_at,
     read_at: payload.read_at ?? null,
-    is_read: false,
+    dismissed_at: payload.dismissed_at ?? null,
+    is_read: !!payload.read_at,
+    is_dismissed: !!payload.dismissed_at,
   })
+
+  if (item.is_dismissed) {
+    notifications.value = notifications.value.filter(n => n.id !== item.id)
+    return
+  }
 
   const existingIndex = notifications.value.findIndex(n => n.id === item.id)
 
@@ -234,12 +250,7 @@ const upsertIncoming = payload => {
 const handleStateChanged = payload => {
   if (!payload?.id) return
 
-  if (payload.action === 'deleted') {
-    notifications.value = notifications.value.filter(n => n.id !== payload.id)
-    return
-  }
-
-  if (payload.action === 'dismiss') {
+  if (payload.action === 'deleted' || payload.action === 'dismiss') {
     notifications.value = notifications.value.filter(n => n.id !== payload.id)
     return
   }
@@ -258,14 +269,32 @@ const handleStateChanged = payload => {
 
   const next = { ...notifications.value[idx] }
 
-  if (payload.action === 'read') next.is_read = true
-  if (payload.action === 'unread') next.is_read = false
+  if (payload.action === 'read') {
+    next.is_read = true
+    next.read_at = payload.read_at ?? next.read_at
+  }
+
+  if (payload.action === 'unread') {
+    next.is_read = false
+    next.read_at = null
+  }
 
   notifications.value.splice(idx, 1, next)
 }
 
 const handleBulkChanged = payload => {
   if (!payload?.action) return
+
+  if (payload.action === 'dismiss-all') {
+    notifications.value = []
+    return
+  }
+
+  if (payload.action === 'read-all') {
+    notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
+    return
+  }
+
   fetchNotifications({ silent: true })
 }
 
@@ -315,10 +344,7 @@ const subscribeRealtime = () => {
     .listen('.app-notification.state', handleStateChanged)
     .listen('.app-notification.bulk', handleBulkChanged)
 
-  systemChannel = window.Echo.private('system')
-    .listen('.app-notification.created', upsertIncoming)
-    .listen('.app-notification.state', handleStateChanged)
-    .listen('.app-notification.bulk', handleBulkChanged)
+  systemChannel = window.Echo.private('system').listen('.app-notification.created', upsertIncoming)
 }
 
 const unsubscribeRealtime = () => {
@@ -345,9 +371,14 @@ const stopReconcile = () => {
   reconcileTimer = null
 }
 
+const handleAppRefresh = () => {
+  fetchNotifications({ silent: true })
+}
+
 onMounted(async () => {
   document.addEventListener('click', handleClickAway)
   document.addEventListener('keydown', handleEscapeKey)
+  window.addEventListener('app-notifications:refresh', handleAppRefresh)
 
   hydrateFromPageProps()
   subscribeRealtime()
@@ -361,6 +392,7 @@ onMounted(async () => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickAway)
   document.removeEventListener('keydown', handleEscapeKey)
+  window.removeEventListener('app-notifications:refresh', handleAppRefresh)
 
   stopReconcile()
   unsubscribeRealtime()
