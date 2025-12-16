@@ -239,7 +239,6 @@ Route::middleware([
 
 // Temp Testing Routes
 Route::prefix('_test')->middleware(['auth', 'ensure-local-testing'])->group(function () {
-
     Route::get('/', function () {
         return 'Hello Tester!';
     });
