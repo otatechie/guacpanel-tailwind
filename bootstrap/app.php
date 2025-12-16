@@ -14,7 +14,12 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RequireAuthForVerification;
 use App\Http\Middleware\RequireTwoFactor;
 use App\Http\Middleware\ValidateSignature;
+use App\Jobs\CleanupDeletedAppNotificationsJob;
+use App\Jobs\DestroySoftDeletedUsersJob;
+use App\Jobs\SendScheduledAppNotificationsJob;
+use App\Jobs\SoftDeleteExpiredAppNotificationsJob;
 use App\Mail\ExceptionOccurred;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -93,6 +98,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->route('login')
                 ->with('error', __('notifications.errors.sm_session_invalid'));
         });
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->job(new CleanupDeletedAppNotificationsJob)->daily()->withoutOverlapping()->onOneServer();
+        $schedule->job(new DestroySoftDeletedUsersJob)->daily()->withoutOverlapping()->onOneServer();
+        $schedule->job(new SendScheduledAppNotificationsJob)->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+        $schedule->job(new SoftDeleteExpiredAppNotificationsJob)->daily()->withoutOverlapping()->onOneServer();
     })
     ->withEvents(false) // turn off folder auto scanning, manually define events outide of Laravel's default.
     ->create();

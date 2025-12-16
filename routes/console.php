@@ -1,12 +1,7 @@
 <?php
 
-use App\Jobs\CleanupDeletedAppNotificationsJob;
-use App\Jobs\DestroySoftDeletedUsersJob;
-use App\Jobs\SendScheduledAppNotificationsJob;
-use App\Jobs\SoftDeleteExpiredAppNotificationsJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schedule;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,23 +17,3 @@ use Illuminate\Support\Facades\Schedule;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
-
-Schedule::job(DestroySoftDeletedUsersJob::class)
-    ->daily()
-    ->withoutOverlapping()
-    ->onOneServer();
-
-Schedule::job(CleanupDeletedAppNotificationsJob::class)
-    ->daily()
-    ->withoutOverlapping()
-    ->onOneServer();
-
-Schedule::job(SoftDeleteExpiredAppNotificationsJob::class)
-    ->daily()
-    ->withoutOverlapping()
-    ->onOneServer();
-
-Schedule::job(SendScheduledAppNotificationsJob::class)
-    ->everyFifteenMinutes()
-    ->withoutOverlapping()
-    ->onOneServer();
