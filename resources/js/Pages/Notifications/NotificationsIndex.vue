@@ -972,8 +972,20 @@ onUnmounted(() => {
                   :key="row.id"
                   class="p-4"
                   :class="{
+                    'border-l-4': true,
                     'bg-blue-50/50 dark:bg-blue-900/20': !row.is_read && !row.is_dismissed,
                     'bg-gray-50/50 font-light opacity-70 dark:bg-gray-900/90': row.is_dismissed,
+                    'bg-red-500/10 dark:bg-red-500/30':
+                      (row.priority === 'critical' || row.type === 'danger') &&
+                      !row.is_read &&
+                      !row.is_dismissed,
+                    'border-red-500': row.priority === 'critical',
+                    'border-red-500': row.type === 'danger',
+                    'border-yellow-500': row.priority === 'high',
+                    'border-blue-500': row.priority === 'normal',
+                    'border-blue-500': row.type === 'info',
+                    'border-gray-500': row.priority === 'low',
+                    'border-green-600': row.scope === 'release',
                   }">
                   <div class="flex items-start gap-3">
                     <div class="pt-0.5">
