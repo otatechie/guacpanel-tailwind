@@ -15,7 +15,7 @@ trait AppNotificationsHelperTrait
     /**
      * @return array{data: array<int, array<string, mixed>>, links?: array<int, array<string, mixed>>, meta?: array<string, mixed>}
      */
-    protected function resolveNotifications(Request $request, int $limit = 25, array $filters = []): array
+    protected function resolveNotifications(Request $request, int|string $limit = 25, array $filters = []): array
     {
         $user = $request->user();
 
@@ -25,7 +25,7 @@ trait AppNotificationsHelperTrait
                 'links' => [],
                 'meta'  => [
                     'total'        => 0,
-                    'per_page'     => $limit,
+                    'per_page'     => 0,
                     'current_page' => 1,
                     'last_page'    => 1,
                     'from'         => null,

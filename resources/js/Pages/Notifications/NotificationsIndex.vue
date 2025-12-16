@@ -1147,8 +1147,8 @@ onUnmounted(() => {
                         @change="toggleSelectAll" />
                     </th>
                     <th class="p-3">Notification</th>
-                    <th class="w-20 p-3">Scope</th>
-                    <th class="w-24 p-3">Type</th>
+                    <th class="w-20 p-3 text-center">Scope</th>
+                    <th class="w-24 p-3 text-center">Type</th>
                     <th class="w-20 p-3 text-center">Read</th>
                     <th class="w-28 p-3 text-center">Dismissed</th>
                     <th class="w-40 p-3 text-right">Actions</th>
@@ -1195,11 +1195,11 @@ onUnmounted(() => {
                       </div>
                     </td>
 
-                    <td class="p-3 align-middle">
+                    <td class="p-3 text-center align-middle">
                       <span class="group relative inline-flex items-center">
                         <svg
                           v-if="scopeIconName(row.scope) === 'user'"
-                          class="size-4 text-[var(--color-text-muted)]"
+                          class="size-5 text-[var(--color-text-muted)]"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -1212,7 +1212,7 @@ onUnmounted(() => {
 
                         <svg
                           v-else-if="scopeIconName(row.scope) === 'cpu'"
-                          class="size-4 text-[var(--color-text-muted)]"
+                          class="size-5 text-[var(--color-text-muted)]"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -1227,20 +1227,106 @@ onUnmounted(() => {
                         <svg
                           v-else-if="scopeIconName(row.scope) === 'release'"
                           xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 288 288"
                           fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4 text-[var(--color-text-muted)]">
+                          aria-hidden="true"
+                          class="size-5.5 text-[var(--color-text-muted)]">
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.379a48.474 48.474 0 0 0-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+                            d="M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z"
+                            fill="currentColor"
+                            stroke="currentColor"
+                            stroke-width="2"></path>
+                          <g mask="url(#cc)">
+                            <path
+                              opacity=".1"
+                              d="M-69 287.5h445"
+                              stroke="url(#e)"
+                              stroke-width="1.5"></path>
+                            <path
+                              opacity=".1"
+                              d="M-69 0h445"
+                              stroke="url(#f)"
+                              stroke-width="1.5"></path>
+                            <path
+                              opacity=".1"
+                              d="M.25 355V-90"
+                              stroke="url(#g)"
+                              stroke-width="1.5"></path>
+                            <path
+                              opacity=".1"
+                              d="M287.75 355V-90"
+                              stroke="url(#h)"
+                              stroke-width="1.5"></path>
+                          </g>
+                          <defs>
+                            <linearGradient
+                              id="e"
+                              x1="375.75"
+                              y1="296.754"
+                              x2="-69.25"
+                              y2="296.754"
+                              gradientUnits="userSpaceOnUse">
+                              <stop stop-color="#0F172A" stop-opacity="0"></stop>
+                              <stop offset=".258" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset=".521" stop-color="#0F172A"></stop>
+                              <stop offset=".784" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset="1" stop-color="#0F172A" stop-opacity="0"></stop>
+                            </linearGradient>
+                            <linearGradient
+                              id="f"
+                              x1="375.75"
+                              y1="9.254"
+                              x2="-69.25"
+                              y2="9.254"
+                              gradientUnits="userSpaceOnUse">
+                              <stop stop-color="#0F172A" stop-opacity="0"></stop>
+                              <stop offset=".258" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset=".521" stop-color="#0F172A"></stop>
+                              <stop offset=".784" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset="1" stop-color="#0F172A" stop-opacity="0"></stop>
+                            </linearGradient>
+                            <linearGradient
+                              id="g"
+                              x1="9.504"
+                              y1="-89.75"
+                              x2="9.504"
+                              y2="355.25"
+                              gradientUnits="userSpaceOnUse">
+                              <stop stop-color="#0F172A" stop-opacity="0"></stop>
+                              <stop offset=".258" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset=".521" stop-color="#0F172A"></stop>
+                              <stop offset=".784" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset="1" stop-color="#0F172A" stop-opacity="0"></stop>
+                            </linearGradient>
+                            <linearGradient
+                              id="h"
+                              x1="297.004"
+                              y1="-89.75"
+                              x2="297.004"
+                              y2="355.25"
+                              gradientUnits="userSpaceOnUse">
+                              <stop stop-color="#0F172A" stop-opacity="0"></stop>
+                              <stop offset=".258" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset=".521" stop-color="#0F172A"></stop>
+                              <stop offset=".784" stop-color="#0F172A" stop-opacity=".6"></stop>
+                              <stop offset="1" stop-color="#0F172A" stop-opacity="0"></stop>
+                            </linearGradient>
+                            <mask
+                              id="cc"
+                              style="mask-type: alpha"
+                              maskUnits="userSpaceOnUse"
+                              x="-333"
+                              y="-242"
+                              width="956"
+                              height="927">
+                              <path fill="url(#b)" d="M-333-242h956v927h-956z"></path>
+                            </mask>
+                          </defs>
                         </svg>
 
                         <svg
                           v-else
-                          class="size-4 text-[var(--color-text-muted)]"
+                          class="size-4.5 text-[var(--color-text-muted)]"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -1259,7 +1345,7 @@ onUnmounted(() => {
                       </span>
                     </td>
 
-                    <td class="p-3 align-middle">
+                    <td class="p-3 text-center align-middle">
                       <span
                         class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
                         :class="typeBadgeClass(row.type)">
