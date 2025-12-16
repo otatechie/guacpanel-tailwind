@@ -840,7 +840,7 @@ onUnmounted(() => {
               class="xs:gap-0 grid w-full grid-cols-2 gap-1 overflow-visible rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] sm:inline-grid sm:grid-cols-5">
               <button
                 type="button"
-                class="btn btn-sm btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs"
+                class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs"
                 :disabled="selectedCount === 0 || isWorking"
                 @click="bulk('read')">
                 <svg
@@ -862,7 +862,7 @@ onUnmounted(() => {
 
               <button
                 type="button"
-                class="btn btn-sm btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs"
+                class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs"
                 :disabled="selectedCount === 0 || isWorking"
                 @click="bulk('unread')">
                 <svg
@@ -884,7 +884,7 @@ onUnmounted(() => {
 
               <button
                 type="button"
-                class="btn btn-sm btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
+                class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
                 :disabled="selectedCount === 0 || isWorking"
                 @click="bulk('dismiss')">
                 <svg
@@ -906,7 +906,7 @@ onUnmounted(() => {
 
               <button
                 type="button"
-                class="btn btn-sm btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
+                class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
                 :disabled="selectedCount === 0 || isWorking"
                 @click="bulk('undismiss')">
                 <svg
@@ -930,7 +930,7 @@ onUnmounted(() => {
 
               <button
                 type="button"
-                class="btn btn-sm btn-danger group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs"
+                class="btn btn-xs text-xxs btn-secondary group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs"
                 :disabled="selectedCount === 0 || isWorking"
                 @click="bulk('delete')">
                 <svg
@@ -1166,22 +1166,37 @@ onUnmounted(() => {
                               stroke-linejoin="round"
                               d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
                           </svg>
-                          <span class="font-medium">{{ row.scope || 'notification' }}</span>
+                          <span class="text-xxs font-medium uppercase">
+                            {{ row.scope || 'notification' }}
+                          </span>
                         </span>
 
                         <span
-                          class="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1">
+                          class="text-xxs inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 uppercase">
                           <span class="font-medium">Read:</span>
                           <span>{{ row.is_read ? 'Yes' : 'No' }}</span>
                         </span>
 
                         <span
-                          class="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1">
+                          class="text-xxs inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 uppercase">
                           <span class="font-medium">Dismissed:</span>
                           <span>{{ row.is_dismissed ? 'Yes' : 'No' }}</span>
                         </span>
 
-                        <span class="w-full text-[var(--color-text-muted)]">
+                        <span
+                          class="flex w-full items-center gap-1.5 text-[var(--color-text-muted)]">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="mt-0.25 size-3">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          </svg>
                           {{ createdDisplay(row.created_at) }}
                         </span>
                       </div>
@@ -1191,7 +1206,7 @@ onUnmounted(() => {
                           class="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
                           <button
                             type="button"
-                            class="btn btn-sm btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
+                            class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
                             :disabled="isWorking"
                             @click="row.is_read ? markUnread(row) : markRead(row)">
                             <svg
@@ -1224,7 +1239,7 @@ onUnmounted(() => {
 
                           <button
                             type="button"
-                            class="btn btn-sm btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
+                            class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
                             :disabled="isWorking"
                             @click="row.is_dismissed ? undismiss(row) : dismiss(row)">
                             <svg
@@ -1261,7 +1276,7 @@ onUnmounted(() => {
 
                           <button
                             type="button"
-                            class="btn btn-sm btn-danger inline-flex items-center justify-center gap-2 rounded-none border-0"
+                            class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
                             :disabled="isWorking"
                             @click="confirmDelete(row)">
                             <svg
@@ -1546,7 +1561,20 @@ onUnmounted(() => {
                           <div class="mt-1 truncate text-[var(--color-text-muted)]">
                             {{ row.message }}
                           </div>
-                          <div class="mt-1 text-xs text-[var(--color-text-muted)]">
+                          <div
+                            class="mt-1 flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="mt-0.25 size-3">
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
                             {{ createdDisplay(row.created_at) }}
                           </div>
                         </div>

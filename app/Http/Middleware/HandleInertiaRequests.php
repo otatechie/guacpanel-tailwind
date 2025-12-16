@@ -71,7 +71,7 @@ class HandleInertiaRequests extends Middleware
                 'notificationInDemoMode'    => config('guacpanel.notifications.in_demo'),
             ],
 
-            'notifications' => fn () => $this->resolveNotifications($request, 25, [
+            'notifications' => fn () => $this->resolveNotifications($request, 1000, [
                 'dismissed' => 'undismissed',
             ]),
 

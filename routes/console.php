@@ -2,6 +2,7 @@
 
 use App\Jobs\CleanupDeletedAppNotificationsJob;
 use App\Jobs\DestroySoftDeletedUsersJob;
+use App\Jobs\SendScheduledAppNotificationsJob;
 use App\Jobs\SoftDeleteExpiredAppNotificationsJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -34,5 +35,10 @@ Schedule::job(CleanupDeletedAppNotificationsJob::class)
 
 Schedule::job(SoftDeleteExpiredAppNotificationsJob::class)
     ->daily()
+    ->withoutOverlapping()
+    ->onOneServer();
+
+Schedule::job(SendScheduledAppNotificationsJob::class)
+    ->everyFifteenMinutes()
     ->withoutOverlapping()
     ->onOneServer();

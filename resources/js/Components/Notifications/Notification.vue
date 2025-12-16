@@ -216,38 +216,39 @@ const dismissAll = async event => {
   }
 }
 
-const upsertIncoming = payload => {
-  if (!payload?.id) return
+// Buggy, just re-align from the api rather than splice in the front end.
+// const upsertIncoming = payload => {
+//   if (!payload?.id) return
 
-  const item = normalize({
-    id: payload.id,
-    scope: payload.scope,
-    type: payload.type,
-    title: payload.title,
-    message: payload.message,
-    data: payload.data,
-    created_at: payload.created_at,
-    read_at: payload.read_at ?? null,
-    dismissed_at: payload.dismissed_at ?? null,
-    is_read: !!payload.read_at,
-    is_dismissed: !!payload.dismissed_at,
-  })
+//   const item = normalize({
+//     id: payload.id,
+//     scope: payload.scope,
+//     type: payload.type,
+//     title: payload.title,
+//     message: payload.message,
+//     data: payload.data,
+//     created_at: payload.created_at,
+//     read_at: payload.read_at ?? null,
+//     dismissed_at: payload.dismissed_at ?? null,
+//     is_read: !!payload.read_at,
+//     is_dismissed: !!payload.dismissed_at,
+//   })
 
-  if (item.is_dismissed) {
-    notifications.value = notifications.value.filter(n => n.id !== item.id)
-    return
-  }
+//   if (item.is_dismissed) {
+//     notifications.value = notifications.value.filter(n => n.id !== item.id)
+//     return
+//   }
 
-  const existingIndex = notifications.value.findIndex(n => n.id === item.id)
+//   const existingIndex = notifications.value.findIndex(n => n.id === item.id)
 
-  if (existingIndex >= 0) {
-    notifications.value.splice(existingIndex, 1, item)
-    return
-  }
+//   if (existingIndex >= 0) {
+//     notifications.value.splice(existingIndex, 1, item)
+//     return
+//   }
 
-  notifications.value.unshift(item)
-  notifications.value = notifications.value.slice(0, 25)
-}
+//   notifications.value.unshift(item)
+//   notifications.value = notifications.value.slice(0, 25)
+// }
 
 const handleStateChanged = payload => {
   if (!payload?.id) return
@@ -343,11 +344,16 @@ const subscribeRealtime = () => {
   if (!window.Echo || !props.user?.id) return
 
   userChannel = window.Echo.private(`users.${props.user.id}`)
-    .listen('.app-notification.created', upsertIncoming)
+    // .listen('.app-notification.created', upsertIncoming)
+    .listen('.app-notification.created', handleStateChanged)
     .listen('.app-notification.state', handleStateChanged)
     .listen('.app-notification.bulk', handleBulkChanged)
 
-  systemChannel = window.Echo.private('system').listen('.app-notification.created', upsertIncoming)
+  // systemChannel = window.Echo.private('system').listen('.app-notification.created', upsertIncoming)
+  systemChannel = window.Echo.private('system').listen(
+    '.app-notification.created',
+    handleStateChanged
+  )
 }
 
 const unsubscribeRealtime = () => {
@@ -403,6 +409,12 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!-- {{ unreadCount }} -->
+
+  <!-- {{ notifications.length }} -->
+
+  <!-- {{ page.props?.notifications?.data.length }} -->
+
   <div ref="rootEl" class="relative">
     <button
       type="button"
