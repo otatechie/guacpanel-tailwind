@@ -51,6 +51,60 @@ const rows = ref([])
 const links = ref([])
 const meta = ref(null)
 
+const tableSortKey = ref(null)
+const tableSortDir = ref('asc')
+
+const isTableSortedBy = key => tableSortKey.value === key
+
+const toggleTableSort = key => {
+  if (tableSortKey.value !== key) {
+    tableSortKey.value = key
+    tableSortDir.value = 'asc'
+    return
+  }
+
+  tableSortDir.value = tableSortDir.value === 'asc' ? 'desc' : 'asc'
+}
+
+const getSortValue = (row, key) => {
+  if (!row) return ''
+
+  if (key === 'title') return String(row.title ?? '')
+  if (key === 'scope') return String(row.scope ?? '')
+  if (key === 'type') return String(row.type ?? '')
+  if (key === 'read') return row.is_read ? 1 : 0
+  if (key === 'dismissed') return row.is_dismissed ? 1 : 0
+
+  return ''
+}
+
+const displayedRows = computed(() => {
+  const base = Array.isArray(rows.value) ? rows.value : []
+  if (!tableSortKey.value) return base
+
+  const key = tableSortKey.value
+  const dir = tableSortDir.value === 'desc' ? -1 : 1
+
+  return base
+    .map((r, i) => ({ r, i }))
+    .sort((a, b) => {
+      const av = getSortValue(a.r, key)
+      const bv = getSortValue(b.r, key)
+
+      if (typeof av === 'number' && typeof bv === 'number') {
+        if (av === bv) return a.i - b.i
+        return (av - bv) * dir
+      }
+
+      const as = String(av).toLowerCase()
+      const bs = String(bv).toLowerCase()
+
+      if (as === bs) return a.i - b.i
+      return as.localeCompare(bs) * dir
+    })
+    .map(x => x.r)
+})
+
 const notifyTopnavRefresh = () => {
   if (typeof window === 'undefined') return
   window.dispatchEvent(new CustomEvent('app-notifications:refresh'))
@@ -914,7 +968,7 @@ onUnmounted(() => {
             <div class="sm:hidden">
               <div class="divide-y divide-[var(--color-border)]">
                 <div
-                  v-for="row in rows"
+                  v-for="row in displayedRows"
                   :key="row.id"
                   class="p-4"
                   :class="{
@@ -1146,18 +1200,210 @@ onUnmounted(() => {
                         :checked="selectedCount === rows.length && rows.length > 0"
                         @change="toggleSelectAll" />
                     </th>
-                    <th class="p-3">Notification</th>
-                    <th class="w-20 p-3 text-center">Scope</th>
-                    <th class="w-24 p-3 text-center">Type</th>
-                    <th class="w-20 p-3 text-center">Read</th>
-                    <th class="w-28 p-3 text-center">Dismissed</th>
+
+                    <th class="p-3">
+                      <button
+                        type="button"
+                        class="inline-flex items-center gap-1 hover:text-[var(--color-text)]"
+                        @click="toggleTableSort('title')">
+                        <span>Notification</span>
+
+                        <span
+                          v-if="isTableSortedBy('title')"
+                          class="text-[var(--color-text-muted)]">
+                          <svg
+                            v-if="tableSortDir === 'asc'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <th class="w-20 p-3 text-center">
+                      <button
+                        type="button"
+                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                        @click="toggleTableSort('scope')">
+                        <span>Scope</span>
+
+                        <span
+                          v-if="isTableSortedBy('scope')"
+                          class="text-[var(--color-text-muted)]">
+                          <svg
+                            v-if="tableSortDir === 'asc'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <th class="w-24 p-3 text-center">
+                      <button
+                        type="button"
+                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                        @click="toggleTableSort('type')">
+                        <span>Type</span>
+
+                        <span v-if="isTableSortedBy('type')" class="text-[var(--color-text-muted)]">
+                          <svg
+                            v-if="tableSortDir === 'asc'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <th class="w-20 p-3 text-center">
+                      <button
+                        type="button"
+                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                        @click="toggleTableSort('read')">
+                        <span>Read</span>
+
+                        <span v-if="isTableSortedBy('read')" class="text-[var(--color-text-muted)]">
+                          <svg
+                            v-if="tableSortDir === 'asc'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
+                    <th class="w-28 p-3 text-center">
+                      <button
+                        type="button"
+                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                        @click="toggleTableSort('dismissed')">
+                        <span>Dismissed</span>
+
+                        <span
+                          v-if="isTableSortedBy('dismissed')"
+                          class="text-[var(--color-text-muted)]">
+                          <svg
+                            v-if="tableSortDir === 'asc'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </span>
+                      </button>
+                    </th>
+
                     <th class="w-40 p-3 text-right">Actions</th>
                   </tr>
                 </thead>
 
                 <tbody class="divide-y divide-[var(--color-border)]">
                   <tr
-                    v-for="row in rows"
+                    v-for="row in displayedRows"
                     :key="row.id"
                     class="transition-colors hover:bg-[var(--color-surface-muted)]"
                     :class="{
@@ -1208,7 +1454,7 @@ onUnmounted(() => {
                     </td>
 
                     <td class="p-3 text-center align-middle">
-                      <span class="group relative inline-flex items-center">
+                      <span class="group relative flex flex-col items-center gap-1">
                         <svg
                           v-if="scopeIconName(row.scope) === 'user'"
                           class="size-5 text-[var(--color-text-muted)]"
@@ -1351,7 +1597,11 @@ onUnmounted(() => {
                             d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
                         </svg>
 
-                        <span :class="tooltipClass" :style="tooltipStyle">
+                        <span class="text-xxxs block font-bold uppercase">
+                          {{ row.scope }}
+                        </span>
+
+                        <span :class="inlineActionTooltipClass" :style="tooltipStyle">
                           {{ scopeTooltip(row.scope) }}
                         </span>
                       </span>
