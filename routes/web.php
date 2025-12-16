@@ -24,6 +24,9 @@ use App\Http\Controllers\Pages\PageController;
 use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
+use App\Jobs\CleanupDeletedAppNotificationsJob;
+use App\Mail\NotificationsCleanupReport;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
@@ -85,6 +88,10 @@ Route::middleware([
                 // Bulk (edit OR delete OR manage)
                 Route::post('/bulk', [AppNotificationController::class, 'bulk'])
                     ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
+
+                // Expire (manage)
+                Route::post('/expire', [AppNotificationController::class, 'expire'])
+                    ->middleware('permission:manage-notifications');
 
                 // Delete (delete OR manage)
                 Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
@@ -231,41 +238,77 @@ Route::middleware([
 });
 
 // Temp Testing Routes
-Route::post('/_test/notify/user', function () {
-    event(new AppNotificationRequested(
-        userId: (string) auth()->id(),
-        message: 'User notification test (DB + Broadcast).',
-        data: [],
-        scope: 'user',
-        type: 'success',
-        title: 'Test: User',
-    ));
+Route::prefix('_test')->middleware(['auth', 'ensure-local-testing'])->group(function () {
 
-    return response()->noContent();
-})->middleware('auth');
+    Route::get('/', function () {
+        return 'Hello Tester!';
+    });
 
-Route::post('/_test/notify/system', function () {
-    event(new AppNotificationRequested(
-        userId: null,
-        message: 'System notification test (DB + Broadcast).',
-        data: [],
-        scope: 'system',
-        type: 'info',
-        title: 'Test: System',
-    ));
+    Route::post('notify/user', function () {
+        event(new AppNotificationRequested(
+            userId: (string) auth()->id(),
+            message: 'User notification test (DB + Broadcast).',
+            data: [],
+            scope: 'user',
+            type: 'success',
+            title: 'Test: User',
+        ));
 
-    return response()->noContent();
-})->middleware('auth');
+        return response()->noContent();
+    });
 
-Route::post('/_test/notify/release', function () {
-    event(new AppNotificationRequested(
-        userId: null,
-        message: 'Release notification test (DB + Broadcast).',
-        data: [],
-        scope: 'release',
-        type: 'info',
-        title: 'Test: Release',
-    ));
+    Route::post('notify/system', function () {
+        event(new AppNotificationRequested(
+            userId: null,
+            message: 'System notification test (DB + Broadcast).',
+            data: [],
+            scope: 'system',
+            type: 'info',
+            title: 'Test: System',
+        ));
 
-    return response()->noContent();
-})->middleware('auth');
+        return response()->noContent();
+    });
+
+    Route::post('notify/release', function () {
+        event(new AppNotificationRequested(
+            userId: null,
+            message: 'Release notification test (DB + Broadcast).',
+            data: [],
+            scope: 'release',
+            type: 'info',
+            title: 'Test: Release',
+        ));
+
+        return response()->noContent();
+    });
+
+    Route::post('notifications/cleanup-email', function () {
+        $to = (string) config('guacpanel.notifications.auto_clean_send_email_to', '');
+        abort_if($to === '', 422, 'Missing config guacpanel.notifications.auto_clean_send_email_to');
+
+        $days = (int) config('guacpanel.notifications.auto_cleanup_deleted_days', 30);
+        $days = max(1, $days);
+        $cutoff = now()->subDays($days);
+
+        $deleted = 0;
+
+        if (request()->boolean('run_cleanup')) {
+            $deleted = (int) dispatch_sync(new CleanupDeletedAppNotificationsJob());
+        } else {
+            Mail::to($to)->send(new NotificationsCleanupReport(
+                deleted: 0,
+                cutoff: $cutoff,
+                days: $days,
+            ));
+        }
+
+        return response()->json([
+            'ok'     => true,
+            'sent_to'=> $to,
+            'deleted'=> $deleted,
+            'cutoff' => $cutoff->toDateTimeString(),
+            'days'   => $days,
+        ]);
+    });
+});

@@ -499,6 +499,7 @@ onUnmounted(() => {
                 'border-red-500': notification.type === 'danger',
                 'border-yellow-500': notification.priority === 'high',
                 'border-blue-500': notification.priority === 'normal',
+                'border-blue-500': notification.type === 'info',
                 'border-gray-500': notification.priority === 'low',
                 'border-green-600': notification.scope === 'release',
                 'cursor-pointer font-extrabold': notification.is_read == false,

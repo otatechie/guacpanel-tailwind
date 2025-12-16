@@ -5,6 +5,7 @@ use App\Http\Middleware\CheckPasswordExpiry;
 use App\Http\Middleware\DisableAccount;
 use App\Http\Middleware\EmailVerificationCheck;
 use App\Http\Middleware\EnsureAccountNotLocked;
+use App\Http\Middleware\EnsureIsLocalTesting;
 use App\Http\Middleware\ForcePasswordChange;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -58,6 +59,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission'            => PermissionMiddleware::class,
             'role_or_permission'    => RoleOrPermissionMiddleware::class,
             'socialite.providers'   => HandleSocialiteProviders::class,
+            'ensure-local-testing'  => EnsureIsLocalTesting::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
