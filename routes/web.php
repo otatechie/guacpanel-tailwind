@@ -86,10 +86,6 @@ Route::middleware([
                 Route::post('/bulk', [AppNotificationController::class, 'bulk'])
                     ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
 
-                // Expire (manage)
-                Route::post('/expire', [AppNotificationController::class, 'expire'])
-                    ->middleware('permission:manage-notifications');
-
                 // Delete (delete OR manage)
                 Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
                     ->middleware('permission:delete-notifications|manage-notifications');
@@ -256,6 +252,19 @@ Route::post('/_test/notify/system', function () {
         scope: 'system',
         type: 'info',
         title: 'Test: System',
+    ));
+
+    return response()->noContent();
+})->middleware('auth');
+
+Route::post('/_test/notify/release', function () {
+    event(new AppNotificationRequested(
+        userId: null,
+        message: 'Release notification test (DB + Broadcast).',
+        data: [],
+        scope: 'release',
+        type: 'info',
+        title: 'Test: Release',
     ));
 
     return response()->noContent();

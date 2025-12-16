@@ -10,7 +10,9 @@ class CreateAppNotification
 {
     public function handle(AppNotificationRequested $event): void
     {
-        $scope = $event->scope === 'system' ? 'system' : 'user';
+        $scope = in_array($event->scope, ['user', 'system', 'release'], true)
+            ? $event->scope
+            : 'user';
 
         $userId = $scope === 'user' ? $event->userId : null;
 

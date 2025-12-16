@@ -18,7 +18,7 @@ class AppNotificationStateChanged implements ShouldBroadcastNow
     public function __construct(
         public string $userId,
         public string $notificationId,
-        public string $scope,                 // user|system
+        public string $scope,                 // user|system|release
         public ?string $readAt = null,        // ISO string or null
         public ?string $dismissedAt = null,   // ISO string or null
         public string $action = 'updated',    // read|unread|dismiss|undismiss|deleted|updated

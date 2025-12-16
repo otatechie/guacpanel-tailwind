@@ -14,7 +14,7 @@ class AppNotificationRequested
         public ?string $userId,     // ULID string, nullable for system
         public string $message,
         public array $data = [],
-        public string $scope = 'user', // user|system
+        public string $scope = 'user', // user|system|release
         public string $type = 'info',  // info|success|warning|error
         public ?string $title = null,
     ) {

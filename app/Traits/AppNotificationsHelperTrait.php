@@ -36,7 +36,6 @@ trait AppNotificationsHelperTrait
         }
 
         $userId = (string) $user->id;
-        $now = Carbon::now();
         $totalAll = $this->countAllNotificationsForUser($userId);
 
         $requestFilters = $request->only([
@@ -76,22 +75,18 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('an.deleted_at')
-            ->where(function ($q) use ($now) {
-                $q->whereNull('an.auto_expire_on')
-                    ->orWhere('an.auto_expire_on', '>', $now);
-            })
             ->where(function ($q) use ($userId) {
                 $q->where(function ($q) use ($userId) {
                     $q->where('an.scope', '=', 'user')
                         ->where('an.user_id', '=', $userId);
                 })->orWhere(function ($q) {
-                    $q->where('an.scope', '=', 'system')
+                    $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('an.user_id')
                         ->whereNull('anr.deleted_at');
                 });
             });
 
-        if (in_array($scope, ['user', 'system'], true)) {
+        if (in_array($scope, ['user', 'system', 'release'], true)) {
             $query->where('an.scope', '=', $scope);
         }
 
@@ -113,7 +108,7 @@ trait AppNotificationsHelperTrait
                     $q->where('an.scope', '=', 'user')
                         ->whereNull('an.dismissed_at');
                 })->orWhere(function ($q) {
-                    $q->where('an.scope', '=', 'system')
+                    $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('anr.dismissed_at');
                 });
             });
@@ -123,7 +118,7 @@ trait AppNotificationsHelperTrait
                     $q->where('an.scope', '=', 'user')
                         ->whereNotNull('an.dismissed_at');
                 })->orWhere(function ($q) {
-                    $q->where('an.scope', '=', 'system')
+                    $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNotNull('anr.dismissed_at');
                 });
             });
@@ -135,7 +130,7 @@ trait AppNotificationsHelperTrait
                     $q->where('an.scope', '=', 'user')
                         ->whereNull('an.read_at');
                 })->orWhere(function ($q) {
-                    $q->where('an.scope', '=', 'system')
+                    $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('anr.read_at');
                 });
             });
@@ -145,7 +140,7 @@ trait AppNotificationsHelperTrait
                     $q->where('an.scope', '=', 'user')
                         ->whereNotNull('an.read_at');
                 })->orWhere(function ($q) {
-                    $q->where('an.scope', '=', 'system')
+                    $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNotNull('anr.read_at');
                 });
             });
@@ -202,8 +197,6 @@ trait AppNotificationsHelperTrait
 
     protected function countAllNotificationsForUser(string $userId): int
     {
-        $now = Carbon::now();
-
         return (int) AppNotification::query()
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
@@ -212,16 +205,12 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('an.deleted_at')
-            ->where(function ($q) use ($now) {
-                $q->whereNull('an.auto_expire_on')
-                    ->orWhere('an.auto_expire_on', '>', $now);
-            })
             ->where(function ($q) use ($userId) {
                 $q->where(function ($q) use ($userId) {
                     $q->where('an.scope', '=', 'user')
                         ->where('an.user_id', '=', $userId);
                 })->orWhere(function ($q) {
-                    $q->where('an.scope', '=', 'system')
+                    $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('an.user_id')
                         ->whereNull('anr.deleted_at');
                 });
@@ -315,7 +304,7 @@ trait AppNotificationsHelperTrait
             return;
         }
 
-        abort_unless($notification->scope === 'system' && $notification->user_id === null, 403);
+        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -336,7 +325,7 @@ trait AppNotificationsHelperTrait
         $this->broadcastNotificationState(
             $userId,
             (string) $notification->id,
-            'system',
+            $notification->scope,
             $readRow?->read_at,
             $readRow?->dismissed_at,
             'read',
@@ -369,7 +358,7 @@ trait AppNotificationsHelperTrait
             return;
         }
 
-        abort_unless($notification->scope === 'system' && $notification->user_id === null, 403);
+        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -390,7 +379,7 @@ trait AppNotificationsHelperTrait
         $this->broadcastNotificationState(
             $userId,
             (string) $notification->id,
-            'system',
+            $notification->scope,
             $readRow?->read_at,
             $readRow?->dismissed_at,
             'unread',
@@ -406,10 +395,7 @@ trait AppNotificationsHelperTrait
         AppNotification::query()
             ->where('scope', 'user')
             ->where('user_id', $userId)
-            ->where(function ($q) use ($now) {
-                $q->whereNull('auto_expire_on')
-                    ->orWhere('auto_expire_on', '>', $now);
-            })
+            ->whereNull('dismissed_at')
             ->whereNull('read_at')
             ->update(['read_at' => $now]);
 
@@ -421,13 +407,9 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('an.deleted_at')
-            ->where(function ($q) use ($now) {
-                $q->whereNull('an.auto_expire_on')
-                    ->orWhere('an.auto_expire_on', '>', $now);
-            })
-            ->where('an.scope', 'system')
+            ->whereIn('an.scope', ['system', 'release'])
             ->whereNull('an.user_id')
-            ->whereNull('anr.read_at')
+            ->whereNull('anr.dismissed_at')
             ->whereNull('anr.deleted_at')
             ->pluck('an.id')
             ->map(fn ($id) => (string) $id);
@@ -483,7 +465,7 @@ trait AppNotificationsHelperTrait
             return;
         }
 
-        abort_unless($notification->scope === 'system' && $notification->user_id === null, 403);
+        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -504,7 +486,7 @@ trait AppNotificationsHelperTrait
         $this->broadcastNotificationState(
             $userId,
             (string) $notification->id,
-            'system',
+            $notification->scope,
             $readRow?->read_at,
             $readRow?->dismissed_at,
             'dismiss',
@@ -537,7 +519,7 @@ trait AppNotificationsHelperTrait
             return;
         }
 
-        abort_unless($notification->scope === 'system' && $notification->user_id === null, 403);
+        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -558,7 +540,7 @@ trait AppNotificationsHelperTrait
         $this->broadcastNotificationState(
             $userId,
             (string) $notification->id,
-            'system',
+            $notification->scope,
             $readRow?->read_at,
             $readRow?->dismissed_at,
             'undismiss',
@@ -574,10 +556,6 @@ trait AppNotificationsHelperTrait
         AppNotification::query()
             ->where('scope', 'user')
             ->where('user_id', $userId)
-            ->where(function ($q) use ($now) {
-                $q->whereNull('auto_expire_on')
-                    ->orWhere('auto_expire_on', '>', $now);
-            })
             ->whereNull('dismissed_at')
             ->update(['dismissed_at' => $now]);
 
@@ -589,11 +567,7 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('an.deleted_at')
-            ->where(function ($q) use ($now) {
-                $q->whereNull('an.auto_expire_on')
-                    ->orWhere('an.auto_expire_on', '>', $now);
-            })
-            ->where('an.scope', 'system')
+            ->whereIn('an.scope', ['system', 'release'])
             ->whereNull('an.user_id')
             ->whereNull('anr.dismissed_at')
             ->whereNull('anr.deleted_at')
@@ -643,10 +617,6 @@ trait AppNotificationsHelperTrait
 
         $rows = AppNotification::query()
             ->whereIn('id', $ids->all())
-            ->where(function ($q) use ($now) {
-                $q->whereNull('auto_expire_on')
-                    ->orWhere('auto_expire_on', '>', $now);
-            })
             ->get(['id', 'scope', 'user_id'])
             ->map(fn ($n) => [
                 'id'      => (string) $n->id,
@@ -660,7 +630,7 @@ trait AppNotificationsHelperTrait
             ->values();
 
         $systemScoped = $rows
-            ->filter(fn ($r) => $r['scope'] === 'system' && $r['user_id'] === null)
+            ->filter(fn ($r) => in_array($r['scope'], ['system', 'release'], true) && $r['user_id'] === null)
             ->pluck('id')
             ->values();
 
@@ -775,7 +745,7 @@ trait AppNotificationsHelperTrait
             return;
         }
 
-        abort_unless($notification->scope === 'system' && $notification->user_id === null, 403);
+        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         if ($canManage) {
             $notificationId = (string) $notification->id;
@@ -784,7 +754,7 @@ trait AppNotificationsHelperTrait
             $this->broadcastNotificationState(
                 $userId,
                 $notificationId,
-                'system',
+                $notification->scope,
                 null,
                 null,
                 'deleted',
@@ -806,7 +776,7 @@ trait AppNotificationsHelperTrait
         $this->broadcastNotificationState(
             $userId,
             (string) $notification->id,
-            'system',
+            $notification->scope,
             null,
             null,
             'deleted',

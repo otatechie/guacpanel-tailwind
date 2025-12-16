@@ -15,7 +15,7 @@ return new class() extends Migration {
                 ->constrained('users')
                 ->nullOnDelete();
 
-            $table->string('scope')->default('user'); // user|system
+            $table->string('scope')->default('user'); // user|system|release
             $table->string('type')->default('info'); // info|success|warning|error
             $table->string('title')->nullable();
             $table->text('message');
