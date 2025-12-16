@@ -19,10 +19,12 @@ class SendScheduledAppNotificationsCommand extends Command
 
         if ($dryRun) {
             $this->info("Dry run: {$count} scheduled notifications are due.");
+
             return self::SUCCESS;
         }
 
         $this->info("Sent {$count} scheduled notifications.");
+
         return self::SUCCESS;
     }
 }
