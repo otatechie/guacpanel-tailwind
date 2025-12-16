@@ -19,6 +19,7 @@ class EnsureIsLocalTesting
 
         $user = $request->user();
         abort_unless($user, $abortTo);
+        // abort_unless($user->isSuperUser, $abortTo);
         // abort_unless($user?->can('manage-notifications'), $abortTo);
 
         return $next($request);
