@@ -385,18 +385,16 @@ const typeLabel = type => {
 }
 
 const typeBadgeClass = type => {
-  if (type === 'error')
-    return 'border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300'
-  if (type === 'warning')
-    return 'border-yellow-200 bg-yellow-50 text-yellow-800 dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-yellow-300'
-  if (type === 'success')
-    return 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300'
-  return 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300'
+  if (type === 'error') return 'notification-badge-error'
+  if (type === 'warning') return 'notification-badge-warning'
+  if (type === 'success') return 'notification-badge-success'
+  return 'notification-badge-default'
 }
 
 const scopeTooltip = scope => {
   if (scope === 'system') return 'System notification'
   if (scope === 'user') return 'User notification'
+  if (scope === 'release') return 'Release notification'
   return 'Notification'
 }
 
@@ -416,6 +414,9 @@ const tooltipClass =
 
 const actionTooltipClass =
   'absolute -bottom-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100'
+
+const inlineActionTooltipClass =
+  'absolute -bottom-6 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100'
 
 const bulkButtonClasses = 'sm:hidden lg:inline'
 
@@ -912,7 +913,14 @@ onUnmounted(() => {
           <template v-else>
             <div class="sm:hidden">
               <div class="divide-y divide-[var(--color-border)]">
-                <div v-for="row in rows" :key="row.id" class="p-4">
+                <div
+                  v-for="row in rows"
+                  :key="row.id"
+                  class="p-4"
+                  :class="{
+                    'bg-blue-50/50 dark:bg-blue-900/20': !row.is_read && !row.is_dismissed,
+                    'bg-gray-50/50 font-light opacity-70 dark:bg-gray-900/90': row.is_dismissed,
+                  }">
                   <div class="flex items-start gap-3">
                     <div class="pt-0.5">
                       <input
@@ -924,7 +932,15 @@ onUnmounted(() => {
                     <div class="min-w-0 flex-1">
                       <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
-                          <div class="font-medium text-[var(--color-text)]">
+                          <div
+                            class="flex items-center justify-start gap-1 font-medium text-[var(--color-text)]">
+                            <div
+                              v-if="!row.is_read && !row.is_dismissed"
+                              class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
+                              <div
+                                class="h-2.5 w-2.5 rounded-full bg-blue-500"
+                                aria-hidden="true"></div>
+                            </div>
                             {{ row.title || 'Notification' }}
                           </div>
                           <div class="mt-1 text-sm break-words text-[var(--color-text-muted)]">
@@ -1119,7 +1135,7 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <div class="w-full overflow-x-auto">
+            <div class="hidden w-full overflow-x-auto sm:flex">
               <table
                 class="hidden w-full min-w-max table-auto border-collapse text-left text-sm sm:table">
                 <thead class="border-b border-[var(--color-border)] text-[var(--color-text-muted)]">
@@ -1143,7 +1159,11 @@ onUnmounted(() => {
                   <tr
                     v-for="row in rows"
                     :key="row.id"
-                    class="transition-colors hover:bg-[var(--color-surface-muted)]">
+                    class="transition-colors hover:bg-[var(--color-surface-muted)]"
+                    :class="{
+                      'bg-blue-50/50 dark:bg-blue-900/20': !row.is_read && !row.is_dismissed,
+                      'bg-gray-50/50 font-light opacity-70 dark:bg-gray-900/90': row.is_dismissed,
+                    }">
                     <td class="p-3 align-middle">
                       <input
                         type="checkbox"
@@ -1154,7 +1174,15 @@ onUnmounted(() => {
                     <td class="p-3 align-middle">
                       <div class="flex items-start gap-3">
                         <div class="min-w-0">
-                          <div class="font-medium text-[var(--color-text)]">
+                          <div
+                            class="flex items-center justify-start gap-1 font-medium text-[var(--color-text)]">
+                            <div
+                              v-if="!row.is_read && !row.is_dismissed"
+                              class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
+                              <div
+                                class="h-2.5 w-2.5 rounded-full bg-blue-500"
+                                aria-hidden="true"></div>
+                            </div>
                             {{ row.title || 'Notification' }}
                           </div>
                           <div class="mt-1 truncate text-[var(--color-text-muted)]">
@@ -1241,69 +1269,87 @@ onUnmounted(() => {
 
                     <td class="p-3 text-center align-middle">
                       <span class="group relative inline-flex items-center justify-center">
-                        <svg
-                          v-if="readIconName(row.is_read) === 'check'"
-                          class="size-4 text-[var(--color-text-muted)]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                          <path d="M9 12.75l2.25 2.25L15 10.5" />
-                        </svg>
-
-                        <svg
-                          v-else
-                          class="size-4 text-[var(--color-text-muted)]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                          <path d="M12 12h.01" />
-                        </svg>
-
-                        <span :class="tooltipClass" :style="tooltipStyle">
-                          {{ readTooltip(row.is_read) }}
-                        </span>
+                        <button
+                          type="button"
+                          class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                          :disabled="isWorking"
+                          @click="row.is_read ? markUnread(row) : markRead(row)">
+                          <svg
+                            v-if="readIconName(row.is_read) === 'check'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4.5 text-[var(--color-text-muted)]">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M21.75 9v.906a2.25 2.25 0 0 1-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 0 0 1.183 1.981l6.478 3.488m8.839 2.51-4.66-2.51m0 0-1.023-.55a2.25 2.25 0 0 0-2.134 0l-1.022.55m0 0-4.661 2.51m16.5 1.615a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V8.844a2.25 2.25 0 0 1 1.183-1.981l7.5-4.039a2.25 2.25 0 0 1 2.134 0l7.5 4.039a2.25 2.25 0 0 1 1.183 1.98V19.5Z" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4.5 text-[var(--color-text-muted)]">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                          </svg>
+                          <span class="text-xxxs block font-bold uppercase">
+                            {{ readTooltip(row.is_read) }}
+                          </span>
+                          <span :class="inlineActionTooltipClass" :style="tooltipStyle">
+                            {{ row.is_read ? 'Mark unread' : 'Mark read' }}
+                          </span>
+                        </button>
                       </span>
                     </td>
 
                     <td class="p-3 text-center align-middle">
                       <span class="group relative inline-flex items-center justify-center">
-                        <svg
-                          v-if="dismissedIconName(row.is_dismissed) === 'x'"
-                          class="size-4 text-[var(--color-text-muted)]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                          <path d="M9.75 9.75l4.5 4.5M14.25 9.75l-4.5 4.5" />
-                        </svg>
-
-                        <svg
-                          v-else
-                          class="size-4 text-[var(--color-text-muted)]"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                          <path d="M9 12.75l2.25 2.25L15 10.5" />
-                        </svg>
-
-                        <span :class="tooltipClass" :style="tooltipStyle">
-                          {{ dismissedTooltip(row.is_dismissed) }}
-                        </span>
+                        <button
+                          type="button"
+                          class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                          :disabled="isWorking"
+                          @click="row.is_dismissed ? undismiss(row) : dismiss(row)">
+                          <svg
+                            v-if="row.is_dismissed"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="size-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M9 12l2 2 4-4" />
+                            <path d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" />
+                          </svg>
+                          <svg
+                            v-else
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="size-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="M6 6 18 18" />
+                          </svg>
+                          <span class="text-xxxs block font-bold uppercase">
+                            {{ dismissedTooltip(row.is_dismissed) }}
+                          </span>
+                          <span :class="inlineActionTooltipClass" :style="tooltipStyle">
+                            {{ row.is_dismissed ? 'Undismiss' : 'Dismiss' }}
+                          </span>
+                        </button>
                       </span>
                     </td>
 
@@ -1313,7 +1359,7 @@ onUnmounted(() => {
                           class="inline-flex overflow-visible rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
                           <button
                             type="button"
-                            class="group relative cursor-pointer px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                            class="group relative cursor-pointer rounded-l-lg px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
                             :disabled="isWorking"
                             @click="row.is_read ? markUnread(row) : markRead(row)">
                             <svg

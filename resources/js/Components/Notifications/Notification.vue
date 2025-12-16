@@ -66,7 +66,9 @@ const typeLabel = type => {
 
 const normalize = n => ({
   id: n.id,
-  title: n.title || (n.scope === 'system' ? 'System' : n.scope === 'release' ? 'Release' : 'Notification'),
+  title:
+    n.title ||
+    (n.scope === 'system' ? 'System' : n.scope === 'release' ? 'Release' : 'Notification'),
   description: n.message,
   created_at: n.created_at,
   time: relativeTime(n.created_at),
@@ -489,12 +491,18 @@ onUnmounted(() => {
               :class="{
                 'bg-blue-50/50 dark:bg-blue-900/20': !notification.is_read,
                 'border-l-4': true,
+                'bg-red-500/10 dark:bg-red-500/30':
+                  notification.priority === 'critical' && !notification.is_read,
+                'bg-red-500/10 dark:bg-red-500/30':
+                  notification.type === 'danger' && !notification.is_read,
                 'border-red-500': notification.priority === 'critical',
+                'border-red-500': notification.type === 'danger',
                 'border-yellow-500': notification.priority === 'high',
                 'border-blue-500': notification.priority === 'normal',
                 'border-gray-500': notification.priority === 'low',
-                'cursor-pointer': notification.is_read == false,
-                'cursor-default': notification.is_read == true,
+                'border-green-600': notification.scope === 'release',
+                'cursor-pointer font-extrabold': notification.is_read == false,
+                'cursor-default font-light': notification.is_read == true,
               }"
               @click="markAsRead(notification, $event)">
               <div class="flex gap-3">
