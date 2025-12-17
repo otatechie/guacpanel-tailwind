@@ -4,6 +4,7 @@ import { createColumnHelper } from '@tanstack/vue-table'
 import { computed, h, ref, watch } from 'vue'
 import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
+import NotificationTypeBadge from '@js/Components/Common/NotificationTypeBadge.vue'
 import Datatable from '@js/Components/Common/Datatable.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 
@@ -99,20 +100,6 @@ const dash = v => {
   const s = String(v).trim()
   return s ? s : EMPTY
 }
-
-const typeBadgeClass = type => {
-  if (type === 'success')
-    return 'border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400'
-  if (type === 'info')
-    return 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-400'
-  if (type === 'warning')
-    return 'border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-yellow-400'
-  if (type === 'danger')
-    return 'border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400'
-  return 'border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-900/50 dark:bg-gray-900/20 dark:text-gray-300'
-}
-
-const typeLabel = type => dash(type)
 
 const scopeLabel = scope => dash(scope || 'notification')
 
@@ -249,17 +236,7 @@ const TypeCell = {
     row: { type: Object, required: true },
   },
   setup(p) {
-    return () =>
-      h(
-        'span',
-        {
-          class: [
-            'inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium',
-            typeBadgeClass(p.row.type),
-          ],
-        },
-        typeLabel(p.row.type)
-      )
+    return () => h(NotificationTypeBadge, { type: p.row.type })
   },
 }
 
@@ -517,7 +494,7 @@ const formatExportData = row => ({
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="mr-1 size-4">
+              class="size-4 mr-1">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             Create Notification
@@ -527,7 +504,7 @@ const formatExportData = row => ({
 
       <section class="bg-[var(--color-bg)] p-6">
         <div
-          class="notifications-data-table rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm notifications-data-table">
           <Datatable
             class="datatable-admin-notifications"
             :data="notifications.data"

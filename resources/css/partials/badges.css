@@ -44,3 +44,28 @@
     @apply px-2.5 py-1 text-sm;
   }
 }
+
+.notification-badge {
+  @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium;
+
+  &.notification-badge-success {
+    @apply border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400;
+  }
+
+  &.notification-badge-info {
+    @apply border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-400;
+  }
+
+  &.notification-badge-warning {
+    @apply border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-yellow-400;
+  }
+
+  &.notification-badge-error,
+  &.notification-badge-danger {
+    @apply border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400;
+  }
+
+  &.notification-badge-default {
+    @apply border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-900/50 dark:bg-gray-900/20 dark:text-gray-300;
+  }
+}

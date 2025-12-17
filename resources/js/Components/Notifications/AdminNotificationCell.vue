@@ -14,15 +14,11 @@ const typeLabel = type => {
 }
 
 const typeBadgeClass = type => {
-  if (type === 'success')
-    return 'border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-900/20 dark:text-green-400'
-  if (type === 'info')
-    return 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-400'
-  if (type === 'warning')
-    return 'border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-yellow-400'
-  if (type === 'danger')
-    return 'border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400'
-  return 'border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-900/50 dark:bg-gray-900/20 dark:text-gray-300'
+  if (type === 'success') return 'badge badge-success'
+  if (type === 'info') return 'badge badge-info'
+  if (type === 'warning') return 'badge badge-warning'
+  if (type === 'danger') return 'badge badge-danger'
+  return 'badge badge-default'
 }
 
 const scopeIconName = scope => {
@@ -32,10 +28,7 @@ const scopeIconName = scope => {
   return 'tag'
 }
 
-const createdDisplay = computed(() => {
-  return props.row?.created_at_diff ?? props.row?.created_at ?? '-'
-})
-
+const createdDisplay = computed(() => props.row?.created_at_diff ?? props.row?.created_at ?? '-')
 const titleDisplay = computed(() => props.row?.title || 'Notification')
 const messageDisplay = computed(() => props.row?.message || '')
 const scopeDisplay = computed(() => props.row?.scope || 'notification')
@@ -67,19 +60,16 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
       </div>
 
       <div class="shrink-0">
-        <span
-          class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium"
-          :class="typeBadgeClass(row.type)">
-          {{ typeLabel(row.type) }}
+        <span :class="typeBadgeClass(props.row?.type)">
+          {{ typeLabel(props.row?.type) }}
         </span>
       </div>
     </div>
 
     <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--color-text-muted)]">
-      <span
-        class="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1">
+      <span class="pill">
         <svg
-          v-if="scopeIconName(row.scope) === 'user'"
+          v-if="scopeIconName(props.row?.scope) === 'user'"
           class="size-3.5"
           viewBox="0 0 24 24"
           fill="none"
@@ -92,7 +82,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
         </svg>
 
         <svg
-          v-else-if="scopeIconName(row.scope) === 'cpu'"
+          v-else-if="scopeIconName(props.row?.scope) === 'cpu'"
           class="size-3.5"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -106,7 +96,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
         </svg>
 
         <svg
-          v-else-if="scopeIconName(row.scope) === 'release'"
+          v-else-if="scopeIconName(props.row?.scope) === 'release'"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 288 288"
           fill="none"
@@ -138,14 +128,12 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
         </span>
       </span>
 
-      <span
-        class="text-xxs inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 uppercase">
+      <span class="pill text-xxs uppercase">
         <span class="font-medium">Read:</span>
         <span>{{ isRead ? 'Yes' : 'No' }}</span>
       </span>
 
-      <span
-        class="text-xxs inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 uppercase">
+      <span class="pill text-xxs uppercase">
         <span class="font-medium">Dismissed:</span>
         <span>{{ isDismissed ? 'Yes' : 'No' }}</span>
       </span>
