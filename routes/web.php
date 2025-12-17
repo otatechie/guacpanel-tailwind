@@ -1,8 +1,8 @@
 <?php
 
 use App\Events\AppNotificationRequested;
-use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminAppNotificationsController;
+use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
 use App\Http\Controllers\Admin\AdminHealthStatusController;
