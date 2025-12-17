@@ -497,6 +497,25 @@ const closeBulkDeleteModal = () => {
   showBulkDeleteModal.value = false
 }
 
+let userChannel = null
+let systemChannel = null
+let releaseChannel = null
+let refreshTimer = null
+
+const scheduleRefresh = () => {
+  if (refreshTimer) return
+
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null
+
+    router.reload({
+      only: ['notifications', 'filters'],
+      preserveScroll: true,
+      preserveState: true,
+    })
+  }, 250)
+}
+
 const destroyRow = async () => {
   if (!deleteTarget.value?.id) return
 
@@ -514,6 +533,7 @@ const destroyRow = async () => {
   closeDeleteModal()
   showToast('Success', 'Notification deleted.', 'success')
   notifyTopnavRefresh()
+  scheduleRefresh()
 }
 
 const bulk = async action => {
@@ -580,33 +600,19 @@ const runBulkDelete = async () => {
   closeBulkDeleteModal()
   showToast('Success', 'Selected notifications deleted.', 'success')
   notifyTopnavRefresh()
+  scheduleRefresh()
 }
 
-let userChannel = null
-let systemChannel = null
-let refreshTimer = null
-
-const scheduleRefresh = () => {
-  if (refreshTimer) return
-
-  refreshTimer = setTimeout(() => {
-    refreshTimer = null
-
-    router.reload({
-      only: ['notifications', 'filters'],
-      preserveScroll: true,
-      preserveState: true,
-    })
-  }, 250)
-}
+const getPayloadId = payload =>
+  payload?.id ?? payload?.notification_id ?? payload?.app_notification_id
 
 const upsertIncoming = payload => {
-  if (!payload?.id) return
+  if (!getPayloadId(payload)) return
   scheduleRefresh()
 }
 
 const handleStateChanged = payload => {
-  if (!payload?.id) return
+  if (!getPayloadId(payload)) return
   scheduleRefresh()
 }
 
@@ -628,6 +634,11 @@ const subscribeRealtime = () => {
     .listen('.app-notification.created', upsertIncoming)
     .listen('.app-notification.state', handleStateChanged)
     .listen('.app-notification.bulk', handleBulkChanged)
+
+  releaseChannel = window.Echo.private('release')
+    .listen('.app-notification.created', upsertIncoming)
+    .listen('.app-notification.state', handleStateChanged)
+    .listen('.app-notification.bulk', handleBulkChanged)
 }
 
 const unsubscribeRealtime = () => {
@@ -636,9 +647,11 @@ const unsubscribeRealtime = () => {
 
   window.Echo.leave(`private-users.${userId}`)
   window.Echo.leave('private-system')
+  window.Echo.leave('private-release')
 
   userChannel = null
   systemChannel = null
+  releaseChannel = null
 }
 
 watch(
@@ -828,10 +841,25 @@ onUnmounted(() => {
                 @click="toggleSelectAll">
                 Select all
               </button>
-
-              <span class="text-xs text-[var(--color-text-muted)]">
-                Selected: {{ selectedCount }}
-              </span>
+              <div v-if="selectedCount > 0" class="flex items-center gap-6">
+                <span
+                  role="status"
+                  class="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text)]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-4 w-4 text-green-600 dark:text-green-500">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                  </svg>
+                  {{ selectedCount }} selected
+                </span>
+              </div>
             </div>
           </div>
 

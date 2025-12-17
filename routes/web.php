@@ -2,6 +2,7 @@
 
 use App\Events\AppNotificationRequested;
 use App\Http\Controllers\Admin\AdminAuditController;
+use App\Http\Controllers\Admin\AdminAppNotificationsController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
 use App\Http\Controllers\Admin\AdminHealthStatusController;
@@ -181,6 +182,20 @@ Route::middleware([
                 Route::get('audits', [AdminAuditController::class, 'index'])->name('audit.index');
                 Route::get('login-history', [AdminLoginHistoryController::class, 'index'])->name('login.history.index');
                 Route::post('login-history/bulk-destroy', [AdminLoginHistoryController::class, 'bulkDestroy'])->name('login.history.bulk-destroy');
+
+                // Admin Notifications
+                if (config('guacpanel.notifications.enabled')) {
+                    Route::prefix('notifications')->name('notifications.')->group(function () {
+                        Route::get('/', [AdminAppNotificationsController::class, 'index'])->name('index');
+                        Route::get('/create', [AdminAppNotificationsController::class, 'create'])->name('create');
+                        Route::post('/', [AdminAppNotificationsController::class, 'store'])->name('store');
+                        Route::post('/bulk-destroy', [AdminAppNotificationsController::class, 'bulkDestroy'])->name('bulk-destroy');
+                        Route::get('/deleted', [AdminAppNotificationsController::class, 'deleted'])->name('deleted.index');
+                        Route::get('/{id}/edit', [AdminAppNotificationsController::class, 'edit'])->name('edit');
+                        Route::put('/{id}', [AdminAppNotificationsController::class, 'update'])->name('update');
+                        Route::delete('/{id}', [AdminAppNotificationsController::class, 'destroy'])->name('destroy');
+                    });
+                }
 
                 // Permissions & Roles Routes
                 Route::get('permissions/roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role.index');

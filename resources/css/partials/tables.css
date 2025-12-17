@@ -21,3 +21,12 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+.notifications-data-table {
+  th,
+  td {
+    &:nth-child(6) {
+      @apply min-w-80;
+    }
+  }
+}

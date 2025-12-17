@@ -17,14 +17,18 @@ class AppNotificationsBulkChanged implements ShouldBroadcastNow
 
     public function __construct(
         public string $userId,
-        public string $action,   // read-all|dismiss-all|bulk
-        public array $ids = [],  // optional
+        public string $action,
+        public array $ids = [],
     ) {
     }
 
     public function broadcastOn(): Channel|array
     {
-        return new PrivateChannel('users.'.$this->userId);
+        if ($this->userId === 'system') {
+            return new PrivateChannel('system');
+        }
+
+        return new PrivateChannel("users.{$this->userId}");
     }
 
     public function broadcastAs(): string

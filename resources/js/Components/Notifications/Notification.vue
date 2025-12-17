@@ -20,6 +20,7 @@ const isLoading = ref(false)
 
 let userChannel = null
 let systemChannel = null
+let releaseChannel = null
 let reconcileTimer = null
 
 const unreadCount = computed(() => notifications.value.filter(n => !n.is_read).length)
@@ -216,45 +217,20 @@ const dismissAll = async event => {
   }
 }
 
-// Buggy, just re-align from the api rather than splice in the front end.
-// const upsertIncoming = payload => {
-//   if (!payload?.id) return
+const getPayloadId = payload =>
+  payload?.id ?? payload?.notification_id ?? payload?.app_notification_id
 
-//   const item = normalize({
-//     id: payload.id,
-//     scope: payload.scope,
-//     type: payload.type,
-//     title: payload.title,
-//     message: payload.message,
-//     data: payload.data,
-//     created_at: payload.created_at,
-//     read_at: payload.read_at ?? null,
-//     dismissed_at: payload.dismissed_at ?? null,
-//     is_read: !!payload.read_at,
-//     is_dismissed: !!payload.dismissed_at,
-//   })
-
-//   if (item.is_dismissed) {
-//     notifications.value = notifications.value.filter(n => n.id !== item.id)
-//     return
-//   }
-
-//   const existingIndex = notifications.value.findIndex(n => n.id === item.id)
-
-//   if (existingIndex >= 0) {
-//     notifications.value.splice(existingIndex, 1, item)
-//     return
-//   }
-
-//   notifications.value.unshift(item)
-//   notifications.value = notifications.value.slice(0, 25)
-// }
+const isDeleteAction = action => {
+  if (!action) return false
+  return ['delete', 'deleted', 'destroy', 'destroyed', 'remove', 'removed'].includes(String(action))
+}
 
 const handleStateChanged = payload => {
-  if (!payload?.id) return
+  const id = getPayloadId(payload)
+  if (!id) return
 
-  if (payload.action === 'deleted' || payload.action === 'dismiss') {
-    notifications.value = notifications.value.filter(n => n.id !== payload.id)
+  if (isDeleteAction(payload.action) || payload.action === 'dismiss') {
+    notifications.value = notifications.value.filter(n => n.id !== id)
     return
   }
 
@@ -263,7 +239,7 @@ const handleStateChanged = payload => {
     return
   }
 
-  const idx = notifications.value.findIndex(n => n.id === payload.id)
+  const idx = notifications.value.findIndex(n => n.id === id)
 
   if (idx === -1) {
     fetchNotifications({ silent: true })
@@ -344,16 +320,19 @@ const subscribeRealtime = () => {
   if (!window.Echo || !props.user?.id) return
 
   userChannel = window.Echo.private(`users.${props.user.id}`)
-    // .listen('.app-notification.created', upsertIncoming)
     .listen('.app-notification.created', handleStateChanged)
     .listen('.app-notification.state', handleStateChanged)
     .listen('.app-notification.bulk', handleBulkChanged)
 
-  // systemChannel = window.Echo.private('system').listen('.app-notification.created', upsertIncoming)
-  systemChannel = window.Echo.private('system').listen(
-    '.app-notification.created',
-    handleStateChanged
-  )
+  systemChannel = window.Echo.private('system')
+    .listen('.app-notification.created', handleStateChanged)
+    .listen('.app-notification.state', handleStateChanged)
+    .listen('.app-notification.bulk', handleBulkChanged)
+
+  releaseChannel = window.Echo.private('release')
+    .listen('.app-notification.created', handleStateChanged)
+    .listen('.app-notification.state', handleStateChanged)
+    .listen('.app-notification.bulk', handleBulkChanged)
 }
 
 const unsubscribeRealtime = () => {
@@ -361,9 +340,11 @@ const unsubscribeRealtime = () => {
 
   window.Echo.leave(`private-users.${props.user.id}`)
   window.Echo.leave('private-system')
+  window.Echo.leave('private-release')
 
   userChannel = null
   systemChannel = null
+  releaseChannel = null
 }
 
 const startReconcile = () => {
@@ -409,12 +390,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- {{ unreadCount }} -->
-
-  <!-- {{ notifications.length }} -->
-
-  <!-- {{ page.props?.notifications?.data.length }} -->
-
   <div ref="rootEl" class="relative">
     <button
       type="button"
@@ -490,7 +465,7 @@ onUnmounted(() => {
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53" />
+                d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 a8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53" />
             </svg>
             No new notifications
           </div>
