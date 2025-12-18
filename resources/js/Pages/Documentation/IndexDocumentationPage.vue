@@ -13,6 +13,7 @@ defineOptions({
 const articleLinks = [
   { text: 'Introduction', href: '#introduction' },
   { text: 'Core Features', href: '#core-features' },
+  { text: 'Real-time Notifications', href: '#realtime-notifications' },
   { text: 'Technologies', href: '#technologies' },
   { text: 'Getting Started', href: '#getting-started' },
 ]
@@ -277,6 +278,54 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
             <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
               <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
                 CSV, Excel, and PDF export capabilities
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Real-time Notifications Subsection -->
+      <div id="realtime-notifications" class="mb-10 scroll-mt-16">
+        <h3 class="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
+          Real-time Notifications
+        </h3>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            class="border border-green-500/30 bg-white p-4 font-mono dark:border-green-500/20 dark:bg-gray-900">
+            <div class="mb-2 flex items-start">
+              <span class="mr-2 text-green-600 dark:text-green-500">⌾</span>
+              <h4 class="font-bold text-green-700 dark:text-green-400">Laravel Reverb</h4>
+            </div>
+            <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
+              <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+                Live in-app notifications over WebSockets with a first-party Laravel server.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="border border-green-500/30 bg-white p-4 font-mono dark:border-green-500/20 dark:bg-gray-900">
+            <div class="mb-2 flex items-start">
+              <span class="mr-2 text-green-600 dark:text-green-500">⌾</span>
+              <h4 class="font-bold text-green-700 dark:text-green-400">Demo Mode Toggle</h4>
+            </div>
+            <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
+              <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+                Disable live sockets for demo environments.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="border border-green-500/30 bg-white p-4 font-mono dark:border-green-500/20 dark:bg-gray-900">
+            <div class="mb-2 flex items-start">
+              <span class="mr-2 text-green-600 dark:text-green-500">⌾</span>
+              <h4 class="font-bold text-green-700 dark:text-green-400">Real-time UI</h4>
+            </div>
+            <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
+              <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+                Notifications update instantly without refresh using private and system channels.
               </p>
             </div>
           </div>

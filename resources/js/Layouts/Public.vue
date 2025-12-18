@@ -118,7 +118,7 @@ onMounted(() => {
             <!-- Logo -->
             <div
               class="transitions"
-              :class="isSidebarOpen ? 'w-60 ' : 'w-0'"
+              :class="isSidebarOpen ? 'w-60 opacity-100' : 'w-0 opacity-0'"
             >
               <Link
                 href="/"

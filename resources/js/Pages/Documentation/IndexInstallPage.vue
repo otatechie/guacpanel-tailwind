@@ -25,6 +25,25 @@ npm install`,
   runServer: `npm run dev
 php artisan serve`,
 
+
+  installBroadcasting: `php artisan install:broadcasting`,
+
+  reverbEnv: `APP_NOTIFICATIONS_ENABLED=true
+APP_NOTIFICATIONS_IN_DEMO_MODE=true # set this to false to enable live reverb notifications.
+
+REVERB_APP_ID=
+REVERB_APP_KEY=
+REVERB_APP_SECRET=
+REVERB_HOST="localhost"
+REVERB_PORT=8080
+REVERB_SCHEME=https
+REVERB_SERVER_HOST=0.0.0.0
+REVERB_SERVER_PORT=8080
+REVERB_TLS_CERT=
+REVERB_TLS_KEY=`,
+
+  startReverb: `php artisan reverb:start`,
+
   installAssets: `npm install
 npm run dev`,
 
@@ -62,6 +81,7 @@ npm install`,
 const articleLinks = [
   { text: 'Prerequisites', href: '#prerequisites' },
   { text: 'Installation', href: '#installation' },
+  { text: 'Reverb & Notifications', href: '#reverb-notifications' },
   { text: 'Database Setup', href: '#database-setup' },
   { text: 'Common Issues', href: '#common-issues' },
 ]
@@ -295,6 +315,92 @@ onUnmounted(() => {
             <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
               <div class="rounded-md bg-gray-800">
                 <CodeBlock :code="codeExamples.installAssets" language="bash" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Reverb & Notifications Section -->
+      <section id="reverb-notifications" class="mb-12 scroll-mt-16">
+        <div class="mb-8 text-center">
+          <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
+            Reverb & Live Notifications
+          </h2>
+          <p class="mx-auto max-w-2xl text-gray-700 dark:text-gray-200">
+            Enable real-time, in-app notifications using Laravel Reverb (WebSockets)
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          <div
+            class="border border-green-500/30 bg-white p-4 font-mono dark:border-green-500/20 dark:bg-gray-900">
+            <div class="mb-2 flex items-start">
+              <span class="mr-2 text-green-600 dark:text-green-500">⌾</span>
+              <h4 class="font-bold text-green-700 dark:text-green-400">
+                1. Install Broadcasting + Reverb
+              </h4>
+            </div>
+            <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
+              <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+                Run the installer to configure broadcasting and generate your Reverb credentials:
+              </p>
+              <div class="rounded-md bg-gray-800">
+                <CodeBlock :code="codeExamples.installBroadcasting" language="bash" />
+              </div>
+
+              <div
+                class="mt-4 rounded-lg border border-teal-400 bg-gradient-to-br from-teal-50 to-teal-50 p-3 dark:border-teal-800/30 dark:from-teal-900/20 dark:to-teal-900/20">
+                <p class="flex items-start space-x-2 text-sm text-teal-800 dark:text-teal-300">
+                  <span class="flex-shrink-0 text-xl">💡</span>
+                  <span>
+                    <strong>Note:</strong>
+                    This command will create and populate <code class="font-mono">REVERB_APP_ID</code>,
+                    <code class="font-mono">REVERB_APP_KEY</code>, and <code class="font-mono">REVERB_APP_SECRET</code>
+                    in your <code class="font-mono">.env</code>.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="border border-green-500/30 bg-white p-4 font-mono dark:border-green-500/20 dark:bg-gray-900">
+            <div class="mb-2 flex items-start">
+              <span class="mr-2 text-green-600 dark:text-green-500">⌾</span>
+              <h4 class="font-bold text-green-700 dark:text-green-400">
+                2. Configure Environment Variables
+              </h4>
+            </div>
+            <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
+              <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+                Update your <code class="font-mono">.env</code> to enable notifications and configure Reverb:
+              </p>
+              <div class="rounded-md bg-gray-800">
+                <CodeBlock :code="codeExamples.reverbEnv" language="bash" />
+              </div>
+
+              <p class="mt-3 font-mono text-sm text-gray-700 dark:text-gray-200">
+                When ready for live sockets, set <code class="font-mono">APP_NOTIFICATIONS_IN_DEMO_MODE=false</code>.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="border border-green-500/30 bg-white p-4 font-mono dark:border-green-500/20 dark:bg-gray-900">
+            <div class="mb-2 flex items-start">
+              <span class="mr-2 text-green-600 dark:text-green-500">⌾</span>
+              <h4 class="font-bold text-green-700 dark:text-green-400">
+                3. Start the Reverb Server
+              </h4>
+            </div>
+            <div class="ml-2 border-l border-green-200 pl-6 dark:border-green-800">
+              <p class="mb-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+                Run Reverb in a separate terminal during development:
+              </p>
+              <div class="rounded-md bg-gray-800">
+                <CodeBlock :code="codeExamples.startReverb" language="bash" />
               </div>
             </div>
           </div>
