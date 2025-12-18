@@ -8,7 +8,10 @@ const props = defineProps({
   },
 })
 
-const normalizeType = t => String(t ?? '').trim().toLowerCase()
+const normalizeType = t =>
+  String(t ?? '')
+    .trim()
+    .toLowerCase()
 
 const typeLabel = t => {
   const v = normalizeType(t)

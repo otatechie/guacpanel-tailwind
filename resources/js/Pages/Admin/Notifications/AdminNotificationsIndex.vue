@@ -7,6 +7,7 @@ import PageHeader from '@js/Components/Common/PageHeader.vue'
 import NotificationTypeBadge from '@js/Components/Common/NotificationTypeBadge.vue'
 import Datatable from '@js/Components/Common/Datatable.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 defineOptions({
   layout: Default,
@@ -27,8 +28,13 @@ const EMPTY = '—'
 
 const loading = ref(false)
 
-const deleteModalOpen = ref(false)
+const showDeleteModal = ref(false)
 const deleteTarget = ref(null)
+
+const showBulkDeleteModal = ref(false)
+const bulkDeleteIds = ref([])
+
+const selectedCount = computed(() => bulkDeleteIds.value.length)
 
 const pagination = ref({
   current_page: props.notifications.current_page,
@@ -51,17 +57,17 @@ watch(
 
 const pageSizeOptions = [10, 25, 50, 100, 1000, 'All']
 
-const openDelete = row => {
+const openDeleteModal = row => {
   deleteTarget.value = row
-  deleteModalOpen.value = true
+  showDeleteModal.value = true
 }
 
-const closeDelete = () => {
-  deleteModalOpen.value = false
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
   deleteTarget.value = null
 }
 
-const confirmDelete = () => {
+const destroyRow = () => {
   const row = deleteTarget.value
   if (!row?.id) return
 
@@ -71,9 +77,32 @@ const confirmDelete = () => {
     preserveState: false,
     onFinish: () => {
       loading.value = false
-      closeDelete()
+      closeDeleteModal()
     },
   })
+}
+
+const closeBulkDeleteModal = () => {
+  showBulkDeleteModal.value = false
+  bulkDeleteIds.value = []
+}
+
+const runBulkDelete = () => {
+  if (!bulkDeleteIds.value.length) return
+
+  loading.value = true
+  router.post(
+    route('admin.notifications.bulk-destroy'),
+    { ids: bulkDeleteIds.value },
+    {
+      preserveScroll: true,
+      preserveState: false,
+      onFinish: () => {
+        loading.value = false
+        closeBulkDeleteModal()
+      },
+    }
+  )
 }
 
 const handleBulkDelete = payload => {
@@ -81,18 +110,8 @@ const handleBulkDelete = payload => {
   const ids = selected.map(r => r?.id).filter(Boolean)
   if (!ids.length) return
 
-  loading.value = true
-  router.post(
-    route('admin.notifications.bulk-destroy'),
-    { ids },
-    {
-      preserveScroll: true,
-      preserveState: false,
-      onFinish: () => {
-        loading.value = false
-      },
-    }
-  )
+  bulkDeleteIds.value = ids
+  showBulkDeleteModal.value = true
 }
 
 const dash = v => {
@@ -125,6 +144,33 @@ const autoExpireValue = row => {
     row?.expires_at ??
     null
   )
+}
+
+const countValue = v => {
+  const n = Number(v ?? 0)
+  return Number.isFinite(n) ? n : 0
+}
+
+const usersLabel = n => {
+  const num = countValue(n)
+  return `${num} ${num === 1 ? 'USER' : 'USERS'}`
+}
+
+const StatusCountCell = {
+  name: 'StatusCountCell',
+  props: {
+    count: { type: [Number, String], required: true },
+  },
+  setup(p) {
+    return () =>
+      h('div', { class: 'flex items-center justify-center' }, [
+        h(
+          'span',
+          { class: 'text-xxs font-bold uppercase text-[var(--color-text-muted)] text-nowrap' },
+          usersLabel(p.count)
+        ),
+      ])
+  },
 }
 
 const ScopeCell = {
@@ -365,7 +411,7 @@ const ActionButtonsCell = {
           {
             type: 'button',
             class: 'btn btn-danger btn-xs inline-flex items-center justify-center gap-2',
-            onClick: () => openDelete(p.row),
+            onClick: () => openDeleteModal(p.row),
           },
           [
             h(
@@ -431,6 +477,23 @@ const columns = [
     header: 'User',
     cell: info => h(UserCell, { row: info.row.original }),
   }),
+
+  columnHelper.accessor(row => countValue(row.read_count), {
+    id: 'read_count',
+    header: 'Read',
+    cell: info => h(StatusCountCell, { count: info.row.original.read_count }),
+  }),
+  columnHelper.accessor(row => countValue(row.dismissed_count), {
+    id: 'dismissed_count',
+    header: 'Dismissed',
+    cell: info => h(StatusCountCell, { count: info.row.original.dismissed_count }),
+  }),
+  columnHelper.accessor(row => countValue(row.deleted_count), {
+    id: 'deleted_count',
+    header: 'Deleted',
+    cell: info => h(StatusCountCell, { count: info.row.original.deleted_count }),
+  }),
+
   columnHelper.accessor(row => dash(row.scheduled_on_diff), {
     id: 'scheduled_on',
     header: 'Scheduled',
@@ -465,6 +528,9 @@ const formatExportData = row => ({
   Message: row.message ?? '',
   User: row.username ?? '',
   Email: row.user_email ?? '',
+  Read: row.read_count ?? 0,
+  Dismissed: row.dismissed_count ?? 0,
+  Deleted: row.deleted_count ?? 0,
   Scheduled: row.scheduled_on_diff ?? '',
   'Auto Expire':
     row?.auto_expires_on_diff ??
@@ -494,7 +560,7 @@ const formatExportData = row => ({
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              class="size-4 mr-1">
+              class="mr-1 size-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             Create Notification
@@ -504,7 +570,7 @@ const formatExportData = row => ({
 
       <section class="bg-[var(--color-bg)] p-6">
         <div
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm notifications-data-table">
+          class="notifications-data-table rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
           <Datatable
             class="datatable-admin-notifications"
             :data="notifications.data"
@@ -514,7 +580,17 @@ const formatExportData = row => ({
             :filters="filters"
             :page-size-options="pageSizeOptions"
             :default-page-size="Number(pagination.per_page) || 25"
-            :search-fields="['title', 'message', 'scope', 'type', 'username', 'user_email']"
+            :search-fields="[
+              'title',
+              'message',
+              'scope',
+              'type',
+              'username',
+              'user_email',
+              'read_count',
+              'dismissed_count',
+              'deleted_count',
+            ]"
             empty-message="No notifications found"
             empty-description="Notifications you create will appear here"
             export-file-name="admin_notifications"
@@ -529,21 +605,74 @@ const formatExportData = row => ({
     </div>
   </main>
 
-  <Modal :show="deleteModalOpen" @close="closeDelete">
-    <template #title>Delete Notification</template>
+  <Modal :show="showDeleteModal" size="md" @close="closeDeleteModal">
+    <template #title>
+      <div class="flex items-center text-red-600">Delete Notification</div>
+    </template>
 
-    <p class="text-sm text-[var(--color-text-muted)]">
-      Are you sure you want to delete this notification?
-    </p>
-    <p v-if="deleteTarget?.title" class="mt-3 text-sm">
-      <span class="font-medium">{{ deleteTarget.title }}</span>
-    </p>
+    <template #default>
+      <div class="space-y-4">
+        <p class="text-sm text-[var(--color-text-muted)]">
+          Are you sure you want to delete this notification? This action cannot be undone.
+        </p>
+        <Alert type="warning" title="Notification">
+          <span class="font-medium">{{ deleteTarget?.title || 'Notification' }}</span>
+        </Alert>
+      </div>
+    </template>
 
     <template #footer>
-      <button type="button" class="btn btn-secondary" @click="closeDelete">Cancel</button>
-      <button type="button" class="btn btn-danger" :disabled="loading" @click="confirmDelete">
-        Delete
-      </button>
+      <div class="flex items-center justify-end gap-8">
+        <button
+          type="button"
+          class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
+          :disabled="loading"
+          @click="closeDeleteModal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          :disabled="loading"
+          @click="destroyRow">
+          {{ loading ? 'Deleting...' : 'Yes, Delete' }}
+        </button>
+      </div>
+    </template>
+  </Modal>
+
+  <Modal :show="showBulkDeleteModal" size="md" @close="closeBulkDeleteModal">
+    <template #title>
+      <div class="flex items-center text-red-600">Delete Notifications</div>
+    </template>
+
+    <template #default>
+      <div class="space-y-4">
+        <p class="text-sm text-[var(--color-text-muted)]">
+          Delete
+          <span class="font-medium">{{ selectedCount }}</span>
+          selected notifications? This action cannot be undone.
+        </p>
+      </div>
+    </template>
+
+    <template #footer>
+      <div class="flex items-center justify-end gap-8">
+        <button
+          type="button"
+          class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
+          :disabled="loading"
+          @click="closeBulkDeleteModal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          :disabled="loading"
+          @click="runBulkDelete">
+          {{ loading ? 'Deleting...' : 'Yes, Delete' }}
+        </button>
+      </div>
     </template>
   </Modal>
 </template>

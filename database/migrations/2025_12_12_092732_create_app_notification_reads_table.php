@@ -20,16 +20,15 @@ return new class() extends Migration {
 
             $table->timestamp('read_at')->nullable();
             $table->timestamp('dismissed_at')->nullable();
-
-            // Per-user "deleted" for system notifications (does not affect other users)
+            $table->timestamp('u_del_notif_at')->nullable();
             $table->timestamp('deleted_at')->nullable();
-
             $table->timestamps();
 
             $table->unique(['app_notification_id', 'user_id']);
 
             $table->index(['user_id', 'read_at']);
             $table->index(['user_id', 'dismissed_at']);
+            $table->index(['user_id', 'u_del_notif_at'], 'anr_u_d_notif_at_idx');
             $table->index(['user_id', 'deleted_at']);
         });
     }

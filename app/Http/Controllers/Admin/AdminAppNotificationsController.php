@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Notifications\StoreAdminAppNotificationRequest;
 use App\Http\Requests\Admin\Notifications\UpdateAdminAppNotificationRequest;
 use App\Models\AppNotification;
+use App\Models\AppNotificationRead;
 use App\Models\User;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
@@ -38,6 +39,17 @@ class AdminAppNotificationsController extends Controller
                 'sent_as_scheduled',
                 'created_at',
             ])
+            ->withCount([
+                'reads as read_count' => function ($q) {
+                    $q->whereNotNull('read_at');
+                },
+                'reads as dismissed_count' => function ($q) {
+                    $q->whereNotNull('dismissed_at');
+                },
+                'reads as deleted_count' => function ($q) {
+                    $q->whereNotNull('u_del_notif_at');
+                },
+            ])
             ->with(['user:id,name,email'])
             ->latest('created_at')
             ->paginate($perPage)
@@ -52,7 +64,7 @@ class AdminAppNotificationsController extends Controller
                 return $item;
             });
 
-        return Inertia::render('Admin/Notifications/AdminNotificaionsIndex', [
+        return Inertia::render('Admin/Notifications/AdminNotificationsIndex', [
             'notifications' => $notifications,
             'filters'       => $this->pagination->buildFilters($request),
         ]);

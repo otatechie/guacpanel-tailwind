@@ -10,7 +10,7 @@ defineOptions({
 })
 
 const props = defineProps({
-  settings: {
+  systemSettings: {
     type: Object,
     required: true,
     default: () => ({}),
@@ -22,9 +22,9 @@ const props = defineProps({
 })
 
 const form = useForm({
-  password_expiry: Boolean(props.settings?.password_expiry ?? false),
-  passwordless_login: Boolean(props.settings?.passwordless_login ?? true),
-  two_factor_authentication: Boolean(props.settings?.two_factor_authentication ?? false),
+  password_expiry: Boolean(props.systemSettings?.password_expiry ?? false),
+  passwordless_login: Boolean(props.systemSettings?.passwordless_login ?? true),
+  two_factor_authentication: Boolean(props.systemSettings?.two_factor_authentication ?? false),
 })
 
 const submit = () => {
