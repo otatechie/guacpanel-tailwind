@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@theme {
+  --breakpoint-xxs: 360px;
+  --breakpoint-xs: 480px;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../views';
@@ -18,4 +23,5 @@
 @import '@css/partials/typography.css';
 @import '@css/partials/wells.css';
 @import '@css/partials/cards.css';
+@import '@css/partials/notifications.css';
 @import '~/nprogress/nprogress.css';

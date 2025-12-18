@@ -113,18 +113,24 @@ onMounted(() => {
           class="flex h-16 items-center gap-4 px-4"
           role="navigation"
           aria-label="Primary navigation">
+
           <section class="flex items-center gap-4" aria-label="Site logo and menu controls">
             <!-- Logo -->
-            <Link
-              href="/"
-              class="flex items-center text-xl font-semibold text-[var(--color-text)]"
-              aria-label="Go to homepage">
-              <img src="/images/logo.png" class="block h-10 w-auto dark:hidden" alt="Logo" />
-              <img
-                src="/images/logo-dark.png"
-                class="hidden h-10 w-auto dark:block"
-                alt="Logo Dark" />
-            </Link>
+            <div
+              class="transitions"
+              :class="isSidebarOpen ? 'w-60 opacity-100' : 'w-0 opacity-0'"
+            >
+              <Link
+                href="/"
+                class="flex items-center text-xl font-semibold text-[var(--color-text)]"
+                aria-label="Go to homepage">
+                <img src="/images/logo.png" class="block h-10 w-auto dark:hidden" alt="Logo" />
+                <img
+                  src="/images/logo-dark.png"
+                  class="hidden h-10 w-auto dark:block"
+                  alt="Logo Dark" />
+              </Link>
+            </div>
 
             <!-- Mobile Menu Toggle -->
             <button
@@ -204,6 +210,7 @@ onMounted(() => {
               Demo
             </Link>
           </section>
+
         </nav>
       </header>
 

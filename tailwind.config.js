@@ -11,7 +11,12 @@ export default {
     "./components/**/*.{html,js}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        xxs: "360px",
+        xs: "480px",
+      },
+    },
   },
   plugins: [forms],
 };

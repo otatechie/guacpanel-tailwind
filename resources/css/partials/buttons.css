@@ -151,7 +151,7 @@
     /********************
      *** Sizes **********
      ********************/
-
+    /*
     &.btn-sm {
       padding: 0.5rem 1rem;
       font-size: 0.875rem;
@@ -166,5 +166,37 @@
       padding: 0.1rem 0.5rem;
       font-size: 0.65rem;
     }
+    */
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg font-medium transition select-none disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-xxs {
+    @apply text-xxs h-6 px-2;
+  }
+  .btn-xs {
+    @apply h-7 px-2.5 text-xs;
+  }
+  .btn-sm {
+    @apply h-8 px-3 text-sm;
+  }
+  .btn-md {
+    @apply h-9 px-3.5 text-sm;
+  }
+  .btn-lg {
+    @apply h-10 px-4 text-base;
+  }
+}
+
+a,
+.btn,
+button {
+  @apply cursor-pointer;
+  &:disabled,
+  &.disabled {
+    @apply cursor-not-allowed;
   }
 }

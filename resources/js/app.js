@@ -9,6 +9,8 @@ import InstantSearch from 'vue-instantsearch/vue3/es'
 import Default from '@js/Layouts/Default.vue'
 import Auth from '@js/Layouts/Auth.vue'
 import Public from '@js/Layouts/Public.vue'
+import VueDOMPurifyHTML from 'vue-dompurify-html'
+import '@js/echo'
 
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 
@@ -37,6 +39,7 @@ createInertiaApp({
       .use(plugin)
       .use(ZiggyVue)
       .use(InstantSearch)
+      .use(VueDOMPurifyHTML)
       .component('Link', Link)
       .component('Default', Default)
       .component('Auth', Auth)

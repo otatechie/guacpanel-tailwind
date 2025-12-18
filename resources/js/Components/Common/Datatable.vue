@@ -229,6 +229,14 @@ const getColumnHeader = column => {
   return ''
 }
 
+const getExportValueForColumn = (column, row) => {
+  if (column?.meta?.excludeFromExport) return null
+  if (typeof column?.meta?.exportValue === 'function') return column.meta.exportValue(row)
+  if (typeof column?.accessorFn === 'function') return column.accessorFn(row)
+  if (column?.accessorKey) return row?.[column.accessorKey]
+  return null
+}
+
 const exportToCSV = () => {
   const rowsToExport = hasSelection.value
     ? table.getSelectedRowModel().rows
@@ -240,29 +248,26 @@ const exportToCSV = () => {
     }
 
     const rowData = {}
+
     props.columns.forEach(column => {
-      if (column.accessorKey) {
-        const header = getColumnHeader(column)
-        const value = column.accessorFn
-          ? column.accessorFn(row.original)
-          : row.original[column.accessorKey]
-        rowData[header] = formatValueForCSV(value)
-      } else if (column.id && !column.id.startsWith('_')) {
-        const header = getColumnHeader(column)
-        const cell = row.getVisibleCells().find(c => c.column.id === column.id)
-        if (cell?.getValue) {
-          rowData[header] = formatValueForCSV(cell.getValue())
-        }
-      }
+      const header = getColumnHeader(column)
+      if (!header) return
+
+      const raw = getExportValueForColumn(column, row.original)
+      if (raw === null || raw === undefined) return
+
+      rowData[header] = formatValueForCSV(raw)
     })
+
     return rowData
   })
 
-  if (!dataToExport.length) return
+  const nonEmpty = dataToExport.filter(r => r && Object.keys(r).length)
+  if (!nonEmpty.length) return
 
   const csvContent = [
-    Object.keys(dataToExport[0]).join(','),
-    ...dataToExport.map(row => Object.values(row).join(',')),
+    Object.keys(nonEmpty[0]).join(','),
+    ...nonEmpty.map(row => Object.values(row).join(',')),
   ].join('\n')
 
   const blob = new window.Blob([csvContent], {
@@ -380,7 +385,6 @@ watch(
 
 <template>
   <section class="relative">
-    <!-- Error Alert -->
     <div
       v-if="error"
       role="alert"
@@ -388,7 +392,6 @@ watch(
       {{ error }}
     </div>
 
-    <!-- Loading Overlay -->
     <div
       v-if="loading"
       role="status"
@@ -398,7 +401,6 @@ watch(
         :style="{ borderColor: 'var(--primary-color)' }"></span>
     </div>
 
-    <!-- Table Controls -->
     <header
       class="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div class="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:items-center">
@@ -460,7 +462,7 @@ watch(
           </span>
           <button
             v-if="bulkDeleteRoute"
-            class="inline-flex cursor-pointer items-center gap-2 text-red-500 dark:text-red-500"
+            class="inline-flex cursor-pointer items-center gap-2 text-red-500 transition hover:opacity-80 dark:text-red-500"
             @click="showDeleteModal = true">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -474,7 +476,7 @@ watch(
                 stroke-linejoin="round"
                 d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
             </svg>
-            Bulk Delete
+            <span class="hidden text-xs lg:inline-block">Bulk Delete</span>
           </button>
 
           <slot name="bulk-actions" :selected-rows="selectedRows" />
@@ -666,7 +668,7 @@ watch(
               :class="[styles.tableHeader, header.column.getCanSort() ? styles.sortableHeader : '']"
               @click="header.column.getToggleSortingHandler()?.($event)">
               <div class="flex items-center gap-2">
-                {{ header.column.columnDef.header }}
+                <FlexRender :render="header.column.columnDef.header" :props="header.getContext()" />
                 <span
                   v-if="header.column.getIsSorted()"
                   :style="{ color: selectionColor }"

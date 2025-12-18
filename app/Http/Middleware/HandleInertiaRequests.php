@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\AppNotificationsHelperTrait;
 use App\Traits\PersonalisationsHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,34 +11,16 @@ use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    use AppNotificationsHelperTrait;
     use PersonalisationsHelper;
 
-    /**
-     * The root template that's loaded on the first page visit.
-     *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
-     * @var string
-     */
     protected $rootView = 'app';
 
-    /**
-     * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
-     */
     public function version(Request $request): ?string
     {
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @see https://inertiajs.com/shared-data
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
         $user = $request->user();
@@ -81,8 +64,19 @@ class HandleInertiaRequests extends Middleware
             ],
 
             'settings' => [
+                'appName'                   => config('app.name'),
                 'passwordlessLogin'         => DB::table('settings')->value('passwordless_login') ?? true,
                 'emailVerificationEnabled'  => config('guacpanel.email_verification_enabled'),
+                'notificationEnabled'       => config('guacpanel.notifications.enabled'),
+                'notificationInDemoMode'    => config('guacpanel.notifications.in_demo'),
+            ],
+
+            'notifications' => fn () => $this->resolveNotifications($request, 1000, [
+                'dismissed' => 'undismissed',
+            ]),
+
+            'demo' => [
+                'notifications_enabled' => config('guacpanel.demo.notifications.enabled'),
             ],
         ]);
     }

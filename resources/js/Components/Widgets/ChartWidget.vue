@@ -91,7 +91,7 @@ const isPositiveChange = computed(() => props.change > 0)
 
 <template>
   <div
-    class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs sm:p-6">
+    class="overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs sm:p-6">
     <!-- Header -->
     <div class="mb-3 sm:mb-4">
       <h3 class="mb-2 text-xs font-medium text-[var(--color-text-muted)] sm:text-sm">

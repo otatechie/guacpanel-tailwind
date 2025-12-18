@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class DataTablePaginationService
 {
     public const DEFAULT_PAGE_SIZE = 10;
-    public const ALLOWED_PAGE_SIZES = [10, 25, 50];
+    public const ALLOWED_PAGE_SIZES = [10, 25, 50, 100];
     public const ALLOW_ALL_OPTION = true;
     public const MAX_ROWS_WHEN_ALL = 1000;
 

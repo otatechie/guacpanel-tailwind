@@ -22,10 +22,10 @@ class AdminSettingController extends Controller
 
     public function show()
     {
-        $settings = Setting::first() ?? new Setting();
+        $systemSettings = Setting::first() ?? new Setting();
 
         return Inertia::render('Admin/IndexManageSettingPage', [
-            'settings'          => $settings,
+            'systemSettings'    => $systemSettings,
             'canResetPassword'  => Features::enabled(Features::resetPasswords()),
             'canRegister'       => Features::enabled(Features::registration()),
             'twoFactorEnabled'  => Features::enabled(Features::twoFactorAuthentication()),

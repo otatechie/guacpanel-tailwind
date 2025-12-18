@@ -70,4 +70,14 @@ return [
         'line_two'  => 'If you did not restore this account, change your password and contact customer service at <a href="mailto::email" class="underline hover:text-orange-800">:email</a>.',
         'goodbye'   => 'We are so happy to have you back! 🥰',
     ],
+
+    'notifications_cleanup' => [
+        'subject'   => ':appname: Notifications cleanup report',
+        'greeting'  => 'Hi Admin 👋',
+        'line_one'  => 'Your scheduled notifications cleanup has completed for :appname.',
+        'deleted'   => 'Deleted notifications: :count',
+        'cutoff'    => 'Notifications deleted on or before: :date',
+        'days'      => 'Days threshold: :days',
+        'goodbye'   => 'Thank you,',
+    ],
 ];

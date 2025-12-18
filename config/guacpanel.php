@@ -80,4 +80,18 @@ return [
             'password' => env('APP_DEMO_LOGIN_PASSWORD', null),
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notification Settings
+    |--------------------------------------------------------------------------
+    */
+    'notifications' => [
+        'enabled'                   => env('APP_NOTIFICATIONS_ENABLED', true),
+        'in_demo'                   => env('APP_NOTIFICATIONS_IN_DEMO_MODE', true),
+        'auto_cleanup_deleted'      => env('APP_NOTIFICATIONS_AUTO_CLEANUP_DELETED_ENABLED', true),
+        'auto_cleanup_deleted_days' => env('APP_NOTIFICATIONS_AUTO_CLEANUP_DELETED_DAYS', 60),
+        'auto_clean_send_email'     => env('APP_NOTIFICATIONS_AUTO_CLEANUP_SEND_EMAIL', false),
+        'auto_clean_send_email_to'  => env('APP_NOTIFICATIONS_AUTO_CLEANUP_SEND_EMAIL_TO', null),
+    ],
 ];

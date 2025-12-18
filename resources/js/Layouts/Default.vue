@@ -4,6 +4,7 @@ import { usePage, Link } from '@inertiajs/vue3'
 import NavSidebarDesktop from '@js/Components/Nav/NavSidebarDesktop.vue'
 import NavProfile from '@js/Components/Nav/NavProfile.vue'
 import Notification from '@js/Components/Notifications/Notification.vue'
+import DemoNotifications from '@js/Components/Notifications/DemoNotifications.vue'
 import FlashMessage from '@js/Components/Notifications/FlashMessage.vue'
 import Footer from '@js/Shared/Public/Footer.vue'
 import Logo from '@js/Components/Common/Logo.vue'
@@ -17,6 +18,8 @@ const user = computed(() => page.props.auth?.user)
 const isSidebarOpen = ref(false)
 const isMobileSearchOpen = ref(false)
 const isLayoutReady = ref(false)
+const notificationEnabled = computed(() => page.props.settings?.notificationEnabled)
+const notificationInDemoMode = computed(() => page.props.settings?.notificationInDemoMode)
 
 const isMobile = () => window.innerWidth < 768
 const searchPlaceholder = 'Search...'
@@ -136,13 +139,14 @@ onUnmounted(() => {
     <div class="flex min-h-screen flex-col">
       <header
         role="banner"
-        class="fixed top-0 right-0 left-0 z-[55] h-16 h-[70px] w-full border-b border-[var(--color-border)] bg-[var(--color-surface)] shadow-xs sm:h-[70px]">
+        class="fixed top-0 right-0 left-0 z-[55] h-[70px] w-full border-b border-[var(--color-border)] bg-[var(--color-surface)] shadow-xs sm:h-[70px]">
         <nav
           class="flex h-full items-center gap-2 px-3 sm:gap-4 sm:px-4"
           role="navigation"
           aria-label="Primary navigation">
           <section
-            class="flex flex-shrink-0 items-center gap-2 sm:gap-4"
+            class="flex flex-shrink-0 items-center gap-2 transition sm:gap-4"
+            :class="[isSidebarOpen ? 'md:w-58' : 'md:w-auto']"
             aria-label="Application logo and menu controls">
             <Link
               href="/dashboard"
@@ -150,11 +154,13 @@ onUnmounted(() => {
               aria-label="Go to dashboard">
               <Logo :size="isMobile() ? '5rem' : '5rem'" />
             </Link>
+          </section>
 
+          <section class="flex-shrink-0 transition" aria-label="Sidebar Toggle Area">
             <button
               type="button"
               data-menu-button
-              class="min-h-[44px] min-w-[44px] cursor-pointer rounded-lg p-2.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] focus:ring-2 focus:ring-gray-200 focus:outline-none sm:p-2"
+              class="flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] focus:ring-2 focus:ring-gray-200 focus:outline-none"
               aria-label="Toggle navigation menu"
               :aria-expanded="isSidebarOpen"
               @click="toggleSidebar">
@@ -173,7 +179,7 @@ onUnmounted(() => {
             </button>
           </section>
 
-          <section class="ml-4 hidden flex-shrink-0 lg:block" aria-label="Site search">
+          <section class="hidden flex-shrink-0 lg:block" aria-label="Site search">
             <div class="w-80">
               <Search :is-mobile="false" :placeholder="searchPlaceholder" />
             </div>
@@ -211,7 +217,14 @@ onUnmounted(() => {
             class="flex flex-shrink-0 items-center gap-1 sm:gap-2"
             aria-label="User controls">
             <ColorThemeSwitcher />
-            <Notification v-if="user" :user="user" class="z-[100] scale-90 sm:scale-100" />
+            <Notification
+              v-if="user && notificationEnabled && !notificationInDemoMode"
+              :user="user"
+              class="z-[100] scale-90 sm:scale-100" />
+            <DemoNotifications
+              v-else-if="user && notificationEnabled && notificationInDemoMode"
+              :user="user"
+              class="z-[100] scale-90 sm:scale-100" />
             <NavDarkModeToggle />
             <NavProfile v-if="user" :user="user" />
             <Link

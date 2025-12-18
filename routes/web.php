@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\AppNotificationRequested;
+use App\Http\Controllers\Admin\AdminAppNotificationsController;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
@@ -15,12 +17,17 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminUsersVerificationController;
 use App\Http\Controllers\Auth\ForcePasswordChangeController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Notifications\AppNotificationController;
+use App\Http\Controllers\Notifications\AppNotificationPageController;
 use App\Http\Controllers\Pages\ChartsController;
 use App\Http\Controllers\Pages\DashboardController;
 use App\Http\Controllers\Pages\PageController;
 use App\Http\Controllers\TypesenseController;
 use App\Http\Controllers\User\BrowserSessionController;
 use App\Http\Controllers\User\UserAccountController;
+use App\Jobs\CleanupDeletedAppNotificationsJob;
+use App\Mail\NotificationsCleanupReport;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
@@ -46,6 +53,52 @@ Route::middleware([
         'password.expired',
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Notification
+        if (config('guacpanel.notifications.enabled')) {
+            // Notifications (Page)
+            Route::get('/notifications/all', [AppNotificationPageController::class, 'index'])
+                ->name('notifications.index')
+                ->middleware('permission:view-notifications|manage-notifications');
+
+            // Notifications (API).
+            Route::prefix('notifications')->group(function () {
+                // List payload used by dropdown + page reconciliation
+                Route::get('/', [AppNotificationController::class, 'index'])
+                    ->middleware('permission:view-notifications|manage-notifications');
+
+                // Edit actions
+                Route::post('/read-all', [AppNotificationController::class, 'markAllRead'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
+
+                Route::post('/dismiss-all', [AppNotificationController::class, 'dismissAll'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
+
+                Route::post('/{notification}/read', [AppNotificationController::class, 'markRead'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
+
+                Route::post('/{notification}/unread', [AppNotificationController::class, 'markUnread'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
+
+                Route::post('/{notification}/dismiss', [AppNotificationController::class, 'dismiss'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
+
+                Route::post('/{notification}/undismiss', [AppNotificationController::class, 'undismiss'])
+                    ->middleware('permission:edit-notifications|manage-notifications');
+
+                // Bulk (edit OR delete OR manage)
+                Route::post('/bulk', [AppNotificationController::class, 'bulk'])
+                    ->middleware('permission:edit-notifications|delete-notifications|manage-notifications');
+
+                // Expire (manage)
+                Route::post('/expire', [AppNotificationController::class, 'expire'])
+                    ->middleware('permission:manage-notifications');
+
+                // Delete (delete OR manage)
+                Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])
+                    ->middleware('permission:delete-notifications|manage-notifications');
+            });
+        }
 
         // User Account Management Routes
         Route::prefix('user')->name('user.')->group(function () {
@@ -130,6 +183,20 @@ Route::middleware([
                 Route::get('login-history', [AdminLoginHistoryController::class, 'index'])->name('login.history.index');
                 Route::post('login-history/bulk-destroy', [AdminLoginHistoryController::class, 'bulkDestroy'])->name('login.history.bulk-destroy');
 
+                // Admin Notifications
+                if (config('guacpanel.notifications.enabled')) {
+                    Route::prefix('notifications')->name('notifications.')->group(function () {
+                        Route::get('/', [AdminAppNotificationsController::class, 'index'])->name('index');
+                        Route::get('/create', [AdminAppNotificationsController::class, 'create'])->name('create');
+                        Route::post('/', [AdminAppNotificationsController::class, 'store'])->name('store');
+                        Route::post('/bulk-destroy', [AdminAppNotificationsController::class, 'bulkDestroy'])->name('bulk-destroy');
+                        Route::get('/deleted', [AdminAppNotificationsController::class, 'deleted'])->name('deleted.index');
+                        Route::get('/{id}/edit', [AdminAppNotificationsController::class, 'edit'])->name('edit');
+                        Route::put('/{id}', [AdminAppNotificationsController::class, 'update'])->name('update');
+                        Route::delete('/{id}', [AdminAppNotificationsController::class, 'destroy'])->name('destroy');
+                    });
+                }
+
                 // Permissions & Roles Routes
                 Route::get('permissions/roles', [AdminPermissionRoleController::class, 'index'])->name('permission.role.index');
                 Route::resource('roles', AdminRoleController::class)->except('show')->names('role');
@@ -182,5 +249,80 @@ Route::middleware([
             Route::get('/typesense/scoped-key', [TypesenseController::class, 'getScopedKey']);
             Route::post('/typesense/multi-search', [TypesenseController::class, 'multiSearch']);
         });
+    });
+});
+
+// Temp Testing Routes
+Route::prefix('_test')->middleware(['auth', 'ensure-local-testing'])->group(function () {
+    Route::get('/', function () {
+        return 'Hello Tester!';
+    });
+
+    Route::post('notify/user', function () {
+        event(new AppNotificationRequested(
+            userId: (string) auth()->id(),
+            message: 'User notification test (DB + Broadcast).',
+            data: [],
+            scope: 'user',
+            type: 'success',
+            title: 'Test: User',
+        ));
+
+        return response()->noContent();
+    });
+
+    Route::post('notify/system', function () {
+        event(new AppNotificationRequested(
+            userId: null,
+            message: 'System notification test (DB + Broadcast).',
+            data: [],
+            scope: 'system',
+            type: 'info',
+            title: 'Test: System',
+        ));
+
+        return response()->noContent();
+    });
+
+    Route::post('notify/release', function () {
+        event(new AppNotificationRequested(
+            userId: null,
+            message: 'Release notification test (DB + Broadcast).',
+            data: [],
+            scope: 'release',
+            type: 'info',
+            title: 'Test: Release',
+        ));
+
+        return response()->noContent();
+    });
+
+    Route::post('notifications/cleanup-email', function () {
+        $to = (string) config('guacpanel.notifications.auto_clean_send_email_to', '');
+        abort_if($to === '', 422, 'Missing config guacpanel.notifications.auto_clean_send_email_to');
+
+        $days = (int) config('guacpanel.notifications.auto_cleanup_deleted_days', 30);
+        $days = max(1, $days);
+        $cutoff = now()->subDays($days);
+
+        $deleted = 0;
+
+        if (request()->boolean('run_cleanup')) {
+            $deleted = (int) dispatch_sync(new CleanupDeletedAppNotificationsJob());
+        } else {
+            Mail::to($to)->send(new NotificationsCleanupReport(
+                deleted: 0,
+                cutoff: $cutoff,
+                days: $days,
+            ));
+        }
+
+        return response()->json([
+            'ok'     => true,
+            'sent_to'=> $to,
+            'deleted'=> $deleted,
+            'cutoff' => $cutoff->toDateTimeString(),
+            'days'   => $days,
+        ]);
     });
 });

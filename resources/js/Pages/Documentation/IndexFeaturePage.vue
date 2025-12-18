@@ -456,6 +456,23 @@ TYPESENSE_HOST=localhost
 TYPESENSE_PORT=8108
 TYPESENSE_PROTOCOL=http`,
 
+  reverbEnv: `APP_NOTIFICATIONS_ENABLED=true
+APP_NOTIFICATIONS_IN_DEMO_MODE=true # set this to false to enable live reverb notifications.
+
+REVERB_APP_ID=
+REVERB_APP_KEY=
+REVERB_APP_SECRET=
+REVERB_HOST="localhost"
+REVERB_PORT=8080
+REVERB_SCHEME=https
+REVERB_SERVER_HOST=0.0.0.0
+REVERB_SERVER_PORT=8080
+REVERB_TLS_CERT=
+REVERB_TLS_KEY=`,
+  reverbInstall: `php artisan install:broadcasting`,
+  reverbStart: `php artisan reverb:start`,
+
+
   // Search configuration
   searchConfig: `{
     collection: "users",         // Collection name
@@ -480,6 +497,7 @@ const articleLinks = [
   { text: 'Security Middleware', href: '#middleware' },
   { text: 'Backup System', href: '#backup-system' },
   { text: 'System Health', href: '#system-health' },
+  { text: 'Real-time Notifications', href: '#realtime-notifications' },
   { text: 'Data Tables', href: '#data-tables' },
   { text: 'Typesense Search', href: '#typesense-search' },
   { text: 'File Uploads', href: '#file-uploads' },
@@ -939,6 +957,95 @@ onUnmounted(() => {
               </h5>
               <div class="rounded-lg bg-gray-800">
                 <CodeBlock :code="codeExamples.healthFrontend" language="javascript" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Real-time Notifications (Reverb) Section -->
+      <section id="realtime-notifications" class="mb-12 scroll-mt-16">
+        <div class="mb-8 text-center">
+          <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
+            Real-time Notifications
+          </h2>
+          <p class="mx-auto max-w-2xl text-gray-700 dark:text-gray-200">
+            Live in-app notifications powered by Laravel Reverb (first-party WebSockets)
+          </p>
+        </div>
+
+        <div
+          class="border border-gray-200 bg-white p-6 font-mono dark:border-gray-700 dark:bg-gray-900">
+          <p class="mb-4 text-gray-700 dark:text-gray-200">
+            GuacPanel includes an optional notifications system that can broadcast updates to the UI in real-time.
+            This is powered by
+            <a
+              href="https://reverb.laravel.com/"
+              target="_blank"
+              class="border-b-2 border-blue-500 dark:border-blue-400">
+              Laravel Reverb
+            </a>
+            .
+          </p>
+
+          <ul
+            class="mb-6 ml-4 list-inside list-disc space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <li>Enable / disable live sockets with a demo-mode toggle</li>
+            <li>Local development with a built-in WebSocket server</li>
+            <li>Supports secure connections with TLS when configured</li>
+          </ul>
+
+          <div class="space-y-6">
+            <div>
+              <h5 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                1. Install Broadcasting + Reverb
+              </h5>
+              <p class="mb-3 text-xs text-gray-700 dark:text-gray-200">
+                Run the installer to configure broadcasting and generate your Reverb credentials:
+              </p>
+              <div class="rounded-lg bg-gray-800">
+                <CodeBlock :code="codeExamples.reverbInstall" language="bash" />
+              </div>
+            </div>
+
+            <hr class="border-gray-200 dark:border-gray-700" />
+
+            <div>
+              <h5 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                2. Environment Variables
+              </h5>
+              <p class="mb-3 text-xs text-gray-700 dark:text-gray-200">
+                Update your .env to enable notifications and configure Reverb:
+              </p>
+              <div class="rounded-lg bg-gray-800">
+                <CodeBlock :code="codeExamples.reverbEnv" language="bash" />
+              </div>
+
+              <div
+                class="mt-4 rounded-lg border border-teal-400 bg-gradient-to-br from-teal-50 to-teal-50 p-3 dark:border-teal-800/30 dark:from-teal-900/20 dark:to-teal-900/20">
+                <p class="flex items-start space-x-2 text-sm text-teal-800 dark:text-teal-300">
+                  <span class="flex-shrink-0 text-xl">💡</span>
+                  <span>
+                    <strong>Tip:</strong>
+                    Set <code class="font-mono">APP_NOTIFICATIONS_IN_DEMO_MODE=false</code> to enable live Reverb
+                    notifications.
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <hr class="border-gray-200 dark:border-gray-700" />
+
+            <div>
+              <h5 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                3. Start the Reverb Server
+              </h5>
+              <p class="mb-3 text-xs text-gray-700 dark:text-gray-200">
+                Run Reverb in a separate terminal while developing:
+              </p>
+              <div class="rounded-lg bg-gray-800">
+                <CodeBlock :code="codeExamples.reverbStart" language="bash" />
               </div>
             </div>
           </div>
