@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Notifications\StoreAdminAppNotificationRequest;
 use App\Http\Requests\Admin\Notifications\UpdateAdminAppNotificationRequest;
 use App\Models\AppNotification;
-use App\Models\AppNotificationRead;
 use App\Models\User;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
