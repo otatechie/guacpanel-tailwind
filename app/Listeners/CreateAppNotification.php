@@ -14,11 +14,9 @@ class CreateAppNotification
             ? $event->scope
             : 'user';
 
-        $userId = $scope === 'user' ? $event->userId : null;
-
-        if ($scope === 'user' && empty($userId)) {
-            return;
-        }
+        $userId = $scope === 'user'
+            ? $event->userId
+            : null;
 
         $notification = AppNotification::create([
             'user_id' => $userId,
@@ -27,7 +25,6 @@ class CreateAppNotification
             'title'   => $event->title,
             'message' => $event->message,
             'data'    => $event->data ?: null,
-            'read_at' => null,
         ]);
 
         AppNotificationCreated::dispatch($notification);

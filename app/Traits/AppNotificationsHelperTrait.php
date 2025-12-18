@@ -12,9 +12,6 @@ use Illuminate\Support\Carbon;
 
 trait AppNotificationsHelperTrait
 {
-    /**
-     * @return array{data: array<int, array<string, mixed>>, links?: array<int, array<string, mixed>>, meta?: array<string, mixed>}
-     */
     protected function resolveNotifications(Request $request, int|string $limit = 25, array $filters = []): array
     {
         $user = $request->user();
@@ -36,6 +33,7 @@ trait AppNotificationsHelperTrait
         }
 
         $userId = (string) $user->id;
+
         $totalAll = $this->countAllNotificationsForUser($userId);
 
         $requestFilters = $request->only([
@@ -78,7 +76,8 @@ trait AppNotificationsHelperTrait
             ->where(function ($q) use ($userId) {
                 $q->where(function ($q) use ($userId) {
                     $q->where('an.scope', '=', 'user')
-                        ->where('an.user_id', '=', $userId);
+                        ->where('an.user_id', '=', $userId)
+                        ->whereNull('anr.deleted_at');
                 })->orWhere(function ($q) {
                     $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('an.user_id')
@@ -86,8 +85,14 @@ trait AppNotificationsHelperTrait
                 });
             });
 
-        if (in_array($scope, ['user', 'system', 'release'], true)) {
-            $query->where('an.scope', '=', $scope);
+        if ($scope !== 'all' && in_array($scope, ['user', 'system', 'release'], true)) {
+            if ($scope === 'user') {
+                $query->where('an.scope', '=', 'user')
+                    ->where('an.user_id', '=', $userId);
+            } else {
+                $query->where('an.scope', '=', $scope)
+                    ->whereNull('an.user_id');
+            }
         }
 
         if ($type !== 'all' && in_array($type, ['info', 'success', 'warning', 'error'], true)) {
@@ -106,7 +111,7 @@ trait AppNotificationsHelperTrait
             $query->where(function ($q) {
                 $q->where(function ($q) {
                     $q->where('an.scope', '=', 'user')
-                        ->whereNull('an.dismissed_at');
+                        ->whereNull('anr.dismissed_at');
                 })->orWhere(function ($q) {
                     $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('anr.dismissed_at');
@@ -116,7 +121,7 @@ trait AppNotificationsHelperTrait
             $query->where(function ($q) {
                 $q->where(function ($q) {
                     $q->where('an.scope', '=', 'user')
-                        ->whereNotNull('an.dismissed_at');
+                        ->whereNotNull('anr.dismissed_at');
                 })->orWhere(function ($q) {
                     $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNotNull('anr.dismissed_at');
@@ -128,7 +133,7 @@ trait AppNotificationsHelperTrait
             $query->where(function ($q) {
                 $q->where(function ($q) {
                     $q->where('an.scope', '=', 'user')
-                        ->whereNull('an.read_at');
+                        ->whereNull('anr.read_at');
                 })->orWhere(function ($q) {
                     $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNull('anr.read_at');
@@ -138,7 +143,7 @@ trait AppNotificationsHelperTrait
             $query->where(function ($q) {
                 $q->where(function ($q) {
                     $q->where('an.scope', '=', 'user')
-                        ->whereNotNull('an.read_at');
+                        ->whereNotNull('anr.read_at');
                 })->orWhere(function ($q) {
                     $q->whereIn('an.scope', ['system', 'release'])
                         ->whereNotNull('anr.read_at');
@@ -160,16 +165,14 @@ trait AppNotificationsHelperTrait
             'an.message',
             'an.data',
             'an.created_at',
-            'an.read_at as user_read_at',
-            'an.dismissed_at as user_dismissed_at',
-            'anr.read_at as system_read_at',
-            'anr.dismissed_at as system_dismissed_at',
+            'anr.read_at as read_at',
+            'anr.dismissed_at as dismissed_at',
         ])->withQueryString();
 
         $paginator->setCollection(
             $paginator->getCollection()->map(function ($row) {
-                $readAt = $row->scope === 'user' ? $row->user_read_at : $row->system_read_at;
-                $dismissedAt = $row->scope === 'user' ? $row->user_dismissed_at : $row->system_dismissed_at;
+                $readAt = $row->read_at;
+                $dismissedAt = $row->dismissed_at;
 
                 return [
                     'id'           => (string) $row->id,
@@ -178,21 +181,33 @@ trait AppNotificationsHelperTrait
                     'title'        => $row->title,
                     'message'      => $row->message,
                     'data'         => $row->data,
-                    'created_at'   => optional($row->created_at)?->toISOString(),
-                    'read_at'      => optional($readAt)?->toISOString(),
-                    'dismissed_at' => optional($dismissedAt)?->toISOString(),
                     'is_read'      => (bool) $readAt,
+                    'read_at'      => $readAt ? Carbon::parse($readAt)->toISOString() : null,
                     'is_dismissed' => (bool) $dismissedAt,
+                    'dismissed_at' => $dismissedAt ? Carbon::parse($dismissedAt)->toISOString() : null,
+                    'created_at'   => optional($row->created_at)?->toISOString(),
                 ];
-            })
+            }),
         );
 
-        $payload = $paginator->toArray();
-        $payload['meta'] = array_merge($payload['meta'] ?? [], [
-            'total_all' => $totalAll,
-        ]);
-
-        return $payload;
+        return [
+            'data'  => $paginator->items(),
+            'links' => [
+                'first' => $paginator->url(1),
+                'last'  => $paginator->url($paginator->lastPage()),
+                'prev'  => $paginator->previousPageUrl(),
+                'next'  => $paginator->nextPageUrl(),
+            ],
+            'meta'  => [
+                'total'        => $paginator->total(),
+                'per_page'     => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+                'last_page'    => $paginator->lastPage(),
+                'from'         => $paginator->firstItem(),
+                'to'           => $paginator->lastItem(),
+                'total_all'    => $totalAll,
+            ],
+        ];
     }
 
     protected function countAllNotificationsForUser(string $userId): int
@@ -254,27 +269,23 @@ trait AppNotificationsHelperTrait
         string $userId,
         string $notificationId,
         string $scope,
-        ?Carbon $readAt,
-        ?Carbon $dismissedAt,
-        string $action
+        $readAt,
+        $dismissedAt,
+        string $action,
     ): void {
-        event(new AppNotificationStateChanged(
-            userId: $userId,
-            notificationId: $notificationId,
-            scope: $scope,
-            readAt: optional($readAt)?->toISOString(),
-            dismissedAt: optional($dismissedAt)?->toISOString(),
-            action: $action,
-        ));
+        AppNotificationStateChanged::dispatch(
+            $userId,
+            $notificationId,
+            $scope,
+            optional($readAt)?->toISOString(),
+            optional($dismissedAt)?->toISOString(),
+            $action,
+        );
     }
 
     protected function broadcastBulk(string $userId, string $action, array $ids = []): void
     {
-        event(new AppNotificationsBulkChanged(
-            userId: $userId,
-            action: $action,
-            ids: $ids,
-        ));
+        AppNotificationsBulkChanged::dispatch($userId, $action, $ids);
     }
 
     protected function markNotificationReadForUser(Request $request, AppNotification $notification): void
@@ -285,26 +296,9 @@ trait AppNotificationsHelperTrait
 
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
-
-            if (!$notification->read_at) {
-                $notification->update(['read_at' => $now]);
-            }
-
-            $fresh = $notification->fresh();
-
-            $this->broadcastNotificationState(
-                $userId,
-                (string) $notification->id,
-                'user',
-                $fresh?->read_at,
-                $fresh?->dismissed_at,
-                'read',
-            );
-
-            return;
+        } else {
+            abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
         }
-
-        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -339,26 +333,9 @@ trait AppNotificationsHelperTrait
 
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
-
-            if ($notification->read_at) {
-                $notification->update(['read_at' => null]);
-            }
-
-            $fresh = $notification->fresh();
-
-            $this->broadcastNotificationState(
-                $userId,
-                (string) $notification->id,
-                'user',
-                $fresh?->read_at,
-                $fresh?->dismissed_at,
-                'unread',
-            );
-
-            return;
+        } else {
+            abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
         }
-
-        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -392,14 +369,7 @@ trait AppNotificationsHelperTrait
         $now = Carbon::now();
         $userId = (string) $user->id;
 
-        AppNotification::query()
-            ->where('scope', 'user')
-            ->where('user_id', $userId)
-            ->whereNull('dismissed_at')
-            ->whereNull('read_at')
-            ->update(['read_at' => $now]);
-
-        $systemIds = AppNotification::query()
+        $ids = AppNotification::query()
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
@@ -407,21 +377,30 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('an.deleted_at')
-            ->whereIn('an.scope', ['system', 'release'])
-            ->whereNull('an.user_id')
+            ->where(function ($q) use ($userId) {
+                $q->where(function ($q) use ($userId) {
+                    $q->where('an.scope', '=', 'user')
+                        ->where('an.user_id', '=', $userId)
+                        ->whereNull('anr.deleted_at');
+                })->orWhere(function ($q) {
+                    $q->whereIn('an.scope', ['system', 'release'])
+                        ->whereNull('an.user_id')
+                        ->whereNull('anr.deleted_at');
+                });
+            })
             ->whereNull('anr.dismissed_at')
-            ->whereNull('anr.deleted_at')
+            ->whereNull('anr.read_at')
             ->pluck('an.id')
             ->map(fn ($id) => (string) $id);
 
-        if ($systemIds->isEmpty()) {
+        if ($ids->isEmpty()) {
             $this->broadcastBulk($userId, 'read-all');
 
             return;
         }
 
-        $rows = $systemIds->map(fn ($id) => [
-            'app_notification_id' => $id,
+        $rows = $ids->map(fn ($id) => [
+            'app_notification_id' => (string) $id,
             'user_id'             => $userId,
             'read_at'             => $now,
             'deleted_at'          => null,
@@ -446,26 +425,9 @@ trait AppNotificationsHelperTrait
 
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
-
-            if (!$notification->dismissed_at) {
-                $notification->update(['dismissed_at' => $now]);
-            }
-
-            $fresh = $notification->fresh();
-
-            $this->broadcastNotificationState(
-                $userId,
-                (string) $notification->id,
-                'user',
-                $fresh?->read_at,
-                $fresh?->dismissed_at,
-                'dismiss',
-            );
-
-            return;
+        } else {
+            abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
         }
-
-        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -489,7 +451,7 @@ trait AppNotificationsHelperTrait
             $notification->scope,
             $readRow?->read_at,
             $readRow?->dismissed_at,
-            'dismiss',
+            'dismissed',
         );
     }
 
@@ -500,26 +462,9 @@ trait AppNotificationsHelperTrait
 
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
-
-            if ($notification->dismissed_at) {
-                $notification->update(['dismissed_at' => null]);
-            }
-
-            $fresh = $notification->fresh();
-
-            $this->broadcastNotificationState(
-                $userId,
-                (string) $notification->id,
-                'user',
-                $fresh?->read_at,
-                $fresh?->dismissed_at,
-                'undismiss',
-            );
-
-            return;
+        } else {
+            abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
         }
-
-        abort_unless(in_array($notification->scope, ['system', 'release'], true) && $notification->user_id === null, 403);
 
         AppNotificationRead::updateOrCreate(
             [
@@ -543,7 +488,7 @@ trait AppNotificationsHelperTrait
             $notification->scope,
             $readRow?->read_at,
             $readRow?->dismissed_at,
-            'undismiss',
+            'undismissed',
         );
     }
 
@@ -553,13 +498,7 @@ trait AppNotificationsHelperTrait
         $now = Carbon::now();
         $userId = (string) $user->id;
 
-        AppNotification::query()
-            ->where('scope', 'user')
-            ->where('user_id', $userId)
-            ->whereNull('dismissed_at')
-            ->update(['dismissed_at' => $now]);
-
-        $systemIds = AppNotification::query()
+        $ids = AppNotification::query()
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
@@ -567,21 +506,29 @@ trait AppNotificationsHelperTrait
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('an.deleted_at')
-            ->whereIn('an.scope', ['system', 'release'])
-            ->whereNull('an.user_id')
+            ->where(function ($q) use ($userId) {
+                $q->where(function ($q) use ($userId) {
+                    $q->where('an.scope', '=', 'user')
+                        ->where('an.user_id', '=', $userId)
+                        ->whereNull('anr.deleted_at');
+                })->orWhere(function ($q) {
+                    $q->whereIn('an.scope', ['system', 'release'])
+                        ->whereNull('an.user_id')
+                        ->whereNull('anr.deleted_at');
+                });
+            })
             ->whereNull('anr.dismissed_at')
-            ->whereNull('anr.deleted_at')
             ->pluck('an.id')
             ->map(fn ($id) => (string) $id);
 
-        if ($systemIds->isEmpty()) {
+        if ($ids->isEmpty()) {
             $this->broadcastBulk($userId, 'dismiss-all');
 
             return;
         }
 
-        $rows = $systemIds->map(fn ($id) => [
-            'app_notification_id' => $id,
+        $rows = $ids->map(fn ($id) => [
+            'app_notification_id' => (string) $id,
             'user_id'             => $userId,
             'dismissed_at'        => $now,
             'deleted_at'          => null,
@@ -615,110 +562,77 @@ trait AppNotificationsHelperTrait
             return;
         }
 
+        abort_unless(in_array($action, ['read', 'unread', 'dismiss', 'undismiss', 'delete'], true), 422);
+
         $rows = AppNotification::query()
-            ->whereIn('id', $ids->all())
-            ->get(['id', 'scope', 'user_id'])
-            ->map(fn ($n) => [
-                'id'      => (string) $n->id,
-                'scope'   => $n->scope,
-                'user_id' => $n->user_id ? (string) $n->user_id : null,
-            ]);
+            ->withoutGlobalScope(SoftDeletingScope::class)
+            ->from('app_notifications as an')
+            ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
+                $join->on('anr.app_notification_id', '=', 'an.id')
+                    ->where('anr.user_id', '=', $userId);
+            })
+            ->whereNull('an.deleted_at')
+            ->whereIn('an.id', $ids->all())
+            ->where(function ($q) use ($userId) {
+                $q->where(function ($q) use ($userId) {
+                    $q->where('an.scope', '=', 'user')
+                        ->where('an.user_id', '=', $userId);
+                })->orWhere(function ($q) {
+                    $q->whereIn('an.scope', ['system', 'release'])
+                        ->whereNull('an.user_id');
+                });
+            })
+            ->get(['an.id', 'an.scope', 'an.user_id']);
 
-        $userScoped = $rows
-            ->filter(fn ($r) => $r['scope'] === 'user' && (string) $r['user_id'] === $userId)
-            ->pluck('id')
-            ->values();
-
-        $systemScoped = $rows
-            ->filter(fn ($r) => in_array($r['scope'], ['system', 'release'], true) && $r['user_id'] === null)
-            ->pluck('id')
-            ->values();
-
-        if (in_array($action, ['read', 'unread'], true)) {
-            if ($userScoped->isNotEmpty()) {
-                AppNotification::query()
-                    ->whereIn('id', $userScoped->all())
-                    ->update(['read_at' => $action === 'read' ? $now : null]);
-            }
-
-            if ($systemScoped->isNotEmpty()) {
-                $rowsToUpsert = $systemScoped->map(fn ($id) => [
-                    'app_notification_id' => (string) $id,
-                    'user_id'             => $userId,
-                    'read_at'             => $action === 'read' ? $now : null,
-                    'deleted_at'          => null,
-                    'created_at'          => $now,
-                    'updated_at'          => $now,
-                ])->all();
-
-                AppNotificationRead::upsert(
-                    $rowsToUpsert,
-                    ['app_notification_id', 'user_id'],
-                    ['read_at', 'deleted_at', 'updated_at'],
-                );
-            }
-
-            $this->broadcastBulk($userId, 'bulk', $ids->all());
-
+        if ($rows->isEmpty()) {
             return;
         }
 
-        if (in_array($action, ['dismiss', 'undismiss'], true)) {
-            if ($userScoped->isNotEmpty()) {
-                AppNotification::query()
-                    ->whereIn('id', $userScoped->all())
-                    ->update(['dismissed_at' => $action === 'dismiss' ? $now : null]);
+        $upsertRows = $rows->map(function ($r) use ($action, $now, $userId) {
+            $payload = [
+                'app_notification_id' => (string) $r->id,
+                'user_id'             => $userId,
+                'deleted_at'          => null,
+                'created_at'          => $now,
+                'updated_at'          => $now,
+            ];
+
+            if ($action === 'read') {
+                $payload['read_at'] = $now;
+            } elseif ($action === 'unread') {
+                $payload['read_at'] = null;
+            } elseif ($action === 'dismiss') {
+                $payload['dismissed_at'] = $now;
+            } elseif ($action === 'undismiss') {
+                $payload['dismissed_at'] = null;
+            } elseif ($action === 'delete') {
+                $payload['deleted_at'] = $now;
             }
 
-            if ($systemScoped->isNotEmpty()) {
-                $rowsToUpsert = $systemScoped->map(fn ($id) => [
-                    'app_notification_id' => (string) $id,
-                    'user_id'             => $userId,
-                    'dismissed_at'        => $action === 'dismiss' ? $now : null,
-                    'deleted_at'          => null,
-                    'created_at'          => $now,
-                    'updated_at'          => $now,
-                ])->all();
+            return $payload;
+        })->all();
 
-                AppNotificationRead::upsert(
-                    $rowsToUpsert,
-                    ['app_notification_id', 'user_id'],
-                    ['dismissed_at', 'deleted_at', 'updated_at'],
-                );
-            }
-
-            $this->broadcastBulk($userId, 'bulk', $ids->all());
-
-            return;
+        if ($action === 'read' || $action === 'unread') {
+            AppNotificationRead::upsert(
+                $upsertRows,
+                ['app_notification_id', 'user_id'],
+                ['read_at', 'deleted_at', 'updated_at'],
+            );
+        } elseif ($action === 'dismiss' || $action === 'undismiss') {
+            AppNotificationRead::upsert(
+                $upsertRows,
+                ['app_notification_id', 'user_id'],
+                ['dismissed_at', 'deleted_at', 'updated_at'],
+            );
+        } elseif ($action === 'delete') {
+            AppNotificationRead::upsert(
+                $upsertRows,
+                ['app_notification_id', 'user_id'],
+                ['deleted_at', 'updated_at'],
+            );
         }
 
-        if ($action === 'delete') {
-            if ($userScoped->isNotEmpty()) {
-                AppNotification::query()
-                    ->whereIn('id', $userScoped->all())
-                    ->delete();
-            }
-
-            if ($systemScoped->isNotEmpty()) {
-                $rowsToUpsert = $systemScoped->map(fn ($id) => [
-                    'app_notification_id' => (string) $id,
-                    'user_id'             => $userId,
-                    'deleted_at'          => $now,
-                    'created_at'          => $now,
-                    'updated_at'          => $now,
-                ])->all();
-
-                AppNotificationRead::upsert(
-                    $rowsToUpsert,
-                    ['app_notification_id', 'user_id'],
-                    ['deleted_at', 'updated_at'],
-                );
-            }
-
-            $this->broadcastBulk($userId, 'bulk', $ids->all());
-
-            return;
-        }
+        $this->broadcastBulk($userId, 'bulk', $ids->all());
     }
 
     protected function deleteNotificationForUser(Request $request, AppNotification $notification, bool $canManage = false): void
@@ -730,12 +644,19 @@ trait AppNotificationsHelperTrait
         if ($notification->scope === 'user') {
             abort_unless((string) $notification->user_id === $userId, 403);
 
-            $notificationId = (string) $notification->id;
-            $notification->delete();
+            AppNotificationRead::updateOrCreate(
+                [
+                    'app_notification_id' => (string) $notification->id,
+                    'user_id'             => $userId,
+                ],
+                [
+                    'deleted_at' => $now,
+                ],
+            );
 
             $this->broadcastNotificationState(
                 $userId,
-                $notificationId,
+                (string) $notification->id,
                 'user',
                 null,
                 null,

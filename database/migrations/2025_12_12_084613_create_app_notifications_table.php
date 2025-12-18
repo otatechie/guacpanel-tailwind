@@ -24,14 +24,10 @@ return new class() extends Migration {
             $table->boolean('sent_as_scheduled')->default(false)->index();
             $table->timestamp('scheduled_on')->nullable()->index();
             $table->timestamp('auto_expire_on')->nullable();
-            $table->timestamp('read_at')->nullable();
-            $table->timestamp('dismissed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->index(['sent_as_scheduled', 'scheduled_on'], 'app_notifications_sched_send_idx');
-            $table->index(['user_id', 'read_at']);
-            $table->index(['user_id', 'dismissed_at']);
             $table->index(['scope', 'created_at']);
             $table->index('auto_expire_on');
             $table->index('deleted_at');

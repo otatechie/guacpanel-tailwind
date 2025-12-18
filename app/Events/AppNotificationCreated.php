@@ -18,16 +18,15 @@ class AppNotificationCreated implements ShouldBroadcastNow
 
     public function __construct(public AppNotification $notification)
     {
-        //
     }
 
-    public function broadcastOn(): Channel|array
+    public function broadcastOn(): Channel
     {
-        if ($this->notification->scope === 'user' && $this->notification->user_id) {
-            return new PrivateChannel('users.'.$this->notification->user_id);
+        if ($this->notification->scope === 'system' || $this->notification->scope === 'release') {
+            return new PrivateChannel('system');
         }
 
-        return new PrivateChannel('system');
+        return new PrivateChannel('users.'.$this->notification->user_id);
     }
 
     public function broadcastAs(): string
@@ -37,9 +36,7 @@ class AppNotificationCreated implements ShouldBroadcastNow
 
     public function broadcastWith(): array
     {
-        $readAt = $this->notification->scope === 'user'
-            ? optional($this->notification->read_at)?->toISOString()
-            : null;
+        $readAt = null;
 
         return [
             'id'         => $this->notification->id,

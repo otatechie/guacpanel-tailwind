@@ -91,8 +91,6 @@ class AdminAppNotificationsController extends Controller
             'title'             => $data['title'],
             'message'           => $data['message'],
             'data'              => null,
-            'read_at'           => null,
-            'dismissed_at'      => null,
             'scheduled_on'      => $scheduledOn,
             'auto_expire_on'    => $autoExpireOn,
             'sent_as_scheduled' => false,
