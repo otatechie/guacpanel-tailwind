@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\DataTableFilterService;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,18 +14,33 @@ use Spatie\Permission\Models\Role;
 
 class AdminUserController extends Controller
 {
-    public function __construct(private DataTablePaginationService $pagination)
-    {
+    public function __construct(
+        private DataTablePaginationService $pagination,
+        private DataTableFilterService $filter
+    ) {
         $this->middleware('permission:view-users');
     }
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
+        $query = User::query()->with(['roles:id,name', 'permissions:id,name']);
 
-        $users = User::query()
-            ->with(['roles:id,name', 'permissions:id,name'])
-            ->latest()
+        // Apply search
+        $searchableColumns = ['name', 'email', 'roles.name'];
+        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+
+        // Apply sorting
+        $sortConfig = [
+            'name' => [],
+            'email' => [],
+            'created_at' => [],
+        ];
+        $query = $this->filter->applySorting($query, $request, $sortConfig);
+
+        $filteredTotal = $query->count();
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'users', $filteredTotal);
+
+        $users = $query
             ->paginate($perPage)
             ->withQueryString()
             ->through(function ($user) {
@@ -121,7 +137,7 @@ class AdminUserController extends Controller
                 'restore_date_formatted'        => $user->restore_date_formatted,
                 'restore_date_full'             => $user->restore_date_full,
                 'roles'                         => $user->roles,
-                'permissions'                   => $user->permissions->map(fn ($permission) => [
+                'permissions'                   => $user->permissions->map(fn($permission) => [
                     'id'   => $permission->id,
                     'name' => $permission->name,
                 ]),

@@ -7,7 +7,7 @@ const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('co
 
 const notificationsEnabled = import.meta.env.VITE_APP_NOTIFICATIONS_ENABLED
 
-if (notificationsEnabled.toLowerCase() == 'true') {
+if (notificationsEnabled?.toLowerCase() === 'true') {
   window.Echo = new Echo({
     broadcaster: 'reverb',
     key: import.meta.env.VITE_REVERB_APP_KEY,

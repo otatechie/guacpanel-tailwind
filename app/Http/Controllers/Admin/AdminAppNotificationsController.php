@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\Notifications\StoreAdminAppNotificationRequest;
 use App\Http\Requests\Admin\Notifications\UpdateAdminAppNotificationRequest;
 use App\Models\AppNotification;
 use App\Models\User;
+use App\Services\DataTableFilterService;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -16,16 +17,16 @@ use Inertia\Inertia;
 
 class AdminAppNotificationsController extends Controller
 {
-    public function __construct(private DataTablePaginationService $pagination)
-    {
+    public function __construct(
+        private DataTablePaginationService $pagination,
+        private DataTableFilterService $filter
+    ) {
         $this->middleware('permission:manage-notifications');
     }
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
-
-        $notifications = AppNotification::query()
+        $query = AppNotification::query()
             ->select([
                 'id',
                 'user_id',
@@ -49,8 +50,24 @@ class AdminAppNotificationsController extends Controller
                     $q->whereNotNull('u_del_notif_at');
                 },
             ])
-            ->with(['user:id,name,email'])
-            ->latest('created_at')
+            ->with(['user:id,name,email']);
+
+        // Apply search
+        $searchableColumns = ['title', 'message', 'user.name', 'user.email'];
+        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+
+        // Apply sorting
+        $sortConfig = [
+            'title' => [],
+            'type' => [],
+            'created_at' => [],
+        ];
+        $query = $this->filter->applySorting($query, $request, $sortConfig);
+
+        $filteredTotal = $query->count();
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'notifications', $filteredTotal);
+
+        $notifications = $query
             ->paginate($perPage)
             ->withQueryString()
             ->through(function ($item) {

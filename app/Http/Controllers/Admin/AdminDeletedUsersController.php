@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\DataTableFilterService;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,19 +12,35 @@ use Spatie\Permission\Models\Role;
 
 class AdminDeletedUsersController extends Controller
 {
-    public function __construct(private DataTablePaginationService $pagination)
-    {
+    public function __construct(
+        private DataTablePaginationService $pagination,
+        private DataTableFilterService $filter
+    ) {
         $this->middleware('permission:view-users');
     }
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
-
-        $users = User::query()
+        $query = User::query()
             ->onlyDeleted()
-            ->with(['roles:id,name', 'permissions:id,name'])
-            ->latest()
+            ->with(['roles:id,name', 'permissions:id,name']);
+
+        // Apply search
+        $searchableColumns = ['name', 'email', 'roles.name'];
+        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+
+        // Apply sorting
+        $sortConfig = [
+            'name' => [],
+            'email' => [],
+            'deleted_at' => [],
+        ];
+        $query = $this->filter->applySorting($query, $request, $sortConfig);
+
+        $filteredTotal = $query->count();
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'deleted_users', $filteredTotal);
+
+        $users = $query
             ->paginate($perPage)
             ->withQueryString()
             ->through(function ($user) {
@@ -74,7 +91,7 @@ class AdminDeletedUsersController extends Controller
         $user = User::onlyTrashed()->findOrFail($id);
         $user->restore();
         $deletedUsersCount = User::query()->onlyDeleted()->count();
-        $msg = $user->name.'\'s account restored successfully';
+        $msg = $user->name . '\'s account restored successfully';
 
         if ($deletedUsersCount > 0) {
             return redirect()->back()->with('success', $msg);
@@ -96,7 +113,7 @@ class AdminDeletedUsersController extends Controller
         $user->forceDelete();
 
         $deletedUsersCount = User::query()->onlyDeleted()->count();
-        $msg = $user->name.'\'s account permanently destroyed successfully';
+        $msg = $user->name . '\'s account permanently destroyed successfully';
 
         if ($deletedUsersCount > 0) {
             return redirect()->back()->with('success', $msg);

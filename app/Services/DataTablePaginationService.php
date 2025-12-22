@@ -6,13 +6,22 @@ use Illuminate\Http\Request;
 
 class DataTablePaginationService
 {
-    public const DEFAULT_PAGE_SIZE = 10;
-    public const ALLOWED_PAGE_SIZES = [10, 25, 50, 100];
-    public const ALLOW_ALL_OPTION = true;
-    public const MAX_ROWS_WHEN_ALL = 1000;
+    const DEFAULT_PAGE_SIZE = 10;
+    const ALLOWED_PAGE_SIZES = [10, 25, 50];
+    const ALLOW_ALL_OPTION = true;
+    const MAX_ROWS_WHEN_ALL = 1000;
+
+    public function resolvePage(Request $request): int
+    {
+        $pageRaw = $request->get('page');
+        $page = is_numeric($pageRaw) ? (int) $pageRaw : 1;
+
+        return max(1, $page);
+    }
 
     public function resolvePerPage(
         Request $request,
+        string $resourceName,
         int $default = 25,
         array $allowed = [10, 25, 50],
         bool $allowAll = true,
@@ -36,10 +45,11 @@ class DataTablePaginationService
         return max(1, $value);
     }
 
-    public function resolvePerPageWithDefaults(Request $request, ?int $filteredTotal = null): int
+    public function resolvePerPageWithDefaults(Request $request, string $resourceName, ?int $filteredTotal = null): int
     {
         return $this->resolvePerPage(
             $request,
+            $resourceName,
             self::DEFAULT_PAGE_SIZE,
             self::ALLOWED_PAGE_SIZES,
             self::ALLOW_ALL_OPTION,
@@ -48,14 +58,20 @@ class DataTablePaginationService
         );
     }
 
-    /**
-     * @return array{per_page:mixed,page:mixed}
-     */
     public function buildFilters(Request $request): array
     {
-        return [
-            'per_page' => $request->get('per_page'),
-            'page'     => $request->get('page'),
-        ];
+        $allParams = $request->all();
+        $filters = [];
+
+        foreach ($allParams as $key => $value) {
+            if ($key !== 'page' && $key !== 'per_page') {
+                $filters[$key] = $value;
+            }
+        }
+
+        $filters['page'] = $request->get('page');
+        $filters['per_page'] = $request->get('per_page');
+
+        return $filters;
     }
 }

@@ -8,7 +8,6 @@ import { initializeTheme } from '@js/utils/themeInit'
 import InstantSearch from 'vue-instantsearch/vue3/es'
 import Default from '@js/Layouts/Default.vue'
 import Auth from '@js/Layouts/Auth.vue'
-import Public from '@js/Layouts/Public.vue'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 import '@js/echo'
 
@@ -43,9 +42,7 @@ createInertiaApp({
       .component('Link', Link)
       .component('Default', Default)
       .component('Auth', Auth)
-      .component('Public', Public)
       .mount(el)
-
     return app
   },
 })

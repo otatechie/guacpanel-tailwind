@@ -12,7 +12,7 @@ trait PersonalisationsHelper
 
     protected function getPersonalisations(bool $useCaching = true): Personalisation
     {
-        $loader = fn () => tap(
+        $loader = fn() => tap(
             Personalisation::first() ?? new Personalisation(),
             function (Personalisation $personalisation) {
                 if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
@@ -25,11 +25,20 @@ trait PersonalisationsHelper
             return $loader();
         }
 
-        return Cache::rememberForever($this->cacheName, $loader);
+        try {
+            return Cache::rememberForever($this->cacheName, $loader);
+        } catch (\Exception $e) {
+            // If cache fails (e.g., table doesn't exist during migration), fall back to direct query
+            return $loader();
+        }
     }
 
     protected function clearPersonalisationCache(): void
     {
-        Cache::forget($this->cacheName);
+        try {
+            Cache::forget($this->cacheName);
+        } catch (\Exception $e) {
+            // Silently fail if cache is not available
+        }
     }
 }

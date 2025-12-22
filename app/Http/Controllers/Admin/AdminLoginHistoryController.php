@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LoginHistory;
+use App\Services\DataTableFilterService;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,16 +12,16 @@ use Jenssegers\Agent\Agent;
 
 class AdminLoginHistoryController extends Controller
 {
-    public function __construct(private DataTablePaginationService $pagination)
-    {
+    public function __construct(
+        private DataTablePaginationService $pagination,
+        private DataTableFilterService $filter
+    ) {
         $this->middleware('permission:view-login-history');
     }
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
-
-        $loginHistory = LoginHistory::with('user')
+        $query = LoginHistory::with('user')
             ->select([
                 'id',
                 'user_id',
@@ -28,8 +29,22 @@ class AdminLoginHistoryController extends Controller
                 'user_agent',
                 'login_at',
                 'login_successful',
-            ])
-            ->latest('login_at')
+            ]);
+
+        // Apply search
+        $searchableColumns = ['user.name', 'user_agent'];
+        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+
+        // Apply sorting
+        $sortConfig = [
+            'login_at' => [],
+        ];
+        $query = $this->filter->applySorting($query, $request, $sortConfig);
+
+        $filteredTotal = $query->count();
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'login_history', $filteredTotal);
+
+        $loginHistory = $query
             ->paginate($perPage)
             ->withQueryString()
             ->through(function ($item) {

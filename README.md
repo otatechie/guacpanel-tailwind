@@ -11,8 +11,6 @@
 
 An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications.
 
-## Screenshots
-
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/fa319d6a-695f-4d6f-95ea-16b72d128647" alt="Dashboard" width="100%"></td>
@@ -144,46 +142,6 @@ npm run dev
 php artisan serve
 ```
 
-### Real-time Notifications (Laravel Reverb)
-
-GuacPanel ships with an optional real-time notifications system powered by **Laravel Reverb** (WebSockets).
-
-1. Enable notifications in `.env`
-
-```dotenv
-APP_NOTIFICATIONS_ENABLED=true
-APP_NOTIFICATIONS_IN_DEMO_MODE=true # set this to false to enable live reverb notifications.
-```
-
-2. Install broadcasting + Reverb (generates credentials)
-
-```bash
-php artisan install:broadcasting
-```
-
-This will populate the following in your `.env` (you can override these as needed):
-
-```dotenv
-REVERB_APP_ID=
-REVERB_APP_KEY=
-REVERB_APP_SECRET=
-REVERB_HOST="localhost"
-REVERB_PORT=8080
-REVERB_SCHEME=https
-REVERB_SERVER_HOST=0.0.0.0
-REVERB_SERVER_PORT=8080
-REVERB_TLS_CERT=
-REVERB_TLS_KEY=
-```
-
-3. Start the Reverb server (separate terminal)
-
-```bash
-php artisan reverb:start
-```
-
-> If you're using Herd / Valet secure domains, you can point `REVERB_TLS_CERT` and `REVERB_TLS_KEY` at the generated certificate + key to use `wss://` in local development.
-
 **🎉 That's it!** Visit `http://localhost:8000` to see the app in action.
 
 **🔗 External Resources**
@@ -198,10 +156,6 @@ php artisan reverb:start
 - [TanStack Table Documentation](https://tanstack.com/table/v8)
 - [FilePond Documentation](https://pqina.nl/filepond/)
 - [ApexCharts Documentation](https://apexcharts.com/docs/)
-
-## 🚀 Live Demo
-
-**[👀 View Live Demo](https://guacpanel.com)**
 
 ## Contributing
 

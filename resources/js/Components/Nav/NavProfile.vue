@@ -36,14 +36,6 @@ const menuItems = [
     permissions: ['manage-settings'],
   },
   { type: 'separator' },
-
-  {
-    type: 'link',
-    label: 'Documentation',
-    icon: 'help',
-    href: route('documentation.index'),
-  },
-  { type: 'separator' },
   {
     type: 'link',
     label: 'Sign Out',
@@ -121,15 +113,10 @@ const navItemClass = (i = '', c = false) => {
 
 <template>
   <nav ref="menuWrapper" class="relative">
-    <button
-      id="user-menu-button"
-      type="button"
+    <button id="user-menu-button" type="button"
       class="group relative flex cursor-pointer items-center rounded-full text-sm uppercase focus:outline-none lg:rounded-md lg:p-1.5 lg:hover:bg-[var(--color-surface-muted)]"
-      :aria-expanded="menuOpen.toString()"
-      @click="toggleMenu">
-      <img
-        :src="avatarUrl"
-        :alt="`${safeUserName}'s avatar`"
+      :aria-expanded="menuOpen.toString()" @click="toggleMenu">
+      <img :src="avatarUrl" :alt="`${safeUserName}'s avatar`"
         class="size-5 rounded-full ring-2 ring-white dark:ring-gray-800" />
       <span
         class="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap capitalize opacity-0 transition-opacity group-hover:opacity-100"
@@ -139,36 +126,25 @@ const navItemClass = (i = '', c = false) => {
         }">
         Profile
       </span>
-      <svg
-        class="ml-1 hidden h-3.5 w-3.5 text-gray-400 lg:block dark:text-gray-400"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor">
-        <path
-          fill-rule="evenodd"
+      <svg class="ml-1 hidden h-3.5 w-3.5 text-gray-400 lg:block dark:text-gray-400" xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
           d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
           clip-rule="evenodd" />
       </svg>
     </button>
 
-    <menu
-      v-show="menuOpen"
+    <menu v-show="menuOpen"
       class="ring-opacity-5 absolute right-0 z-10 mt-2 w-64 origin-top-right transform rounded-xl bg-white shadow-md ring-1 ring-gray-300 transition-all duration-200 ease-in-out dark:bg-gray-800 dark:ring-gray-700"
       :class="menuOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'">
-      <li
-        class="rounded-t-xl border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 pt-3 pb-2.5">
+      <li class="rounded-t-xl border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 pt-3 pb-2.5">
         <div class="flex justify-between">
-          <div
-            class="mr-1.5 cursor-default overflow-auto text-sm font-medium text-[var(--color-text)]">
+          <div class="mr-1.5 cursor-default overflow-auto text-sm font-medium text-[var(--color-text)]">
             {{ safeUserName }}
           </div>
-          <p
-            v-if="primaryRole"
+          <p v-if="primaryRole"
             class="-mt-0.25 -mr-0.25 inline-flex cursor-default items-center rounded-md bg-[var(--color-surface-muted)] px-2 py-1 text-xs font-medium text-[var(--color-text-muted)] uppercase ring-1 ring-[var(--color-border)] ring-inset">
-            <svg
-              class="mr-1 h-3 w-3 text-[var(--color-text-muted)]"
-              viewBox="0 0 24 24"
-              fill="currentColor"
+            <svg class="mr-1 h-3 w-3 text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="currentColor"
               v-html="icons.check" />
             {{ primaryRole }}
           </p>
@@ -176,38 +152,22 @@ const navItemClass = (i = '', c = false) => {
       </li>
 
       <template v-for="(item, index) in menuItems" :key="index">
-        <li
-          v-if="item.type === 'separator'"
-          role="separator"
-          class="mx-4 border-t border-[var(--color-border)]" />
+        <li v-if="item.type === 'separator'" role="separator" class="mx-4 border-t border-[var(--color-border)]" />
 
         <li v-else-if="item.type === 'link' && hasPermission(item.permissions?.[0])">
-          <Link
-            :href="item.href"
-            :method="item.method"
-            :as="item.as"
-            :target="item.target"
+          <Link :href="item.href" :method="item.method" :as="item.as" :target="item.target"
             class="group flex items-center px-3.5 py-2.5 text-sm text-[var(--color-text)] transition-colors duration-200 hover:bg-[var(--color-surface-muted)]"
-            :class="navItemClass(item.class, isCurrentRoute(item.href))"
-            @click="closeMenu">
-            <svg
-              class="mr-3 h-5 w-5 text-[var(--color-text-muted)]"
-              :class="[
-                item.label === 'Sign Out' ? '' : 'group-hover:text-[var(--primary-color)]',
-                item.label === 'Sign Out'
-                  ? ''
-                  : isCurrentRoute(item.href)
-                    ? 'text-[var(--primary-color)]'
-                    : '',
-                item.iconClass,
-              ]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              v-html="icons[item.icon]" />
-            <span
-              :class="item.label === 'Sign Out' ? '' : 'group-hover:text-[var(--primary-color)]'">
+            :class="navItemClass(item.class, isCurrentRoute(item.href))" @click="closeMenu">
+            <svg class="mr-3 h-5 w-5 text-[var(--color-text-muted)]" :class="[
+              item.label === 'Sign Out' ? '' : 'group-hover:text-[var(--primary-color)]',
+              item.label === 'Sign Out'
+                ? ''
+                : isCurrentRoute(item.href)
+                  ? 'text-[var(--primary-color)]'
+                  : '',
+              item.iconClass,
+            ]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" v-html="icons[item.icon]" />
+            <span :class="item.label === 'Sign Out' ? '' : 'group-hover:text-[var(--primary-color)]'">
               {{ item.label }}
             </span>
           </Link>

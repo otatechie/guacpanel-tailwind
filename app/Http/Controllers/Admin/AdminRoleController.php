@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableFilterService;
 use App\Services\DataTablePaginationService;
 use App\Traits\HasProtectedRoles;
 use Illuminate\Http\RedirectResponse;
@@ -16,18 +17,32 @@ class AdminRoleController extends Controller
 {
     use HasProtectedRoles;
 
-    public function __construct(private DataTablePaginationService $pagination)
-    {
+    public function __construct(
+        private DataTablePaginationService $pagination,
+        private DataTableFilterService $filter
+    ) {
         $this->middleware(['auth', 'permission:manage-roles']);
     }
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
+        $query = Role::query()->with('permissions');
 
-        $roles = Role::query()
-            ->with('permissions')
-            ->latest()
+        // Apply search
+        $searchableColumns = ['name', 'description', 'permissions.name'];
+        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+
+        // Apply sorting
+        $sortConfig = [
+            'name' => [],
+            'created_at' => [],
+        ];
+        $query = $this->filter->applySorting($query, $request, $sortConfig);
+
+        $filteredTotal = $query->count();
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'roles', $filteredTotal);
+
+        $roles = $query
             ->paginate($perPage)
             ->withQueryString()
             ->through(function ($role) {
@@ -62,7 +77,7 @@ class AdminRoleController extends Controller
                 'max:255',
                 'min:3',
                 Rule::unique('roles', 'name'),
-                'not_in:'.$this->getProtectedRolesForValidation(),
+                'not_in:' . $this->getProtectedRolesForValidation(),
                 'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/', // Must start with a letter
             ],
             'description'   => ['nullable', 'string', 'max:255'],
@@ -86,7 +101,7 @@ class AdminRoleController extends Controller
     {
         if ($this->isProtectedRole($role->name)) {
             return redirect()->route('admin.role.index')
-                ->with('error', 'Cannot modify system role: '.$role->name);
+                ->with('error', 'Cannot modify system role: ' . $role->name);
         }
 
         $validatedData = $request->validate([
@@ -96,7 +111,7 @@ class AdminRoleController extends Controller
                 'max:255',
                 'min:3',
                 Rule::unique('roles', 'name')->ignore($role->id),
-                'not_in:'.$this->getProtectedRolesForValidation(),
+                'not_in:' . $this->getProtectedRolesForValidation(),
                 'regex:/^[a-zA-Z][a-zA-Z0-9\s\_\-]*$/', // Must start with a letter
             ],
             'description'   => ['nullable', 'string', 'max:255'],
@@ -122,7 +137,7 @@ class AdminRoleController extends Controller
 
         if ($this->isProtectedRole($role->name)) {
             return redirect()->route('admin.role.index')
-                ->with('error', 'Cannot delete system role: '.$role->name);
+                ->with('error', 'Cannot delete system role: ' . $role->name);
         }
 
         $role->delete();

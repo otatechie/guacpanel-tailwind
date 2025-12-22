@@ -6,7 +6,6 @@ import NavProfile from '@js/Components/Nav/NavProfile.vue'
 import Notification from '@js/Components/Notifications/Notification.vue'
 import DemoNotifications from '@js/Components/Notifications/DemoNotifications.vue'
 import FlashMessage from '@js/Components/Notifications/FlashMessage.vue'
-import Footer from '@js/Shared/Public/Footer.vue'
 import Logo from '@js/Components/Common/Logo.vue'
 import Search from '@js/Components/Typesense/Search.vue'
 import ColorThemeSwitcher from '@js/Components/Nav/ColorThemeSwitcher.vue'
@@ -260,7 +259,7 @@ onUnmounted(() => {
         </article>
       </main>
 
-      <Footer />
+
     </div>
   </div>
 </template>

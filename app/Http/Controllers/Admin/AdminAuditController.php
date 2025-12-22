@@ -3,27 +3,43 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\DataTableFilterService;
 use App\Services\DataTablePaginationService;
 use Illuminate\Http\Request;
 use OwenIt\Auditing\Models\Audit;
 
 class AdminAuditController extends Controller
 {
-    public function __construct(private DataTablePaginationService $pagination)
-    {
+    public function __construct(
+        private DataTablePaginationService $pagination,
+        private DataTableFilterService $filter
+    ) {
         $this->middleware('permission:view-audits');
     }
 
     public function index(Request $request)
     {
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request);
-
-        $audits = Audit::query()
+        $query = Audit::query()
             ->select('id', 'created_at', 'event', 'auditable_type', 'user_type', 'user_id')
-            ->with(['user' => function ($query) {
-                $query->select('id', 'name');
-            }])
-            ->latest()
+            ->with(['user' => function ($q) {
+                $q->select('id', 'name');
+            }]);
+
+        // Apply search
+        $searchableColumns = ['event', 'auditable_type', 'user.name'];
+        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+
+        // Apply sorting
+        $sortConfig = [
+            'event' => [],
+            'created_at' => [],
+        ];
+        $query = $this->filter->applySorting($query, $request, $sortConfig);
+
+        $filteredTotal = $query->count();
+        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'audits', $filteredTotal);
+
+        $audits = $query
             ->paginate($perPage)
             ->withQueryString()
             ->through(function ($audit) {
