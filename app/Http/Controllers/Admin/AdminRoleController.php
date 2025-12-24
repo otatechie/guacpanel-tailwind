@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\DataTableFilterService;
-use App\Services\DataTablePaginationService;
+use App\Services\DataTableService;
 use App\Traits\HasProtectedRoles;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,55 +17,49 @@ class AdminRoleController extends Controller
     use HasProtectedRoles;
 
     public function __construct(
-        private DataTablePaginationService $pagination,
-        private DataTableFilterService $filter
+        private DataTableService $dataTable
     ) {
         $this->middleware(['auth', 'permission:manage-roles']);
     }
 
+
     public function index(Request $request)
     {
-        $query = Role::query()->with('permissions');
-
-        // Apply search
-        $searchableColumns = ['name', 'description', 'permissions.name'];
-        $query = $this->filter->applySearch($query, $request, $searchableColumns);
-
-        // Apply sorting
-        $sortConfig = [
-            'name' => [],
-            'created_at' => [],
-        ];
-        $query = $this->filter->applySorting($query, $request, $sortConfig);
-
-        $filteredTotal = $query->count();
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'roles', $filteredTotal);
-
-        $roles = $query
-            ->paginate($perPage)
-            ->withQueryString()
-            ->through(function ($role) {
-                return [
-                    'id'           => $role->id,
-                    'name'         => $role->name,
-                    'description'  => $role->description,
-                    'created_at'   => $role->created_at?->diffForHumans(),
-                    'is_protected' => $this->isProtectedRole($role->name),
-                    'permissions'  => $role->permissions->map(function ($permission) {
-                        return [
-                            'id'   => $permission->id,
-                            'name' => $permission->name,
-                        ];
-                    }),
-                ];
-            });
+        $result = $this->dataTable->process(
+            query: Role::query()->with('permissions'),
+            request: $request,
+            config: [
+                'searchable' => ['name', 'description', 'permissions.name'],
+                'sortable' => [
+                    'name' => ['type' => 'simple'],
+                    'created_at' => ['type' => 'simple'],
+                ],
+                'resource' => 'roles',
+                'transform' => function ($role) {
+                    return [
+                        'id'           => $role->id,
+                        'name'         => $role->name,
+                        'description'  => $role->description,
+                        'created_at'   => $role->created_at?->diffForHumans(),
+                        'is_protected' => $this->isProtectedRole($role->name),
+                        'permissions'  => $role->permissions->map(function ($permission) {
+                            return [
+                                'id'   => $permission->id,
+                                'name' => $permission->name,
+                            ];
+                        }),
+                    ];
+                },
+            ]
+        );
 
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'roles'       => $roles,
+            'roles'       => $result['data'],
             'permissions' => Permission::all(),
-            'filters'     => $this->pagination->buildFilters($request),
+            'filters'     => $result['filters'],
         ]);
     }
+
 
     public function store(Request $request): RedirectResponse
     {
@@ -96,6 +89,7 @@ class AdminRoleController extends Controller
 
         return redirect()->route('admin.role.index')->with('success', 'Role created successfully.');
     }
+
 
     public function update(Request $request, Role $role): RedirectResponse
     {
@@ -130,6 +124,7 @@ class AdminRoleController extends Controller
 
         return redirect()->route('admin.role.index')->with('success', 'Role updated successfully.');
     }
+
 
     public function destroy(string $id): RedirectResponse
     {

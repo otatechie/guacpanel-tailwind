@@ -174,20 +174,11 @@ watch(
 </script>
 
 <template>
-  <div
-    v-if="alert.visible"
-    :id="`toast-${alert.type}`"
-    role="alert"
-    aria-live="polite"
-    class="fixed top-4 right-4 z-[60] flex items-center justify-center rounded-lg px-5 py-3 shadow-md"
+  <div v-if="alert.visible" :id="`toast-${alert.type}`" role="alert" aria-live="polite"
+    class="fixed top-4 right-4 z-80 flex items-center justify-center rounded-lg px-5 py-3 shadow-md"
     :class="[alert.bgColor, alert.textColor]">
-    <div
-      :class="`inline-flex h-8 w-8 flex-shrink-0 items-center justify-center ${alert.iconColor} rounded-lg`">
-      <svg
-        class="h-5 w-5"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
+    <div :class="`inline-flex h-8 w-8 flex-shrink-0 items-center justify-center ${alert.iconColor} rounded-lg`">
+      <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
         viewBox="0 0 20 20">
         <path :d="alert.iconPath" />
       </svg>
@@ -199,22 +190,11 @@ watch(
       <p class="mt-1 text-[var(--color-text)]" v-html="alert.message"></p>
     </div>
 
-    <button
-      type="button"
+    <button type="button"
       class="relative -top-4 -right-2 -mx-1.5 -my-1.5 ml-auto inline-flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--color-surface)] p-1 text-[var(--color-text-muted)] hover:cursor-pointer hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:ring-2 focus:ring-[var(--color-border)]"
-      :aria-label="`Close ${alert.type} message`"
-      @click="closeAlert">
-      <svg
-        class="h-3 w-3"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 14 14">
-        <path
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
+      :aria-label="`Close ${alert.type} message`" @click="closeAlert">
+      <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
       </svg>
     </button>

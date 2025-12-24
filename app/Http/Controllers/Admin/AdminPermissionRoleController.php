@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\DataTablePaginationService;
+use App\Services\DataTableService;
 use App\Traits\HasProtectedPermission;
 use App\Traits\HasProtectedRoles;
 use Illuminate\Http\Request;
@@ -17,20 +17,17 @@ class AdminPermissionRoleController extends Controller
     use HasProtectedRoles;
     use HasProtectedPermission;
 
-    public function __construct(private DataTablePaginationService $pagination)
+    public function __construct(private DataTableService $dataTable)
     {
         $this->middleware('permission:view-permissions-roles');
     }
 
+
     public function index(Request $request)
     {
-        // $perPage = $this->pagination->resolvePerPageWithDefaults($request);
-        $perPage = 10000000; // Just get them all so can fully update a role.
-
         $permissions = Permission::query()
-            ->paginate($perPage)
-            ->withQueryString()
-            ->through(function ($permission) {
+            ->get()
+            ->map(function ($permission) {
                 return [
                     'id'           => $permission->id,
                     'name'         => $permission->name,
@@ -45,12 +42,12 @@ class AdminPermissionRoleController extends Controller
 
         return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
             'permissions'          => $permissions,
-            'permissionsList'      => $permissions->items(),
+            'permissionsList'      => $permissions->toArray(),
             'roles'                => $roles,
             'users'                => $users,
             'protectedRoles'       => $this->getProtectedRoles(),
             'protectedPermissions' => $this->getProtectedPermissions(),
-            'filters'              => $this->pagination->buildFilters($request),
+            'filters'              => $this->dataTable->buildFilters($request),
         ]);
     }
 }

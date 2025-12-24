@@ -13,6 +13,7 @@ class AdminUsersVerificationController extends Controller
         $this->middleware('permission:edit-users');
     }
 
+
     public function toggle(Request $request, User $user)
     {
         $user->update([
@@ -21,8 +22,9 @@ class AdminUsersVerificationController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'User '.($user->email_verified_at ? 'Verified' : 'Un-Verified'));
+            ->with('success', 'User ' . ($user->email_verified_at ? 'Verified' : 'Un-Verified'));
     }
+
 
     public function send(Request $request, User $user)
     {
@@ -30,6 +32,6 @@ class AdminUsersVerificationController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Verification Email Sent to '.$user->email);
+            ->with('success', 'Verification Email Sent to ' . $user->email);
     }
 }

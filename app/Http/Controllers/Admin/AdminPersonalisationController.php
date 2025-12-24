@@ -18,6 +18,7 @@ class AdminPersonalisationController extends Controller
         $this->middleware('permission:view-personalisation');
     }
 
+
     public function index()
     {
         $personalisation = $this->getPersonalisations();
@@ -26,6 +27,7 @@ class AdminPersonalisationController extends Controller
             'personalisation' => $personalisation,
         ]);
     }
+
 
     public function updateInfo(Request $request)
     {
@@ -43,6 +45,7 @@ class AdminPersonalisationController extends Controller
         return redirect()->back()->with('success', __('notifications.admin.settings_updated_successfully'));
     }
 
+
     public function upload(Request $request)
     {
         $this->authorize('upload-personalisation-files');
@@ -57,7 +60,7 @@ class AdminPersonalisationController extends Controller
             $field = $request->hasFile('app_logo') ? 'app_logo' : ($request->hasFile('app_logo_dark') ? 'app_logo_dark' : 'favicon');
 
             $file = $request->file($field);
-            $fileName = time().'_'.$file->getClientOriginalName();
+            $fileName = time() . '_' . $file->getClientOriginalName();
 
             $path = $request->file($field)->storeAs(
                 'personalisation',
@@ -80,6 +83,7 @@ class AdminPersonalisationController extends Controller
 
         return response()->json(['error' => __('notifications.errors.no_file_uploaded')], 400);
     }
+
 
     public function delete(Request $request)
     {

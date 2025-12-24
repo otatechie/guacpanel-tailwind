@@ -9,8 +9,7 @@ use App\Http\Requests\Admin\Notifications\StoreAdminAppNotificationRequest;
 use App\Http\Requests\Admin\Notifications\UpdateAdminAppNotificationRequest;
 use App\Models\AppNotification;
 use App\Models\User;
-use App\Services\DataTableFilterService;
-use App\Services\DataTablePaginationService;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -18,73 +17,67 @@ use Inertia\Inertia;
 class AdminAppNotificationsController extends Controller
 {
     public function __construct(
-        private DataTablePaginationService $pagination,
-        private DataTableFilterService $filter
+        private DataTableService $dataTable
     ) {
         $this->middleware('permission:manage-notifications');
     }
 
+
     public function index(Request $request)
     {
-        $query = AppNotification::query()
-            ->select([
-                'id',
-                'user_id',
-                'scope',
-                'type',
-                'title',
-                'message',
-                'scheduled_on',
-                'auto_expire_on',
-                'sent_as_scheduled',
-                'created_at',
-            ])
-            ->withCount([
-                'reads as read_count' => function ($q) {
-                    $q->whereNotNull('read_at');
+        $result = $this->dataTable->process(
+            query: AppNotification::query()
+                ->select([
+                    'id',
+                    'user_id',
+                    'scope',
+                    'type',
+                    'title',
+                    'message',
+                    'scheduled_on',
+                    'auto_expire_on',
+                    'sent_as_scheduled',
+                    'created_at',
+                ])
+                ->withCount([
+                    'reads as read_count' => function ($q) {
+                        $q->whereNotNull('read_at');
+                    },
+                    'reads as dismissed_count' => function ($q) {
+                        $q->whereNotNull('dismissed_at');
+                    },
+                    'reads as deleted_count' => function ($q) {
+                        $q->whereNotNull('u_del_notif_at');
+                    },
+                ])
+                ->with(['user:id,name,email']),
+            request: $request,
+            config: [
+                'searchable' => ['title', 'message', 'user.name', 'user.email'],
+                'sortable' => [
+                    'title' => ['type' => 'simple'],
+                    'type' => ['type' => 'simple'],
+                    'created_at' => ['type' => 'simple'],
+                ],
+                'resource' => 'notifications',
+                'transform' => function ($item) {
+                    $item->created_at_diff = $item->created_at?->diffForHumans();
+                    $item->scheduled_on_diff = $item->scheduled_on?->diffForHumans();
+                    $item->auto_expire_on_diff = $item->auto_expire_on?->diffForHumans();
+                    $item->username = $item->user?->name;
+                    $item->user_email = $item->user?->email;
+
+                    return $item;
                 },
-                'reads as dismissed_count' => function ($q) {
-                    $q->whereNotNull('dismissed_at');
-                },
-                'reads as deleted_count' => function ($q) {
-                    $q->whereNotNull('u_del_notif_at');
-                },
-            ])
-            ->with(['user:id,name,email']);
-
-        // Apply search
-        $searchableColumns = ['title', 'message', 'user.name', 'user.email'];
-        $query = $this->filter->applySearch($query, $request, $searchableColumns);
-
-        // Apply sorting
-        $sortConfig = [
-            'title' => [],
-            'type' => [],
-            'created_at' => [],
-        ];
-        $query = $this->filter->applySorting($query, $request, $sortConfig);
-
-        $filteredTotal = $query->count();
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'notifications', $filteredTotal);
-
-        $notifications = $query
-            ->paginate($perPage)
-            ->withQueryString()
-            ->through(function ($item) {
-                $item->created_at_diff = $item->created_at?->diffForHumans();
-                $item->scheduled_on_diff = $item->scheduled_on?->diffForHumans();
-                $item->auto_expire_on_diff = $item->auto_expire_on?->diffForHumans();
-                $item->username = $item->user?->name;
-                $item->user_email = $item->user?->email;
-
-                return $item;
-            });
+            ]
+        );
 
         return Inertia::render('Admin/Notifications/AdminNotificationsIndex', [
-            'notifications' => $notifications,
-            'filters'       => $this->pagination->buildFilters($request),
+            'notifications' => $result['data'],
+            'filters'       => $result['filters'],
         ]);
     }
+
 
     public function create()
     {
@@ -98,6 +91,7 @@ class AdminAppNotificationsController extends Controller
             'users' => $users,
         ]);
     }
+
 
     public function store(StoreAdminAppNotificationRequest $request)
     {
@@ -124,13 +118,14 @@ class AdminAppNotificationsController extends Controller
             'sent_as_scheduled' => false,
         ]);
 
-        if (empty($scheduledOn) || $scheduledOn->isPast() || $scheduledOn->isNow()) {
+        if (empty($scheduledOn) || $scheduledOn->isPast() || $scheduledOn->lessThanOrEqualTo(now())) {
             event(new AppNotificationCreated($notification));
         }
 
         return redirect()->route('admin.notifications.index')
             ->with('success', 'Notification created.');
     }
+
 
     public function edit(string $id)
     {
@@ -147,6 +142,7 @@ class AdminAppNotificationsController extends Controller
             'users'        => $users,
         ]);
     }
+
 
     public function update(UpdateAdminAppNotificationRequest $request, string $id)
     {
@@ -180,6 +176,7 @@ class AdminAppNotificationsController extends Controller
             ->with('success', 'Notification updated.');
     }
 
+
     public function destroy(string $id)
     {
         $notification = AppNotification::query()->whereKey($id)->firstOrFail();
@@ -194,6 +191,7 @@ class AdminAppNotificationsController extends Controller
         return redirect()->route('admin.notifications.index')
             ->with('success', 'Notification deleted.');
     }
+
 
     public function bulkDestroy(Request $request)
     {
@@ -230,6 +228,7 @@ class AdminAppNotificationsController extends Controller
         return redirect()->route('admin.notifications.index')
             ->with('success', 'Notifications deleted.');
     }
+
 
     public function deleted(Request $request)
     {

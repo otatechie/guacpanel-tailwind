@@ -256,17 +256,15 @@ watch(
 </script>
 
 <template>
+
   <Head title="Users Management" />
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
     <div class="container-border">
-      <PageHeader
-        title="Users Management"
-        description="Manage system users and their access"
-        :breadcrumbs="[
-          { label: 'Dashboard', href: route('dashboard') },
-          { label: 'System Settings', href: route('admin.setting.index') },
-          { label: 'Users Management' },
-        ]">
+      <PageHeader title="Users Management" description="Manage system users and their access" :breadcrumbs="[
+        { label: 'Dashboard', href: route('dashboard') },
+        { label: 'System Settings', href: route('admin.setting.index') },
+        { label: 'Users Management' },
+      ]">
         <template #actions>
           <button @click="openCreateModal" class="btn btn-primary btn-sm">Add User</button>
         </template>
@@ -277,10 +275,7 @@ watch(
               {{ deletedUsers }} Deleted
               {{ deletedUsers == 1 ? 'User' : 'Users' }}
             </span>
-            <Link
-              v-if="deletedUsers"
-              :href="route('admin.user.deleted.index')"
-              class="btn btn-secondary btn-xs">
+            <Link v-if="deletedUsers" :href="route('admin.user.deleted.index')" class="btn btn-secondary btn-xs">
               View Deleted {{ deletedUsers == 1 ? 'User' : 'Users' }}
             </Link>
           </div>
@@ -288,25 +283,10 @@ watch(
       </PageHeader>
 
       <section class="p-6 dark:bg-gray-900">
-        <div
-          class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <DataTable
-            :data="users.data"
-            :columns="columns"
-            :loading="loading"
-            :pagination="pagination"
-            :search-fields="[
-              'name',
-              'email',
-              'email_verified_at',
-              'disable_account',
-              'created_at_formatted',
-              'restore_date_full',
-            ]"
-            empty-message="No users found"
-            empty-description="Users will appear here once created"
-            export-file-name="users"
-            @update:pagination="pagination = $event" />
+        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
+            empty-message="No users found" empty-description="Users will appear here once created"
+            export-file-name="users" @update:pagination="pagination = $event" />
         </div>
       </section>
     </div>
@@ -322,15 +302,11 @@ watch(
         <p class="text-sm text-gray-500 dark:text-gray-400">
           Are you sure you want to delete this user?
         </p>
-        <div
-          class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+        <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
           <div class="flex gap-2">
-            <svg
-              class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400"
-              fill="currentColor"
+            <svg class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400" fill="currentColor"
               viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
+              <path fill-rule="evenodd"
                 d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                 clip-rule="evenodd" />
             </svg>
@@ -340,8 +316,7 @@ watch(
             </p>
           </div>
         </div>
-        <div
-          v-if="userToDelete"
+        <div v-if="userToDelete"
           class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
           <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">User details:</h4>
           <dl class="space-y-1">
@@ -392,9 +367,7 @@ watch(
 
     <template #footer>
       <div class="flex justify-end gap-8">
-        <button
-          @click="closeModal"
-          type="button"
+        <button @click="closeModal" type="button"
           class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
           Cancel
         </button>
@@ -412,64 +385,31 @@ watch(
       <div class="w-full space-y-8">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />
-          <FormInput
-            v-model="form.email"
-            label="Email address"
-            type="email"
-            :error="form.errors.email"
-            name="email" />
-          <FormInput
-            v-model="form.password"
-            label="Password"
-            name="password"
-            id="password"
-            type="password"
-            required
-            :error="form.errors.password"
-            autocomplete="new-password" />
-          <FormInput
-            v-model="form.password_confirmation"
-            label="Confirm password"
-            name="password_confirmation"
-            id="password_confirmation"
-            type="password"
-            required
-            :error="form.errors.password_confirmation"
+          <FormInput v-model="form.email" label="Email address" type="email" :error="form.errors.email" name="email" />
+          <FormInput v-model="form.password" label="Password" name="password" id="password" type="password" required
+            :error="form.errors.password" autocomplete="new-password" />
+          <FormInput v-model="form.password_confirmation" label="Confirm password" name="password_confirmation"
+            id="password_confirmation" type="password" required :error="form.errors.password_confirmation"
             autocomplete="new-password" />
         </div>
         <div>
-          <FormSelect
-            v-model="form.role"
-            :options="props.roles?.data || []"
-            option-label="name"
-            option-value="id"
-            name="role"
-            label="Assigned role"
-            :error="form.errors.role" />
+          <FormSelect v-model="form.role" :options="props.roles?.data || []" option-label="name" option-value="id"
+            name="role" label="Assigned role" :error="form.errors.role" />
         </div>
         <div class="space-y-6">
-          <FormCheckbox
-            v-model="form.force_password_change"
-            label="Force Password Reset"
-            description="Require new password on next login"
-            :error="form.errors.force_password_change" />
+          <FormCheckbox v-model="form.force_password_change" label="Force Password Reset"
+            description="Require new password on next login" :error="form.errors.force_password_change" />
         </div>
       </div>
     </template>
 
     <template #footer>
       <div class="flex justify-end gap-8">
-        <button
-          @click="closeModal"
-          type="button"
+        <button @click="closeModal" type="button"
           class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
           Cancel
         </button>
-        <button
-          @click="createUser"
-          type="button"
-          class="btn btn-primary btn-sm"
-          :disabled="form.processing">
+        <button @click="createUser" type="button" class="btn btn-primary btn-sm" :disabled="form.processing">
           Create User
         </button>
       </div>

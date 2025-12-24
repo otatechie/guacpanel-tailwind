@@ -124,34 +124,23 @@ watch(
 </script>
 
 <template>
+
   <Head title="Login History" />
 
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="login-history">
     <div class="container-border">
-      <PageHeader
-        title="Login History"
-        description="View and monitor login history"
-        :breadcrumbs="[
-          { label: 'Dashboard', href: route('dashboard') },
-          { label: 'System Settings', href: route('admin.setting.index') },
-          { label: 'Login History' },
-        ]" />
+      <PageHeader title="Login History" description="View and monitor login history" :breadcrumbs="[
+        { label: 'Dashboard', href: route('dashboard') },
+        { label: 'System Settings', href: route('admin.setting.index') },
+        { label: 'Login History' },
+      ]" />
 
       <section class="bg-[var(--color-bg)] p-6">
-        <div
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <Datatable
-            :data="loginHistory.data"
-            :columns="columns"
-            :loading="loading"
-            :pagination="pagination"
-            :search-fields="['username', 'user_agent', 'login_at']"
-            empty-message="No login history records found"
-            empty-description="Login history will appear here"
-            export-file-name="login_history"
-            :bulk-delete-route="route('admin.login.history.bulk-destroy')"
-            @update:pagination="pagination = $event"
-            @bulk-delete="handleBulkDelete"></Datatable>
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <Datatable :data="loginHistory.data" :columns="columns" :loading="loading" :pagination="pagination"
+            empty-message="No login history records found" empty-description="Login history will appear here"
+            export-file-name="login_history" :bulk-delete-route="route('admin.login.history.bulk-destroy')"
+            @update:pagination="pagination = $event" @bulk-delete="handleBulkDelete"></Datatable>
         </div>
       </section>
     </div>

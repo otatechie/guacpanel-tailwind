@@ -169,32 +169,22 @@ watch(
 </script>
 
 <template>
+
   <Head title="Active Sessions" />
 
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="active-sessions">
     <div class="container-border">
-      <PageHeader
-        title="Active Sessions"
-        description="Manage system user sessions"
-        :breadcrumbs="[
-          { label: 'Dashboard', href: route('dashboard') },
-          { label: 'System Settings', href: route('admin.setting.index') },
-          { label: 'Session Management' },
-        ]" />
+      <PageHeader title="Active Sessions" description="Manage system user sessions" :breadcrumbs="[
+        { label: 'Dashboard', href: route('dashboard') },
+        { label: 'System Settings', href: route('admin.setting.index') },
+        { label: 'Session Management' },
+      ]" />
 
       <section class="bg-[var(--color-bg)] p-6">
-        <div
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <Datatable
-            :data="sessions.data"
-            :columns="columns"
-            :loading="loading"
-            :pagination="pagination"
-            :search-fields="['user.name', 'user.email', 'device_info.browser']"
-            empty-message="No active sessions found"
-            empty-description="Active sessions will appear here"
-            export-file-name="sessions"
-            @update:pagination="pagination = $event" />
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <Datatable :data="sessions.data" :columns="columns" :loading="loading" :pagination="pagination"
+            empty-message="No active sessions found" empty-description="Active sessions will appear here"
+            export-file-name="sessions" @update:pagination="pagination = $event" />
         </div>
       </section>
     </div>
@@ -211,8 +201,7 @@ watch(
         <p class="text-sm text-[var(--color-text-muted)]">
           Are you sure you want to terminate this session? The user will be logged out immediately.
         </p>
-        <div
-          v-if="selectedSession"
+        <div v-if="selectedSession"
           class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-muted)] p-4">
           <h4 class="mb-2 text-sm font-medium text-[var(--color-text)]">Session details:</h4>
           <dl class="space-y-1">
@@ -236,17 +225,12 @@ watch(
 
     <template #footer>
       <div class="flex justify-end gap-8">
-        <button
-          type="button"
+        <button type="button"
           class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
           @click="closeModal">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-danger btn-sm"
-          :disabled="form.processing"
-          @click="terminateSession">
+        <button type="button" class="btn btn-danger btn-sm" :disabled="form.processing" @click="terminateSession">
           Yes, terminate session
         </button>
       </div>
