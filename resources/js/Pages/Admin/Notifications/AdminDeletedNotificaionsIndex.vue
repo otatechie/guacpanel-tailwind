@@ -16,13 +16,12 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
+
   <Head title="Deleted Notifications" />
 
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="admin-notifications-deleted">
     <div class="container-border">
-      <PageHeader
-        title="Deleted Notifications"
-        description="Manage soft-deleted notifications (coming soon)"
+      <PageHeader title="Deleted Notifications" description="Manage soft-deleted notifications (coming soon)"
         :breadcrumbs="breadcrumbs">
         <template #actions>
           <Link :href="route('admin.notifications.index')" class="btn btn-secondary">Back</Link>
@@ -30,8 +29,7 @@ const breadcrumbs = computed(() => [
       </PageHeader>
 
       <section class="bg-[var(--color-bg)] p-6">
-        <div
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
           <p class="text-sm text-[var(--color-text-muted)]">
             This page will be implemented next for managing soft deleted notifications. We may not
             need it since we have a job to clean them up.

@@ -79,27 +79,18 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
+
   <Head title="Edit Notification" />
 
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="admin-notifications-edit">
     <div class="container-border">
-      <PageHeader
-        title="Edit Notification"
-        description="Update an existing app notification"
+      <PageHeader title="Edit Notification" description="Update an existing app notification"
         :breadcrumbs="breadcrumbs">
         <template #actions>
           <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="mr-1 size-3.5">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="mr-1 size-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
             </svg>
 
             Back
@@ -108,82 +99,47 @@ const breadcrumbs = computed(() => [
       </PageHeader>
 
       <section class="bg-[var(--color-bg)] p-6">
-        <div
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
           <form class="space-y-6" @submit.prevent="submit">
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormSelect
-                v-model="form.scope"
-                label="Scope"
-                :options="scopeOptions"
-                :error="form.errors.scope" />
+              <FormSelect v-model="form.scope" label="Scope" :options="scopeOptions" :error="form.errors.scope" />
 
-              <FormSelect
-                v-model="form.type"
-                label="Type"
-                :options="typeOptions"
-                :error="form.errors.type" />
+              <FormSelect v-model="form.type" label="Type" :options="typeOptions" :error="form.errors.type" />
 
-              <FormSelect
-                v-if="form.scope === 'user'"
-                v-model="form.user_id"
-                label="User"
-                placeholder="Select user"
-                :options="userOptions"
-                :error="form.errors.user_id" />
+              <FormSelect v-if="form.scope === 'user'" v-model="form.user_id" label="User" placeholder="Select user"
+                :options="userOptions" :error="form.errors.user_id" />
 
               <div v-else class="hidden md:block"></div>
 
               <FormInput v-model="form.title" label="Title" :error="form.errors.title" required />
 
-              <FormInput
-                v-model="form.scheduled_on"
-                label="Scheduled On"
-                type="datetime-local"
-                :error="form.errors.scheduled_on"
-                help="Optional. Leave blank to send immediately." />
+              <FormInput v-model="form.scheduled_on" label="Scheduled On" type="datetime-local"
+                :error="form.errors.scheduled_on" help="Optional. Leave blank to send immediately." />
 
-              <FormInput
-                v-model="form.auto_expire_on"
-                label="Auto Expire On"
-                type="datetime-local"
-                :error="form.errors.auto_expire_on"
-                help="Optional." />
+              <FormInput v-model="form.auto_expire_on" label="Auto Expire On" type="datetime-local"
+                :error="form.errors.auto_expire_on" help="Optional." />
             </div>
 
-            <FormTextarea
-              v-model="form.message"
-              label="Message"
-              :error="form.errors.message"
-              :rows="4"
-              required />
+            <FormTextarea v-model="form.message" label="Message" :error="form.errors.message" :rows="4" required />
 
             <div class="flex items-center justify-end gap-3">
               <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="mr-1 size-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="mr-1 size-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
                 Cancel
               </Link>
-              <button type="submit" class="btn btn-primary btn-md" :disabled="form.processing">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="mr-1 size-3.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                </svg>
+              <div class="flex items-center justify-end gap-8">
+                <button type="submit" class="btn btn-primary btn-md" :disabled="form.processing">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="mr-1 size-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
 
-                Save
-              </button>
+                  Save
+                </button>
+              </div>
             </div>
           </form>
         </div>

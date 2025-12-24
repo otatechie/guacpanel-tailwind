@@ -53,13 +53,13 @@ const columns = [
           ),
           permission.is_protected
             ? h(
-                'span',
-                {
-                  class:
-                    'inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-                },
-                'System Permission'
-              )
+              'span',
+              {
+                class:
+                  'inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+              },
+              'System Permission'
+            )
             : null,
         ]),
         permission.description
@@ -78,78 +78,78 @@ const columns = [
         { class: 'flex items-center gap-2' },
         !permission.is_protected
           ? [
-              h('li', [
-                h(
-                  'button',
-                  {
-                    type: 'button',
-                    onClick: () => editPermission(permission),
-                    class:
-                      'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                    title: 'Edit permission',
-                  },
-                  [
-                    h('span', { class: 'sr-only' }, 'Edit permission'),
-                    h(
-                      'svg',
-                      {
-                        class: 'h-4 w-4',
-                        fill: 'none',
-                        viewBox: '0 0 24 24',
-                        stroke: 'currentColor',
-                        'aria-hidden': 'true',
-                      },
-                      [
-                        h('path', {
-                          'stroke-linecap': 'round',
-                          'stroke-linejoin': 'round',
-                          'stroke-width': '2',
-                          d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-                        }),
-                      ]
-                    ),
-                  ]
-                ),
-              ]),
-              h('li', [
-                h(
-                  'button',
-                  {
-                    type: 'button',
-                    onClick: () => confirmDeletePermission(permission),
-                    class:
-                      'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                    title: 'Delete permission',
-                  },
-                  [
-                    h('span', { class: 'sr-only' }, 'Delete permission'),
-                    h(
-                      'svg',
-                      {
-                        class: 'h-4 w-4',
-                        fill: 'none',
-                        viewBox: '0 0 24 24',
-                        stroke: 'currentColor',
-                        'aria-hidden': 'true',
-                      },
-                      [
-                        h('path', {
-                          'stroke-linecap': 'round',
-                          'stroke-linejoin': 'round',
-                          'stroke-width': '2',
-                          d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
-                        }),
-                      ]
-                    ),
-                  ]
-                ),
-              ]),
-            ]
+            h('li', [
+              h(
+                'button',
+                {
+                  type: 'button',
+                  onClick: () => editPermission(permission),
+                  class:
+                    'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
+                  title: 'Edit permission',
+                },
+                [
+                  h('span', { class: 'sr-only' }, 'Edit permission'),
+                  h(
+                    'svg',
+                    {
+                      class: 'h-4 w-4',
+                      fill: 'none',
+                      viewBox: '0 0 24 24',
+                      stroke: 'currentColor',
+                      'aria-hidden': 'true',
+                    },
+                    [
+                      h('path', {
+                        'stroke-linecap': 'round',
+                        'stroke-linejoin': 'round',
+                        'stroke-width': '2',
+                        d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
+                      }),
+                    ]
+                  ),
+                ]
+              ),
+            ]),
+            h('li', [
+              h(
+                'button',
+                {
+                  type: 'button',
+                  onClick: () => confirmDeletePermission(permission),
+                  class:
+                    'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
+                  title: 'Delete permission',
+                },
+                [
+                  h('span', { class: 'sr-only' }, 'Delete permission'),
+                  h(
+                    'svg',
+                    {
+                      class: 'h-4 w-4',
+                      fill: 'none',
+                      viewBox: '0 0 24 24',
+                      stroke: 'currentColor',
+                      'aria-hidden': 'true',
+                    },
+                    [
+                      h('path', {
+                        'stroke-linecap': 'round',
+                        'stroke-linejoin': 'round',
+                        'stroke-width': '2',
+                        d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
+                      }),
+                    ]
+                  ),
+                ]
+              ),
+            ]),
+          ]
           : [
-              h('li', [
-                h('span', { class: 'text-xs text-gray-400 dark:text-gray-500' }, 'Protected'),
-              ]),
-            ]
+            h('li', [
+              h('span', { class: 'text-xs text-gray-400 dark:text-gray-500' }, 'Protected'),
+            ]),
+          ]
       )
     },
   },
@@ -226,75 +226,40 @@ const handlePaginationUpdate = paginationData => {
 
 <template>
   <section class="space-y-4 p-6 sm:space-y-6">
-    <header
-      class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0">
+    <header class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0">
       <hgroup>
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Permissions</h2>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage individual permissions</p>
       </hgroup>
-      <button
-        type="button"
-        @click="showAddModal = true"
-        class="btn btn-primary btn-sm w-full sm:w-auto">
+      <button type="button" @click="showAddModal = true" class="btn btn-primary btn-sm w-full sm:w-auto">
         Add Permission
       </button>
     </header>
 
-    <Datatable
-      :data="permissions.data"
-      :columns="columns"
-      :pagination="pagination"
-      :loading="loading"
-      title="Permissions"
-      :enable-search="true"
-      :enable-export="true"
-      :search-fields="['name', 'description']"
-      empty-message="No permissions found"
-      empty-description="Add your first permission to get started"
-      export-file-name="permissions"
-      :page-size-options="[10, 25, 50, 'All']"
-      :default-page-size="10"
-      @update:pagination="handlePaginationUpdate">
+    <Datatable :data="permissions.data" :columns="columns" :pagination="pagination" :loading="loading"
+      title="Permissions" :enable-search="true" :enable-export="true" empty-message="No permissions found"
+      empty-description="Add your first permission to get started" export-file-name="permissions"
+      :page-size-options="[10, 25, 50, 'All']" :default-page-size="10" @update:pagination="handlePaginationUpdate">
       <template #mobile-actions="{ row }">
         <menu v-if="!row.is_protected" class="flex items-center justify-end gap-2">
           <li>
-            <button
-              type="button"
-              @click="editPermission(row)"
+            <button type="button" @click="editPermission(row)"
               class="cursor-pointer rounded-lg bg-blue-50 p-2 text-blue-500 transition-all duration-200 hover:scale-105 hover:bg-blue-100 hover:text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-300"
               title="Edit Permission">
               <span class="sr-only">Edit Permission</span>
-              <svg
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
             </button>
           </li>
           <li>
-            <button
-              type="button"
-              @click="confirmDeletePermission(row)"
+            <button type="button" @click="confirmDeletePermission(row)"
               class="cursor-pointer rounded-lg bg-red-50 p-2 text-red-500 transition-all duration-200 hover:scale-105 hover:bg-red-100 hover:text-red-600 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 dark:hover:text-red-300"
               title="Delete Permission">
               <span class="sr-only">Delete Permission</span>
-              <svg
-                class="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
@@ -311,52 +276,27 @@ const handlePaginationUpdate = paginationData => {
 
       <template #default>
         <form @submit.prevent="submitPermission" class="space-y-6">
-          <FormInput
-            label="Permission name"
-            v-model="form.name"
-            type="text"
-            :error="form.errors.name"
-            required
+          <FormInput label="Permission name" v-model="form.name" type="text" :error="form.errors.name" required
             placeholder="Enter permission name" />
-          <FormInput
-            label="Description"
-            v-model="form.description"
-            type="text"
-            :error="form.errors.description"
+          <FormInput label="Description" v-model="form.description" type="text" :error="form.errors.description"
             placeholder="Enter permission description (optional)" />
         </form>
       </template>
 
       <template #footer>
         <div class="flex justify-end gap-8">
-          <button
-            type="button"
+          <button type="button"
             class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
             @click="closeModal">
             Cancel
           </button>
-          <button
-            @click="submitPermission"
-            type="button"
-            class="btn btn-primary btn-sm"
-            :disabled="form.processing"
+          <button @click="submitPermission" type="button" class="btn btn-primary btn-sm" :disabled="form.processing"
             :aria-busy="form.processing">
-            <svg
-              v-if="form.processing"
-              class="h-4 w-4 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24">
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg v-if="form.processing" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
             {{
               form.processing ? 'Saving...' : editingPermission ? 'Save Changes' : 'Add Permission'
@@ -384,18 +324,12 @@ const handlePaginationUpdate = paginationData => {
 
       <template #footer>
         <div class="flex justify-end gap-8">
-          <button
-            @click="closeModal"
-            type="button"
+          <button @click="closeModal" type="button"
             class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
             :disabled="form.processing">
             Cancel
           </button>
-          <button
-            @click="deletePermission"
-            type="button"
-            class="btn btn-danger btn-sm"
-            :disabled="form.processing">
+          <button @click="deletePermission" type="button" class="btn btn-danger btn-sm" :disabled="form.processing">
             {{ form.processing ? 'Deleting...' : 'Yes, Delete Permission' }}
           </button>
         </div>

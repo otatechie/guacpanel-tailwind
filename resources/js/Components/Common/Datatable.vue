@@ -75,10 +75,6 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  searchFields: {
-    type: Array,
-    default: () => [],
-  },
   emptyMessage: {
     type: String,
     default: 'No data found',

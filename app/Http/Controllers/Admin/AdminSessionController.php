@@ -2,63 +2,58 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Inertia\Response;
+use App\Models\Session;
 use Jenssegers\Agent\Agent;
+use Illuminate\Http\Request;
+use App\Services\DataTableService;
+use App\Http\Controllers\Controller;
 
 class AdminSessionController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        private DataTableService $dataTable
+    ) {
         $this->middleware('permission:view-sessions');
     }
 
-    public function index(Request $request)
+
+    public function index(Request $request): Response
     {
         if (config('session.driver') !== 'database') {
-            return Inertia::render('Admin/IndexSessionPage', ['sessions' => []]);
+            return Inertia::render('Admin/IndexSessionPage', [
+                'sessions' => [],
+                'filters' => $this->dataTable->buildFilters($request),
+            ]);
         }
 
         $currentSessionId = request()->session()->getId();
 
-        $sessions = DB::table('sessions')
-            ->join('users', 'sessions.user_id', '=', 'users.id')
-            ->select([
-                'sessions.id',
-                'sessions.user_agent',
-                'sessions.last_activity',
-                'users.id as user_id',
-                'users.name',
-                'users.email',
-            ])
-            ->orderBy('sessions.last_activity', 'desc')
-            ->paginate($request->input('per_page', 10))
-            ->through(function ($session) use ($currentSessionId) {
-                $agent = new Agent();
-                $agent->setUserAgent($session->user_agent ?? '');
+        $result = $this->dataTable->process(
+            query: Session::query()
+                ->with('user:id,name,email')
+                ->select(['id', 'user_id', 'user_agent', 'last_activity']),
+            request: $request,
+            config: [
+                'searchable' => ['user.name', 'user.email'],
+                'sortable' => [
+                    'last_activity' => ['type' => 'simple'],
+                    'user.name' => ['type' => 'relationship', 'relation' => 'user', 'column' => 'name'],
+                    'user.email' => ['type' => 'relationship', 'relation' => 'user', 'column' => 'email'],
+                ],
+                'resource' => 'sessions',
+                'transform' => fn($session) => $this->transformSession($session, $currentSessionId),
+            ]
+        );
 
-                return [
-                    'id'   => $session->id,
-                    'user' => [
-                        'id'    => $session->user_id,
-                        'name'  => $session->name,
-                        'email' => $session->email,
-                    ],
-                    'device_info' => [
-                        'device'   => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
-                        'platform' => $agent->platform() ?: 'Unknown',
-                        'browser'  => $agent->browser() ?: 'Unknown',
-                    ],
-                    'last_active_diff' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
-                    'is_current'       => $session->id === $currentSessionId,
-                ];
-            });
-
-        return Inertia::render('Admin/IndexSessionPage', ['sessions' => $sessions]);
+        return Inertia::render('Admin/IndexSessionPage', [
+            'sessions' => $result['data'],
+            'filters' => $result['filters'],
+        ]);
     }
+
 
     public function destroy($sessionId)
     {
@@ -68,24 +63,47 @@ class AdminSessionController extends Controller
             return redirect()->back();
         }
 
-        DB::table('sessions')->where('id', $sessionId)->delete();
+        Session::where('id', $sessionId)->delete();
 
         session()->flash('success', 'Session terminated successfully.');
 
         return redirect()->back();
     }
 
+
     public function destroyAllForUser($userId)
     {
         $currentSessionId = request()->session()->getId();
 
-        DB::table('sessions')
-            ->where('user_id', $userId)
+        Session::where('user_id', $userId)
             ->where('id', '!=', $currentSessionId)
             ->delete();
 
         session()->flash('success', 'All sessions terminated successfully.');
 
         return redirect()->back();
+    }
+
+
+    private function transformSession(Session $session, string $currentSessionId): array
+    {
+        $agent = new Agent();
+        $agent->setUserAgent($session->user_agent ?? '');
+
+        return [
+            'id'   => $session->id,
+            'user' => [
+                'id'    => $session->user?->id,
+                'name'  => $session->user?->name,
+                'email' => $session->user?->email,
+            ],
+            'device_info' => [
+                'device'   => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+                'platform' => $agent->platform() ?: 'Unknown',
+                'browser'  => $agent->browser() ?: 'Unknown',
+            ],
+            'last_active_diff' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+            'is_current'       => $session->id === $currentSessionId,
+        ];
     }
 }

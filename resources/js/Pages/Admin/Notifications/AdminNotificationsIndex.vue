@@ -191,84 +191,84 @@ const ScopeCell = {
         [
           icon === 'user'
             ? h(
+              'svg',
+              {
+                class: 'size-3.5',
+                viewBox: '0 0 24 24',
+                fill: 'none',
+                stroke: 'currentColor',
+                'stroke-width': '1.5',
+                'stroke-linecap': 'round',
+                'stroke-linejoin': 'round',
+                'aria-hidden': 'true',
+              },
+              [
+                h('path', {
+                  d: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z',
+                }),
+                h('path', {
+                  d: 'M4.5 20.25a7.5 7.5 0 0115 0',
+                }),
+              ]
+            )
+            : icon === 'cpu'
+              ? h(
                 'svg',
                 {
                   class: 'size-3.5',
-                  viewBox: '0 0 24 24',
+                  xmlns: 'http://www.w3.org/2000/svg',
                   fill: 'none',
-                  stroke: 'currentColor',
+                  viewBox: '0 0 24 24',
                   'stroke-width': '1.5',
-                  'stroke-linecap': 'round',
-                  'stroke-linejoin': 'round',
+                  stroke: 'currentColor',
                   'aria-hidden': 'true',
                 },
                 [
                   h('path', {
-                    d: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z',
-                  }),
-                  h('path', {
-                    d: 'M4.5 20.25a7.5 7.5 0 0115 0',
+                    'stroke-linecap': 'round',
+                    'stroke-linejoin': 'round',
+                    d: 'M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z',
                   }),
                 ]
               )
-            : icon === 'cpu'
-              ? h(
+              : icon === 'release'
+                ? h(
                   'svg',
                   {
-                    class: 'size-3.5',
+                    xmlns: 'http://www.w3.org/2000/svg',
+                    viewBox: '0 0 288 288',
+                    fill: 'none',
+                    'aria-hidden': 'true',
+                    class: 'size-3.5 text-[var(--color-text-muted)]',
+                  },
+                  [
+                    h('path', {
+                      d: 'M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z',
+                      fill: 'currentColor',
+                      stroke: 'currentColor',
+                      'stroke-width': '2',
+                    }),
+                  ]
+                )
+                : h(
+                  'svg',
+                  {
                     xmlns: 'http://www.w3.org/2000/svg',
                     fill: 'none',
                     viewBox: '0 0 24 24',
                     'stroke-width': '1.5',
                     stroke: 'currentColor',
+                    class: 'size-3.5',
                     'aria-hidden': 'true',
                   },
                   [
                     h('path', {
                       'stroke-linecap': 'round',
                       'stroke-linejoin': 'round',
-                      d: 'M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z',
+                      d: 'M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z',
                     }),
                   ]
-                )
-              : icon === 'release'
-                ? h(
-                    'svg',
-                    {
-                      xmlns: 'http://www.w3.org/2000/svg',
-                      viewBox: '0 0 288 288',
-                      fill: 'none',
-                      'aria-hidden': 'true',
-                      class: 'size-3.5 text-[var(--color-text-muted)]',
-                    },
-                    [
-                      h('path', {
-                        d: 'M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z',
-                        fill: 'currentColor',
-                        stroke: 'currentColor',
-                        'stroke-width': '2',
-                      }),
-                    ]
-                  )
-                : h(
-                    'svg',
-                    {
-                      xmlns: 'http://www.w3.org/2000/svg',
-                      fill: 'none',
-                      viewBox: '0 0 24 24',
-                      'stroke-width': '1.5',
-                      stroke: 'currentColor',
-                      class: 'size-3.5',
-                      'aria-hidden': 'true',
-                    },
-                    [
-                      h('path', {
-                        'stroke-linecap': 'round',
-                        'stroke-linejoin': 'round',
-                        d: 'M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z',
-                      }),
-                    ]
-                  ),
+                ),
           h('span', { class: 'text-xxs font-medium uppercase' }, scopeLabel(p.row.scope)),
         ]
       )
@@ -544,23 +544,17 @@ const formatExportData = row => ({
 </script>
 
 <template>
+
   <Head title="Admin Notifications" />
 
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="admin-notifications">
     <div class="container-border">
-      <PageHeader
-        title="Admin Notifications"
-        description="Create and manage app notifications"
+      <PageHeader title="Admin Notifications" description="Create and manage app notifications"
         :breadcrumbs="breadcrumbs">
         <template #actions>
           <Link :href="route('admin.notifications.create')" class="btn btn-primary btn-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="mr-1 size-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="mr-1 size-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             Create Notification
@@ -571,34 +565,12 @@ const formatExportData = row => ({
       <section class="bg-[var(--color-bg)] p-6">
         <div
           class="notifications-data-table rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <Datatable
-            class="datatable-admin-notifications"
-            :data="notifications.data"
-            :columns="columns"
-            :loading="loading"
-            :pagination="pagination"
-            :filters="filters"
-            :page-size-options="pageSizeOptions"
-            :default-page-size="Number(pagination.per_page) || 25"
-            :search-fields="[
-              'title',
-              'message',
-              'scope',
-              'type',
-              'username',
-              'user_email',
-              'read_count',
-              'dismissed_count',
-              'deleted_count',
-            ]"
-            empty-message="No notifications found"
-            empty-description="Notifications you create will appear here"
-            export-file-name="admin_notifications"
-            route-name="admin.notifications.index"
-            :bulk-delete-route="route('admin.notifications.bulk-destroy')"
-            :format-export-data="formatExportData"
-            @bulk-delete="handleBulkDelete"
-            @navigate="onNavigate"
+          <Datatable class="datatable-admin-notifications" :data="notifications.data" :columns="columns"
+            :loading="loading" :pagination="pagination" :filters="filters" :page-size-options="pageSizeOptions"
+            :default-page-size="Number(pagination.per_page) || 25" empty-message="No notifications found"
+            empty-description="Notifications you create will appear here" export-file-name="admin_notifications"
+            route-name="admin.notifications.index" :bulk-delete-route="route('admin.notifications.bulk-destroy')"
+            :format-export-data="formatExportData" @bulk-delete="handleBulkDelete" @navigate="onNavigate"
             @update:pagination="pagination = $event" />
         </div>
       </section>
@@ -623,18 +595,12 @@ const formatExportData = row => ({
 
     <template #footer>
       <div class="flex items-center justify-end gap-8">
-        <button
-          type="button"
+        <button type="button"
           class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
-          :disabled="loading"
-          @click="closeDeleteModal">
+          :disabled="loading" @click="closeDeleteModal">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          :disabled="loading"
-          @click="destroyRow">
+        <button type="button" class="btn btn-primary btn-sm" :disabled="loading" @click="destroyRow">
           {{ loading ? 'Deleting...' : 'Yes, Delete' }}
         </button>
       </div>
@@ -658,18 +624,12 @@ const formatExportData = row => ({
 
     <template #footer>
       <div class="flex items-center justify-end gap-8">
-        <button
-          type="button"
+        <button type="button"
           class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
-          :disabled="loading"
-          @click="closeBulkDeleteModal">
+          :disabled="loading" @click="closeBulkDeleteModal">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          :disabled="loading"
-          @click="runBulkDelete">
+        <button type="button" class="btn btn-primary btn-sm" :disabled="loading" @click="runBulkDelete">
           {{ loading ? 'Deleting...' : 'Yes, Delete' }}
         </button>
       </div>

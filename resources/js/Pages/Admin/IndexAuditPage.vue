@@ -161,32 +161,22 @@ watch(
 </script>
 
 <template>
+
   <Head title="System Activity Audit Log" />
 
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="audit-log">
     <div class="container-border">
-      <PageHeader
-        title="Activity Audit Log"
-        description="View and monitor system activities"
-        :breadcrumbs="[
-          { label: 'Dashboard', href: route('dashboard') },
-          { label: 'System Settings', href: route('admin.setting.index') },
-          { label: 'System Activity' },
-        ]" />
+      <PageHeader title="Activity Audit Log" description="View and monitor system activities" :breadcrumbs="[
+        { label: 'Dashboard', href: route('dashboard') },
+        { label: 'System Settings', href: route('admin.setting.index') },
+        { label: 'System Activity' },
+      ]" />
 
       <section class="bg-[var(--color-bg)] p-6">
-        <div
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-          <Datatable
-            :data="audits.data"
-            :columns="columns"
-            :loading="loading"
-            :pagination="pagination"
-            :search-fields="['user.name', 'event', 'auditable_type', 'created_at']"
-            empty-message="No audit records found"
-            empty-description="System activities will appear here"
-            export-file-name="activity_log"
-            @update:pagination="pagination = $event" />
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
+          <Datatable :data="audits.data" :columns="columns" :loading="loading" :pagination="pagination"
+            empty-message="No audit records found" empty-description="System activities will appear here"
+            export-file-name="activity_log" @update:pagination="pagination = $event" />
         </div>
       </section>
     </div>

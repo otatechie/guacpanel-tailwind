@@ -287,18 +287,16 @@ watch(
 </script>
 
 <template>
+
   <Head title="Deleted Users Management" />
   <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
     <div class="container-border">
-      <PageHeader
-        title="Deleted Users Management"
-        description="Manage system deleted users"
-        :breadcrumbs="[
-          { label: 'Dashboard', href: route('dashboard') },
-          { label: 'System Settings', href: route('admin.setting.index') },
-          { label: 'Users Management', href: route('admin.user.index') },
-          { label: 'Deleted Users' },
-        ]">
+      <PageHeader title="Deleted Users Management" description="Manage system deleted users" :breadcrumbs="[
+        { label: 'Dashboard', href: route('dashboard') },
+        { label: 'System Settings', href: route('admin.setting.index') },
+        { label: 'Users Management', href: route('admin.user.index') },
+        { label: 'Deleted Users' },
+      ]">
         <template #actions>
           <button @click="openDestroyAllUsersModal" class="btn btn-danger btn-sm">
             Destroy All
@@ -307,26 +305,10 @@ watch(
       </PageHeader>
 
       <section class="p-6 dark:bg-gray-900">
-        <div
-          class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <DataTable
-            :data="users.data"
-            :columns="columns"
-            :loading="loading"
-            :pagination="pagination"
-            :search-fields="[
-              'name',
-              'email',
-              'email_verified_at',
-              'disable_account',
-              'created_at_formatted',
-              'deleted_at_formatted',
-              'auto_destroy',
-            ]"
-            empty-message="No deleted users found"
-            empty-description="Users will appear here once deleted"
-            export-file-name="deleted_users"
-            @update:pagination="pagination = $event" />
+        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+          <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
+            empty-message="No deleted users found" empty-description="Users will appear here once deleted"
+            export-file-name="deleted_users" @update:pagination="pagination = $event" />
         </div>
       </section>
     </div>
@@ -343,15 +325,11 @@ watch(
           Are you sure you want to permanently destroy this user?
         </p>
         <p class="text-sm text-red-400">This action cannot be undone.</p>
-        <div
-          class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+        <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
           <div class="flex items-center gap-2">
-            <svg
-              class="h-10 w-10 flex-shrink-0 text-amber-600 dark:text-amber-400"
-              fill="currentColor"
+            <svg class="h-10 w-10 flex-shrink-0 text-amber-600 dark:text-amber-400" fill="currentColor"
               viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
+              <path fill-rule="evenodd"
                 d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                 clip-rule="evenodd" />
             </svg>
@@ -361,8 +339,7 @@ watch(
             </p>
           </div>
         </div>
-        <div
-          v-if="userToDelete"
+        <div v-if="userToDelete"
           class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
           <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">User details:</h4>
           <dl class="space-y-1">
@@ -427,9 +404,7 @@ watch(
 
     <template #footer>
       <div class="flex justify-end gap-8">
-        <button
-          @click="closeModal"
-          type="button"
+        <button @click="closeModal" type="button"
           class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
           Cancel
         </button>
@@ -447,16 +422,9 @@ watch(
       <div class="w-full space-y-8">
         <div class="mb-4 flex flex-col text-center">
           <div class="my-4 flex justify-center text-red-600">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-20">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-20">
+              <path stroke-linecap="round" stroke-linejoin="round"
                 d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
             </svg>
           </div>
@@ -464,9 +432,7 @@ watch(
           <h2 class="text-red-200">This action cannot be undone</h2>
         </div>
         <div class="mb-3 flex justify-center space-y-4">
-          <FormCheckbox
-            v-model="form.confirm_destroy_all"
-            label="I understand this action cannot be undone"
+          <FormCheckbox v-model="form.confirm_destroy_all" label="I understand this action cannot be undone"
             description="This will destroy all deleted users and this action cannot be undone."
             :error="form.errors.confirm_destroy_all" />
         </div>
@@ -475,17 +441,11 @@ watch(
 
     <template #footer>
       <div class="flex justify-end gap-8">
-        <button
-          @click="closeModal"
-          type="button"
+        <button @click="closeModal" type="button"
           class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
           Cancel
         </button>
-        <button
-          @click="destroyAllUsers"
-          type="button"
-          class="btn btn-danger btn-sm"
-          :disabled="form.processing">
+        <button @click="destroyAllUsers" type="button" class="btn btn-danger btn-sm" :disabled="form.processing">
           Confirm
         </button>
       </div>

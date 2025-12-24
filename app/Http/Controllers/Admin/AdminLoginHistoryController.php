@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LoginHistory;
-use App\Services\DataTableFilterService;
-use App\Services\DataTablePaginationService;
+use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
@@ -13,65 +12,59 @@ use Jenssegers\Agent\Agent;
 class AdminLoginHistoryController extends Controller
 {
     public function __construct(
-        private DataTablePaginationService $pagination,
-        private DataTableFilterService $filter
+        private DataTableService $dataTable
     ) {
         $this->middleware('permission:view-login-history');
     }
 
+
     public function index(Request $request)
     {
-        $query = LoginHistory::with('user')
-            ->select([
-                'id',
-                'user_id',
-                'user_type',
-                'user_agent',
-                'login_at',
-                'login_successful',
-            ]);
+        $result = $this->dataTable->process(
+            query: LoginHistory::with('user')
+                ->select([
+                    'id',
+                    'user_id',
+                    'user_type',
+                    'user_agent',
+                    'login_at',
+                    'login_successful',
+                ]),
+            request: $request,
+            config: [
+                'searchable' => ['user.name', 'user_agent'],
+                'sortable' => [
+                    'login_at' => ['type' => 'simple'],
+                ],
+                'resource' => 'login_history',
+                'transform' => function ($item) {
+                    $agent = new Agent();
+                    $agent->setUserAgent($item->user_agent);
 
-        // Apply search
-        $searchableColumns = ['user.name', 'user_agent'];
-        $query = $this->filter->applySearch($query, $request, $searchableColumns);
+                    $item->login_at_diff = $item->login_at?->diffForHumans();
+                    $item->device_info = [
+                        'device'   => $agent->device() ?: 'Unknown',
+                        'platform' => $agent->platform() ?: 'Unknown',
+                        'browser'  => $agent->browser() ?: 'Unknown',
+                    ];
 
-        // Apply sorting
-        $sortConfig = [
-            'login_at' => [],
-        ];
-        $query = $this->filter->applySorting($query, $request, $sortConfig);
+                    $item->status = [
+                        'success' => $item->login_successful ?? true,
+                    ];
 
-        $filteredTotal = $query->count();
-        $perPage = $this->pagination->resolvePerPageWithDefaults($request, 'login_history', $filteredTotal);
+                    $item->username = $item->user?->name ?? 'Unknown User';
 
-        $loginHistory = $query
-            ->paginate($perPage)
-            ->withQueryString()
-            ->through(function ($item) {
-                $agent = new Agent();
-                $agent->setUserAgent($item->user_agent);
-
-                $item->login_at_diff = $item->login_at?->diffForHumans();
-                $item->device_info = [
-                    'device'   => $agent->device() ?: 'Unknown',
-                    'platform' => $agent->platform() ?: 'Unknown',
-                    'browser'  => $agent->browser() ?: 'Unknown',
-                ];
-
-                $item->status = [
-                    'success' => $item->login_successful ?? true,
-                ];
-
-                $item->username = $item->user?->name ?? 'Unknown User';
-
-                return $item;
-            });
+                    return $item;
+                },
+            ]
+        );
 
         return Inertia::render('Admin/IndexLoginHistoryPage', [
-            'loginHistory' => $loginHistory,
-            'filters'      => $this->pagination->buildFilters($request),
+            'loginHistory' => $result['data'],
+            'filters'      => $result['filters'],
         ]);
     }
+
 
     public function bulkDestroy(Request $request)
     {
