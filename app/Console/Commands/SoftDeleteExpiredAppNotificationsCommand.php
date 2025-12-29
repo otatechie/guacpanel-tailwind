@@ -15,8 +15,8 @@ class SoftDeleteExpiredAppNotificationsCommand extends Command
     {
         $result = $service->softDeleteExpired();
 
-        $this->info('Soft-deleted notifications: '.$result['soft_deleted']);
-        $this->info('Cutoff (now): '.$result['cutoff']->toDateTimeString());
+        $this->info('Soft-deleted notifications: ' . $result['soft_deleted']);
+        $this->info('Cutoff (now): ' . $result['cutoff']->toDateTimeString());
 
         return self::SUCCESS;
     }

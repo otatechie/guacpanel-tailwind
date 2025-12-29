@@ -15,9 +15,7 @@ class HandleSocialiteProviders
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $providers = collect(config('services', []))
-                            ->filter(fn ($provider) => $provider['enabled'] ?? false)
-                            ->toArray();
+        $providers = collect(config('services', []))->filter(fn($provider) => $provider['enabled'] ?? false)->toArray();
 
         $providerConfig = config('socialite');
         $providerConfig['providers'] = $providers;

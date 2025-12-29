@@ -12,407 +12,574 @@ import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import RolesBadges from '@js/Components/Common/RolesBadges.vue'
 
 defineOptions({
-  layout: Default,
+    layout: Default,
 })
 
 const props = defineProps({
-  users: {
-    type: Object,
-    required: true,
-  },
-  roles: {
-    type: Object,
-    required: true,
-  },
-  deletedUsers: {
-    type: [Object, Number],
-    // required: true,
-    default: () => ({}),
-  },
+    users: {
+        type: Object,
+        required: true,
+    },
+    roles: {
+        type: Object,
+        required: true,
+    },
+    deletedUsers: {
+        type: [Object, Number],
+        // required: true,
+        default: () => ({}),
+    },
 })
 
 const columnHelper = createColumnHelper()
 const loading = ref(false)
 const pagination = ref({
-  current_page: props.users.current_page,
-  per_page: Number(props.users.per_page),
-  total: props.users.total,
+    current_page: props.users.current_page,
+    per_page: Number(props.users.per_page),
+    total: props.users.total,
 })
 
 const showDeleteModal = ref(false)
 const userToDelete = ref(null)
 const showCreateUserModal = ref(false)
+const showImpersonateModal = ref(false)
+const userToImpersonate = ref(null)
 
 const form = useForm({
-  name: '',
-  email: '',
-  password: '',
-  password_confirmation: '',
-  role: '',
-  force_password_change: false,
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+    role: '',
+    force_password_change: false,
 })
 
 const closeModal = () => {
-  showDeleteModal.value = false
-  userToDelete.value = null
-  showCreateUserModal.value = false
-  form.reset()
+    showDeleteModal.value = false
+    userToDelete.value = null
+    showCreateUserModal.value = false
+    showImpersonateModal.value = false
+    userToImpersonate.value = null
+    form.reset()
 }
 
 const isSuperUser = user => {
-  if (!user?.roles?.length) return false
-  const role = user.roles[0]
-  return role?.name?.toLowerCase() === 'superuser' || role?.slug?.toLowerCase() === 'superuser'
+    if (!user?.roles?.length) return false
+    const role = user.roles[0]
+    return role?.name?.toLowerCase() === 'superuser' || role?.slug?.toLowerCase() === 'superuser'
 }
 
 const canDeleteUser = user => {
-  if (!user) return false
-  if (isSuperUser(user)) return false
-  return true
+    if (!user) return false
+    if (isSuperUser(user)) return false
+    return true
 }
 
 const handleEdit = user => {
-  if (!user?.id) return
-  router.visit(route('admin.user.edit', { id: user.id }))
+    if (!user?.id) return
+    router.visit(route('admin.user.edit', { id: user.id }))
+}
+
+const confirmImpersonate = user => {
+    if (!user?.id) return
+    if (isSuperUser(user)) return
+    userToImpersonate.value = user
+    showImpersonateModal.value = true
+}
+
+const handleImpersonate = () => {
+    if (!userToImpersonate.value?.id) return
+    router.post(route('admin.user.impersonate.start', { user: userToImpersonate.value.id }))
 }
 
 const confirmDeleteUser = user => {
-  if (!canDeleteUser(user)) return
-  userToDelete.value = user
-  showDeleteModal.value = true
+    if (!canDeleteUser(user)) return
+    userToDelete.value = user
+    showDeleteModal.value = true
 }
 
 const deleteUser = () => {
-  if (!userToDelete.value?.id) return
-  if (!canDeleteUser(userToDelete.value)) return
+    if (!userToDelete.value?.id) return
+    if (!canDeleteUser(userToDelete.value)) return
 
-  router.delete(route('admin.user.destroy', { id: userToDelete.value.id }), {
-    preserveScroll: true,
-    onSuccess: () => {
-      showDeleteModal.value = false
-      userToDelete.value = null
-    },
-    onError: () => {
-      showDeleteModal.value = false
-      userToDelete.value = null
-    },
-  })
+    router.delete(route('admin.user.destroy', { id: userToDelete.value.id }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showDeleteModal.value = false
+            userToDelete.value = null
+        },
+        onError: () => {
+            showDeleteModal.value = false
+            userToDelete.value = null
+        },
+    })
 }
 
 const openCreateModal = () => {
-  showCreateUserModal.value = true
+    showCreateUserModal.value = true
 }
 
 const createUser = () => {
-  form.post(route('admin.user.store'), {
-    preserveScroll: true,
-    onSuccess: () => {
-      showCreateUserModal.value = false
-      form.reset()
-    },
-  })
+    form.post(route('admin.user.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showCreateUserModal.value = false
+            form.reset()
+        },
+    })
 }
 
 const columns = [
-  columnHelper.accessor('name', {
-    header: 'Name',
-    cell: info => h('span', info.getValue() || '-'),
-  }),
-  columnHelper.accessor('email', {
-    header: 'Email',
-    cell: info => h('span', info.getValue() || '-'),
-  }),
-  columnHelper.accessor('role', {
-    header: 'Role',
-    cell: info => {
-      const roleName = info.row.original.roles?.[0]?.name || 'No Role'
-      return h(
-        'span',
-        {
-          class:
-            'px-1 py-1 text-xs capitalize rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
+    columnHelper.accessor('name', {
+        header: 'Name',
+        cell: info => h('span', info.getValue() || '-'),
+    }),
+    columnHelper.accessor('email', {
+        header: 'Email',
+        cell: info => h('span', info.getValue() || '-'),
+    }),
+    columnHelper.accessor('role', {
+        header: 'Role',
+        cell: info => {
+            const roleName = info.row.original.roles?.[0]?.name || 'No Role'
+            return h(
+                'span',
+                {
+                    class: 'px-1 py-1 text-xs capitalize rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
+                },
+                roleName
+            )
         },
-        roleName
-      )
-    },
-  }),
-  columnHelper.accessor('email_verified_at', {
-    header: 'Verified',
-    cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
-  }),
-  columnHelper.accessor('disable_account', {
-    header: 'Disabled',
-    cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
-  }),
-  columnHelper.accessor('created_at_formatted', {
-    header: 'Created At',
-    cell: info => h('span', info.getValue() || '-'),
-  }),
-  columnHelper.accessor('restore_date_full', {
-    header: 'Restored At',
-    cell: info => h('span', info.getValue() || '-'),
-  }),
-  columnHelper.display({
-    id: 'actions',
-    header: 'Actions',
-    cell: info => {
-      const user = info.row.original
-      if (!user?.id) return null
+    }),
+    columnHelper.accessor('email_verified_at', {
+        header: 'Verified',
+        cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
+    }),
+    columnHelper.accessor('disable_account', {
+        header: 'Disabled',
+        cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
+    }),
+    columnHelper.accessor('created_at_formatted', {
+        header: 'Created At',
+        cell: info => h('span', info.getValue() || '-'),
+    }),
+    columnHelper.accessor('restore_date_full', {
+        header: 'Restored At',
+        cell: info => h('span', info.getValue() || '-'),
+    }),
+    columnHelper.display({
+        id: 'actions',
+        header: 'Actions',
+        cell: info => {
+            const user = info.row.original
+            if (!user?.id) return null
 
-      const editButton = h(
-        'button',
-        {
-          class:
-            'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-          onClick: () => handleEdit(user),
-          type: 'button',
-          title: 'Edit User',
-        },
-        [
-          h('span', { class: 'sr-only' }, 'Edit User'),
-          h(
-            'svg',
-            {
-              class: 'h-4 w-4',
-              fill: 'none',
-              stroke: 'currentColor',
-              viewBox: '0 0 24 24',
-              'aria-hidden': 'true',
-            },
-            [
-              h('path', {
-                'stroke-linecap': 'round',
-                'stroke-linejoin': 'round',
-                'stroke-width': '2',
-                d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-              }),
-            ]
-          ),
-        ]
-      )
+            const editButton = h(
+                'button',
+                {
+                    class: 'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
+                    onClick: () => handleEdit(user),
+                    type: 'button',
+                    title: 'Edit User',
+                },
+                [
+                    h('span', { class: 'sr-only' }, 'Edit User'),
+                    h(
+                        'svg',
+                        {
+                            class: 'h-4 w-4',
+                            fill: 'none',
+                            stroke: 'currentColor',
+                            viewBox: '0 0 24 24',
+                            'aria-hidden': 'true',
+                        },
+                        [
+                            h('path', {
+                                'stroke-linecap': 'round',
+                                'stroke-linejoin': 'round',
+                                'stroke-width': '2',
+                                d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
+                            }),
+                        ]
+                    ),
+                ]
+            )
 
-      const deleteButton = h(
-        'button',
-        {
-          class:
-            'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-          onClick: () => confirmDeleteUser(user),
-          type: 'button',
-          title: 'Delete User',
-        },
-        [
-          h('span', { class: 'sr-only' }, 'Delete User'),
-          h(
-            'svg',
-            {
-              class: 'h-4 w-4',
-              fill: 'none',
-              stroke: 'currentColor',
-              viewBox: '0 0 24 24',
-              'aria-hidden': 'true',
-            },
-            [
-              h('path', {
-                'stroke-linecap': 'round',
-                'stroke-linejoin': 'round',
-                'stroke-width': '2',
-                d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
-              }),
-            ]
-          ),
-        ]
-      )
+            const impersonateButton = !isSuperUser(user)
+                ? h(
+                      'button',
+                      {
+                          class: 'p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
+                          onClick: () => confirmImpersonate(user),
+                          type: 'button',
+                          title: 'Impersonate User',
+                      },
+                      [
+                          h('span', { class: 'sr-only' }, 'Impersonate User'),
+                          h(
+                              'svg',
+                              {
+                                  class: 'h-4 w-4',
+                                  fill: 'none',
+                                  stroke: 'currentColor',
+                                  viewBox: '0 0 24 24',
+                                  'aria-hidden': 'true',
+                              },
+                              [
+                                  h('path', {
+                                      'stroke-linecap': 'round',
+                                      'stroke-linejoin': 'round',
+                                      'stroke-width': '2',
+                                      d: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z',
+                                  }),
+                              ]
+                          ),
+                      ]
+                  )
+                : null
 
-      return h(
-        'div',
-        {
-          class: 'flex items-center gap-2 justify-end',
+            const deleteButton = h(
+                'button',
+                {
+                    class: 'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
+                    onClick: () => confirmDeleteUser(user),
+                    type: 'button',
+                    title: 'Delete User',
+                },
+                [
+                    h('span', { class: 'sr-only' }, 'Delete User'),
+                    h(
+                        'svg',
+                        {
+                            class: 'h-4 w-4',
+                            fill: 'none',
+                            stroke: 'currentColor',
+                            viewBox: '0 0 24 24',
+                            'aria-hidden': 'true',
+                        },
+                        [
+                            h('path', {
+                                'stroke-linecap': 'round',
+                                'stroke-linejoin': 'round',
+                                'stroke-width': '2',
+                                d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
+                            }),
+                        ]
+                    ),
+                ]
+            )
+
+            return h(
+                'div',
+                {
+                    class: 'flex items-center gap-2 justify-end',
+                },
+                [editButton, impersonateButton, canDeleteUser(user) && deleteButton].filter(Boolean)
+            )
         },
-        [editButton, canDeleteUser(user) && deleteButton].filter(Boolean)
-      )
-    },
-  }),
+    }),
 ]
 
 watch(
-  pagination,
-  newPagination => {
-    loading.value = true
-    router.get(
-      route('admin.user.index'),
-      {
-        page: newPagination.current_page,
-        per_page: Number(newPagination.per_page),
-      },
-      {
-        preserveState: true,
-        preserveScroll: true,
-        onFinish: () => (loading.value = false),
-      }
-    )
-  },
-  { deep: true }
+    pagination,
+    newPagination => {
+        loading.value = true
+        router.get(
+            route('admin.user.index'),
+            {
+                page: newPagination.current_page,
+                per_page: Number(newPagination.per_page),
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                onFinish: () => (loading.value = false),
+            }
+        )
+    },
+    { deep: true }
 )
 </script>
 
 <template>
+    <Head title="Users Management" />
+    <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
+        <div class="container-border">
+            <PageHeader
+                title="Users Management"
+                description="Manage system users and their access"
+                :breadcrumbs="[
+                    { label: 'Dashboard', href: route('dashboard') },
+                    { label: 'System Settings', href: route('admin.setting.index') },
+                    { label: 'Users Management' },
+                ]">
+                <template #actions>
+                    <button @click="openCreateModal" class="btn btn-primary btn-sm">
+                        Add User
+                    </button>
+                </template>
 
-  <Head title="Users Management" />
-  <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
-    <div class="container-border">
-      <PageHeader title="Users Management" description="Manage system users and their access" :breadcrumbs="[
-        { label: 'Dashboard', href: route('dashboard') },
-        { label: 'System Settings', href: route('admin.setting.index') },
-        { label: 'Users Management' },
-      ]">
-        <template #actions>
-          <button @click="openCreateModal" class="btn btn-primary btn-sm">Add User</button>
+                <template #bottom v-if="deletedUsers">
+                    <div class="mt-3 flex items-center justify-between">
+                        <span v-if="deletedUsers" class="text-xs">
+                            {{ deletedUsers }} Deleted
+                            {{ deletedUsers == 1 ? 'User' : 'Users' }}
+                        </span>
+                        <Link
+                            v-if="deletedUsers"
+                            :href="route('admin.user.deleted.index')"
+                            class="btn btn-secondary btn-xs">
+                            View Deleted {{ deletedUsers == 1 ? 'User' : 'Users' }}
+                        </Link>
+                    </div>
+                </template>
+            </PageHeader>
+
+            <section class="p-6 dark:bg-gray-900">
+                <div
+                    class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                    <DataTable
+                        :data="users.data"
+                        :columns="columns"
+                        :loading="loading"
+                        :pagination="pagination"
+                        :filters-enabled="false"
+                        empty-message="No users found"
+                        empty-description="Users will appear here once created"
+                        export-file-name="users"
+                        @update:pagination="pagination = $event" />
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <Modal :show="showDeleteModal" @close="closeModal" size="md">
+        <template #title>
+            <div class="text-red-600 dark:text-red-400">Delete User</div>
         </template>
 
-        <template #bottom v-if="deletedUsers">
-          <div class="mt-3 flex items-center justify-between">
-            <span v-if="deletedUsers" class="text-xs">
-              {{ deletedUsers }} Deleted
-              {{ deletedUsers == 1 ? 'User' : 'Users' }}
-            </span>
-            <Link v-if="deletedUsers" :href="route('admin.user.deleted.index')" class="btn btn-secondary btn-xs">
-              View Deleted {{ deletedUsers == 1 ? 'User' : 'Users' }}
-            </Link>
-          </div>
+        <template #default>
+            <div class="space-y-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Are you sure you want to delete this user?
+                </p>
+                <div
+                    class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+                    <div class="flex gap-2">
+                        <svg
+                            class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path
+                                fill-rule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-amber-700 dark:text-amber-300">
+                            This will delete the user's account and all associated data. The account
+                            is recoverable up to the auto-delete date if it is set.
+                        </p>
+                    </div>
+                </div>
+                <div
+                    v-if="userToDelete"
+                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
+                    <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        User details:
+                    </h4>
+                    <dl class="space-y-1">
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToDelete.name }}
+                            </dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToDelete.email }}
+                            </dd>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
+                            </dd>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToDelete.disable_account ? 'Yes' : 'No' }}
+                            </dd>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                <RolesBadges :roles="userToDelete.roles" />
+                            </dd>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Created At:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToDelete.created_at_full }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
         </template>
-      </PageHeader>
 
-      <section class="p-6 dark:bg-gray-900">
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-          <DataTable :data="users.data" :columns="columns" :loading="loading" :pagination="pagination"
-            empty-message="No users found" empty-description="Users will appear here once created"
-            export-file-name="users" @update:pagination="pagination = $event" />
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <Modal :show="showDeleteModal" @close="closeModal" size="md">
-    <template #title>
-      <div class="text-red-600 dark:text-red-400">Delete User</div>
-    </template>
-
-    <template #default>
-      <div class="space-y-4">
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-          Are you sure you want to delete this user?
-        </p>
-        <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
-          <div class="flex gap-2">
-            <svg class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400" fill="currentColor"
-              viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clip-rule="evenodd" />
-            </svg>
-            <p class="text-sm text-amber-700 dark:text-amber-300">
-              This will delete the user's account and all associated data. The account is
-              recoverable up to the auto-delete date if it is set.
-            </p>
-          </div>
-        </div>
-        <div v-if="userToDelete"
-          class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-          <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">User details:</h4>
-          <dl class="space-y-1">
-            <div class="flex gap-2">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">
-                {{ userToDelete.name }}
-              </dd>
+        <template #footer>
+            <div class="flex justify-end gap-8">
+                <button
+                    @click="closeModal"
+                    type="button"
+                    class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+                    Cancel
+                </button>
+                <button
+                    @click="deleteUser"
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    :disabled="false">
+                    Yes, Delete User
+                </button>
             </div>
-            <div class="flex gap-2">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">
-                {{ userToDelete.email }}
-              </dd>
+        </template>
+    </Modal>
+
+    <Modal :show="showCreateUserModal" @close="closeModal" size="lg">
+        <template #title>Create New User</template>
+
+        <template #default>
+            <div class="w-full space-y-8">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <FormInput
+                        v-model="form.name"
+                        label="Legal name"
+                        :error="form.errors.name"
+                        name="name" />
+                    <FormInput
+                        v-model="form.email"
+                        label="Email address"
+                        type="email"
+                        :error="form.errors.email"
+                        name="email" />
+                    <FormInput
+                        v-model="form.password"
+                        label="Password"
+                        name="password"
+                        id="password"
+                        type="password"
+                        required
+                        :error="form.errors.password"
+                        autocomplete="new-password" />
+                    <FormInput
+                        v-model="form.password_confirmation"
+                        label="Confirm password"
+                        name="password_confirmation"
+                        id="password_confirmation"
+                        type="password"
+                        required
+                        :error="form.errors.password_confirmation"
+                        autocomplete="new-password" />
+                </div>
+                <div>
+                    <FormSelect
+                        v-model="form.role"
+                        :options="props.roles?.data || []"
+                        option-label="name"
+                        option-value="id"
+                        name="role"
+                        label="Assigned role"
+                        :error="form.errors.role" />
+                </div>
+                <div class="space-y-6">
+                    <FormCheckbox
+                        v-model="form.force_password_change"
+                        label="Force Password Reset"
+                        description="Require new password on next login"
+                        :error="form.errors.force_password_change" />
+                </div>
             </div>
+        </template>
 
-            <div class="flex gap-2">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">
-                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
-              </dd>
+        <template #footer>
+            <div class="flex justify-end gap-8">
+                <button
+                    @click="closeModal"
+                    type="button"
+                    class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+                    Cancel
+                </button>
+                <button
+                    @click="createUser"
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    :disabled="form.processing">
+                    Create User
+                </button>
             </div>
+        </template>
+    </Modal>
 
-            <div class="flex gap-2">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">
-                {{ userToDelete.disable_account ? 'Yes' : 'No' }}
-              </dd>
+    <Modal :show="showImpersonateModal" @close="closeModal" size="md">
+        <template #title>
+            <div class="text-amber-600 dark:text-amber-400">Impersonate User</div>
+        </template>
+
+        <template #default>
+            <div class="space-y-4">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                    You will be logged in as this user and see what they see.
+                </p>
+                <div
+                    v-if="userToImpersonate"
+                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
+                    <dl class="space-y-1">
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToImpersonate.name }}
+                            </dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                {{ userToImpersonate.email }}
+                            </dd>
+                        </div>
+                        <div class="flex gap-2">
+                            <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
+                            <dd class="text-sm text-gray-900 dark:text-gray-100">
+                                <RolesBadges :roles="userToImpersonate.roles" />
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
+        </template>
 
-            <div class="flex gap-2">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">
-                <RolesBadges :roles="userToDelete.roles" />
-              </dd>
+        <template #footer>
+            <div class="flex justify-end gap-8">
+                <button
+                    @click="closeModal"
+                    type="button"
+                    class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+                    Cancel
+                </button>
+                <button
+                    @click="handleImpersonate"
+                    type="button"
+                    class="btn btn-warning btn-sm"
+                    :disabled="false">
+                    Yes, Impersonate User
+                </button>
             </div>
-
-            <div class="flex gap-2">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Created At:</dt>
-              <dd class="text-sm text-gray-900 dark:text-gray-100">
-                {{ userToDelete.created_at_full }}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-    </template>
-
-    <template #footer>
-      <div class="flex justify-end gap-8">
-        <button @click="closeModal" type="button"
-          class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
-          Cancel
-        </button>
-        <button @click="deleteUser" type="button" class="btn btn-danger btn-sm" :disabled="false">
-          Yes, Delete User
-        </button>
-      </div>
-    </template>
-  </Modal>
-
-  <Modal :show="showCreateUserModal" @close="closeModal" size="lg">
-    <template #title>Create New User</template>
-
-    <template #default>
-      <div class="w-full space-y-8">
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <FormInput v-model="form.name" label="Legal name" :error="form.errors.name" name="name" />
-          <FormInput v-model="form.email" label="Email address" type="email" :error="form.errors.email" name="email" />
-          <FormInput v-model="form.password" label="Password" name="password" id="password" type="password" required
-            :error="form.errors.password" autocomplete="new-password" />
-          <FormInput v-model="form.password_confirmation" label="Confirm password" name="password_confirmation"
-            id="password_confirmation" type="password" required :error="form.errors.password_confirmation"
-            autocomplete="new-password" />
-        </div>
-        <div>
-          <FormSelect v-model="form.role" :options="props.roles?.data || []" option-label="name" option-value="id"
-            name="role" label="Assigned role" :error="form.errors.role" />
-        </div>
-        <div class="space-y-6">
-          <FormCheckbox v-model="form.force_password_change" label="Force Password Reset"
-            description="Require new password on next login" :error="form.errors.force_password_change" />
-        </div>
-      </div>
-    </template>
-
-    <template #footer>
-      <div class="flex justify-end gap-8">
-        <button @click="closeModal" type="button"
-          class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
-          Cancel
-        </button>
-        <button @click="createUser" type="button" class="btn btn-primary btn-sm" :disabled="form.processing">
-          Create User
-        </button>
-      </div>
-    </template>
-  </Modal>
+        </template>
+    </Modal>
 </template>

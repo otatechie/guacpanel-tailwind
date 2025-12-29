@@ -15,7 +15,6 @@ class DataTableService
     const SORT_DIRECTIONS = ['asc', 'desc'];
     const DEFAULT_SORT_DIRECTION = 'desc';
 
-
     public function applySearch(Builder $query, Request $request, array $searchableColumns): Builder
     {
         $search = $this->getRequestValue($request, 'search');
@@ -30,7 +29,6 @@ class DataTableService
             }
         });
     }
-
 
     public function applyFilters(Builder $query, Request $request, array $filterConfig): Builder
     {
@@ -47,7 +45,6 @@ class DataTableService
         return $query;
     }
 
-
     public function applySorting(Builder $query, Request $request, array $sortConfig): Builder
     {
         $sortField = $request->get('sort_by');
@@ -63,12 +60,10 @@ class DataTableService
         return $this->applySortByType($query, $type, $config, $sortField, $sortDirection);
     }
 
-
     public function resolvePage(Request $request): int
     {
         return $this->normalizePositiveInteger($request->get('page'), 1);
     }
-
 
     public function resolvePerPage(
         Request $request,
@@ -77,7 +72,7 @@ class DataTableService
         array $allowed = [10, 25, 50],
         bool $allowAll = true,
         int $allCap = 1000,
-        ?int $filteredTotal = null
+        ?int $filteredTotal = null,
     ): int {
         $raw = $request->get('per_page');
 
@@ -88,7 +83,6 @@ class DataTableService
         return $this->normalizePageSize($raw, $default, $allowed);
     }
 
-
     public function resolvePerPageWithDefaults(Request $request, string $resourceName, ?int $filteredTotal = null): int
     {
         return $this->resolvePerPage(
@@ -98,23 +92,21 @@ class DataTableService
             self::ALLOWED_PAGE_SIZES,
             self::ALLOW_ALL_OPTION,
             self::MAX_ROWS_WHEN_ALL,
-            $filteredTotal
+            $filteredTotal,
         );
     }
-
 
     public function buildFilters(Request $request): array
     {
         return $request->all();
     }
 
-
     public function applyAll(
         Builder $query,
         Request $request,
         array $searchableColumns = [],
         array $sortConfig = [],
-        string $resourceName = 'items'
+        string $resourceName = 'items',
     ): array {
         if (!empty($searchableColumns)) {
             $query = $this->applySearch($query, $request, $searchableColumns);
@@ -133,7 +125,6 @@ class DataTableService
             'filteredTotal' => $filteredTotal,
         ];
     }
-
 
     public function process(Builder|QueryBuilder $query, Request $request, array $config): array
     {
@@ -161,7 +152,6 @@ class DataTableService
         ];
     }
 
-
     private function getRequestValue(Request $request, string $key): mixed
     {
         if (!$request->has($key)) {
@@ -170,9 +160,8 @@ class DataTableService
 
         $value = $request->$key;
 
-        return ($value === '' || $value === null) ? null : $value;
+        return $value === '' || $value === null ? null : $value;
     }
-
 
     private function applySearchToColumn(Builder $query, string $column, string $search): void
     {
@@ -183,7 +172,6 @@ class DataTableService
         }
     }
 
-
     private function applyRelationshipSearch(Builder $query, string $column, string $search): void
     {
         [$relation, $field] = explode('.', $column, 2);
@@ -192,7 +180,6 @@ class DataTableService
             $subQuery->where($field, 'like', '%' . $search . '%');
         });
     }
-
 
     private function applyFilter(Builder $query, array $config, string $filterKey, mixed $value): void
     {
@@ -205,7 +192,6 @@ class DataTableService
         };
     }
 
-
     private function applyRelationshipFilter(Builder $query, array $config, mixed $value): void
     {
         $query->whereHas($config['relation'], function ($q) use ($config, $value) {
@@ -213,9 +199,13 @@ class DataTableService
         });
     }
 
-
-    private function applySortByType(Builder $query, string $type, array $config, string $sortField, string $sortDirection): Builder
-    {
+    private function applySortByType(
+        Builder $query,
+        string $type,
+        array $config,
+        string $sortField,
+        string $sortDirection,
+    ): Builder {
         match ($type) {
             'relationship' => $this->applyRelationshipSort($query, $config, $sortDirection),
             'composite' => call_user_func($config['callback'], $query, $sortDirection),
@@ -225,21 +215,19 @@ class DataTableService
         return $query;
     }
 
-
     private function applyRelationshipSort(Builder $query, array $config, string $sortDirection): void
     {
-        $query->leftJoin($config['table'], $config['foreign_key'], '=', $config['local_key'])
+        $query
+            ->leftJoin($config['table'], $config['foreign_key'], '=', $config['local_key'])
             ->select($query->getModel()->getTable() . '.*')
             ->distinct()
             ->orderBy($config['order_by'], $sortDirection);
     }
 
-
     private function normalizeSortDirection(mixed $direction): string
     {
         return in_array($direction, self::SORT_DIRECTIONS, true) ? $direction : self::DEFAULT_SORT_DIRECTION;
     }
-
 
     private function normalizePositiveInteger(mixed $value, int $min = 1): int
     {
@@ -248,12 +236,10 @@ class DataTableService
         return max($min, $int);
     }
 
-
     private function isAllOption(mixed $value, bool $allowAll): bool
     {
         return $allowAll && is_string($value) && strtolower($value) === 'all';
     }
-
 
     private function calculateAllPageSize(?int $filteredTotal, int $allCap): int
     {
@@ -261,7 +247,6 @@ class DataTableService
 
         return max(1, min($total, $allCap));
     }
-
 
     private function normalizePageSize(mixed $raw, int $default, array $allowed): int
     {

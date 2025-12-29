@@ -13,10 +13,14 @@ export function useServerPagination(options) {
     const watchColumnFilters = () => {
         const stopWatch = watch(
             columnFilters,
-            (newFilters) => {
+            newFilters => {
                 const filterParams = {}
-                newFilters.forEach((filter) => {
-                    if (filter.value !== undefined && filter.value !== null && filter.value !== '') {
+                newFilters.forEach(filter => {
+                    if (
+                        filter.value !== undefined &&
+                        filter.value !== null &&
+                        filter.value !== ''
+                    ) {
                         filterParams[filter.id] = filter.value
                     }
                 })
@@ -41,7 +45,7 @@ export function useServerPagination(options) {
     const watchSorting = () => {
         const stopWatch = watch(
             sorting,
-            (newSorting) => {
+            newSorting => {
                 if (newSorting.length === 0) return
 
                 const sort = newSorting[0]
@@ -66,7 +70,7 @@ export function useServerPagination(options) {
     const watchGlobalSearch = () => {
         const stopWatch = watch(
             globalFilter,
-            (newSearch) => {
+            newSearch => {
                 if (newSearch === undefined || newSearch === null) return
 
                 // Clear existing timer

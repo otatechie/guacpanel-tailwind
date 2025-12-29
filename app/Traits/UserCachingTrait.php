@@ -9,6 +9,6 @@ trait UserCachingTrait
 {
     protected function resetUserCache(User $user, string $key = 'user_'): void
     {
-        Cache::forget($key.$user->id);
+        Cache::forget($key . $user->id);
     }
 }

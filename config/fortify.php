@@ -3,7 +3,6 @@
 use Laravel\Fortify\Features;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Fortify Guard
@@ -115,7 +114,7 @@ return [
     */
 
     'limiters' => [
-        'login'      => 'login',
+        'login' => 'login',
         'two-factor' => 'two-factor',
     ],
 
@@ -144,21 +143,11 @@ return [
     */
 
     'features' => array_filter([
-        env('APP_REGISTRATION_ENABLED', true)
-            ? Features::registration()
-            : null,
-        env('APP_PW_RESET_ENABLED', true)
-            ? Features::resetPasswords()
-            : null,
-        env('APP_EMAIL_VERIFICATION_ENABLED', false)
-            ? Features::emailVerification()
-            : null,
-        env('APP_UPDATE_PROFILE_ENABLED', false)
-            ? Features::updateProfileInformation()
-            : false,
-        env('APP_UPDATE_PW_ENABLED', false)
-            ? Features::updatePasswords()
-            : false,
+        env('APP_REGISTRATION_ENABLED', true) ? Features::registration() : null,
+        env('APP_PW_RESET_ENABLED', true) ? Features::resetPasswords() : null,
+        env('APP_EMAIL_VERIFICATION_ENABLED', false) ? Features::emailVerification() : null,
+        env('APP_UPDATE_PROFILE_ENABLED', false) ? Features::updateProfileInformation() : false,
+        env('APP_UPDATE_PW_ENABLED', false) ? Features::updatePasswords() : false,
         env('APP_MFA_ENABLED', false)
             ? Features::twoFactorAuthentication([
                 // 'confirm' => true,

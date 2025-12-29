@@ -11,25 +11,22 @@ use Jenssegers\Agent\Agent;
 
 class AdminLoginHistoryController extends Controller
 {
-    public function __construct(
-        private DataTableService $dataTable
-    ) {
+    public function __construct(private DataTableService $dataTable)
+    {
         $this->middleware('permission:view-login-history');
     }
-
 
     public function index(Request $request)
     {
         $result = $this->dataTable->process(
-            query: LoginHistory::with('user')
-                ->select([
-                    'id',
-                    'user_id',
-                    'user_type',
-                    'user_agent',
-                    'login_at',
-                    'login_successful',
-                ]),
+            query: LoginHistory::with('user')->select([
+                'id',
+                'user_id',
+                'user_type',
+                'user_agent',
+                'login_at',
+                'login_successful',
+            ]),
             request: $request,
             config: [
                 'searchable' => ['user.name', 'user_agent'],
@@ -43,9 +40,9 @@ class AdminLoginHistoryController extends Controller
 
                     $item->login_at_diff = $item->login_at?->diffForHumans();
                     $item->device_info = [
-                        'device'   => $agent->device() ?: 'Unknown',
+                        'device' => $agent->device() ?: 'Unknown',
                         'platform' => $agent->platform() ?: 'Unknown',
-                        'browser'  => $agent->browser() ?: 'Unknown',
+                        'browser' => $agent->browser() ?: 'Unknown',
                     ];
 
                     $item->status = [
@@ -56,20 +53,19 @@ class AdminLoginHistoryController extends Controller
 
                     return $item;
                 },
-            ]
+            ],
         );
 
         return Inertia::render('Admin/IndexLoginHistoryPage', [
             'loginHistory' => $result['data'],
-            'filters'      => $result['filters'],
+            'filters' => $result['filters'],
         ]);
     }
-
 
     public function bulkDestroy(Request $request)
     {
         $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['required', 'exists:login_history,id'],
         ]);
 

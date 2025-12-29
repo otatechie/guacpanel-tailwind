@@ -4,7 +4,6 @@
  * Set specific configuration variables here
  */
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Image Driver
@@ -48,12 +47,10 @@ return [
 
     // Fonts used to render text.
     // If contains more than one fonts, randomly selected based on name supplied
-    'fonts' => [__DIR__.'/../fonts/Inter-Medium.ttf'],
+    'fonts' => [__DIR__ . '/../fonts/Inter-Medium.ttf'],
 
     // List of foreground colors to be used, randomly selected based on name supplied
-    'foregrounds' => [
-        '#FFFFFF',
-    ],
+    'foregrounds' => ['#FFFFFF'],
 
     // List of background colors to be used, randomly selected based on name supplied
     'backgrounds' => [
@@ -143,9 +140,7 @@ return [
                 '#FFCCBC',
                 '#D7CCC8',
             ],
-            'foregrounds' => [
-                '#FFF',
-            ],
+            'foregrounds' => ['#FFF'],
         ],
     ],
 ];

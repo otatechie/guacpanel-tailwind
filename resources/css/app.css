@@ -2,8 +2,8 @@
 /* @import 'tw-animate-css'; */
 
 @theme {
-  --breakpoint-xxs: 360px;
-  --breakpoint-xs: 480px;
+    --breakpoint-xxs: 360px;
+    --breakpoint-xs: 480px;
 }
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -24,4 +24,5 @@
 @import '@css/partials/wells.css';
 @import '@css/partials/cards.css';
 @import '@css/partials/notifications.css';
+@import '@css/partials/commandpalette.css';
 @import '~/nprogress/nprogress.css';

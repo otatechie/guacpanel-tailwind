@@ -24,7 +24,7 @@ class AppNotificationAutoExpireService
 
         return [
             'soft_deleted' => (int) $softDeleted,
-            'cutoff'       => $cutoff,
+            'cutoff' => $cutoff,
         ];
     }
 }

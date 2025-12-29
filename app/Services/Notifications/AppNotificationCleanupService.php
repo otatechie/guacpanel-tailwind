@@ -17,15 +17,12 @@ class AppNotificationCleanupService
         $days = max(1, (int) $days);
         $cutoff = Carbon::now()->subDays($days);
 
-        $deleted = AppNotification::query()
-            ->onlyTrashed()
-            ->where('deleted_at', '<=', $cutoff)
-            ->forceDelete();
+        $deleted = AppNotification::query()->onlyTrashed()->where('deleted_at', '<=', $cutoff)->forceDelete();
 
         return [
             'deleted' => (int) $deleted,
-            'cutoff'  => $cutoff,
-            'days'    => $days,
+            'cutoff' => $cutoff,
+            'days' => $days,
         ];
     }
 }

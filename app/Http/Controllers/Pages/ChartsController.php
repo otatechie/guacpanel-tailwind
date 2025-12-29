@@ -14,7 +14,11 @@ class ChartsController extends ParentController
     {
         $currentYear = now()->year;
 
-        $metrics = FinancialMetric::select(DB::raw('EXTRACT(MONTH FROM date) as month_number'), 'type', DB::raw('SUM(amount) as total'))
+        $metrics = FinancialMetric::select(
+            DB::raw('EXTRACT(MONTH FROM date) as month_number'),
+            'type',
+            DB::raw('SUM(amount) as total'),
+        )
             ->whereYear('date', $currentYear)
             ->groupBy('month_number', 'type')
             ->orderBy('month_number')
@@ -36,8 +40,8 @@ class ChartsController extends ParentController
 
         return Inertia::render('Charts', [
             'financialMetrics' => [
-                'months'  => $months,
-                'income'  => $income,
+                'months' => $months,
+                'income' => $income,
                 'expense' => $expense,
             ],
         ]);

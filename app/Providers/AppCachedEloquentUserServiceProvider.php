@@ -10,10 +10,7 @@ class AppCachedEloquentUserServiceProvider extends ServiceProvider
     public function boot(): void
     {
         auth()->provider('cachedEloquentUser', function (Application $application, array $config) {
-            return new CachedEloquentUserProvider(
-                $application['hash'],
-                $config['model']
-            );
+            return new CachedEloquentUserProvider($application['hash'], $config['model']);
         });
     }
 }

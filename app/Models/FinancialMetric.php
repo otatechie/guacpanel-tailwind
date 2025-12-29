@@ -15,18 +15,18 @@ class FinancialMetric extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'date'   => 'date',
+        'date' => 'date',
         'amount' => 'decimal:2',
     ];
 
     public function toSearchableArray(): array
     {
         return array_merge($this->toArray(), [
-            'id'              => (string) $this->id,
-            'created_at'      => $this->created_at->timestamp,
+            'id' => (string) $this->id,
+            'created_at' => $this->created_at->timestamp,
             'collection_name' => 'financial_metrics',
-            'amount'          => (float) $this->amount,
-            'category'        => $this->category,
+            'amount' => (float) $this->amount,
+            'category' => $this->category,
         ]);
     }
 }

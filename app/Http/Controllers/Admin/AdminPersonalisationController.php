@@ -18,7 +18,6 @@ class AdminPersonalisationController extends Controller
         $this->middleware('permission:view-personalisation');
     }
 
-
     public function index()
     {
         $personalisation = $this->getPersonalisations();
@@ -28,13 +27,12 @@ class AdminPersonalisationController extends Controller
         ]);
     }
 
-
     public function updateInfo(Request $request)
     {
         $this->authorize('update-personalisation');
 
         $validated = $request->validate([
-            'app_name'       => ['nullable', 'string', 'max:100'],
+            'app_name' => ['nullable', 'string', 'max:100'],
             'copyright_text' => ['nullable', 'string', 'max:50'],
         ]);
 
@@ -45,28 +43,27 @@ class AdminPersonalisationController extends Controller
         return redirect()->back()->with('success', __('notifications.admin.settings_updated_successfully'));
     }
 
-
     public function upload(Request $request)
     {
         $this->authorize('upload-personalisation-files');
 
         $request->validate([
-            'app_logo'      => ['nullable', 'image', 'max:2048'],
+            'app_logo' => ['nullable', 'image', 'max:2048'],
             'app_logo_dark' => ['nullable', 'image', 'max:2048'],
-            'favicon'       => ['nullable', 'file', 'mimes:png,ico', 'max:2048'],
+            'favicon' => ['nullable', 'file', 'mimes:png,ico', 'max:2048'],
         ]);
 
         if ($request->hasFile('app_logo') || $request->hasFile('app_logo_dark') || $request->hasFile('favicon')) {
-            $field = $request->hasFile('app_logo') ? 'app_logo' : ($request->hasFile('app_logo_dark') ? 'app_logo_dark' : 'favicon');
+            $field = $request->hasFile('app_logo')
+                ? 'app_logo'
+                : ($request->hasFile('app_logo_dark')
+                    ? 'app_logo_dark'
+                    : 'favicon');
 
             $file = $request->file($field);
             $fileName = time() . '_' . $file->getClientOriginalName();
 
-            $path = $request->file($field)->storeAs(
-                'personalisation',
-                $fileName,
-                'public'
-            );
+            $path = $request->file($field)->storeAs('personalisation', $fileName, 'public');
 
             $personalisation = Personalisation::firstOrCreate();
 
@@ -83,7 +80,6 @@ class AdminPersonalisationController extends Controller
 
         return response()->json(['error' => __('notifications.errors.no_file_uploaded')], 400);
     }
-
 
     public function delete(Request $request)
     {

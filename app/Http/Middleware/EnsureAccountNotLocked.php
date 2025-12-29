@@ -17,7 +17,12 @@ class EnsureAccountNotLocked
         if ($user->account_locked) {
             auth()->logout();
 
-            return redirect()->route('login')->with('error', __('notifications.account.locked', ['email' => config('guacpanel.admin.support_email')]));
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    __('notifications.account.locked', ['email' => config('guacpanel.admin.support_email')]),
+                );
         }
 
         return $next($request);

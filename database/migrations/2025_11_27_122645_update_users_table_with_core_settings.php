@@ -4,14 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration {
+return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('profile_image_type')
-                ->default('avatar')
-                ->nullable()
-                ->after('disable_account');
+            $table->string('profile_image_type')->default('avatar')->nullable()->after('disable_account');
         });
     }
 

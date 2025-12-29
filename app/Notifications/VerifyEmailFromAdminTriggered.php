@@ -45,13 +45,10 @@ class VerifyEmailFromAdminTriggered extends Notification
             return call_user_func(static::$toMailCallback, $notifiable, $verificationUrl);
         }
 
-        return (new MailMessage())->markdown(
-            'emails.verify-email-from-admin-triggered',
-            [
-                'verificationUrl' => $verificationUrl,
-                'notifiable'      => $notifiable,
-            ]
-        );
+        return (new MailMessage())->markdown('emails.verify-email-from-admin-triggered', [
+            'verificationUrl' => $verificationUrl,
+            'notifiable' => $notifiable,
+        ]);
     }
 
     /**
@@ -71,9 +68,9 @@ class VerifyEmailFromAdminTriggered extends Notification
             'verification.verify',
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
             [
-                'id'   => $notifiable->getKey(),
+                'id' => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
-            ]
+            ],
         );
     }
 

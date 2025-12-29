@@ -23,8 +23,8 @@ class CleanupDeletedAppNotificationsCommand extends Command
 
         $result = $cleanup->cleanupDeleted($days);
 
-        $this->info('Deleted notifications: '.$result['deleted']);
-        $this->info('Cutoff date: '.$result['cutoff']->toDateTimeString().' ('.$result['days'].' days)');
+        $this->info('Deleted notifications: ' . $result['deleted']);
+        $this->info('Cutoff date: ' . $result['cutoff']->toDateTimeString() . ' (' . $result['days'] . ' days)');
 
         return self::SUCCESS;
     }

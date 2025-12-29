@@ -11,12 +11,11 @@ class AppNotificationRequested
     use SerializesModels;
 
     public function __construct(
-        public ?string $userId,     // ULID string, nullable for system
+        public ?string $userId, // ULID string, nullable for system
         public string $message,
         public array $data = [],
         public string $scope = 'user', // user|system|release
-        public string $type = 'info',  // info|success|warning|error
+        public string $type = 'info', // info|success|warning|error
         public ?string $title = null,
-    ) {
-    }
+    ) {}
 }

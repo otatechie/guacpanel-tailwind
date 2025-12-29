@@ -22,7 +22,8 @@ class MagicLoginLink extends Mailable
 
     public function build()
     {
-        return $this->markdown('emails.magic-link')
-                    ->subject($this->isNewUser ? 'Complete Your Registration' : 'Your Magic Login Link');
+        return $this->markdown('emails.magic-link')->subject(
+            $this->isNewUser ? 'Complete Your Registration' : 'Your Magic Login Link',
+        );
     }
 }

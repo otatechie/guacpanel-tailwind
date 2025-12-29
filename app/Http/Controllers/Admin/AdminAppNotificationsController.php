@@ -16,12 +16,10 @@ use Inertia\Inertia;
 
 class AdminAppNotificationsController extends Controller
 {
-    public function __construct(
-        private DataTableService $dataTable
-    ) {
+    public function __construct(private DataTableService $dataTable)
+    {
         $this->middleware('permission:manage-notifications');
     }
-
 
     public function index(Request $request)
     {
@@ -30,6 +28,7 @@ class AdminAppNotificationsController extends Controller
                 ->select([
                     'id',
                     'user_id',
+                    'created_by',
                     'scope',
                     'type',
                     'title',
@@ -50,7 +49,7 @@ class AdminAppNotificationsController extends Controller
                         $q->whereNotNull('u_del_notif_at');
                     },
                 ])
-                ->with(['user:id,name,email']),
+                ->with(['user:id,name,email', 'creator:id,name,email']),
             request: $request,
             config: [
                 'searchable' => ['title', 'message', 'user.name', 'user.email'],
@@ -66,18 +65,18 @@ class AdminAppNotificationsController extends Controller
                     $item->auto_expire_on_diff = $item->auto_expire_on?->diffForHumans();
                     $item->username = $item->user?->name;
                     $item->user_email = $item->user?->email;
+                    $item->created_by_name = $item->creator?->name;
 
                     return $item;
                 },
-            ]
+            ],
         );
 
-        return Inertia::render('Admin/Notifications/AdminNotificationsIndex', [
+        return Inertia::render('Admin/Notifications/IndexNotificationPage', [
             'notifications' => $result['data'],
-            'filters'       => $result['filters'],
+            'filters' => $result['filters'],
         ]);
     }
-
 
     public function create()
     {
@@ -87,34 +86,32 @@ class AdminAppNotificationsController extends Controller
             ->limit(250)
             ->get();
 
-        return Inertia::render('Admin/Notifications/AdminCreateNotificaion', [
+        return Inertia::render('Admin/Notifications/CreateNotificationPage', [
             'users' => $users,
         ]);
     }
-
 
     public function store(StoreAdminAppNotificationRequest $request)
     {
         $data = $request->validated();
 
-        $scope = in_array($data['scope'] ?? 'user', ['user', 'system', 'release'], true)
-            ? $data['scope']
-            : 'user';
+        $scope = in_array($data['scope'] ?? 'user', ['user', 'system', 'release'], true) ? $data['scope'] : 'user';
 
-        $userId = $scope === 'user' ? ($data['user_id'] ?? null) : null;
+        $userId = $scope === 'user' ? $data['user_id'] ?? null : null;
 
         $scheduledOn = !empty($data['scheduled_on']) ? Carbon::parse($data['scheduled_on']) : null;
         $autoExpireOn = !empty($data['auto_expire_on']) ? Carbon::parse($data['auto_expire_on']) : null;
 
         $notification = AppNotification::create([
-            'user_id'           => $userId,
-            'scope'             => $scope,
-            'type'              => $data['type'],
-            'title'             => $data['title'],
-            'message'           => $data['message'],
-            'data'              => null,
-            'scheduled_on'      => $scheduledOn,
-            'auto_expire_on'    => $autoExpireOn,
+            'user_id' => $userId,
+            'created_by' => $request->user()?->id,
+            'scope' => $scope,
+            'type' => $data['type'],
+            'title' => $data['title'],
+            'message' => $data['message'],
+            'data' => null,
+            'scheduled_on' => $scheduledOn,
+            'auto_expire_on' => $autoExpireOn,
             'sent_as_scheduled' => false,
         ]);
 
@@ -122,10 +119,8 @@ class AdminAppNotificationsController extends Controller
             event(new AppNotificationCreated($notification));
         }
 
-        return redirect()->route('admin.notifications.index')
-            ->with('success', 'Notification created.');
+        return redirect()->route('admin.notifications.index')->with('success', 'Notification created.');
     }
-
 
     public function edit(string $id)
     {
@@ -137,45 +132,42 @@ class AdminAppNotificationsController extends Controller
             ->limit(250)
             ->get();
 
-        return Inertia::render('Admin/Notifications/AdminEditNotificaion', [
+        return Inertia::render('Admin/Notifications/EditNotificationPage', [
             'notification' => $notification,
-            'users'        => $users,
+            'users' => $users,
         ]);
     }
-
 
     public function update(UpdateAdminAppNotificationRequest $request, string $id)
     {
         $notification = AppNotification::query()->whereKey($id)->firstOrFail();
         $data = $request->validated();
 
-        $scope = in_array($data['scope'] ?? 'user', ['user', 'system', 'release'], true)
-            ? $data['scope']
-            : 'user';
+        $scope = in_array($data['scope'] ?? 'user', ['user', 'system', 'release'], true) ? $data['scope'] : 'user';
 
-        $userId = $scope === 'user' ? ($data['user_id'] ?? null) : null;
+        $userId = $scope === 'user' ? $data['user_id'] ?? null : null;
 
         $scheduledOn = !empty($data['scheduled_on']) ? Carbon::parse($data['scheduled_on']) : null;
         $autoExpireOn = !empty($data['auto_expire_on']) ? Carbon::parse($data['auto_expire_on']) : null;
 
-        $notification->forceFill([
-            'user_id'        => $userId,
-            'scope'          => $scope,
-            'type'           => $data['type'],
-            'title'          => $data['title'],
-            'message'        => $data['message'],
-            'data'           => null,
-            'scheduled_on'   => $scheduledOn,
-            'auto_expire_on' => $autoExpireOn,
-        ])->save();
+        $notification
+            ->forceFill([
+                'user_id' => $userId,
+                'scope' => $scope,
+                'type' => $data['type'],
+                'title' => $data['title'],
+                'message' => $data['message'],
+                'data' => null,
+                'scheduled_on' => $scheduledOn,
+                'auto_expire_on' => $autoExpireOn,
+            ])
+            ->save();
 
         $broadcastTarget = $notification->user_id ?: 'system';
         event(new AppNotificationsBulkChanged($broadcastTarget, 'bulk', [$notification->id]));
 
-        return redirect()->route('admin.notifications.index')
-            ->with('success', 'Notification updated.');
+        return redirect()->route('admin.notifications.index')->with('success', 'Notification updated.');
     }
-
 
     public function destroy(string $id)
     {
@@ -188,15 +180,13 @@ class AdminAppNotificationsController extends Controller
 
         event(new AppNotificationsBulkChanged($broadcastTarget, 'bulk', $ids));
 
-        return redirect()->route('admin.notifications.index')
-            ->with('success', 'Notification deleted.');
+        return redirect()->route('admin.notifications.index')->with('success', 'Notification deleted.');
     }
-
 
     public function bulkDestroy(Request $request)
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array', 'min:1'],
+            'ids' => ['required', 'array', 'min:1'],
             'ids.*' => ['string'],
         ]);
 
@@ -219,19 +209,19 @@ class AdminAppNotificationsController extends Controller
             $idsByTarget[$target][] = $item->id;
         }
 
-        AppNotification::query()->whereIn('id', $items->pluck('id')->all())->delete();
+        AppNotification::query()
+            ->whereIn('id', $items->pluck('id')->all())
+            ->delete();
 
         foreach ($idsByTarget as $target => $targetIds) {
             event(new AppNotificationsBulkChanged((string) $target, 'bulk', array_values($targetIds)));
         }
 
-        return redirect()->route('admin.notifications.index')
-            ->with('success', 'Notifications deleted.');
+        return redirect()->route('admin.notifications.index')->with('success', 'Notifications deleted.');
     }
-
 
     public function deleted(Request $request)
     {
-        return Inertia::render('Admin/Notifications/AdminDeletedNotificaionsIndex');
+        return Inertia::render('Admin/Notifications/IndexDeletedNotificationsPage');
     }
 }

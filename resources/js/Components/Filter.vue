@@ -110,67 +110,133 @@ onBeforeUnmount(() => {
     <div class="space-y-2">
         <div v-if="column.getCanFilter()">
             <div v-if="!shouldUseSelect && !shouldUseRange" class="relative">
-                <input :value="columnFilterValue ?? ''" @input="handleFilterChange($event.target.value)"
+                <input
+                    :value="columnFilterValue ?? ''"
+                    @input="handleFilterChange($event.target.value)"
                     placeholder="Filter..."
                     class="w-full truncate rounded border border-gray-300 bg-white px-2 py-1 pr-6 text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400" />
-                <button v-if="columnFilterValue" @click="clearFilter"
+                <button
+                    v-if="columnFilterValue"
+                    @click="clearFilter"
                     class="focus:ring-opacity-50 absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                    :style="{ '--tw-ring-color': 'var(--primary-color)' }" aria-label="Clear filter">
-                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                    aria-label="Clear filter">
+                    <svg
+                        class="h-3 w-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
             <div v-else-if="shouldUseSelect" class="relative">
-                <select :value="columnFilterValue ?? ''" @change="handleFilterChange($event.target.value)"
+                <select
+                    :value="columnFilterValue ?? ''"
+                    @change="handleFilterChange($event.target.value)"
                     class="w-full appearance-none truncate rounded border border-gray-300 bg-white px-2 py-1 pr-8 text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400">
-                    <option value="" class="bg-white font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+                    <option
+                        value=""
+                        class="bg-white font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-200">
                         All
                     </option>
-                    <option v-for="item in sortedUniqueValues" :key="item.display" :value="item.display"
+                    <option
+                        v-for="item in sortedUniqueValues"
+                        :key="item.display"
+                        :value="item.display"
                         class="bg-white font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-200">
                         {{ item.display }}
                     </option>
                 </select>
                 <div class="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2">
-                    <svg class="h-3 w-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                    <svg
+                        class="h-3 w-3 text-gray-400 dark:text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 9l-7 7-7-7" />
                     </svg>
                 </div>
-                <button v-if="columnFilterValue" @click="clearFilter"
+                <button
+                    v-if="columnFilterValue"
+                    @click="clearFilter"
                     class="focus:ring-opacity-50 absolute top-1/2 right-6 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                    :style="{ '--tw-ring-color': 'var(--primary-color)' }" aria-label="Clear filter">
-                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                    aria-label="Clear filter">
+                    <svg
+                        class="h-3 w-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
             <div v-else-if="shouldUseRange" class="space-y-1">
                 <div class="relative">
-                    <input type="number" :value="selectedRange[0]"
-                        @input="handleRangeChange(0, Number($event.target.value))" placeholder="Min"
+                    <input
+                        type="number"
+                        :value="selectedRange[0]"
+                        @input="handleRangeChange(0, Number($event.target.value))"
+                        placeholder="Min"
                         class="w-full truncate rounded border border-gray-300 bg-white px-2 py-1 pr-6 text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400" />
-                    <button v-if="selectedRange[0]" @click="handleRangeChange(0, '')"
+                    <button
+                        v-if="selectedRange[0]"
+                        @click="handleRangeChange(0, '')"
                         class="focus:ring-opacity-50 absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" aria-label="Clear min value">
-                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        aria-label="Clear min value">
+                        <svg
+                            class="h-3 w-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
                 <div class="relative">
-                    <input type="number" :value="selectedRange[1]"
-                        @input="handleRangeChange(1, Number($event.target.value))" placeholder="Max"
+                    <input
+                        type="number"
+                        :value="selectedRange[1]"
+                        @input="handleRangeChange(1, Number($event.target.value))"
+                        placeholder="Max"
                         class="w-full truncate rounded border border-gray-300 bg-white px-2 py-1 pr-6 text-sm font-medium focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400" />
-                    <button v-if="selectedRange[1]" @click="handleRangeChange(1, '')"
+                    <button
+                        v-if="selectedRange[1]"
+                        @click="handleRangeChange(1, '')"
                         class="focus:ring-opacity-50 absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }" aria-label="Clear max value">
-                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        aria-label="Clear max value">
+                        <svg
+                            class="h-3 w-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>

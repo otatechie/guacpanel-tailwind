@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -15,10 +14,10 @@ return [
     */
 
     'mailgun' => [
-        'domain'   => env('MAILGUN_DOMAIN'),
-        'secret'   => env('MAILGUN_SECRET'),
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-        'scheme'   => 'https',
+        'scheme' => 'https',
     ],
 
     'postmark' => [
@@ -35,7 +34,7 @@ return [
     ],
 
     'ses' => [
-        'key'    => env('AWS_ACCESS_KEY_ID'),
+        'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
@@ -47,7 +46,7 @@ return [
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
-            'channel'              => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
 
@@ -58,30 +57,30 @@ return [
     */
 
     'google' => [
-        'enabled'       => env('GOOGLE_ENABLED', false),
-        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'enabled' => env('GOOGLE_ENABLED', false),
+        'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect'      => env('GOOGLE_REDIRECT'),
+        'redirect' => env('GOOGLE_REDIRECT'),
     ],
 
     'facebook' => [
-        'enabled'       => env('FACEBOOK_ENABLED', false),
-        'client_id'     => env('FACEBOOK_CLIENT_ID'),
+        'enabled' => env('FACEBOOK_ENABLED', false),
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect'      => env('FACEBOOK_REDIRECT'),
+        'redirect' => env('FACEBOOK_REDIRECT'),
     ],
 
     'github' => [
-        'enabled'       => env('GITHUB_ENABLED', false),
-        'client_id'     => env('GITHUB_CLIENT_ID'),
+        'enabled' => env('GITHUB_ENABLED', false),
+        'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
-        'redirect'      => env('GITHUB_REDIRECT'),
+        'redirect' => env('GITHUB_REDIRECT'),
     ],
 
     'linkedin' => [
-        'enabled'       => env('LINKEDIN_ENABLED', false),
-        'client_id'     => env('LINKEDIN_CLIENT_ID'),
+        'enabled' => env('LINKEDIN_ENABLED', false),
+        'client_id' => env('LINKEDIN_CLIENT_ID'),
         'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
-        'redirect'      => env('LINKEDIN_REDIRECT'),
+        'redirect' => env('LINKEDIN_REDIRECT'),
     ],
 ];

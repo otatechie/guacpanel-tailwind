@@ -16,9 +16,7 @@ class AppNotificationCreated implements ShouldBroadcastNow
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public AppNotification $notification)
-    {
-    }
+    public function __construct(public AppNotification $notification) {}
 
     public function broadcastOn(): Channel
     {
@@ -26,7 +24,7 @@ class AppNotificationCreated implements ShouldBroadcastNow
             return new PrivateChannel('system');
         }
 
-        return new PrivateChannel('users.'.$this->notification->user_id);
+        return new PrivateChannel('users.' . $this->notification->user_id);
     }
 
     public function broadcastAs(): string
@@ -39,14 +37,14 @@ class AppNotificationCreated implements ShouldBroadcastNow
         $readAt = null;
 
         return [
-            'id'         => $this->notification->id,
-            'user_id'    => $this->notification->user_id,
-            'scope'      => $this->notification->scope,
-            'type'       => $this->notification->type,
-            'title'      => $this->notification->title,
-            'message'    => $this->notification->message,
-            'data'       => $this->notification->data,
-            'read_at'    => $readAt,
+            'id' => $this->notification->id,
+            'user_id' => $this->notification->user_id,
+            'scope' => $this->notification->scope,
+            'type' => $this->notification->type,
+            'title' => $this->notification->title,
+            'message' => $this->notification->message,
+            'data' => $this->notification->data,
+            'read_at' => $readAt,
             'created_at' => optional($this->notification->created_at)?->toISOString(),
         ];
     }

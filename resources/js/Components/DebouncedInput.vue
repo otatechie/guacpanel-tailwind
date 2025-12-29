@@ -54,6 +54,11 @@ onBeforeUnmount(() => {
 })
 </script>
 <template>
-    <input :value="inputValue" @input="handleInput" @keydown="handleKeydown" :class="className"
-        :placeholder="placeholder" type="text" />
+    <input
+        :value="inputValue"
+        @input="handleInput"
+        @keydown="handleKeydown"
+        :class="className"
+        :placeholder="placeholder"
+        type="text" />
 </template>

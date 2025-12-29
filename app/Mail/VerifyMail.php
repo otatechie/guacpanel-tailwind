@@ -23,13 +23,13 @@ class VerifyMail extends Mailable
 
     public function build(): self
     {
-        return $this
-            ->subject(trans('emails.verify.subject', [
+        return $this->subject(
+            trans('emails.verify.subject', [
                 'appname' => config('app.name'),
-            ]))
-            ->markdown('emails.verify', [
-                'user'             => $this->user,
-                'verificationUrl'  => $this->verificationUrl,
-            ]);
+            ]),
+        )->markdown('emails.verify', [
+            'user' => $this->user,
+            'verificationUrl' => $this->verificationUrl,
+        ]);
     }
 }

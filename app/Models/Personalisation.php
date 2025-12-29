@@ -16,22 +16,16 @@ class Personalisation extends Model
 
     protected $guarded = ['id'];
 
-    protected $fillable = [
-        'app_name',
-        'app_logo',
-        'app_logo_dark',
-        'favicon',
-        'copyright_text',
-    ];
+    protected $fillable = ['app_name', 'app_logo', 'app_logo_dark', 'favicon', 'copyright_text'];
 
     protected $casts = [
-        'app_name'          => 'string',
-        'app_logo'          => 'string',
-        'app_logo_dark'     => 'string',
-        'favicon'           => 'string',
-        'copyright_text'    => 'string',
-        'created_at'        => 'datetime',
-        'updated_at'        => 'datetime',
+        'app_name' => 'string',
+        'app_logo' => 'string',
+        'app_logo_dark' => 'string',
+        'favicon' => 'string',
+        'copyright_text' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected static function booted()

@@ -16,13 +16,13 @@ class ListNotificationsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'scope'     => ['sometimes', 'string', 'in:all,user,system,release'],
-            'read'      => ['sometimes', 'string', 'in:all,read,unread'],
+            'scope' => ['sometimes', 'string', 'in:all,user,system,release'],
+            'read' => ['sometimes', 'string', 'in:all,read,unread'],
             'dismissed' => ['sometimes', 'string', 'in:all,dismissed,undismissed'],
-            'type'      => ['sometimes', 'string', 'in:all,info,success,warning,error'],
-            'search'    => ['sometimes', 'nullable', 'string', 'max:255'],
-            'sort'      => ['sometimes', 'string', 'in:newest,oldest'],
-            'per_page'  => [
+            'type' => ['sometimes', 'string', 'in:all,info,success,warning,error'],
+            'search' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'sort' => ['sometimes', 'string', 'in:newest,oldest'],
+            'per_page' => [
                 'sometimes',
                 function ($attribute, $value, $fail) {
                     if ($value === 'all') {

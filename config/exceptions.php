@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Exception Email Enabled
@@ -60,7 +59,7 @@ return [
     | This is the subject of the exception email
     |
     */
-    'emailExceptionSubject' => env('EMAIL_EXCEPTION_SUBJECT', 'Error on '.config('app.env')),
+    'emailExceptionSubject' => env('EMAIL_EXCEPTION_SUBJECT', 'Error on ' . config('app.env')),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,5 +70,4 @@ return [
     |
     */
     'emailExceptionView' => 'emails.exception',
-
 ];

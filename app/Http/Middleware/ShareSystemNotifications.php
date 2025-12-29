@@ -16,22 +16,22 @@ class ShareSystemNotifications
                 ->where('scope', 'system')
                 ->whereNull('user_id')
                 ->where(function ($q) {
-                    $q->whereNull('scheduled_on')
-                        ->orWhere('scheduled_on', '<=', now());
+                    $q->whereNull('scheduled_on')->orWhere('scheduled_on', '<=', now());
                 })
                 ->where(function ($q) {
-                    $q->whereNull('auto_expire_on')
-                        ->orWhere('auto_expire_on', '>=', now());
+                    $q->whereNull('auto_expire_on')->orWhere('auto_expire_on', '>=', now());
                 })
                 ->whereNull('deleted_at')
                 ->latest()
                 ->get()
-                ->map(fn($notification) => [
-                    'id' => $notification->id,
-                    'title' => $notification->title,
-                    'message' => $notification->message,
-                    'type' => $notification->type,
-                ]);
+                ->map(
+                    fn($notification) => [
+                        'id' => $notification->id,
+                        'title' => $notification->title,
+                        'message' => $notification->message,
+                        'type' => $notification->type,
+                    ],
+                );
 
             inertia()->share('systemNotifications', $systemNotifications);
         }
