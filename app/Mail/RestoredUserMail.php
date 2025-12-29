@@ -25,8 +25,8 @@ class RestoredUserMail extends Mailable
 
     public function build()
     {
-        return $this
-                ->subject(__('emails.restored.subject', ['appname' => config('app.name')]))
-                ->markdown('emails.account-restored');
+        return $this->subject(__('emails.restored.subject', ['appname' => config('app.name')]))->markdown(
+            'emails.account-restored',
+        );
     }
 }

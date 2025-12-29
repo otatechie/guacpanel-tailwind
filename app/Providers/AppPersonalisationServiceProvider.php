@@ -25,9 +25,9 @@ class AppPersonalisationServiceProvider extends ServiceProvider
             Inertia::share([
                 'app' => [
                     'version' => config('app.version'),
-                    'name'    => config('app.name'),
+                    'name' => config('app.name'),
                 ],
-                'personalisation' => fn () => $personalisation,
+                'personalisation' => fn() => $personalisation,
             ]);
         }
     }

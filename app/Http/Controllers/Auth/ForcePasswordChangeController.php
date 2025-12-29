@@ -25,7 +25,7 @@ class ForcePasswordChangeController extends ParentController
     public function update(Request $request)
     {
         $user = $request->user();
-        $key = 'user.password.change.update:'.$user->id;
+        $key = 'user.password.change.update:' . $user->id;
         $maxAttempts = 3;
         $decaySeconds = 120;
 
@@ -33,22 +33,14 @@ class ForcePasswordChangeController extends ParentController
             $seconds = RateLimiter::availableIn($key);
 
             return back()->withErrors([
-                'password' => 'Too many attempts. Please try again in '.ceil($seconds / 60).' minutes.',
+                'password' => 'Too many attempts. Please try again in ' . ceil($seconds / 60) . ' minutes.',
             ]);
         }
 
         RateLimiter::hit($key, $decaySeconds);
 
         $validatedData = $request->validate([
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
-            ],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
         if (Hash::check($validatedData['password'], $user->password)) {
@@ -58,9 +50,9 @@ class ForcePasswordChangeController extends ParentController
         }
 
         $user->update([
-            'password'              => Hash::make($validatedData['password']),
+            'password' => Hash::make($validatedData['password']),
             'force_password_change' => false,
-            'password_changed_at'   => now(),
+            'password_changed_at' => now(),
         ]);
 
         RateLimiter::clear($key);

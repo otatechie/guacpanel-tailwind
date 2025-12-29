@@ -27,10 +27,10 @@ class NotificationsCleanupReport extends Mailable
 
     public function build(): self
     {
-        return $this
-            ->subject(trans('emails.notifications_cleanup.subject', [
+        return $this->subject(
+            trans('emails.notifications_cleanup.subject', [
                 'appname' => config('app.name'),
-            ]))
-            ->markdown('emails.notifications.cleanup-report');
+            ]),
+        )->markdown('emails.notifications.cleanup-report');
     }
 }

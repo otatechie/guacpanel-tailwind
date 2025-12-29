@@ -1,46 +1,46 @@
 .tab-fade-enter-active,
 .tab-fade-leave-active {
-  transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .tab-fade-enter-from {
-  opacity: 0;
-  transform: translateX(20px);
+    opacity: 0;
+    transform: translateX(20px);
 }
 
 .tab-fade-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
+    opacity: 0;
+    transform: translateX(-20px);
 }
 
 .slide-down-enter-active {
-  transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
 }
 
 .slide-down-leave-active {
-  transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
 }
 
 .slide-down-enter-from {
-  opacity: 0;
-  max-height: 0;
-  transform: translateY(-10px);
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
 }
 
 .slide-down-enter-to {
-  opacity: 1;
-  max-height: 1000px;
-  transform: translateY(0);
+    opacity: 1;
+    max-height: 1000px;
+    transform: translateY(0);
 }
 
 .slide-down-leave-from {
-  opacity: 1;
-  max-height: 1000px;
-  transform: translateY(0);
+    opacity: 1;
+    max-height: 1000px;
+    transform: translateY(0);
 }
 
 .slide-down-leave-to {
-  opacity: 0;
-  max-height: 0;
-  transform: translateY(-10px);
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
 }

@@ -21,10 +21,10 @@ class WelcomeMailVerified extends Mailable
 
     public function build(): self
     {
-        return $this
-                ->subject(trans('emails.welcome-verified.subject', [
-                    'appname' => config('app.name'),
-                ]))
-                ->markdown('emails.welcome-verified');
+        return $this->subject(
+            trans('emails.welcome-verified.subject', [
+                'appname' => config('app.name'),
+            ]),
+        )->markdown('emails.welcome-verified');
     }
 }

@@ -14,9 +14,7 @@ class RequireAuthForVerification
             if (!auth()->check()) {
                 session()->put('url.intended', $request->fullUrl());
 
-                return redirect()
-                    ->route('login')
-                    ->with('warning', __('notifications.verify.login'));
+                return redirect()->route('login')->with('warning', __('notifications.verify.login'));
             }
         }
 

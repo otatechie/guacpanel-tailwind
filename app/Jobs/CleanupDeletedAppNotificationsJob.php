@@ -29,11 +29,13 @@ class CleanupDeletedAppNotificationsJob implements ShouldQueue
             $to = (string) config('guacpanel.notifications.auto_clean_send_email_to', '');
 
             if ($to !== '') {
-                Mail::to($to)->send(new NotificationsCleanupReport(
-                    deleted: (int) $result['deleted'],
-                    cutoff: $result['cutoff'],
-                    days: (int) $result['days'],
-                ));
+                Mail::to($to)->send(
+                    new NotificationsCleanupReport(
+                        deleted: (int) $result['deleted'],
+                        cutoff: $result['cutoff'],
+                        days: (int) $result['days'],
+                    ),
+                );
             }
         }
 

@@ -4,10 +4,10 @@ import { Link, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
 
 const props = defineProps({
-  user: {
-    type: Object,
-    required: true,
-  },
+    user: {
+        type: Object,
+        required: true,
+    },
 })
 
 const page = usePage()
@@ -31,673 +31,706 @@ const permissions = computed(() => page.props?.auth?.user?.permissions ?? [])
 const canViewAll = computed(() => permissions.value.includes('view-notifications'))
 
 const isViewAllActive = computed(() => {
-  const url = page.url || ''
-  return url === '/notifications/all' || url.startsWith('/notifications/all?')
+    const url = page.url || ''
+    return url === '/notifications/all' || url.startsWith('/notifications/all?')
 })
 
 const typeToPriority = type => {
-  if (type === 'error') return 'critical'
-  if (type === 'warning') return 'high'
-  if (type === 'success') return 'normal'
-  return 'low'
+    if (type === 'error') return 'critical'
+    if (type === 'warning') return 'high'
+    if (type === 'success') return 'normal'
+    return 'low'
 }
 
 const relativeTime = iso => {
-  if (!iso) return ''
-  const then = new Date(iso).getTime()
-  const now = Date.now()
-  const diff = Math.max(0, Math.floor((now - then) / 1000))
+    if (!iso) return ''
+    const then = new Date(iso).getTime()
+    const now = Date.now()
+    const diff = Math.max(0, Math.floor((now - then) / 1000))
 
-  if (diff < 10) return 'just now'
-  if (diff < 60) return `${diff}s ago`
-  const mins = Math.floor(diff / 60)
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  const days = Math.floor(hrs / 24)
-  return `${days}d ago`
+    if (diff < 10) return 'just now'
+    if (diff < 60) return `${diff}s ago`
+    const mins = Math.floor(diff / 60)
+    if (mins < 60) return `${mins}m ago`
+    const hrs = Math.floor(mins / 60)
+    if (hrs < 24) return `${hrs}h ago`
+    const days = Math.floor(hrs / 24)
+    return `${days}d ago`
 }
 
 const typeLabel = type => {
-  if (type === 'error') return 'Error'
-  if (type === 'warning') return 'Warning'
-  if (type === 'success') return 'Success'
-  return 'Info'
+    if (type === 'error') return 'Error'
+    if (type === 'warning') return 'Warning'
+    if (type === 'success') return 'Success'
+    return 'Info'
 }
 
 const normalize = n => ({
-  id: n.id,
-  title:
-    n.title ||
-    (n.scope === 'system' ? 'System' : n.scope === 'release' ? 'Release' : 'Notification'),
-  description: n.message,
-  created_at: n.created_at,
-  time: relativeTime(n.created_at),
-  is_read: !!n.is_read,
-  read_at: n.read_at ?? null,
-  is_dismissed: !!n.is_dismissed,
-  dismissed_at: n.dismissed_at ?? null,
-  scope: n.scope,
-  type: n.type,
-  priority: typeToPriority(n.type),
-  data: n.data ?? null,
+    id: n.id,
+    title:
+        n.title ||
+        (n.scope === 'system' ? 'System' : n.scope === 'release' ? 'Release' : 'Notification'),
+    description: n.message,
+    created_at: n.created_at,
+    time: relativeTime(n.created_at),
+    is_read: !!n.is_read,
+    read_at: n.read_at ?? null,
+    is_dismissed: !!n.is_dismissed,
+    dismissed_at: n.dismissed_at ?? null,
+    scope: n.scope,
+    type: n.type,
+    priority: typeToPriority(n.type),
+    data: n.data ?? null,
 })
 
 const hydrateFromPageProps = () => {
-  const initial = page.props?.notifications?.data
+    const initial = page.props?.notifications?.data
 
-  notifications.value = Array.isArray(initial)
-    ? initial.filter(n => !n.is_dismissed).map(normalize)
-    : []
+    notifications.value = Array.isArray(initial)
+        ? initial.filter(n => !n.is_dismissed).map(normalize)
+        : []
 }
 
 const fetchNotifications = async ({ silent = false } = {}) => {
-  if (!silent) {
-    isLoading.value = true
-  }
-
-  try {
-    const res = await apiFetch('/notifications')
-
-    if (!res.ok) {
-      return
-    }
-
-    const json = await res.json()
-    const next = Array.isArray(json?.data) ? json.data.map(normalize) : []
-    notifications.value = next.filter(n => !n.is_dismissed)
-  } finally {
     if (!silent) {
-      isLoading.value = false
+        isLoading.value = true
     }
-  }
+
+    try {
+        const res = await apiFetch('/notifications')
+
+        if (!res.ok) {
+            return
+        }
+
+        const json = await res.json()
+        const next = Array.isArray(json?.data) ? json.data.map(normalize) : []
+        notifications.value = next.filter(n => !n.is_dismissed)
+    } finally {
+        if (!silent) {
+            isLoading.value = false
+        }
+    }
 }
 
 const toggleNotifications = async event => {
-  event?.preventDefault()
-  event?.stopPropagation()
+    event?.preventDefault()
+    event?.stopPropagation()
 
-  notificationsOpen.value = !notificationsOpen.value
+    notificationsOpen.value = !notificationsOpen.value
 
-  if (notificationsOpen.value) {
-    await fetchNotifications({ silent: true })
-  }
+    if (notificationsOpen.value) {
+        await fetchNotifications({ silent: true })
+    }
 }
 
 const markAsRead = async (notification, event) => {
-  event?.stopPropagation()
+    event?.stopPropagation()
 
-  if (!notification || notification.is_read) return
+    if (!notification || notification.is_read) return
 
-  notification.is_read = true
+    notification.is_read = true
 
-  const res = await apiFetch(`/notifications/${notification.id}/read`, {
-    method: 'POST',
-    body: JSON.stringify({}),
-  })
+    const res = await apiFetch(`/notifications/${notification.id}/read`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+    })
 
-  if (!res.ok) {
-    notification.is_read = false
-  }
+    if (!res.ok) {
+        notification.is_read = false
+    }
 }
 
 const undoMarkAsRead = async (notification, event) => {
-  event?.preventDefault()
-  event?.stopPropagation()
+    event?.preventDefault()
+    event?.stopPropagation()
 
-  if (!notification || !notification.is_read) return
+    if (!notification || !notification.is_read) return
 
-  const original = notification.is_read
-  notification.is_read = false
+    const original = notification.is_read
+    notification.is_read = false
 
-  const res = await apiFetch(`/notifications/${notification.id}/unread`, {
-    method: 'POST',
-    body: JSON.stringify({}),
-  })
+    const res = await apiFetch(`/notifications/${notification.id}/unread`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+    })
 
-  if (!res.ok) {
-    notification.is_read = original
-  }
+    if (!res.ok) {
+        notification.is_read = original
+    }
 }
 
 const markAllRead = async event => {
-  event?.preventDefault()
-  event?.stopPropagation()
+    event?.preventDefault()
+    event?.stopPropagation()
 
-  if (!hasUnreadNotifications.value) return
+    if (!hasUnreadNotifications.value) return
 
-  const original = notifications.value
-  notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
+    const original = notifications.value
+    notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
 
-  const res = await apiFetch('/notifications/read-all', {
-    method: 'POST',
-    body: JSON.stringify({}),
-  })
+    const res = await apiFetch('/notifications/read-all', {
+        method: 'POST',
+        body: JSON.stringify({}),
+    })
 
-  if (!res.ok) {
-    notifications.value = original
-  }
+    if (!res.ok) {
+        notifications.value = original
+    }
 }
 
 const dismissNotification = async (notification, event) => {
-  event?.preventDefault()
-  event?.stopPropagation()
+    event?.preventDefault()
+    event?.stopPropagation()
 
-  if (!notification?.id) return
+    if (!notification?.id) return
 
-  const original = notifications.value
-  notifications.value = notifications.value.filter(n => n.id !== notification.id)
+    const original = notifications.value
+    notifications.value = notifications.value.filter(n => n.id !== notification.id)
 
-  const res = await apiFetch(`/notifications/${notification.id}/dismiss`, {
-    method: 'POST',
-    body: JSON.stringify({}),
-  })
+    const res = await apiFetch(`/notifications/${notification.id}/dismiss`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+    })
 
-  if (!res.ok) {
-    notifications.value = original
-  }
+    if (!res.ok) {
+        notifications.value = original
+    }
 }
 
 const dismissAll = async event => {
-  event?.preventDefault()
-  event?.stopPropagation()
+    event?.preventDefault()
+    event?.stopPropagation()
 
-  if (!hasAnyNotifications.value) return
+    if (!hasAnyNotifications.value) return
 
-  const original = notifications.value
-  notifications.value = []
+    const original = notifications.value
+    notifications.value = []
 
-  const res = await apiFetch('/notifications/dismiss-all', {
-    method: 'POST',
-    body: JSON.stringify({}),
-  })
+    const res = await apiFetch('/notifications/dismiss-all', {
+        method: 'POST',
+        body: JSON.stringify({}),
+    })
 
-  if (!res.ok) {
-    notifications.value = original
-  }
+    if (!res.ok) {
+        notifications.value = original
+    }
 }
 
 const getPayloadId = payload =>
-  payload?.id ?? payload?.notification_id ?? payload?.app_notification_id
+    payload?.id ?? payload?.notification_id ?? payload?.app_notification_id
 
 const isDeleteAction = action => {
-  if (!action) return false
-  return ['delete', 'deleted', 'destroy', 'destroyed', 'remove', 'removed'].includes(String(action))
+    if (!action) return false
+    return ['delete', 'deleted', 'destroy', 'destroyed', 'remove', 'removed'].includes(
+        String(action)
+    )
 }
 
 const handleStateChanged = payload => {
-  const id = getPayloadId(payload)
-  if (!id) return
+    const id = getPayloadId(payload)
+    if (!id) return
 
-  if (isDeleteAction(payload.action) || payload.action === 'dismiss') {
-    notifications.value = notifications.value.filter(n => n.id !== id)
-    return
-  }
+    if (isDeleteAction(payload.action) || payload.action === 'dismiss') {
+        notifications.value = notifications.value.filter(n => n.id !== id)
+        return
+    }
 
-  if (payload.action === 'undismiss') {
-    fetchNotifications({ silent: true })
-    return
-  }
+    if (payload.action === 'undismiss') {
+        fetchNotifications({ silent: true })
+        return
+    }
 
-  const idx = notifications.value.findIndex(n => n.id === id)
+    const idx = notifications.value.findIndex(n => n.id === id)
 
-  if (idx === -1) {
-    fetchNotifications({ silent: true })
-    return
-  }
+    if (idx === -1) {
+        fetchNotifications({ silent: true })
+        return
+    }
 
-  const next = { ...notifications.value[idx] }
+    const next = { ...notifications.value[idx] }
 
-  if (payload.action === 'read') {
-    next.is_read = true
-    next.read_at = payload.read_at ?? next.read_at
-  }
+    if (payload.action === 'read') {
+        next.is_read = true
+        next.read_at = payload.read_at ?? next.read_at
+    }
 
-  if (payload.action === 'unread') {
-    next.is_read = false
-    next.read_at = null
-  }
+    if (payload.action === 'unread') {
+        next.is_read = false
+        next.read_at = null
+    }
 
-  notifications.value.splice(idx, 1, next)
+    notifications.value.splice(idx, 1, next)
 }
 
 const handleBulkChanged = payload => {
-  if (!payload?.action) return
+    if (!payload?.action) return
 
-  if (payload.action === 'dismiss-all') {
-    notifications.value = []
-    return
-  }
+    if (payload.action === 'dismiss-all') {
+        notifications.value = []
+        return
+    }
 
-  if (payload.action === 'read-all') {
-    notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
-    return
-  }
+    if (payload.action === 'read-all') {
+        notifications.value = notifications.value.map(n => ({ ...n, is_read: true }))
+        return
+    }
 
-  fetchNotifications({ silent: true })
+    fetchNotifications({ silent: true })
 }
 
 const scopeIconName = scope => {
-  if (scope === 'system') return 'cpu'
-  if (scope === 'user') return 'user'
-  if (scope === 'release') return 'release'
-  return 'fallback'
+    if (scope === 'system') return 'cpu'
+    if (scope === 'user') return 'user'
+    if (scope === 'release') return 'release'
+    return 'fallback'
 }
 
 const priorityIconName = priority => {
-  if (priority === 'critical') return 'x-circle'
-  if (priority === 'high') return 'exclamation-triangle'
-  if (priority === 'normal') return 'information-circle'
-  return 'bell'
+    if (priority === 'critical') return 'x-circle'
+    if (priority === 'high') return 'exclamation-triangle'
+    if (priority === 'normal') return 'information-circle'
+    return 'bell'
 }
 
 const priorityIconClass = priority => {
-  if (priority === 'critical') return 'text-red-500'
-  if (priority === 'high') return 'text-yellow-500'
-  if (priority === 'normal') return 'text-blue-500'
-  return 'text-[var(--color-text-muted)]'
+    if (priority === 'critical') return 'text-red-500'
+    if (priority === 'high') return 'text-yellow-500'
+    if (priority === 'normal') return 'text-blue-500'
+    return 'text-[var(--color-text-muted)]'
 }
 
 const closeDropdown = () => {
-  notificationsOpen.value = false
+    notificationsOpen.value = false
 }
 
 const handleClickAway = event => {
-  const el = rootEl.value
-  if (!el) return
-  if (!el.contains(event.target)) {
-    closeDropdown()
-  }
+    const el = rootEl.value
+    if (!el) return
+    if (!el.contains(event.target)) {
+        closeDropdown()
+    }
 }
 
 const handleEscapeKey = event => {
-  if (event.key === 'Escape') {
-    closeDropdown()
-  }
+    if (event.key === 'Escape') {
+        closeDropdown()
+    }
 }
 
 const subscribeRealtime = () => {
-  if (!window.Echo || !props.user?.id) return
+    if (!window.Echo || !props.user?.id) return
 
-  userChannel = window.Echo.private(`users.${props.user.id}`)
-    .listen('.app-notification.created', handleStateChanged)
-    .listen('.app-notification.state', handleStateChanged)
-    .listen('.app-notification.bulk', handleBulkChanged)
+    userChannel = window.Echo.private(`users.${props.user.id}`)
+        .listen('.app-notification.created', handleStateChanged)
+        .listen('.app-notification.state', handleStateChanged)
+        .listen('.app-notification.bulk', handleBulkChanged)
 
-  systemChannel = window.Echo.private('system')
-    .listen('.app-notification.created', handleStateChanged)
-    .listen('.app-notification.state', handleStateChanged)
-    .listen('.app-notification.bulk', handleBulkChanged)
+    systemChannel = window.Echo.private('system')
+        .listen('.app-notification.created', handleStateChanged)
+        .listen('.app-notification.state', handleStateChanged)
+        .listen('.app-notification.bulk', handleBulkChanged)
 
-  releaseChannel = window.Echo.private('release')
-    .listen('.app-notification.created', handleStateChanged)
-    .listen('.app-notification.state', handleStateChanged)
-    .listen('.app-notification.bulk', handleBulkChanged)
+    releaseChannel = window.Echo.private('release')
+        .listen('.app-notification.created', handleStateChanged)
+        .listen('.app-notification.state', handleStateChanged)
+        .listen('.app-notification.bulk', handleBulkChanged)
 }
 
 const unsubscribeRealtime = () => {
-  if (!window.Echo || !props.user?.id) return
+    if (!window.Echo || !props.user?.id) return
 
-  window.Echo.leave(`private-users.${props.user.id}`)
-  window.Echo.leave('private-system')
-  window.Echo.leave('private-release')
+    window.Echo.leave(`private-users.${props.user.id}`)
+    window.Echo.leave('private-system')
+    window.Echo.leave('private-release')
 
-  userChannel = null
-  systemChannel = null
-  releaseChannel = null
+    userChannel = null
+    systemChannel = null
+    releaseChannel = null
 }
 
 const startReconcile = () => {
-  if (reconcileTimer) return
+    if (reconcileTimer) return
 
-  reconcileTimer = setInterval(() => {
-    fetchNotifications({ silent: true })
-  }, 60000)
+    reconcileTimer = setInterval(() => {
+        fetchNotifications({ silent: true })
+    }, 60000)
 }
 
 const stopReconcile = () => {
-  if (!reconcileTimer) return
-  clearInterval(reconcileTimer)
-  reconcileTimer = null
+    if (!reconcileTimer) return
+    clearInterval(reconcileTimer)
+    reconcileTimer = null
 }
 
 const handleAppRefresh = () => {
-  fetchNotifications({ silent: true })
+    fetchNotifications({ silent: true })
 }
 
 onMounted(async () => {
-  document.addEventListener('click', handleClickAway)
-  document.addEventListener('keydown', handleEscapeKey)
-  window.addEventListener('app-notifications:refresh', handleAppRefresh)
+    document.addEventListener('click', handleClickAway)
+    document.addEventListener('keydown', handleEscapeKey)
+    window.addEventListener('app-notifications:refresh', handleAppRefresh)
 
-  hydrateFromPageProps()
-  subscribeRealtime()
-  startReconcile()
+    hydrateFromPageProps()
+    subscribeRealtime()
+    startReconcile()
 
-  setTimeout(() => {
-    fetchNotifications({ silent: true })
-  }, 750)
+    setTimeout(() => {
+        fetchNotifications({ silent: true })
+    }, 750)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickAway)
-  document.removeEventListener('keydown', handleEscapeKey)
-  window.removeEventListener('app-notifications:refresh', handleAppRefresh)
+    document.removeEventListener('click', handleClickAway)
+    document.removeEventListener('keydown', handleEscapeKey)
+    window.removeEventListener('app-notifications:refresh', handleAppRefresh)
 
-  stopReconcile()
-  unsubscribeRealtime()
+    stopReconcile()
+    unsubscribeRealtime()
 })
 </script>
 
 <template>
-  <div ref="rootEl" class="relative">
-    <button
-      type="button"
-      data-notification-button
-      class="group relative cursor-pointer rounded-lg p-1.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none"
-      aria-label="Notifications"
-      :aria-expanded="notificationsOpen"
-      @click="toggleNotifications">
-      <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg>
-
-      <span
-        v-if="unreadCount > 0"
-        class="absolute -top-1 -right-1 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
-        {{ unreadCount > 99 ? '99+' : unreadCount }}
-      </span>
-
-      <span
-        class="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-[var(--color-text)] px-2 py-1 text-xs whitespace-nowrap text-[var(--color-bg)] opacity-0 transition-opacity group-hover:opacity-100">
-        Notifications
-      </span>
-    </button>
-
-    <div
-      v-show="notificationsOpen"
-      data-notification-dropdown
-      class="ring-opacity-5 absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-[var(--color-surface)] shadow-lg ring-1 ring-[var(--color-border)]"
-      @click.stop>
-      <div
-        class="flex items-center justify-between rounded-t-xl border-b border-[var(--color-border)] bg-gray-100 px-4 py-3 dark:bg-gray-900">
-        <h3 class="text-sm font-semibold text-[var(--color-text)]">Notifications</h3>
-
-        <div class="flex items-center gap-2">
-          <button
-            v-if="hasUnreadNotifications"
+    <div ref="rootEl" class="relative">
+        <button
             type="button"
-            class="text-xxs cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-            @click="markAllRead">
-            Mark all read
-          </button>
-
-          <button
-            v-if="hasAnyNotifications"
-            type="button"
-            class="text-xxs cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-            @click="dismissAll">
-            Dismiss all
-          </button>
-        </div>
-      </div>
-
-      <div class="flex max-h-96 flex-col">
-        <div class="min-h-0 flex-1 overflow-y-auto">
-          <div v-if="isLoading" class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
-            Loading…
-          </div>
-
-          <div
-            v-else-if="notifications.length === 0"
-            class="flex flex-col items-center justify-center gap-2 px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            data-notification-button
+            class="group relative cursor-pointer rounded-lg p-1.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none"
+            aria-label="Notifications"
+            :aria-expanded="notificationsOpen"
+            @click="toggleNotifications">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-10">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 a8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53" />
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true">
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            No new notifications
-          </div>
 
-          <ul v-else class="divide-y divide-gray-400">
-            <li
-              v-for="notification in notifications"
-              :key="notification.id"
-              class="px-4 py-3 transition-colors hover:bg-[var(--color-surface-muted)]"
-              :class="{
-                'bg-blue-50/50 dark:bg-blue-900/20': !notification.is_read,
-                'border-l-4': true,
-                'bg-red-500/10 dark:bg-red-500/30':
-                  notification.priority === 'critical' && !notification.is_read,
-                'bg-red-500/10 dark:bg-red-500/30':
-                  notification.type === 'danger' && !notification.is_read,
-                'border-red-500': notification.priority === 'critical',
-                'border-red-500': notification.type === 'danger',
-                'border-yellow-500': notification.priority === 'high',
-                'border-blue-500': notification.priority === 'normal',
-                'border-blue-500': notification.type === 'info',
-                'border-gray-500': notification.priority === 'low',
-                'border-green-600': notification.scope === 'release',
-                'cursor-pointer font-extrabold': notification.is_read == false,
-                'cursor-default font-light': notification.is_read == true,
-              }"
-              @click="markAsRead(notification, $event)">
-              <div class="flex gap-3">
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="flex min-w-0 items-start gap-2">
-                      <span
-                        class="mt-0.5 shrink-0 text-[var(--color-text-muted)]"
-                        aria-hidden="true">
-                        <svg
-                          v-if="scopeIconName(notification.scope) === 'user'"
-                          class="size-4"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                          <path d="M4.5 20.25a7.5 7.5 0 0115 0" />
-                        </svg>
+            <span
+                v-if="unreadCount > 0"
+                class="absolute -top-1 -right-1 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                {{ unreadCount > 99 ? '99+' : unreadCount }}
+            </span>
 
-                        <svg
-                          v-else-if="scopeIconName(notification.scope) === 'cpu'"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-                        </svg>
+            <span
+                class="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-[var(--color-text)] px-2 py-1 text-xs whitespace-nowrap text-[var(--color-bg)] opacity-0 transition-opacity group-hover:opacity-100">
+                Notifications
+            </span>
+        </button>
 
-                        <svg
-                          v-else-if="scopeIconName(notification.scope) === 'release'"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.379a48.474 48.474 0 0 0-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
-                        </svg>
+        <div
+            v-show="notificationsOpen"
+            data-notification-dropdown
+            class="ring-opacity-5 absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-[var(--color-surface)] shadow-lg ring-1 ring-[var(--color-border)]"
+            @click.stop>
+            <div
+                class="flex items-center justify-between rounded-t-xl border-b border-[var(--color-border)] bg-gray-100 px-4 py-3 dark:bg-gray-900">
+                <h3 class="text-sm font-semibold text-[var(--color-text)]">Notifications</h3>
 
-                        <svg
-                          v-else
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
-                        </svg>
-                      </span>
+                <div class="flex items-center gap-2">
+                    <button
+                        v-if="hasUnreadNotifications"
+                        type="button"
+                        class="text-xxs cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                        @click="markAllRead">
+                        Mark all read
+                    </button>
 
-                      <span class="mt-0.5 shrink-0" aria-hidden="true">
-                        <svg
-                          v-if="priorityIconName(notification.priority) === 'x-circle'"
-                          class="size-4"
-                          :class="priorityIconClass(notification.priority)"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                          <path d="M9.75 9.75l4.5 4.5M14.25 9.75l-4.5 4.5" />
-                        </svg>
+                    <button
+                        v-if="hasAnyNotifications"
+                        type="button"
+                        class="text-xxs cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                        @click="dismissAll">
+                        Dismiss all
+                    </button>
+                </div>
+            </div>
 
-                        <svg
-                          v-else-if="
-                            priorityIconName(notification.priority) === 'exclamation-triangle'
-                          "
-                          class="size-4"
-                          :class="priorityIconClass(notification.priority)"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path
-                            d="M12 9v4m0 4h.01M10.29 3.86a2.25 2.25 0 013.42 0l8.22 10.18A2.25 2.25 0 0120.22 18H3.78a2.25 2.25 0 01-1.71-3.96l8.22-10.18z" />
-                        </svg>
-
-                        <svg
-                          v-else-if="
-                            priorityIconName(notification.priority) === 'information-circle'
-                          "
-                          class="size-4"
-                          :class="priorityIconClass(notification.priority)"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                          <path d="M12 11.25v5.25" />
-                          <path d="M12 8.25h.01" />
-                        </svg>
-
-                        <svg
-                          v-else
-                          class="size-4"
-                          :class="priorityIconClass(notification.priority)"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <path d="M14.25 18.75a2.25 2.25 0 01-4.5 0" />
-                          <path d="M18 8.25a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7z" />
-                        </svg>
-                      </span>
-
-                      <h4 class="min-w-0 truncate text-sm font-medium text-[var(--color-text)]">
-                        {{ notification.title }}
-                      </h4>
+            <div class="flex max-h-96 flex-col">
+                <div class="min-h-0 flex-1 overflow-y-auto">
+                    <div v-if="isLoading" class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
+                        Loading…
                     </div>
 
-                    <div class="flex items-center gap-1">
-                      <button
-                        type="button"
-                        class="cursor-pointer rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
-                        aria-label="Dismiss notification"
-                        @click="dismissNotification(notification, $event)">
+                    <div
+                        v-else-if="notifications.length === 0"
+                        class="flex flex-col items-center justify-center gap-2 px-4 py-5 text-sm text-[var(--color-text-muted)]">
                         <svg
-                          class="size-4"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          aria-hidden="true">
-                          <path d="M18 6 6 18" />
-                          <path d="M6 6 18 18" />
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-10">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 a8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53" />
                         </svg>
-                      </button>
-
-                      <button
-                        v-if="notification.is_read"
-                        type="button"
-                        class="-mt-0.5 mr-0.5 ml-2 cursor-pointer rounded-md p-0.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
-                        aria-label="Undo mark as read"
-                        @click="undoMarkAsRead(notification, $event)">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-3">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M9 15 3 9m0 0 6-6M3 9h9a6 6 0 1 1 0 12h-3" />
-                        </svg>
-                      </button>
+                        No new notifications
                     </div>
-                  </div>
 
-                  <p class="truncate text-sm text-[var(--color-text-muted)]">
-                    {{ notification.description }}
-                  </p>
-                  <time class="mt-1 text-xs text-[var(--color-text-muted)]">
-                    {{ notification.time }}
-                  </time>
+                    <ul v-else class="divide-y divide-gray-400">
+                        <li
+                            v-for="notification in notifications"
+                            :key="notification.id"
+                            class="px-4 py-3 transition-colors hover:bg-[var(--color-surface-muted)]"
+                            :class="{
+                                'bg-blue-50/50 dark:bg-blue-900/20': !notification.is_read,
+                                'border-l-4': true,
+                                'bg-red-500/10 dark:bg-red-500/30':
+                                    notification.priority === 'critical' && !notification.is_read,
+                                'bg-red-500/10 dark:bg-red-500/30':
+                                    notification.type === 'danger' && !notification.is_read,
+                                'border-red-500': notification.priority === 'critical',
+                                'border-red-500': notification.type === 'danger',
+                                'border-yellow-500': notification.priority === 'high',
+                                'border-blue-500': notification.priority === 'normal',
+                                'border-blue-500': notification.type === 'info',
+                                'border-gray-500': notification.priority === 'low',
+                                'border-green-600': notification.scope === 'release',
+                                'cursor-pointer font-extrabold': notification.is_read == false,
+                                'cursor-default font-light': notification.is_read == true,
+                            }"
+                            @click="markAsRead(notification, $event)">
+                            <div class="flex gap-3">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex min-w-0 items-start gap-2">
+                                            <span
+                                                class="mt-0.5 shrink-0 text-[var(--color-text-muted)]"
+                                                aria-hidden="true">
+                                                <svg
+                                                    v-if="
+                                                        scopeIconName(notification.scope) === 'user'
+                                                    "
+                                                    class="size-4"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                                    <path d="M4.5 20.25a7.5 7.5 0 0115 0" />
+                                                </svg>
+
+                                                <svg
+                                                    v-else-if="
+                                                        scopeIconName(notification.scope) === 'cpu'
+                                                    "
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="size-4">
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                                                </svg>
+
+                                                <svg
+                                                    v-else-if="
+                                                        scopeIconName(notification.scope) ===
+                                                        'release'
+                                                    "
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="size-4">
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.871c1.355 0 2.697.056 4.024.166C17.155 8.51 18 9.473 18 10.608v2.513M15 8.25v-1.5m-6 1.5v-1.5m12 9.75-1.5.75a3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0 3.354 3.354 0 0 0-3 0 3.354 3.354 0 0 1-3 0L3 16.5m15-3.379a48.474 48.474 0 0 0-6-.371c-2.032 0-4.034.126-6 .371m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.169c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 0 1 6 13.12M12.265 3.11a.375.375 0 1 1-.53 0L12 2.845l.265.265Zm-3 0a.375.375 0 1 1-.53 0L9 2.845l.265.265Zm6 0a.375.375 0 1 1-.53 0L15 2.845l.265.265Z" />
+                                                </svg>
+
+                                                <svg
+                                                    v-else
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="size-4">
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
+                                                </svg>
+                                            </span>
+
+                                            <span class="mt-0.5 shrink-0" aria-hidden="true">
+                                                <svg
+                                                    v-if="
+                                                        priorityIconName(notification.priority) ===
+                                                        'x-circle'
+                                                    "
+                                                    class="size-4"
+                                                    :class="
+                                                        priorityIconClass(notification.priority)
+                                                    "
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                                                    <path
+                                                        d="M9.75 9.75l4.5 4.5M14.25 9.75l-4.5 4.5" />
+                                                </svg>
+
+                                                <svg
+                                                    v-else-if="
+                                                        priorityIconName(notification.priority) ===
+                                                        'exclamation-triangle'
+                                                    "
+                                                    class="size-4"
+                                                    :class="
+                                                        priorityIconClass(notification.priority)
+                                                    "
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M12 9v4m0 4h.01M10.29 3.86a2.25 2.25 0 013.42 0l8.22 10.18A2.25 2.25 0 0120.22 18H3.78a2.25 2.25 0 01-1.71-3.96l8.22-10.18z" />
+                                                </svg>
+
+                                                <svg
+                                                    v-else-if="
+                                                        priorityIconName(notification.priority) ===
+                                                        'information-circle'
+                                                    "
+                                                    class="size-4"
+                                                    :class="
+                                                        priorityIconClass(notification.priority)
+                                                    "
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                                                    <path d="M12 11.25v5.25" />
+                                                    <path d="M12 8.25h.01" />
+                                                </svg>
+
+                                                <svg
+                                                    v-else
+                                                    class="size-4"
+                                                    :class="
+                                                        priorityIconClass(notification.priority)
+                                                    "
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M14.25 18.75a2.25 2.25 0 01-4.5 0" />
+                                                    <path
+                                                        d="M18 8.25a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7z" />
+                                                </svg>
+                                            </span>
+
+                                            <h4
+                                                class="min-w-0 truncate text-sm font-medium text-[var(--color-text)]">
+                                                {{ notification.title }}
+                                            </h4>
+                                        </div>
+
+                                        <div class="flex items-center gap-1">
+                                            <button
+                                                type="button"
+                                                class="cursor-pointer rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                                                aria-label="Dismiss notification"
+                                                @click="dismissNotification(notification, $event)">
+                                                <svg
+                                                    class="size-4"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    aria-hidden="true">
+                                                    <path d="M18 6 6 18" />
+                                                    <path d="M6 6 18 18" />
+                                                </svg>
+                                            </button>
+
+                                            <button
+                                                v-if="notification.is_read"
+                                                type="button"
+                                                class="-mt-0.5 mr-0.5 ml-2 cursor-pointer rounded-md p-0.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                                                aria-label="Undo mark as read"
+                                                @click="undoMarkAsRead(notification, $event)">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="size-3">
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M9 15 3 9m0 0 6-6M3 9h9a6 6 0 1 1 0 12h-3" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <p class="truncate text-sm text-[var(--color-text-muted)]">
+                                        {{ notification.description }}
+                                    </p>
+                                    <time class="mt-1 text-xs text-[var(--color-text-muted)]">
+                                        {{ notification.time }}
+                                    </time>
+                                </div>
+
+                                <div
+                                    v-if="!notification.is_read"
+                                    class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse hover:bg-gray-900">
+                                    <div
+                                        class="h-2.5 w-2.5 rounded-full bg-blue-500"
+                                        aria-hidden="true"></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
 
-                <div
-                  v-if="!notification.is_read"
-                  class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse hover:bg-gray-900">
-                  <div class="h-2.5 w-2.5 rounded-full bg-blue-500" aria-hidden="true"></div>
+                <div v-if="canViewAll" class="border-t border-[var(--color-border)]">
+                    <Link
+                        href="/notifications/all"
+                        class="btn btn-secondary block rounded-t-none rounded-b-xl text-center text-xs hover:text-[var(--color-text)]"
+                        :class="
+                            isViewAllActive
+                                ? 'font-semibold text-[var(--color-text)]'
+                                : 'text-[var(--color-text-muted)]'
+                        "
+                        @click="closeDropdown">
+                        View all notifications
+                    </Link>
                 </div>
-              </div>
-            </li>
-          </ul>
+            </div>
         </div>
-
-        <div v-if="canViewAll" class="border-t border-[var(--color-border)]">
-          <Link
-            href="/notifications/all"
-            class="btn btn-secondary block rounded-t-none rounded-b-xl text-center text-xs hover:text-[var(--color-text)]"
-            :class="
-              isViewAllActive
-                ? 'font-semibold text-[var(--color-text)]'
-                : 'text-[var(--color-text-muted)]'
-            "
-            @click="closeDropdown">
-            View all notifications
-          </Link>
-        </div>
-      </div>
     </div>
-  </div>
 </template>

@@ -29,44 +29,20 @@ class EventListenerRegistrar
 
     public function register(): void
     {
-        $this->events->listen(
-            Registered::class,
-            SendWelcomeEmail::class,
-        );
+        $this->events->listen(Registered::class, SendWelcomeEmail::class);
 
-        $this->events->listen(
-            Verified::class,
-            SendWelcomeEmailVerified::class,
-        );
+        $this->events->listen(Verified::class, SendWelcomeEmailVerified::class);
 
-        $this->events->listen(
-            Failed::class,
-            LogFailedLogin::class,
-        );
+        $this->events->listen(Failed::class, LogFailedLogin::class);
 
-        $this->events->listen(
-            Login::class,
-            LogSuccessfulLogin::class,
-        );
+        $this->events->listen(Login::class, LogSuccessfulLogin::class);
 
-        $this->events->listen(
-            Logout::class,
-            LogSuccessfulLogout::class,
-        );
+        $this->events->listen(Logout::class, LogSuccessfulLogout::class);
 
-        $this->events->listen(
-            UserDeleted::class,
-            SendGoodbyeEmail::class,
-        );
+        $this->events->listen(UserDeleted::class, SendGoodbyeEmail::class);
 
-        $this->events->listen(
-            UserRestored::class,
-            SendRestoredEmail::class,
-        );
+        $this->events->listen(UserRestored::class, SendRestoredEmail::class);
 
-        $this->events->listen(
-            AppNotificationRequested::class,
-            CreateAppNotification::class,
-        );
+        $this->events->listen(AppNotificationRequested::class, CreateAppNotification::class);
     }
 }

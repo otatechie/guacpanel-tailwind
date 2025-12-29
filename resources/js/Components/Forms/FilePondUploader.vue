@@ -12,93 +12,93 @@ import FilePondPluginImageResize from 'filepond-plugin-image-resize'
 import FilePondPluginImageCrop from 'filepond-plugin-image-crop'
 
 const FilePond = vueFilePond(
-  FilePondPluginImageExifOrientation,
-  FilePondPluginFileValidateType,
-  FilePondPluginImagePreview,
-  FilePondPluginFileValidateSize,
-  FilePondPluginPdfPreview,
-  FilePondPluginImageCrop,
-  FilePondPluginImageResize
+    FilePondPluginImageExifOrientation,
+    FilePondPluginFileValidateType,
+    FilePondPluginImagePreview,
+    FilePondPluginFileValidateSize,
+    FilePondPluginPdfPreview,
+    FilePondPluginImageCrop,
+    FilePondPluginImageResize
 )
 
 defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  labelIdle: {
-    type: String,
-    default: 'Drop files here...',
-  },
-  acceptedFileTypes: {
-    type: Array,
-    default: () => ['image/jpeg', 'image/png', 'application/pdf', 'image/x-icon'],
-  },
-  maxFileSize: {
-    type: String,
-    default: '5MB',
-  },
-  allowMultiple: {
-    type: Boolean,
-    default: false,
-  },
-  maxFiles: {
-    type: Number,
-    default: 1,
-  },
-  server: {
-    type: Object,
-    required: true,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  files: {
-    type: Array,
-    default: () => [],
-  },
+    name: {
+        type: String,
+        required: true,
+    },
+    label: {
+        type: String,
+        required: true,
+    },
+    labelIdle: {
+        type: String,
+        default: 'Drop files here...',
+    },
+    acceptedFileTypes: {
+        type: Array,
+        default: () => ['image/jpeg', 'image/png', 'application/pdf', 'image/x-icon'],
+    },
+    maxFileSize: {
+        type: String,
+        default: '5MB',
+    },
+    allowMultiple: {
+        type: Boolean,
+        default: false,
+    },
+    maxFiles: {
+        type: Number,
+        default: 1,
+    },
+    server: {
+        type: Object,
+        required: true,
+    },
+    required: {
+        type: Boolean,
+        default: false,
+    },
+    files: {
+        type: Array,
+        default: () => [],
+    },
 })
 
 defineEmits(['processfile', 'removefile'])
 </script>
 
 <template>
-  <div class="space-y-2">
-    <label class="block text-center text-sm font-medium text-gray-600 dark:text-gray-300">
-      {{ label }}
-      <span class="mt-1 block text-xs text-gray-500">
-        ({{ acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ') }}
-        <template v-if="allowMultiple">- Max files: {{ maxFiles }}</template>
-        )
-      </span>
-    </label>
+    <div class="space-y-2">
+        <label class="block text-center text-sm font-medium text-gray-600 dark:text-gray-300">
+            {{ label }}
+            <span class="mt-1 block text-xs text-gray-500">
+                ({{ acceptedFileTypes.map(type => type.split('/')[1].toUpperCase()).join(', ') }}
+                <template v-if="allowMultiple">- Max files: {{ maxFiles }}</template>
+                )
+            </span>
+        </label>
 
-    <file-pond
-      :name="name"
-      :allow-multiple="allowMultiple"
-      :max-files="maxFiles"
-      :accepted-file-types="acceptedFileTypes"
-      :max-file-size="maxFileSize"
-      :server="server"
-      :files="files"
-      :credits="null"
-      :allow-pdf-preview="true"
-      :label-idle="`Drop files here or <span class='filepond--label-action'>Browse</span>`"
-      :image-preview-height="100"
-      :image-crop-aspect-ratio="'1:1'"
-      :image-resize-target-width="50"
-      :image-resize-target-height="50"
-      :style-panel-layout="'rounded circle'"
-      :style-load-indicator-position="'center bottom'"
-      :style-button-remove-item-position="'center bottom'"
-      :pdf-component-extra-params="'toolbar=0'"
-      class="max-w-xs md:max-w-none"
-      @processfile="(error, file) => $emit('processfile', error, file)"
-      @removefile="(error, file) => $emit('removefile', error, file)" />
-  </div>
+        <file-pond
+            :name="name"
+            :allow-multiple="allowMultiple"
+            :max-files="maxFiles"
+            :accepted-file-types="acceptedFileTypes"
+            :max-file-size="maxFileSize"
+            :server="server"
+            :files="files"
+            :credits="null"
+            :allow-pdf-preview="true"
+            :label-idle="`Drop files here or <span class='filepond--label-action'>Browse</span>`"
+            :image-preview-height="100"
+            :image-crop-aspect-ratio="'1:1'"
+            :image-resize-target-width="50"
+            :image-resize-target-height="50"
+            :style-panel-layout="'rounded circle'"
+            :style-load-indicator-position="'center bottom'"
+            :style-button-remove-item-position="'center bottom'"
+            :pdf-component-extra-params="'toolbar=0'"
+            class="max-w-xs md:max-w-none"
+            @processfile="(error, file) => $emit('processfile', error, file)"
+            @removefile="(error, file) => $emit('removefile', error, file)" />
+    </div>
 </template>

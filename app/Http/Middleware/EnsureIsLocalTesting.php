@@ -12,10 +12,7 @@ class EnsureIsLocalTesting
     {
         $abortTo = 404;
 
-        abort_unless(app()->environment([
-            'local',
-            'testing',
-        ]), $abortTo);
+        abort_unless(app()->environment(['local', 'testing']), $abortTo);
 
         $user = $request->user();
         abort_unless($user, $abortTo);

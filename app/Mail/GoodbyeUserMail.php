@@ -33,8 +33,6 @@ class GoodbyeUserMail extends Mailable
 
     public function build(): self
     {
-        return $this
-            ->subject(__('emails.goodbye.subject'))
-            ->markdown('emails.goodbye-user-mail');
+        return $this->subject(__('emails.goodbye.subject'))->markdown('emails.goodbye-user-mail');
     }
 }

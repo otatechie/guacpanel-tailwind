@@ -12,14 +12,13 @@ trait PersonalisationsHelper
 
     protected function getPersonalisations(bool $useCaching = true): Personalisation
     {
-        $loader = fn() => tap(
-            Personalisation::first() ?? new Personalisation(),
-            function (Personalisation $personalisation) {
-                if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
-                    $personalisation->favicon = null;
-                }
+        $loader = fn() => tap(Personalisation::first() ?? new Personalisation(), function (
+            Personalisation $personalisation,
+        ) {
+            if ($personalisation->favicon && !Storage::disk('public')->exists($personalisation->favicon)) {
+                $personalisation->favicon = null;
             }
-        );
+        });
 
         if (!$useCaching) {
             return $loader();

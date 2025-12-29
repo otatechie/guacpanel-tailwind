@@ -19,8 +19,7 @@ class AppNotificationScheduledSendService
             ->where('sent_as_scheduled', false)
             ->whereNull('deleted_at')
             ->where(function ($q) use ($now) {
-                $q->whereNull('auto_expire_on')
-                  ->orWhere('auto_expire_on', '>', $now);
+                $q->whereNull('auto_expire_on')->orWhere('auto_expire_on', '>', $now);
             })
             ->orderBy('scheduled_on')
             ->chunkById(200, function ($chunk) use (&$sent, $dryRun) {
@@ -32,9 +31,11 @@ class AppNotificationScheduledSendService
 
                     event(new AppNotificationCreated($notification));
 
-                    $notification->forceFill([
-                        'sent_as_scheduled' => true,
-                    ])->save();
+                    $notification
+                        ->forceFill([
+                            'sent_as_scheduled' => true,
+                        ])
+                        ->save();
 
                     $sent++;
                 }

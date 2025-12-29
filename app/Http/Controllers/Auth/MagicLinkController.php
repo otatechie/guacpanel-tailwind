@@ -39,12 +39,12 @@ class MagicLinkController extends Controller
         $this->checkPasswordlessEnabled();
 
         $validated = $request->validate([
-            'name'  => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
         ]);
 
         // Rate limiting for registration
-        $key = 'magic_link_registration_'.$request->ip();
+        $key = 'magic_link_registration_' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
 
@@ -55,8 +55,8 @@ class MagicLinkController extends Controller
         RateLimiter::hit($key, 300); // 5 minutes
 
         $user = User::create([
-            'name'              => $validated['name'],
-            'email'             => $validated['email'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'email_verified_at' => now(),
         ]);
 
@@ -75,7 +75,7 @@ class MagicLinkController extends Controller
         ]);
 
         // Rate limiting for login attempts
-        $key = 'magic_link_login_'.$request->ip();
+        $key = 'magic_link_login_' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
 
@@ -107,16 +107,18 @@ class MagicLinkController extends Controller
         $expiryMinutes = 10;
 
         // Store token with user ID and expiry
-        Cache::put("magic_link:{$token}", [
-            'user_id'    => $user->id,
-            'created_at' => now()->timestamp,
-        ], now()->addMinutes($expiryMinutes));
-
-        $url = URL::temporarySignedRoute(
-            'magic.login.authenticate',
+        Cache::put(
+            "magic_link:{$token}",
+            [
+                'user_id' => $user->id,
+                'created_at' => now()->timestamp,
+            ],
             now()->addMinutes($expiryMinutes),
-            ['token' => $token]
         );
+
+        $url = URL::temporarySignedRoute('magic.login.authenticate', now()->addMinutes($expiryMinutes), [
+            'token' => $token,
+        ]);
 
         Mail::to($user)->send(new MagicLoginLink($url, $isNewUser));
     }
@@ -126,25 +128,25 @@ class MagicLinkController extends Controller
         $this->checkPasswordlessEnabled();
 
         if (!$request->hasValidSignature()) {
-            return redirect()->route('login')
-                ->with('error', 'This magic link has expired. Please request a new one.');
+            return redirect()->route('login')->with('error', 'This magic link has expired. Please request a new one.');
         }
 
         $cacheKey = "magic_link:{$request->token}";
         $tokenData = Cache::get($cacheKey);
 
         if (!$tokenData || !isset($tokenData['user_id'])) {
-            return redirect()->route('login')
+            return redirect()
+                ->route('login')
                 ->with('error', 'This magic link has expired or is invalid. Please request a new one.');
         }
 
         // Check if token is used within 10 minutes
         $createdAt = $tokenData['created_at'] ?? 0;
-        if (now()->timestamp - $createdAt > 600) { // 10 minutes in seconds
+        if (now()->timestamp - $createdAt > 600) {
+            // 10 minutes in seconds
             Cache::forget($cacheKey);
 
-            return redirect()->route('login')
-                ->with('error', 'This magic link has expired. Please request a new one.');
+            return redirect()->route('login')->with('error', 'This magic link has expired. Please request a new one.');
         }
 
         // Invalidate token after use (one-time use)
@@ -155,7 +157,8 @@ class MagicLinkController extends Controller
         auth()->guard('web')->login($user);
         $request->session()->regenerate();
 
-        return redirect()->intended(config('fortify.home'))
+        return redirect()
+            ->intended(config('fortify.home'))
             ->with('success', 'Welcome back! You have been successfully logged in.');
     }
 }

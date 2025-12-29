@@ -4,19 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class() extends Migration {
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('app_notification_reads', function (Blueprint $table) {
             $table->ulid('id')->primary();
 
-            $table->foreignUlid('app_notification_id')
-                ->constrained('app_notifications')
-                ->cascadeOnDelete();
+            $table->foreignUlid('app_notification_id')->constrained('app_notifications')->cascadeOnDelete();
 
-            $table->foreignUlid('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
+            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete();
 
             $table->timestamp('read_at')->nullable();
             $table->timestamp('dismissed_at')->nullable();

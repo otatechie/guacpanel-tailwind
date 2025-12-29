@@ -18,61 +18,61 @@ class PermissionRoleSeeder extends Seeder
     private function createPermissions(): array
     {
         $permissionData = [
-            'dashboard-view'    => 'View Dashboard',
+            'dashboard-view' => 'View Dashboard',
 
             // User Management
             'manage-users' => 'Manage user accounts',
-            'view-users'   => 'View user accounts',
-            'edit-users'   => 'Edit user accounts',
+            'view-users' => 'View user accounts',
+            'edit-users' => 'Edit user accounts',
             'delete-users' => 'Delete user accounts',
             'edit-profile' => 'Edit own profile',
-            'ban-users'    => 'Ban/suspend user accounts',
+            'ban-users' => 'Ban/suspend user accounts',
 
             // System
-            'access-dashboard'          => 'Access admin dashboard',
-            'manage-settings'           => 'Manage system settings',
-            'manage-security-settings'  => 'Manage system security settings',
-            'view-sessions'             => 'View Sessions',
-            'view-health'               => 'View Health',
+            'access-dashboard' => 'Access admin dashboard',
+            'manage-settings' => 'Manage system settings',
+            'manage-security-settings' => 'Manage system security settings',
+            'view-sessions' => 'View Sessions',
+            'view-health' => 'View Health',
 
             // Audit & Monitoring
             'view-audits' => 'View system audit logs',
 
             // Backup Management
-            'manage-backups'            => 'Create and manage system backups',
-            'view-backups'              => 'View Backups',
+            'manage-backups' => 'Create and manage system backups',
+            'view-backups' => 'View Backups',
 
             // Personalisation
-            'manage-personalization'        => 'Manage system appearance and branding',
-            'view-personalisation'          => 'View system appearance and branding',
-            'update-personalisation'        => 'Update system appearance and branding',
-            'upload-personalisation-files'  => 'Upload system appearance and branding files',
-            'delete-personalisation-files'  => 'Delete system appearance and branding files',
+            'manage-personalization' => 'Manage system appearance and branding',
+            'view-personalisation' => 'View system appearance and branding',
+            'update-personalisation' => 'Update system appearance and branding',
+            'upload-personalisation-files' => 'Upload system appearance and branding files',
+            'delete-personalisation-files' => 'Delete system appearance and branding files',
 
             // Roles & Permissions
-            'manage-roles'           => 'Manage user roles',
-            'manage-permissions'     => 'Manage user permissions',
+            'manage-roles' => 'Manage user roles',
+            'manage-permissions' => 'Manage user permissions',
             'view-permissions-roles' => 'View permissions and roles',
 
             // Login History
             'view-login-history' => 'View user login history',
 
             // App Notifications
-            'view-notifications'    => 'User Can View Notifications',
-            'edit-notifications'    => 'User Can Edit, Mark as Read, and Dismiss Notifications',
-            'create-notifications'  => 'User Can Create Notifications',
-            'delete-notifications'  => 'User Can Delete Notifications',
+            'view-notifications' => 'User Can View Notifications',
+            'edit-notifications' => 'User Can Edit, Mark as Read, and Dismiss Notifications',
+            'create-notifications' => 'User Can Create Notifications',
+            'delete-notifications' => 'User Can Delete Notifications',
 
-            'manage-notifications'  => 'Admin Can Manage Notifications',
+            'manage-notifications' => 'Admin Can Manage Notifications',
+
+            // User Impersonation
+            'impersonate-users' => 'Admin Can Impersonate Users',
         ];
 
         $permissions = [];
 
         foreach ($permissionData as $name => $description) {
-            $permissions[$name] = Permission::firstOrCreate(
-                ['name' => $name],
-                ['description' => $description]
-            );
+            $permissions[$name] = Permission::firstOrCreate(['name' => $name], ['description' => $description]);
         }
 
         return $permissions;
@@ -82,16 +82,13 @@ class PermissionRoleSeeder extends Seeder
     {
         $roleData = [
             'superuser' => 'Superuser with full system access',
-            'user'      => 'Standard user with limited permissions',
+            'user' => 'Standard user with limited permissions',
         ];
 
         $roles = [];
 
         foreach ($roleData as $name => $description) {
-            $roles[$name] = Role::updateOrCreate(
-                ['name' => $name],
-                ['description' => $description]
-            );
+            $roles[$name] = Role::updateOrCreate(['name' => $name], ['description' => $description]);
         }
 
         return $roles;

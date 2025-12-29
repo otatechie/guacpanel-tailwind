@@ -12,9 +12,9 @@ class Setting extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'force_password_change'     => 'boolean',
-        'password_expiry'           => 'boolean',
-        'passwordless_login'        => 'boolean',
+        'force_password_change' => 'boolean',
+        'password_expiry' => 'boolean',
+        'passwordless_login' => 'boolean',
         'two_factor_authentication' => 'boolean',
     ];
 }

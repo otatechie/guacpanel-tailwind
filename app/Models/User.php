@@ -49,28 +49,28 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'password_changed_at',
         'force_password_change',
         'profile_image_type',
-        'disable_account',          // This is the user disabling their account.
-        'account_locked',           // This is plug of kicking the user out of the app.
+        'disable_account', // This is the user disabling their account.
+        'account_locked', // This is plug of kicking the user out of the app.
         'restore_token',
         'auto_destroy',
         'restore_date',
     ];
 
     protected $casts = [
-        'email_verified_at'     => 'datetime',
-        'password'              => 'hashed',
-        'password_expiry_at'    => 'datetime',
-        'password_changed_at'   => 'datetime',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'password_expiry_at' => 'datetime',
+        'password_changed_at' => 'datetime',
         'force_password_change' => 'boolean',
-        'disable_account'       => 'boolean',   // This is the user disabling their account.
-        'profile_image_type'    => 'string',    // This is a string to later allow other types.
-        'account_locked'        => 'boolean',   // This is plug of kicking the user out of the app.
-        'restore_token'         => 'string',
-        'auto_destroy'          => 'boolean',
-        'created_at'            => 'datetime',
-        'updated_at'            => 'datetime',
-        'deleted_at'            => 'datetime',
-        'restore_date'          => 'datetime',
+        'disable_account' => 'boolean', // This is the user disabling their account.
+        'profile_image_type' => 'string', // This is a string to later allow other types.
+        'account_locked' => 'boolean', // This is plug of kicking the user out of the app.
+        'restore_token' => 'string',
+        'auto_destroy' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'restore_date' => 'datetime',
     ];
 
     protected $appends = ['created_at_formatted'];
@@ -89,10 +89,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     {
         $thresholdDate = $this->generateDestroyThresholdTimestamp();
 
-        return $query
-            ->onlyTrashed()
-            ->where('auto_destroy', true)
-            ->where('deleted_at', '<=', $thresholdDate);
+        return $query->onlyTrashed()->where('auto_destroy', true)->where('deleted_at', '<=', $thresholdDate);
     }
 
     protected function avatar(): Attribute
@@ -254,9 +251,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     public function autoDestroyDate(): Attribute
     {
-        return Attribute::make(
-            get: fn () => $this->calculateAutoDestroyDate(),
-        );
+        return Attribute::make(get: fn() => $this->calculateAutoDestroyDate());
     }
 
     public function autoDestroyDateFormatted(): Attribute
@@ -304,9 +299,10 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             return 0;
         }
 
-        $expiryDate = $this->password_expiry_at instanceof Carbon
-            ? $this->password_expiry_at
-            : Carbon::parse($this->password_expiry_at);
+        $expiryDate =
+            $this->password_expiry_at instanceof Carbon
+                ? $this->password_expiry_at
+                : Carbon::parse($this->password_expiry_at);
 
         return max(0, now()->diffInDays($expiryDate));
     }
@@ -349,8 +345,8 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     public function toSearchableArray(): array
     {
         return array_merge($this->toArray(), [
-            'id'              => (string) $this->id,
-            'created_at'      => $this->created_at->timestamp,
+            'id' => (string) $this->id,
+            'created_at' => $this->created_at->timestamp,
             'collection_name' => 'users',
         ]);
     }
@@ -358,10 +354,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     // Multiple Listeners Safety Net Override
     public function sendEmailVerificationNotification(): void
     {
-        if (
-            !config('guacpanel.email_verification_enabled')
-            || !Features::enabled(Features::emailVerification())
-        ) {
+        if (!config('guacpanel.email_verification_enabled') || !Features::enabled(Features::emailVerification())) {
             return;
         }
 

@@ -28,25 +28,19 @@ class ExceptionOccurred extends Mailable
      */
     public function envelope(): Envelope
     {
-        $emailsTo = config('exceptions.emailExceptionsTo', false) ?
-            str_getcsv(config('exceptions.emailExceptionsTo')) :
-            null;
-        $emailsCc = config('exceptions.emailExceptionCCto', false) ?
-            str_getcsv(config('exceptions.emailExceptionCCto')) :
-            null;
-        $emailsBcc = config('exceptions.emailExceptionBCCto', false) ?
-            str_getcsv(config('exceptions.emailExceptionBCCto')) :
-            null;
+        $emailsTo = config('exceptions.emailExceptionsTo', false)
+            ? str_getcsv(config('exceptions.emailExceptionsTo'))
+            : null;
+        $emailsCc = config('exceptions.emailExceptionCCto', false)
+            ? str_getcsv(config('exceptions.emailExceptionCCto'))
+            : null;
+        $emailsBcc = config('exceptions.emailExceptionBCCto', false)
+            ? str_getcsv(config('exceptions.emailExceptionBCCto'))
+            : null;
         $fromSender = config('exceptions.emailExceptionFrom');
         $subject = config('exceptions.emailExceptionSubject');
 
-        return new Envelope(
-            from: $fromSender,
-            to: $emailsTo,
-            cc: $emailsCc,
-            bcc: $emailsBcc,
-            subject: $subject
-        );
+        return new Envelope(from: $fromSender, to: $emailsTo, cc: $emailsCc, bcc: $emailsBcc, subject: $subject);
     }
 
     /**
@@ -60,7 +54,7 @@ class ExceptionOccurred extends Mailable
             view: $view,
             with: [
                 'content' => $this->content,
-            ]
+            ],
         );
     }
 }

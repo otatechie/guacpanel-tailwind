@@ -18,7 +18,7 @@ class SocialiteController extends Controller
 
     public function getSocialRedirect(Request $request, string $provider)
     {
-        $providerConfig = Config::get('services.'.$provider);
+        $providerConfig = Config::get('services.' . $provider);
 
         if (empty($providerConfig)) {
             abort(404);
@@ -30,13 +30,13 @@ class SocialiteController extends Controller
     public function handleSocialCallback(Request $request, string $provider)
     {
         if (
-            $request->filled('denied') ||   // denied param is present and not empty
-            $request->has('error') ||       // any error param present
-            !$request->has('code')          // code is missing
+            $request->filled('denied') || // denied param is present and not empty
+            $request->has('error') || // any error param present
+            !$request->has('code') // code is missing
         ) {
             return redirect()
                 ->route('login')
-                ->with('error', __('notifications.login.sm_unable_to_login_with').Str::ucfirst($provider).'.');
+                ->with('error', __('notifications.login.sm_unable_to_login_with') . Str::ucfirst($provider) . '.');
         }
 
         $user = Socialite::driver($provider)->user();
@@ -47,14 +47,14 @@ class SocialiteController extends Controller
             Auth::login($existingUser);
 
             return redirect()
-                        ->intended($this->redirectSuccessLogin)
-                        ->with('success', Str::ucfirst($provider).__('notifications.login.sm_login_successful'));
+                ->intended($this->redirectSuccessLogin)
+                ->with('success', Str::ucfirst($provider) . __('notifications.login.sm_login_successful'));
         }
 
         $newUser = User::create([
-            'name'              => $user->getName(),
-            'email'             => $user->getEmail(),
-            'password'          => bcrypt(Str::random(24)),
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'password' => bcrypt(Str::random(24)),
         ]);
 
         $newUser->markEmailAsVerified();
@@ -66,7 +66,7 @@ class SocialiteController extends Controller
         Auth::login($newUser);
 
         return redirect()
-                    ->intended('/dashboard')
-                    ->with('success', Str::ucfirst($provider).__('notifications.register.sm_registration_successful'));
+            ->intended('/dashboard')
+            ->with('success', Str::ucfirst($provider) . __('notifications.register.sm_registration_successful'));
     }
 }

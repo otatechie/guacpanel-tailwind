@@ -21,13 +21,12 @@ class DestroySoftDeletedUsersJob implements ShouldQueue
     {
         $deletedCount = 0;
 
-        User::autoDestroyable()
-            ->chunkById(100, function (Collection $users) use (&$deletedCount): void {
-                foreach ($users as $user) {
-                    $user->forceDelete();
-                    $deletedCount++;
-                }
-            });
+        User::autoDestroyable()->chunkById(100, function (Collection $users) use (&$deletedCount): void {
+            foreach ($users as $user) {
+                $user->forceDelete();
+                $deletedCount++;
+            }
+        });
 
         return $deletedCount;
     }

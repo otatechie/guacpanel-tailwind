@@ -14,12 +14,10 @@ class AdminBackupController extends Controller
         $this->middleware('permission:view-backups');
     }
 
-
     private function getDisk()
     {
         return Storage::disk(config('backup.backup.destination.disks')[0] ?? 'local');
     }
-
 
     public function index()
     {
@@ -27,7 +25,6 @@ class AdminBackupController extends Controller
             'backupInfo' => $this->fetchBackupInfo(),
         ]);
     }
-
 
     public function createBackup()
     {
@@ -39,35 +36,36 @@ class AdminBackupController extends Controller
 
         $artisanOutput = Artisan::output();
 
-        $message = $exitCode === 0
-            ? 'Backup completed successfully'
-            : 'Backup failed: ' . ($output ?: $artisanOutput ?: 'Unknown error occurred');
+        $message =
+            $exitCode === 0
+                ? 'Backup completed successfully'
+                : 'Backup failed: ' . ($output ?: $artisanOutput ?: 'Unknown error occurred');
 
         session()->flash($exitCode === 0 ? 'success' : 'error', $message);
 
         return redirect()->back();
     }
 
-
     public function fetchBackupInfo()
     {
         $disk = $this->getDisk();
         $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
 
-        $files = collect($disk->allFiles($backupName))
-            ->filter(fn($file) => str_ends_with($file, '.zip'));
+        $files = collect($disk->allFiles($backupName))->filter(fn($file) => str_ends_with($file, '.zip'));
 
         if ($files->isEmpty()) {
-            return [[
-                'name'         => $backupName,
-                'disk'         => config('backup.backup.destination.disks')[0] ?? 'local',
-                'storageType'  => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
-                'reachable'    => true,
-                'healthy'      => true,
-                'count'        => 0,
-                'storageSpace' => $this->formatBytes(0),
-                'backups'      => [],
-            ]];
+            return [
+                [
+                    'name' => $backupName,
+                    'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
+                    'storageType' => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
+                    'reachable' => true,
+                    'healthy' => true,
+                    'count' => 0,
+                    'storageSpace' => $this->formatBytes(0),
+                    'backups' => [],
+                ],
+            ];
         }
 
         $backups = $files
@@ -76,9 +74,9 @@ class AdminBackupController extends Controller
                 $lastModified = $disk->lastModified($file);
 
                 return [
-                    'path'     => $file,
-                    'date'     => date('M d, Y g:i A', $lastModified),
-                    'size'     => $this->formatBytes($size),
+                    'path' => $file,
+                    'date' => date('M d, Y g:i A', $lastModified),
+                    'size' => $this->formatBytes($size),
                     'raw_size' => $size,
                 ];
             })
@@ -88,22 +86,23 @@ class AdminBackupController extends Controller
 
         $totalSize = collect($backups)->sum('raw_size');
 
-        return [[
-            'name'         => $backupName,
-            'disk'         => config('backup.backup.destination.disks')[0] ?? 'local',
-            'storageType'  => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
-            'reachable'    => true,
-            'healthy'      => true,
-            'count'        => count($backups),
-            'storageSpace' => $this->formatBytes($totalSize),
-            'backups'      => array_map(function ($backup) {
-                unset($backup['raw_size']);
+        return [
+            [
+                'name' => $backupName,
+                'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
+                'storageType' => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
+                'reachable' => true,
+                'healthy' => true,
+                'count' => count($backups),
+                'storageSpace' => $this->formatBytes($totalSize),
+                'backups' => array_map(function ($backup) {
+                    unset($backup['raw_size']);
 
-                return $backup;
-            }, $backups),
-        ]];
+                    return $backup;
+                }, $backups),
+            ],
+        ];
     }
-
 
     private function validateBackupExists(string $path, bool $isBase64 = false): ?string
     {
@@ -112,7 +111,6 @@ class AdminBackupController extends Controller
 
         return $disk->exists($decodedPath) ? $decodedPath : null;
     }
-
 
     public function download(string $path)
     {
@@ -135,7 +133,6 @@ class AdminBackupController extends Controller
         return response()->download($filePath, basename($decodedPath));
     }
 
-
     public function destroy(string $path)
     {
         $decodedPath = $this->validateBackupExists($path, true);
@@ -152,14 +149,13 @@ class AdminBackupController extends Controller
         return redirect()->back();
     }
 
-
     private function formatBytes($bytes)
     {
         $units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
-        $bytes /= (1 << (10 * $pow));
+        $bytes /= 1 << 10 * $pow;
 
         return round($bytes, 2) . ' ' . $units[$pow];
     }

@@ -1,157 +1,157 @@
 @layer components {
-  /********************
+    /********************
    *** Button Base ****
    ********************/
 
-  [class*='btn-'] {
-    @apply capitalize;
-  }
+    [class*='btn-'] {
+        @apply capitalize;
+    }
 
-  .btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.375rem;
-    letter-spacing: 0.025em;
-    font-size: 1rem;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    @apply relative inline-flex cursor-pointer items-center justify-center overflow-hidden font-semibold transition-all;
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        letter-spacing: 0.025em;
+        font-size: 1rem;
+        transition-duration: 200ms;
+        transition-timing-function: ease-in-out;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        @apply relative inline-flex cursor-pointer items-center justify-center overflow-hidden font-semibold transition-all;
 
-    /********************
+        /********************
      *** States *********
      ********************/
 
-    &:hover:not(:disabled) {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        &:hover:not(:disabled) {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    &:disabled {
-      @apply cursor-not-allowed opacity-50;
-    }
+        &:disabled {
+            @apply cursor-not-allowed opacity-50;
+        }
 
-    &.btn-outline {
-      @apply bg-transparent;
-      border: 1px solid;
-    }
+        &.btn-outline {
+            @apply bg-transparent;
+            border: 1px solid;
+        }
 
-    /********************
+        /********************
      *** Base Types ****
      ********************/
 
-    &.btn-primary {
-      @apply text-white;
-      background-color: var(--primary-color);
-      border: 1px solid var(--primary-color);
-      &.btn-outline {
-        color: var(--primary-color);
-        border: 1px solid var(--primary-color);
-        background-color: transparent;
-        &:hover:not(:disabled) {
-          background-color: var(--primary-color);
-          @apply text-white;
+        &.btn-primary {
+            @apply text-white;
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            &.btn-outline {
+                color: var(--primary-color);
+                border: 1px solid var(--primary-color);
+                background-color: transparent;
+                &:hover:not(:disabled) {
+                    background-color: var(--primary-color);
+                    @apply text-white;
+                }
+            }
+            &:hover:not(:disabled) {
+                background-color: var(--primary-hover);
+            }
         }
-      }
-      &:hover:not(:disabled) {
-        background-color: var(--primary-hover);
-      }
-    }
 
-    &.btn-secondary {
-      color: var(--color-text);
-      background-color: var(--secondary-color);
-      border: 1px solid var(--secondary-color);
-      &.btn-outline {
-        color: var(--color-text);
-        border: 1px solid var(--color-border-strong);
-        background-color: transparent;
-        &:hover:not(:disabled) {
-          background-color: var(--color-border-strong);
-          @apply text-white;
+        &.btn-secondary {
+            color: var(--color-text);
+            background-color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+            &.btn-outline {
+                color: var(--color-text);
+                border: 1px solid var(--color-border-strong);
+                background-color: transparent;
+                &:hover:not(:disabled) {
+                    background-color: var(--color-border-strong);
+                    @apply text-white;
+                }
+            }
+            &:hover:not(:disabled) {
+                background-color: var(--color-surface);
+                border-color: var(--color-border-strong);
+            }
         }
-      }
-      &:hover:not(:disabled) {
-        background-color: var(--color-surface);
-        border-color: var(--color-border-strong);
-      }
-    }
 
-    &.btn-info {
-      @apply text-white;
-      background-color: var(--info-color);
-      &.btn-outline {
-        background-color: transparent;
-        color: var(--info-color);
-        border: 1px solid var(--info-color);
-        &:hover:not(:disabled) {
-          background-color: var(--info-color);
-          @apply text-white;
+        &.btn-info {
+            @apply text-white;
+            background-color: var(--info-color);
+            &.btn-outline {
+                background-color: transparent;
+                color: var(--info-color);
+                border: 1px solid var(--info-color);
+                &:hover:not(:disabled) {
+                    background-color: var(--info-color);
+                    @apply text-white;
+                }
+            }
+            &:hover:not(:disabled) {
+                @apply brightness-105;
+            }
         }
-      }
-      &:hover:not(:disabled) {
-        @apply brightness-105;
-      }
-    }
 
-    &.btn-success {
-      @apply text-white;
-      background-color: var(--success-color);
-      border: 1px solid var(--success-color);
-      &.btn-outline {
-        color: var(--success-color);
-        border: 1px solid var(--success-color);
-        background-color: transparent;
-        &:hover:not(:disabled) {
-          background-color: var(--success-color);
-          @apply text-white;
+        &.btn-success {
+            @apply text-white;
+            background-color: var(--success-color);
+            border: 1px solid var(--success-color);
+            &.btn-outline {
+                color: var(--success-color);
+                border: 1px solid var(--success-color);
+                background-color: transparent;
+                &:hover:not(:disabled) {
+                    background-color: var(--success-color);
+                    @apply text-white;
+                }
+            }
+            &:hover:not(:disabled) {
+                @apply brightness-105;
+            }
         }
-      }
-      &:hover:not(:disabled) {
-        @apply brightness-105;
-      }
-    }
 
-    &.btn-warning {
-      @apply text-white;
-      text-shadow: 0 0 3px #999;
-      background-color: var(--warning-color);
-      border: 1px solid var(--warning-color);
-      &.btn-outline {
-        color: var(--warning-color);
-        border: 1px solid var(--warning-color);
-        background-color: transparent;
-        &:hover:not(:disabled) {
-          background-color: var(--warning-color);
-          @apply text-white;
-          text-shadow: 0 0 3px #999;
+        &.btn-warning {
+            @apply text-white;
+            text-shadow: 0 0 3px #999;
+            background-color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+            &.btn-outline {
+                color: var(--warning-color);
+                border: 1px solid var(--warning-color);
+                background-color: transparent;
+                &:hover:not(:disabled) {
+                    background-color: var(--warning-color);
+                    @apply text-white;
+                    text-shadow: 0 0 3px #999;
+                }
+            }
+            &:hover:not(:disabled) {
+                @apply brightness-105;
+            }
         }
-      }
-      &:hover:not(:disabled) {
-        @apply brightness-105;
-      }
-    }
 
-    &.btn-danger {
-      @apply text-white;
-      background-color: var(--error-color);
-      border: 1px solid var(--error-color);
-      &.btn-outline {
-        color: var(--error-color);
-        border: 1px solid var(--error-color);
-        background-color: transparent;
-        &:hover:not(:disabled) {
-          background-color: var(--error-color);
-          @apply text-white;
+        &.btn-danger {
+            @apply text-white;
+            background-color: var(--error-color);
+            border: 1px solid var(--error-color);
+            &.btn-outline {
+                color: var(--error-color);
+                border: 1px solid var(--error-color);
+                background-color: transparent;
+                &:hover:not(:disabled) {
+                    background-color: var(--error-color);
+                    @apply text-white;
+                }
+            }
+            &:hover:not(:disabled) {
+                @apply brightness-105;
+            }
         }
-      }
-      &:hover:not(:disabled) {
-        @apply brightness-105;
-      }
-    }
 
-    /********************
+        /********************
      *** Sizes **********
      ********************/
-    /*
+        /*
     &.btn-sm {
       padding: 0.5rem 1rem;
       font-size: 0.875rem;
@@ -167,36 +167,36 @@
       font-size: 0.65rem;
     }
     */
-  }
+    }
 }
 
 @layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-lg font-medium transition select-none disabled:pointer-events-none disabled:opacity-50;
-  }
-  .btn-xxs {
-    @apply text-xxs h-6 px-2;
-  }
-  .btn-xs {
-    @apply h-7 px-2.5 text-xs;
-  }
-  .btn-sm {
-    @apply h-8 px-3 text-sm;
-  }
-  .btn-md {
-    @apply h-9 px-3.5 text-sm;
-  }
-  .btn-lg {
-    @apply h-10 px-4 text-base;
-  }
+    .btn {
+        @apply inline-flex items-center justify-center rounded-lg font-medium transition select-none disabled:pointer-events-none disabled:opacity-50;
+    }
+    .btn-xxs {
+        @apply text-xxs h-6 px-2;
+    }
+    .btn-xs {
+        @apply h-7 px-2.5 text-xs;
+    }
+    .btn-sm {
+        @apply h-8 px-3 text-sm;
+    }
+    .btn-md {
+        @apply h-9 px-3.5 text-sm;
+    }
+    .btn-lg {
+        @apply h-10 px-4 text-base;
+    }
 }
 
 a,
 .btn,
 button {
-  @apply cursor-pointer;
-  &:disabled,
-  &.disabled {
-    @apply cursor-not-allowed;
-  }
+    @apply cursor-pointer;
+    &:disabled,
+    &.disabled {
+        @apply cursor-not-allowed;
+    }
 }

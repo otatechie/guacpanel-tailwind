@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Notify Theme
@@ -40,10 +39,9 @@ return [
         // An example preset 'user updated' Connectify notification.
         'user-updated' => [
             'message' => 'The user has been updated successfully.',
-            'type'    => 'success',
-            'model'   => 'connect',
-            'title'   => 'User Updated',
+            'type' => 'success',
+            'model' => 'connect',
+            'title' => 'User Updated',
         ],
     ],
-
 ];

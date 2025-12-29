@@ -24,11 +24,12 @@ class RegisterResponse implements RegisterResponseContract
         if (config('guacpanel.email_verification_enabled')) {
             session()->flash('success', __('notifications.register.pw_success_auto_login_disabled_activation_enabled'));
         } else {
-            session()->flash('success', __('notifications.register.pw_success_auto_login_disabled_activation_disabled'));
+            session()->flash(
+                'success',
+                __('notifications.register.pw_success_auto_login_disabled_activation_disabled'),
+            );
         }
 
-        return $request->wantsJson()
-            ? new JsonResponse('', 201)
-            : redirect()->route('login');
+        return $request->wantsJson() ? new JsonResponse('', 201) : redirect()->route('login');
     }
 }

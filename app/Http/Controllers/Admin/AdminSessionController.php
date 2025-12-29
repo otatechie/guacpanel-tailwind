@@ -13,12 +13,10 @@ use App\Http\Controllers\Controller;
 
 class AdminSessionController extends Controller
 {
-    public function __construct(
-        private DataTableService $dataTable
-    ) {
+    public function __construct(private DataTableService $dataTable)
+    {
         $this->middleware('permission:view-sessions');
     }
-
 
     public function index(Request $request): Response
     {
@@ -45,7 +43,7 @@ class AdminSessionController extends Controller
                 ],
                 'resource' => 'sessions',
                 'transform' => fn($session) => $this->transformSession($session, $currentSessionId),
-            ]
+            ],
         );
 
         return Inertia::render('Admin/IndexSessionPage', [
@@ -53,7 +51,6 @@ class AdminSessionController extends Controller
             'filters' => $result['filters'],
         ]);
     }
-
 
     public function destroy($sessionId)
     {
@@ -70,20 +67,16 @@ class AdminSessionController extends Controller
         return redirect()->back();
     }
 
-
     public function destroyAllForUser($userId)
     {
         $currentSessionId = request()->session()->getId();
 
-        Session::where('user_id', $userId)
-            ->where('id', '!=', $currentSessionId)
-            ->delete();
+        Session::where('user_id', $userId)->where('id', '!=', $currentSessionId)->delete();
 
         session()->flash('success', 'All sessions terminated successfully.');
 
         return redirect()->back();
     }
-
 
     private function transformSession(Session $session, string $currentSessionId): array
     {
@@ -91,19 +84,19 @@ class AdminSessionController extends Controller
         $agent->setUserAgent($session->user_agent ?? '');
 
         return [
-            'id'   => $session->id,
+            'id' => $session->id,
             'user' => [
-                'id'    => $session->user?->id,
-                'name'  => $session->user?->name,
+                'id' => $session->user?->id,
+                'name' => $session->user?->name,
                 'email' => $session->user?->email,
             ],
             'device_info' => [
-                'device'   => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+                'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
                 'platform' => $agent->platform() ?: 'Unknown',
-                'browser'  => $agent->browser() ?: 'Unknown',
+                'browser' => $agent->browser() ?: 'Unknown',
             ],
             'last_active_diff' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
-            'is_current'       => $session->id === $currentSessionId,
+            'is_current' => $session->id === $currentSessionId,
         ];
     }
 }

@@ -16,12 +16,12 @@ class StoreAdminAppNotificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'scope'          => ['required', 'in:user,system,release'],
-            'user_id'        => ['nullable', 'string', 'required_if:scope,user'],
-            'type'           => ['required', 'in:success,info,warning,danger'],
-            'title'          => ['required', 'string', 'max:255'],
-            'message'        => ['required', 'string'],
-            'scheduled_on'   => ['nullable', 'date'],
+            'scope' => ['required', 'in:user,system,release'],
+            'user_id' => ['nullable', 'string', 'required_if:scope,user'],
+            'type' => ['required', 'in:success,info,warning,danger'],
+            'title' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string'],
+            'scheduled_on' => ['nullable', 'date'],
             'auto_expire_on' => ['nullable', 'date'],
         ];
     }

@@ -23,28 +23,30 @@ class DashboardController extends ParentController
             $newMembersToday = User::whereDate('created_at', today())->count();
             $memberGrowth = $this->calculateGrowthPercentage(
                 User::whereDate('created_at', '>=', now()->subDays(7))->count(),
-                User::whereDate('created_at', '>=', now()->subDays(14))->whereDate('created_at', '<', now()->subDays(7))->count()
+                User::whereDate('created_at', '>=', now()->subDays(14))
+                    ->whereDate('created_at', '<', now()->subDays(7))
+                    ->count(),
             );
 
             return [
                 [
-                    'title'  => 'Total Members',
-                    'value'  => number_format($totalMembers),
+                    'title' => 'Total Members',
+                    'value' => number_format($totalMembers),
                     'growth' => sprintf('%+.1f%%', $memberGrowth),
                 ],
                 [
-                    'title'  => 'New Members Today',
-                    'value'  => number_format($newMembersToday),
+                    'title' => 'New Members Today',
+                    'value' => number_format($newMembersToday),
                     'growth' => sprintf('%+.1f%%', $newMembersToday > 0 ? 100 : 0),
                 ],
                 [
-                    'title'  => 'Weekly Growth',
-                    'value'  => sprintf('%+.1f%%', $memberGrowth),
+                    'title' => 'Weekly Growth',
+                    'value' => sprintf('%+.1f%%', $memberGrowth),
                     'growth' => sprintf('%+.1f%%', $memberGrowth),
                 ],
                 [
-                    'title'  => 'Total Sessions',
-                    'value'  => number_format(rand(5000, 15000)),
+                    'title' => 'Total Sessions',
+                    'value' => number_format(rand(5000, 15000)),
                     'growth' => sprintf('%+.1f%%', rand(5, 15)),
                 ],
             ];

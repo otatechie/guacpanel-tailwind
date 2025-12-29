@@ -9,21 +9,21 @@ use OwenIt\Auditing\Models\Audit;
 
 class AdminAuditController extends Controller
 {
-    public function __construct(
-        private DataTableService $dataTable
-    ) {
+    public function __construct(private DataTableService $dataTable)
+    {
         $this->middleware('permission:view-audits');
     }
-
 
     public function index(Request $request)
     {
         $result = $this->dataTable->process(
             query: Audit::query()
                 ->select('id', 'created_at', 'event', 'auditable_type', 'user_type', 'user_id')
-                ->with(['user' => function ($q) {
-                    $q->select('id', 'name');
-                }]),
+                ->with([
+                    'user' => function ($q) {
+                        $q->select('id', 'name');
+                    },
+                ]),
             request: $request,
             config: [
                 'searchable' => ['event', 'auditable_type', 'user.name'],
@@ -34,23 +34,23 @@ class AdminAuditController extends Controller
                 'resource' => 'audits',
                 'transform' => function ($audit) {
                     return [
-                        'id'             => $audit->id,
-                        'event'          => $audit->event,
+                        'id' => $audit->id,
+                        'event' => $audit->event,
                         'auditable_type' => $audit->auditable_type,
-                        'user_type'      => $audit->user_type,
-                        'user_id'        => $audit->user_id,
-                        'created_at'     => $audit->created_at?->toDateTimeString(),
-                        'user'           => [
-                            'id'   => $audit->user?->id,
+                        'user_type' => $audit->user_type,
+                        'user_id' => $audit->user_id,
+                        'created_at' => $audit->created_at?->toDateTimeString(),
+                        'user' => [
+                            'id' => $audit->user?->id,
                             'name' => $audit->user?->name,
                         ],
                     ];
                 },
-            ]
+            ],
         );
 
         return inertia('Admin/IndexAuditPage', [
-            'audits'  => $result['data'],
+            'audits' => $result['data'],
             'filters' => $result['filters'],
         ]);
     }

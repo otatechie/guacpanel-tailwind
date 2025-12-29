@@ -28,15 +28,17 @@ class UserAccountController extends Controller
         abort_if($user->id !== Auth::id(), 403, 'You are not authorized to access this profile.');
 
         $data = [
-            'user'              => $user,
-            'qrCodeSvg'         => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
-            'recoveryCodes'     => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
-            'profileEnabled'    => Route::has('user-profile-information.update'),
-            'twoFactorEnabled'  => Route::has('two-factor.enable'),
-            'passwordEnabled'   => Route::has('user-password.update'),
-            'sessions'          => $this->getUserSessionsData($user, $request->session()->getId()),
+            'user' => $user,
+            'qrCodeSvg' => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
+            'recoveryCodes' => $user->two_factor_secret
+                ? json_decode(decrypt($user->two_factor_recovery_codes, true))
+                : null,
+            'profileEnabled' => Route::has('user-profile-information.update'),
+            'twoFactorEnabled' => Route::has('two-factor.enable'),
+            'passwordEnabled' => Route::has('user-password.update'),
+            'sessions' => $this->getUserSessionsData($user, $request->session()->getId()),
             'deactivateEnabled' => config('guacpanel.user.account.deactivate_enabled'),
-            'deleteEnabled'     => config('guacpanel.user.account.delete_enabled'),
+            'deleteEnabled' => config('guacpanel.user.account.delete_enabled'),
         ];
 
         return Inertia::render('UserAccount/IndexPage', $data);
@@ -47,10 +49,12 @@ class UserAccountController extends Controller
         $user = Auth::user();
 
         $data = [
-            'user'              => $user,
-            'qrCodeSvg'         => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
-            'recoveryCodes'     => $user->two_factor_secret ? json_decode(decrypt($user->two_factor_recovery_codes, true)) : null,
-            'twoFactorEnabled'  => Route::has('two-factor.enable'),
+            'user' => $user,
+            'qrCodeSvg' => $user->two_factor_secret ? $user->twoFactorQrCodeSvg() : null,
+            'recoveryCodes' => $user->two_factor_secret
+                ? json_decode(decrypt($user->two_factor_recovery_codes, true))
+                : null,
+            'twoFactorEnabled' => Route::has('two-factor.enable'),
         ];
 
         return Inertia::render('UserAccount/IndexTwoFactorAuthenticationPage', $data);
@@ -72,15 +76,7 @@ class UserAccountController extends Controller
         $user = Auth::user();
 
         $validatedData = $request->validate([
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols(),
-            ],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
         if (Hash::check($validatedData['password'], $user->password)) {
@@ -91,9 +87,9 @@ class UserAccountController extends Controller
 
         $now = now();
         $user->update([
-            'password'            => Hash::make($validatedData['password']),
+            'password' => Hash::make($validatedData['password']),
             'password_changed_at' => $now,
-            'password_expiry_at'  => $now->copy()->addMonths(3),
+            'password_expiry_at' => $now->copy()->addMonths(3),
         ]);
 
         session()->flash('success', 'Password has been updated successfully.');
@@ -106,7 +102,7 @@ class UserAccountController extends Controller
         $user = Auth::user();
 
         return Inertia::render('UserAccount/IndexSessionPage', [
-            'user'     => $user,
+            'user' => $user,
             'sessions' => $this->getUserSessionsData($user, $request->session()->getId()),
         ]);
     }
@@ -124,11 +120,13 @@ class UserAccountController extends Controller
 
             foreach ($sessionRecords as $session) {
                 $sessions[] = [
-                    'id'         => $session->id ?? '',
-                    'agent'      => $this->formatAgent($session->user_agent ?? ''),
-                    'ip'         => $session->ip_address ?? '',
-                    'lastActive' => $session->last_activity ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans() : '',
-                    'isCurrent'  => ($session->id ?? '') === $currentSessionId,
+                    'id' => $session->id ?? '',
+                    'agent' => $this->formatAgent($session->user_agent ?? ''),
+                    'ip' => $session->ip_address ?? '',
+                    'lastActive' => $session->last_activity
+                        ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans()
+                        : '',
+                    'isCurrent' => ($session->id ?? '') === $currentSessionId,
                 ];
             }
         }
@@ -146,9 +144,9 @@ class UserAccountController extends Controller
         $agent->setUserAgent($userAgent);
 
         return [
-            'device'   => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
+            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
             'platform' => $agent->platform() ?: 'Unknown',
-            'browser'  => $agent->browser() ?: 'Unknown',
+            'browser' => $agent->browser() ?: 'Unknown',
         ];
     }
 
@@ -204,7 +202,9 @@ class UserAccountController extends Controller
         }
 
         if (auth()->user()) {
-            return redirect()->route($route)->with('error', __('notifications.account.already_logged_in', ['username' => auth()->user()?->name]));
+            return redirect()
+                ->route($route)
+                ->with('error', __('notifications.account.already_logged_in', ['username' => auth()->user()?->name]));
         }
 
         $token = $request->token;
@@ -215,7 +215,12 @@ class UserAccountController extends Controller
         }
 
         if ($user->account_locked) {
-            return redirect()->route($route)->with('error', __('notifications.account.locked', ['email' => config('guacpanel.admin.support_email')]));
+            return redirect()
+                ->route($route)
+                ->with(
+                    'error',
+                    __('notifications.account.locked', ['email' => config('guacpanel.admin.support_email')]),
+                );
         }
 
         $user->restore();

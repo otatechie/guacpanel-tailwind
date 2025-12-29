@@ -10,8 +10,5 @@ return [
     | through the admin interface. They are essential for system functionality.
     |
     */
-    'protected_roles' => [
-        'superuser',
-        'user',
-    ],
+    'protected_roles' => ['superuser', 'user'],
 ];

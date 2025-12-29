@@ -22,20 +22,18 @@ class VerifyEmailController
     protected function handleAuthRequiredFlow(EmailVerificationRequest $request, string $redirectTo): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()
-                ->intended($redirectTo)
-                ->with('info', __('notifications.verify.already'));
+            return redirect()->intended($redirectTo)->with('info', __('notifications.verify.already'));
         }
 
         $request->fulfill();
 
-        return redirect()
-            ->intended($redirectTo)
-            ->with('success', __('notifications.verify.success'));
+        return redirect()->intended($redirectTo)->with('success', __('notifications.verify.success'));
     }
 
-    protected function handleAuthNotRequiredFlow(EmailVerificationRequest $request, string $redirectTo): RedirectResponse
-    {
+    protected function handleAuthNotRequiredFlow(
+        EmailVerificationRequest $request,
+        string $redirectTo,
+    ): RedirectResponse {
         $isAuthenticated = auth()->check();
 
         $routeName = $redirectTo === '/dashboard' ? 'dashboard' : 'login';
@@ -44,21 +42,15 @@ class VerifyEmailController
         }
 
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()
-                ->route($routeName)
-                ->with('info', __('notifications.verify.already'));
+            return redirect()->route($routeName)->with('info', __('notifications.verify.already'));
         }
 
         $request->fulfill();
 
         if ($isAuthenticated) {
-            return redirect()
-                ->route('dashboard')
-                ->with('success', __('notifications.verify.success'));
+            return redirect()->route('dashboard')->with('success', __('notifications.verify.success'));
         }
 
-        return redirect()
-            ->route('login')
-            ->with('success', __('notifications.verify.success'));
+        return redirect()->route('login')->with('success', __('notifications.verify.success'));
     }
 }

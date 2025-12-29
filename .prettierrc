@@ -15,7 +15,7 @@
   "plugins": [
     "prettier-plugin-tailwindcss",
     "@prettier/plugin-php",
-    prettier-plugin-blade
+    "prettier-plugin-blade"
   ],
   "overrides": [
     {
@@ -35,22 +35,22 @@
     {
       "files": ["*.vue"],
       "options": {
-        "tabWidth": 2
+        "tabWidth": 4
       }
     },
     {
       "files": ["*.js", "*.cjs", "*.mjs", "*.ts", "*.tsx", "*.json"],
       "options": {
-        "tabWidth": 2
+        "tabWidth": 4
       }
     },
     {
       "files": ["*.css", "*.scss", "*.sass", "*.pcss"],
       "options": {
         "parser": "css",
-        "tabWidth": 2
+        "tabWidth": 4
       }
-    },
+    }
   ]
 
 }

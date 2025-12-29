@@ -16,9 +16,9 @@ class UserSeeder extends Seeder
                 $superuser = User::where('email', '=', $seededSuperAdminEmail)->first();
                 if ($superuser === null) {
                     $superuser = User::updateOrCreate([
-                        'name'              => config('seeders.users.superAdmin.name'),
-                        'email'             => $seededSuperAdminEmail,
-                        'password'          => bcrypt(config('seeders.users.superAdmin.password')),
+                        'name' => config('seeders.users.superAdmin.name'),
+                        'email' => $seededSuperAdminEmail,
+                        'password' => bcrypt(config('seeders.users.superAdmin.password')),
                         'email_verified_at' => now(),
                     ]);
                     $superuser->assignRole(config('seeders.users.superAdmin.role'));
@@ -30,9 +30,9 @@ class UserSeeder extends Seeder
                 $regularuser = User::where('email', '=', $seededRegularEmail)->first();
                 if ($regularuser === null) {
                     $regularuser = User::updateOrCreate([
-                        'name'              => config('seeders.users.regular.name'),
-                        'email'             => $seededRegularEmail,
-                        'password'          => bcrypt(config('seeders.users.regular.password')),
+                        'name' => config('seeders.users.regular.name'),
+                        'email' => $seededRegularEmail,
+                        'password' => bcrypt(config('seeders.users.regular.password')),
                         'email_verified_at' => now(),
                     ]);
                     $regularuser->assignRole(config('seeders.users.regular.role'));
