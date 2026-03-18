@@ -109,7 +109,7 @@ test('it allows users with delete permission to delete app logo', function () {
 
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
-        ->post(route('admin.personalization.delete'), [
+        ->delete(route('admin.personalization.delete.file'), [
             '_token' => $this->testToken,
             'field'  => 'app_logo',
         ]);
@@ -132,7 +132,7 @@ test('it allows users with delete permission to delete favicon', function () {
 
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
-        ->post(route('admin.personalization.delete'), [
+        ->delete(route('admin.personalization.delete.file'), [
             '_token' => $this->testToken,
             'field'  => 'favicon',
         ]);
@@ -148,7 +148,7 @@ test('it allows users with delete permission to delete favicon', function () {
 test('it denies file deletion to users without delete permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->withSession(['_token' => $this->testToken])
-        ->post(route('admin.personalization.delete'), [
+        ->delete(route('admin.personalization.delete.file'), [
             '_token' => $this->testToken,
             'field'  => 'app_logo',
         ]);

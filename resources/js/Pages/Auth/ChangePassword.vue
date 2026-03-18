@@ -25,43 +25,37 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Reset password" />
+    <Head title="Change password" />
 
-    <main class="mx-auto max-w-[384px] px-8" role="main">
-        <h1 class="main-heading text-center">Change your password</h1>
+    <div class="w-full" role="main">
+        <header>
+            <h1 class="text-2xl font-bold text-(--color-text)">Change your password</h1>
+            <p class="mt-1 text-sm text-(--color-text-muted)">
+                Your password has expired or needs to be changed
+            </p>
+        </header>
 
-        <form
-            class="container-border mt-6 space-y-6 p-5"
-            aria-labelledby="change-password-form"
-            @submit.prevent="submit">
-            <section
-                class="rounded-md bg-[var(--color-surface-muted)] p-4"
-                aria-labelledby="password-requirements">
-                <h2 id="password-requirements" class="mb-2 text-sm text-[var(--color-text-muted)]">
-                    Password must include:
-                </h2>
-                <ul class="list-disc space-y-1 pl-5 text-sm text-[var(--color-text-muted)]">
-                    <li>8+ characters</li>
-                    <li>One uppercase letter</li>
-                    <li>One number</li>
-                    <li>One special character</li>
-                </ul>
-            </section>
+        <form class="mt-6 space-y-4" @submit.prevent="submit">
+            <ul
+                class="rounded-lg border border-(--color-border) bg-(--color-surface-muted) px-4 py-3 text-xs leading-relaxed text-(--color-text-muted)"
+                aria-label="Password requirements">
+                <li>At least 8 characters</li>
+                <li>One uppercase letter, one number, one special character</li>
+            </ul>
 
             <FormInput
                 id="password"
                 v-model="form.password"
-                label="Password"
+                label="New password"
                 type="password"
                 required
                 autocomplete="new-password"
-                :error="form.errors.password"
-                aria-describedby="password-requirements" />
+                :error="form.errors.password" />
 
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
-                label="Confirm password"
+                label="Confirm new password"
                 type="password"
                 required
                 autocomplete="new-password"
@@ -72,8 +66,8 @@ const submit = () => {
                 class="btn btn-primary w-full"
                 :disabled="form.processing"
                 :aria-busy="form.processing">
-                {{ form.processing ? 'Please wait...' : 'Change password' }}
+                {{ form.processing ? 'Updating...' : 'Update password' }}
             </button>
         </form>
-    </main>
+    </div>
 </template>

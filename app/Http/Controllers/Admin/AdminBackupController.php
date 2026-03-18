@@ -107,7 +107,24 @@ class AdminBackupController extends Controller
     private function validateBackupExists(string $path, bool $isBase64 = false): ?string
     {
         $disk = $this->getDisk();
-        $decodedPath = $isBase64 ? base64_decode($path) : urldecode($path);
+        $decodedPath = $isBase64 ? base64_decode($path, true) : urldecode($path);
+
+        if ($decodedPath === false) {
+            return null;
+        }
+
+        // Prevent path traversal: ensure the path stays within the backup directory
+        $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
+        $normalizedPath = str_replace('\\', '/', $decodedPath);
+        $normalizedPath = preg_replace('#/+#', '/', $normalizedPath);
+
+        if (!str_starts_with($normalizedPath, $backupName . '/') && $normalizedPath !== $backupName) {
+            return null;
+        }
+
+        if (str_contains($normalizedPath, '..')) {
+            return null;
+        }
 
         return $disk->exists($decodedPath) ? $decodedPath : null;
     }

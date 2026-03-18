@@ -9,7 +9,11 @@ class Setting extends Model
 {
     use HasUlids;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'password_expiry',
+        'passwordless_login',
+        'two_factor_authentication',
+    ];
 
     protected $casts = [
         'force_password_change' => 'boolean',

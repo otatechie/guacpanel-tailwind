@@ -59,18 +59,12 @@ const gridCols = computed(() => {
 
 function updateValue(optionValue, checked) {
     const currentValues = [...props.modelValue]
-
     if (checked) {
-        if (!currentValues.includes(optionValue)) {
-            currentValues.push(optionValue)
-        }
+        if (!currentValues.includes(optionValue)) currentValues.push(optionValue)
     } else {
         const index = currentValues.indexOf(optionValue)
-        if (index > -1) {
-            currentValues.splice(index, 1)
-        }
+        if (index > -1) currentValues.splice(index, 1)
     }
-
     emit('update:modelValue', currentValues)
 }
 
@@ -81,23 +75,22 @@ function isChecked(optionValue) {
 
 <template>
     <div>
-        <label v-if="label" class="mb-2 block text-sm font-medium text-[var(--color-text)]">
+        <label v-if="label" class="mb-2 block text-sm font-medium text-(--color-text)">
             {{ label }}
-            <span v-if="required" class="text-red-500">*</span>
         </label>
 
-        <div v-if="help" class="mb-2 text-sm text-[var(--color-text-muted)]">
+        <p v-if="help" class="mb-2 text-sm text-(--color-text-muted)">
             {{ help }}
-        </div>
+        </p>
 
-        <div :class="['grid gap-3 sm:gap-4', gridCols]">
+        <div :class="['grid gap-3', gridCols]">
             <div
                 v-for="option in options"
                 :key="option[optionValue]"
-                class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 sm:p-4">
+                class="rounded-lg border border-(--card-border) bg-(--color-surface) p-3">
                 <label
                     :for="`${name}-${option[optionValue]}`"
-                    class="flex cursor-pointer items-start">
+                    class="flex cursor-pointer items-start gap-3">
                     <div class="flex h-5 items-center">
                         <div class="group grid size-4 grid-cols-1">
                             <input
@@ -107,12 +100,16 @@ function isChecked(optionValue) {
                                 :disabled="disabled"
                                 :aria-invalid="!!error"
                                 :aria-describedby="error ? `${name}-error` : undefined"
-                                class="col-start-1 row-start-1 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white checked:border-[var(--primary-color)] checked:bg-[var(--primary-color)] indeterminate:border-[var(--primary-color)] indeterminate:bg-[var(--primary-color)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary-color)] disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-[var(--primary-color)] dark:checked:bg-[var(--primary-color)] dark:indeterminate:border-[var(--primary-color)] dark:indeterminate:bg-[var(--primary-color)] dark:focus-visible:outline-[var(--primary-color)] dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:checked:bg-white/10 forced-colors:appearance-auto"
+                                class="col-start-1 row-start-1 cursor-pointer appearance-none rounded-sm border transition-colors
+                                    border-(--card-border) bg-(--color-surface)
+                                    checked:border-(--primary-color) checked:bg-(--primary-color)
+                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary-color)
+                                    disabled:cursor-not-allowed disabled:opacity-50"
                                 @change="updateValue(option[optionValue], $event.target.checked)" />
                             <svg
                                 viewBox="0 0 14 14"
                                 fill="none"
-                                class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+                                class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-white/50">
                                 <path
                                     d="M3 8L6 11L11 3.5"
                                     stroke-width="2"
@@ -128,13 +125,11 @@ function isChecked(optionValue) {
                             </svg>
                         </div>
                     </div>
-                    <div class="ml-3 text-sm">
-                        <span class="font-medium text-[var(--color-text)]">
+                    <div class="text-sm">
+                        <span class="font-medium text-(--color-text)">
                             {{ option[optionLabel] }}
                         </span>
-                        <p
-                            v-if="option[optionDescription]"
-                            class="mt-1 text-xs text-[var(--color-text-muted)]">
+                        <p v-if="option[optionDescription]" class="mt-0.5 text-xs text-(--color-text-muted)">
                             {{ option[optionDescription] }}
                         </p>
                     </div>
@@ -142,15 +137,11 @@ function isChecked(optionValue) {
             </div>
         </div>
 
-        <p v-if="!options?.length" class="py-2 text-center text-sm text-[var(--color-text-muted)]">
+        <p v-if="!options?.length" class="py-2 text-center text-sm text-(--color-text-muted)">
             No options available
         </p>
 
-        <p
-            v-if="error"
-            :id="`${name}-error`"
-            role="alert"
-            class="mt-1 text-xs text-red-600 dark:text-red-400">
+        <p v-if="error" :id="`${name}-error`" role="alert" class="mt-1.5 text-xs text-red-600">
             {{ error }}
         </p>
     </div>

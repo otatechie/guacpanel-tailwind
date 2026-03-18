@@ -45,19 +45,6 @@ const emit = defineEmits(['update:modelValue'])
 const inputPlaceholder = computed(() => props.placeholder || props.label)
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 
-const textareaClass = computed(
-    () =>
-        `w-full peer border rounded-md text-sm
-    ${
-        props.disabled
-            ? 'cursor-not-allowed text-[var(--color-text-muted)]'
-            : 'bg-[var(--color-surface)] text-[var(--color-text)] caret-[var(--color-text)]'
-    }
-    border-[var(--color-border-strong)] placeholder-transparent px-3 py-2
-    ${props.error ? 'error' : ''}
-    dark:[color-scheme:dark]`
-)
-
 function updateValue(event) {
     emit('update:modelValue', event.target.value)
 }
@@ -65,29 +52,30 @@ function updateValue(event) {
 
 <template>
     <div>
-        <label :for="inputId" class="relative block">
-            <textarea
-                :id="inputId"
-                :value="modelValue"
-                :required="required"
-                :disabled="disabled"
-                :rows="rows"
-                :class="textareaClass"
-                :placeholder="inputPlaceholder"
-                :aria-invalid="!!error"
-                :aria-describedby="error ? `${inputId}-error` : undefined"
-                @input="updateValue" />
-
-            <span
-                class="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-[var(--color-surface)] px-1 text-xs font-medium text-[var(--color-text-muted)] transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs">
-                {{ label }}{{ required ? ' *' : '' }}
-            </span>
+        <label :for="inputId" class="form-label">
+            {{ label }}<span v-if="required" class="text-red-500"> *</span>
         </label>
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1 text-xs text-red-600">
+        <textarea
+            :id="inputId"
+            :value="modelValue"
+            :required="required"
+            :disabled="disabled"
+            :rows="rows"
+            class="form-input resize-y"
+            :class="{
+                'form-input-error': error,
+                'form-input-disabled': disabled,
+            }"
+            :placeholder="inputPlaceholder"
+            :aria-invalid="!!error"
+            :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
+            @input="updateValue" />
+
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-red-600">
             {{ error }}
         </p>
-        <p v-if="help && !error" class="mt-1 text-xs text-[var(--color-text-muted)]">
+        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-(--color-text-muted)">
             {{ help }}
         </p>
     </div>

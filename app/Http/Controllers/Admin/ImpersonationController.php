@@ -36,10 +36,12 @@ class ImpersonationController extends Controller
             'impersonator_name' => $impersonator->name,
             'impersonated_id' => $user->id,
             'impersonated_name' => $user->name,
+            'ip' => $request->ip(),
         ]);
 
-        // Log in as the target user
+        // Log in as the target user and regenerate session to prevent fixation
         Auth::login($user);
+        $request->session()->regenerate();
 
         return redirect()
             ->route('dashboard')
@@ -74,8 +76,9 @@ class ImpersonationController extends Controller
         // Clear impersonation session data
         session()->forget(['impersonator_id', 'impersonator_name']);
 
-        // Log back in as the original user
+        // Log back in as the original user and regenerate session
         Auth::login($impersonator);
+        $request->session()->regenerate();
 
         return redirect()
             ->route('admin.user.index')

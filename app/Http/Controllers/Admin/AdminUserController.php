@@ -79,6 +79,8 @@ class AdminUserController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create-users');
+
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users'],
@@ -89,7 +91,9 @@ class AdminUserController extends Controller
 
         $user = User::create($validatedData);
 
-        $user->assignRole($request->role);
+        if (!empty($validatedData['role'])) {
+            $user->assignRole($validatedData['role']);
+        }
 
         return redirect()->back()->with('success', __('notifications.admin.new_user_created_successfully'));
     }

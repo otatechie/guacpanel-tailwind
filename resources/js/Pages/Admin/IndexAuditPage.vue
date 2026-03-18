@@ -11,183 +11,101 @@ defineOptions({
 })
 
 const props = defineProps({
-    audits: {
-        type: Object,
-        required: true,
-    },
+    audits: { type: Object, required: true },
 })
 
 const columnHelper = createColumnHelper()
 const loading = ref(false)
-
 const pagination = ref({
     current_page: props.audits.current_page,
     per_page: Number(props.audits.per_page),
     total: props.audits.total,
 })
 
-const eventBadgeClasses = {
-    created:
-        'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900',
-    updated:
-        'bg-yellow-50 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 border border-yellow-100 dark:border-yellow-900',
-    deleted:
-        'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900',
+const eventColor = e => {
+    const k = (e || '').toLowerCase()
+    if (k === 'created') return 'text-green-600 dark:text-green-400'
+    if (k === 'updated') return 'text-amber-600 dark:text-amber-400'
+    if (k === 'deleted') return 'text-red-600 dark:text-red-400'
+    return 'text-[var(--color-text-muted)]'
+}
+
+const eventDot = e => {
+    const k = (e || '').toLowerCase()
+    if (k === 'created') return 'bg-green-500'
+    if (k === 'updated') return 'bg-amber-500'
+    if (k === 'deleted') return 'bg-red-500'
+    return 'bg-[var(--color-border-strong)]'
 }
 
 const columns = [
-    columnHelper.accessor('created_at', {
-        header: 'Date',
-        cell: info => {
-            const raw = info.getValue()
-            const date = raw ? new Date(raw) : null
-
-            if (!date || isNaN(date.getTime())) {
-                return h('span', { 'aria-label': 'Activity date: Unknown' }, 'Unknown')
-            }
-
-            const formattedDate = date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            })
-
-            const formattedTime = date.toLocaleTimeString('en-US', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true,
-            })
-
-            const fullDateTime = `${formattedDate} @ ${formattedTime}`
-
-            return h(
-                'span',
-                {
-                    'aria-label': `Activity date: ${fullDateTime}`,
-                },
-                fullDateTime
-            )
-        },
-        meta: {
-            ariaLabel: 'Activity timestamp',
-        },
-    }),
     columnHelper.accessor(row => row.user?.name, {
-        id: 'user.name',
+        id: 'user',
         header: 'User',
-        cell: info => {
-            const value = info.getValue() || 'System'
-
-            return h(
-                'span',
-                {
-                    'aria-label': `Action performed by: ${value}`,
-                },
-                value
-            )
-        },
-        meta: {
-            ariaLabel: 'User who performed the action',
-        },
+        cell: info => h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, info.getValue() || 'System'),
     }),
     columnHelper.accessor('event', {
         header: 'Action',
         cell: info => {
-            const event = (info.getValue() || '').toString()
-            const normalizedEvent = event.toLowerCase()
-            const formattedEvent =
-                event.length > 0 ? event.charAt(0).toUpperCase() + event.slice(1) : 'Unknown'
-
-            const badgeClass =
-                eventBadgeClasses[normalizedEvent] ||
-                'bg-gray-50 text-gray-700 border border-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700'
-
-            return h(
-                'span',
-                {
-                    class: `px-2 py-1 rounded-full text-xs font-medium ${badgeClass}`,
-                    role: 'status',
-                    'aria-label': `Action type: ${formattedEvent}`,
-                },
-                formattedEvent
-            )
-        },
-        meta: {
-            ariaLabel: 'Type of action performed',
+            const e = info.getValue() || ''
+            const label = e.charAt(0).toUpperCase() + e.slice(1)
+            return h('span', { class: `flex items-center gap-1.5 text-xs ${eventColor(e)}` }, [
+                h('span', { class: `h-1.5 w-1.5 rounded-full ${eventDot(e)}` }),
+                label,
+            ])
         },
     }),
     columnHelper.accessor('auditable_type', {
-        header: 'Model',
+        header: 'Resource',
         cell: info => {
             const full = info.getValue() || ''
-            const short = full.split('\\').pop() || full || 'Unknown'
-
-            return h(
-                'span',
-                {
-                    'aria-label': `Resource type: ${short}`,
-                },
-                short
-            )
+            return h('span', { class: 'text-xs text-[var(--color-text-muted)]' }, full.split('\\').pop() || 'Unknown')
         },
-        meta: {
-            ariaLabel: 'Resource type affected',
+    }),
+    columnHelper.accessor('created_at', {
+        header: 'When',
+        cell: info => {
+            const raw = info.getValue()
+            const d = raw ? new Date(raw) : null
+            if (!d || isNaN(d.getTime())) return '-'
+            return h('span', { class: 'text-xs tabular-nums text-[var(--color-text-muted)]' },
+                d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
+                d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+            )
         },
     }),
 ]
 
-watch(
-    pagination,
-    newPagination => {
-        loading.value = true
-
-        router.get(
-            route('admin.audit.index'),
-            {
-                page: newPagination.current_page,
-                per_page: Number(newPagination.per_page),
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                onFinish: () => {
-                    loading.value = false
-                },
-            }
-        )
-    },
-    { deep: true }
-)
+watch(pagination, p => {
+    loading.value = true
+    router.get(route('admin.audit.index'), { page: p.current_page, per_page: Number(p.per_page) }, {
+        preserveState: true, preserveScroll: true, onFinish: () => (loading.value = false),
+    })
+}, { deep: true })
 </script>
 
 <template>
-    <Head title="System Activity Audit Log" />
+    <Head title="Activity log" />
 
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="audit-log">
-        <div class="container-border">
-            <PageHeader
-                title="Activity Audit Log"
-                description="View and monitor system activities"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'System Settings', href: route('admin.setting.index') },
-                    { label: 'System Activity' },
-                ]" />
+    <main class="mx-auto max-w-7xl" aria-labelledby="audit-log">
+        <PageHeader
+            title="Activity log"
+            :breadcrumbs="[
+                { label: 'Dashboard', href: route('dashboard') },
+                { label: 'System Settings', href: route('admin.setting.index') },
+                { label: 'Activity log' },
+            ]" />
 
-            <section class="bg-[var(--color-bg)] p-6">
-                <div
-                    class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-                    <Datatable
-                        :data="audits.data"
-                        :columns="columns"
-                        :loading="loading"
-                        :pagination="pagination"
-                        empty-message="No audit records found"
-                        empty-description="System activities will appear here"
-                        export-file-name="activity_log"
-                        @update:pagination="pagination = $event" />
-                </div>
-            </section>
+        <div class="card p-6">
+            <Datatable
+                :data="audits.data"
+                :columns="columns"
+                :loading="loading"
+                :pagination="pagination"
+                empty-message="No activity"
+                empty-description="Actions appear as users interact with the system"
+                export-file-name="activity_log"
+                @update:pagination="pagination = $event" />
         </div>
     </main>
 </template>

@@ -67,7 +67,7 @@ const submit = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
-                label="New Password"
+                label="New password"
                 type="password"
                 required
                 :disabled="form.processing"
@@ -77,7 +77,7 @@ const submit = () => {
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
-                label="Confirm New Password"
+                label="Confirm new password"
                 type="password"
                 required
                 :disabled="form.processing"

@@ -28,9 +28,6 @@ class AppNotification extends Model
         'auto_expire_on',
         'scheduled_on',
         'sent_as_scheduled',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected $casts = [

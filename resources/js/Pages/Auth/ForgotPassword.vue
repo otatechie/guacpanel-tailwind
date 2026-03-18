@@ -20,21 +20,19 @@ const submit = () => {
 <template>
     <Head title="Forgot password" />
 
-    <main class="mx-auto max-w-[384px] px-8" role="main">
-        <h1 class="main-heading text-center">Forgot password</h1>
-
-        <form
-            class="container-border mt-6 space-y-6 p-5"
-            aria-labelledby="reset-form"
-            @submit.prevent="submit">
-            <p class="text-sm text-[var(--color-text-muted)]" role="note">
-                Enter your email to receive a password reset link
+    <div class="w-full" role="main">
+        <header>
+            <h1 class="text-2xl font-bold text-(--color-text)">Reset password</h1>
+            <p class="mt-1 text-sm text-(--color-text-muted)">
+                Enter your email and we'll send a reset link
             </p>
+        </header>
 
+        <form class="mt-6 space-y-4" @submit.prevent="submit">
             <FormInput
                 id="email"
                 v-model="form.email"
-                label="Email"
+                label="Email address"
                 name="email"
                 type="email"
                 required
@@ -45,16 +43,15 @@ const submit = () => {
                 type="submit"
                 :disabled="form.processing"
                 class="btn btn-primary w-full"
-                aria-busy="form.processing">
-                {{ form.processing ? 'Please wait...' : 'Send reset email' }}
+                :aria-busy="form.processing">
+                {{ form.processing ? 'Sending...' : 'Send reset link' }}
             </button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-[var(--color-text-muted)]">
-            Back to
-            <Link :href="route('login')" class="link text-sm" aria-label="Return to login page">
-                login
+        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
+            <Link :href="route('login')" class="font-medium text-(--primary-color) hover:underline">
+                Back to sign in
             </Link>
         </p>
-    </main>
+    </div>
 </template>

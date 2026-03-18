@@ -24,81 +24,51 @@ const redirect = provider => {
     window.location.href = route('social.redirect', { provider })
 }
 
+const providerCount = computed(() => Object.keys(props.providersConfig.providers).length)
+
 const gridClass = computed(() => {
-    const providers = Object.keys(props.providersConfig.providers).length
-    const onlyIcons = props.iconsOnly
-    if (providers == 1) return 'grid-cols-1'
-    if (onlyIcons) {
-        if (providers % 4 == 0) return 'grid-cols-4'
-        if (providers % 2 == 0) return 'grid-cols-2'
+    const count = providerCount.value
+    if (count === 1) return 'grid-cols-1'
+    if (props.iconsOnly) {
+        if (count % 4 === 0) return 'grid-cols-4'
+        if (count % 2 === 0) return 'grid-cols-2'
         return 'grid-cols-3'
     }
-    return 'grid-cols-2'
+    return 'grid-cols-1'
 })
 
-const btnWrapperClass = i => {
-    if (props.iconsOnly) return ''
-    const providers = Object.keys(props.providersConfig.providers).length
-    if (providers % 2 == 0) {
-        return ''
-    }
-    if (i + 1 == providers) {
-        return 'col-span-2'
-    }
-    return ''
-}
-
 const providerIcon = provider => {
-    if (provider === 'google') {
-        return GoogleIcon
+    const icons = {
+        google: GoogleIcon,
+        facebook: FacebookIcon,
+        github: GitHubIcon,
+        linkedin: LinkedInIcon,
     }
-    if (provider === 'facebook') {
-        return FacebookIcon
-    }
-    if (provider === 'github') {
-        return GitHubIcon
-    }
-    if (provider === 'linkedin') {
-        return LinkedInIcon
-    }
-
-    return null
+    return icons[provider] || null
 }
 
-const providerClasses = provider => {
-    // if (provider == 'google') {
-    //   return 'bg-red-500 hover:bg-red-600 hover:text-white text-white dark:bg-red-600 dark:hover:bg-red-700';
-    // }
-    // if (provider == 'facebook') {
-    //   return 'bg-blue-600 hover:bg-blue-700 hover:text-white text-white dark:bg-blue-700 dark:hover:bg-blue-800';
-    // }
-    // if (provider == 'github') {
-    //   return 'bg-gray-900 hover:bg-gray-700 hover:text-white text-white dark:border-white dark:bg-transparent dark:hover:bg-gray-900';
-    // }
-    // if (provider == 'linkedin') {
-    //   return 'bg-blue-700 hover:bg-blue-800 hover:text-white text-white dark:bg-blue-800 dark:hover:bg-blue-900';
-    // }
-    return null
+const providerLabel = provider => {
+    const labels = {
+        google: 'Google',
+        facebook: 'Facebook',
+        github: 'GitHub',
+        linkedin: 'LinkedIn',
+    }
+    return labels[provider] || provider
 }
 </script>
 
 <template>
-    <div class="grid gap-4" :class="gridClass">
-        <template v-for="(provider, index, i) in providersConfig.providers" :key="index">
-            <span :class="btnWrapperClass(i)">
-                <button
-                    type="button"
-                    variant="outline"
-                    :class="providerClasses(index)"
-                    :tabIndex="5"
-                    @click="redirect(index)"
-                    class="btn btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 p-2.5 text-sm transition-colors">
-                    <component :is="providerIcon(index)" class="size-5.5" />
-                    <span v-if="!iconsOnly">
-                        {{ providersConfig.button_text.replace('{provider}', index) }}
-                    </span>
-                </button>
-            </span>
+    <div class="grid gap-2" :class="gridClass">
+        <template v-for="(provider, index) in providersConfig.providers" :key="index">
+            <button
+                type="button"
+                @click="redirect(index)"
+                :aria-label="iconsOnly ? `Continue with ${providerLabel(index)}` : undefined"
+                class="flex w-full items-center justify-center gap-2 rounded-lg border border-(--color-border-strong) px-3 py-2 text-sm font-medium text-(--color-text) transition-colors hover:bg-(--color-surface-muted)">
+                <component :is="providerIcon(index)" class="size-5" />
+                <span v-if="!iconsOnly">{{ providerLabel(index) }}</span>
+            </button>
         </template>
     </div>
 </template>

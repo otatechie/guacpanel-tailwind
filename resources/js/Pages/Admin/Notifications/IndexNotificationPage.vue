@@ -7,7 +7,6 @@ import PageHeader from '@js/Components/Common/PageHeader.vue'
 import NotificationTypeBadge from '@js/Components/Common/NotificationTypeBadge.vue'
 import Datatable from '@js/Components/Common/Datatable.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
-import Alert from '@js/Components/Notifications/Alert.vue'
 
 defineOptions({
     layout: Default,
@@ -24,7 +23,7 @@ const props = defineProps({
     },
 })
 
-const EMPTY = '—'
+const EMPTY = '-'
 
 const loading = ref(false)
 
@@ -120,355 +119,69 @@ const dash = v => {
     return s ? s : EMPTY
 }
 
-const scopeLabel = scope => dash(scope || 'notification')
-
-const scopeIconName = scope => {
-    const s = String(scope ?? '')
-        .trim()
-        .toLowerCase()
-
-    if (!s) return 'tag'
-    if (s === 'user' || s === 'users') return 'user'
-    if (s === 'system' || s === 'cpu') return 'cpu'
-    if (s === 'release' || s === 'releases') return 'release'
-    return 'tag'
-}
-
-const autoExpireValue = row => {
-    return (
-        row?.auto_expires_on_diff ??
-        row?.auto_expire_on_diff ??
-        row?.expires_on_diff ??
-        row?.expires_at_diff ??
-        row?.expires_at_human ??
-        row?.expires_at ??
-        null
-    )
-}
-
-const countValue = v => {
-    const n = Number(v ?? 0)
-    return Number.isFinite(n) ? n : 0
-}
-
-const usersLabel = n => {
-    const num = countValue(n)
-    return `${num} ${num === 1 ? 'USER' : 'USERS'}`
-}
-
-const StatusCountCell = {
-    name: 'StatusCountCell',
-    props: {
-        count: { type: [Number, String], required: true },
-    },
-    setup(p) {
-        return () =>
-            h('div', { class: 'flex items-center justify-center' }, [
-                h(
-                    'span',
-                    {
-                        class: 'text-xxs font-bold uppercase text-[var(--color-text-muted)] text-nowrap',
-                    },
-                    usersLabel(p.count)
-                ),
-            ])
-    },
-}
-
-const ScopeCell = {
-    name: 'ScopeCell',
-    props: {
-        row: { type: Object, required: true },
-    },
-    setup(p) {
-        return () => {
-            const icon = scopeIconName(p.row.scope)
-
-            return h(
-                'span',
-                {
-                    class: 'inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1',
-                },
-                [
-                    icon === 'user'
-                        ? h(
-                              'svg',
-                              {
-                                  class: 'size-3.5',
-                                  viewBox: '0 0 24 24',
-                                  fill: 'none',
-                                  stroke: 'currentColor',
-                                  'stroke-width': '1.5',
-                                  'stroke-linecap': 'round',
-                                  'stroke-linejoin': 'round',
-                                  'aria-hidden': 'true',
-                              },
-                              [
-                                  h('path', {
-                                      d: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z',
-                                  }),
-                                  h('path', {
-                                      d: 'M4.5 20.25a7.5 7.5 0 0115 0',
-                                  }),
-                              ]
-                          )
-                        : icon === 'cpu'
-                          ? h(
-                                'svg',
-                                {
-                                    class: 'size-3.5',
-                                    xmlns: 'http://www.w3.org/2000/svg',
-                                    fill: 'none',
-                                    viewBox: '0 0 24 24',
-                                    'stroke-width': '1.5',
-                                    stroke: 'currentColor',
-                                    'aria-hidden': 'true',
-                                },
-                                [
-                                    h('path', {
-                                        'stroke-linecap': 'round',
-                                        'stroke-linejoin': 'round',
-                                        d: 'M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z',
-                                    }),
-                                ]
-                            )
-                          : icon === 'release'
-                            ? h(
-                                  'svg',
-                                  {
-                                      xmlns: 'http://www.w3.org/2000/svg',
-                                      viewBox: '0 0 288 288',
-                                      fill: 'none',
-                                      'aria-hidden': 'true',
-                                      class: 'size-3.5 text-[var(--color-text-muted)]',
-                                  },
-                                  [
-                                      h('path', {
-                                          d: 'M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z',
-                                          fill: 'currentColor',
-                                          stroke: 'currentColor',
-                                          'stroke-width': '2',
-                                      }),
-                                  ]
-                              )
-                            : h(
-                                  'svg',
-                                  {
-                                      xmlns: 'http://www.w3.org/2000/svg',
-                                      fill: 'none',
-                                      viewBox: '0 0 24 24',
-                                      'stroke-width': '1.5',
-                                      stroke: 'currentColor',
-                                      class: 'size-3.5',
-                                      'aria-hidden': 'true',
-                                  },
-                                  [
-                                      h('path', {
-                                          'stroke-linecap': 'round',
-                                          'stroke-linejoin': 'round',
-                                          d: 'M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z',
-                                      }),
-                                  ]
-                              ),
-                    h('span', { class: 'text-xxs font-medium uppercase' }, scopeLabel(p.row.scope)),
-                ]
-            )
-        }
-    },
-}
-
-const TypeCell = {
-    name: 'TypeCell',
-    props: {
-        row: { type: Object, required: true },
-    },
-    setup(p) {
-        return () => h(NotificationTypeBadge, { type: p.row.type })
-    },
-}
-
-const UserCell = {
-    name: 'UserCell',
-    props: {
-        row: { type: Object, required: true },
-    },
-    setup(p) {
-        return () => {
-            const username = p.row?.username
-            const email = p.row?.user_email
-
-            if (!username && !email) return h('span', EMPTY)
-
-            const parts = []
-
-            if (username) {
-                parts.push(
-                    h('div', { class: 'flex items-center gap-1.5 min-w-0' }, [
-                        h(
-                            'svg',
-                            {
-                                class: 'size-3.5 text-[var(--color-text-muted)] shrink-0',
-                                viewBox: '0 0 24 24',
-                                fill: 'none',
-                                stroke: 'currentColor',
-                                'stroke-width': '1.5',
-                                'stroke-linecap': 'round',
-                                'stroke-linejoin': 'round',
-                                'aria-hidden': 'true',
-                            },
-                            [
-                                h('path', {
-                                    d: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z',
-                                }),
-                                h('path', { d: 'M4.5 20.25a7.5 7.5 0 0115 0' }),
-                            ]
-                        ),
-                        h('span', { class: 'truncate' }, dash(username)),
-                    ])
-                )
-            }
-
-            if (email) {
-                parts.push(
-                    h('div', { class: 'flex items-center gap-1.5 min-w-0' }, [
-                        h(
-                            'svg',
-                            {
-                                class: 'size-3.5 text-[var(--color-text-muted)] shrink-0',
-                                viewBox: '0 0 24 24',
-                                fill: 'none',
-                                stroke: 'currentColor',
-                                'stroke-width': '1.5',
-                                'stroke-linecap': 'round',
-                                'stroke-linejoin': 'round',
-                                'aria-hidden': 'true',
-                            },
-                            [
-                                h('path', {
-                                    d: 'M21.75 6.75v10.5A2.25 2.25 0 0119.5 19.5h-15A2.25 2.25 0 012.25 17.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75m19.5 0l-8.31 5.815a2.25 2.25 0 01-2.58 0L2.25 6.75',
-                                }),
-                            ]
-                        ),
-                        h(
-                            'a',
-                            {
-                                href: `mailto:${email}`,
-                                class: 'truncate text-[var(--primary-color)] hover:opacity-80 underline underline-offset-2',
-                                onClick: e => e.stopPropagation(),
-                            },
-                            dash(email)
-                        ),
-                    ])
-                )
-            }
-
-            return h('div', { class: 'min-w-0 space-y-1' }, parts)
-        }
-    },
-}
-
-const ActionButtonsCell = {
-    name: 'ActionButtonsCell',
-    props: {
-        row: { type: Object, required: true },
-    },
-    setup(p) {
-        return () =>
-            h('div', { class: 'flex items-center justify-end gap-2' }, [
-                h(
-                    Link,
-                    {
-                        href: route('admin.notifications.edit', p.row.id),
-                        class: 'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                        title: 'Edit Notification',
-                    },
-                    {
-                        default: () => [
-                            h('span', { class: 'sr-only' }, 'Edit Notification'),
-                            h(
-                                'svg',
-                                {
-                                    class: 'h-4 w-4',
-                                    viewBox: '0 0 24 24',
-                                    fill: 'none',
-                                    stroke: 'currentColor',
-                                    'stroke-width': '2',
-                                    'stroke-linecap': 'round',
-                                    'stroke-linejoin': 'round',
-                                    'aria-hidden': 'true',
-                                },
-                                [
-                                    h('path', {
-                                        d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-                                    }),
-                                ]
-                            ),
-                        ],
-                    }
-                ),
-                h(
-                    'button',
-                    {
-                        type: 'button',
-                        class: 'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                        title: 'Delete Notification',
-                        onClick: () => openDeleteModal(p.row),
-                    },
-                    [
-                        h('span', { class: 'sr-only' }, 'Delete Notification'),
-                        h(
-                            'svg',
-                            {
-                                class: 'h-4 w-4',
-                                viewBox: '0 0 24 24',
-                                fill: 'none',
-                                stroke: 'currentColor',
-                                'stroke-width': '2',
-                                'stroke-linecap': 'round',
-                                'stroke-linejoin': 'round',
-                                'aria-hidden': 'true',
-                            },
-                            [
-                                h('path', {
-                                    d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
-                                }),
-                            ]
-                        ),
-                    ]
-                ),
-            ])
-    },
-}
-
 const columnHelper = createColumnHelper()
 
+const btnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]'
+const iconClass = 'h-3.5 w-3.5'
+const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
+
 const columns = [
-    columnHelper.accessor(row => dash(row.created_at_diff), {
-        id: 'created_at',
-        header: 'Created',
-        cell: info => info.getValue(),
-    }),
-    columnHelper.accessor('scope', {
-        header: 'Scope',
-        cell: info => h(ScopeCell, { row: info.row.original }),
-    }),
-    columnHelper.accessor('type', {
-        header: 'Type',
-        cell: info => h(TypeCell, { row: info.row.original }),
-    }),
     columnHelper.accessor('title', {
-        header: 'Title',
-        cell: info => h('div', { class: 'truncate max-w-xs' }, dash(info.row.original.title)),
+        header: 'Notification',
+        cell: info => {
+            const row = info.row.original
+            return h('div', { class: 'min-w-0' }, [
+                h('p', { class: 'truncate text-sm font-medium text-[var(--color-text)]' }, dash(row.title)),
+                h('p', { class: 'mt-0.5 text-xs text-[var(--color-text-muted)]' }, [
+                    h('span', { class: 'capitalize' }, dash(row.scope)),
+                    h('span', { class: 'mx-1' }, '·'),
+                    h(NotificationTypeBadge, { type: row.type }),
+                ]),
+            ])
+        },
     }),
     columnHelper.accessor(row => dash(row.created_by_name), {
         id: 'created_by',
-        header: 'Created By',
-        cell: info => info.getValue(),
+        header: 'Author',
+        cell: info => h('span', { class: 'text-sm text-[var(--color-text)]' }, info.getValue()),
+    }),
+    columnHelper.accessor(row => dash(row.created_at_diff), {
+        id: 'created_at',
+        header: 'Created',
+        cell: info => h('span', { class: 'text-xs text-[var(--color-text-muted)]' }, info.getValue()),
     }),
     columnHelper.display({
         id: 'actions',
-        header: 'Actions',
-        cell: info => h(ActionButtonsCell, { row: info.row.original }),
+        header: '',
+        cell: info => {
+            const row = info.row.original
+            if (!row?.id) return null
+
+            const editBtn = h(Link, {
+                href: route('admin.notifications.edit', row.id),
+                class: btnClass,
+                title: 'Edit',
+            }, {
+                default: () => [
+                    h('svg', { class: iconClass, ...svgAttrs }, [
+                        h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'm16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10' }),
+                    ]),
+                ],
+            })
+
+            const deleteBtn = h('button', {
+                type: 'button',
+                class: btnClass + ' hover:text-red-600! dark:hover:text-red-400!',
+                title: 'Delete',
+                onClick: () => openDeleteModal(row),
+            }, [
+                h('svg', { class: iconClass, ...svgAttrs }, [
+                    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'm14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0' }),
+                ]),
+            ])
+
+            return h('div', { class: 'flex items-center justify-end gap-0.5' }, [editBtn, deleteBtn])
+        },
     }),
 ]
 
@@ -507,37 +220,22 @@ const formatExportData = row => ({
 <template>
     <Head title="Admin Notifications" />
 
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="admin-notifications">
-        <div class="container-border">
-            <PageHeader
-                title="Admin Notifications"
-                description="Create and manage app notifications"
-                :breadcrumbs="breadcrumbs">
-                <template #actions>
-                    <Link
-                        :href="route('admin.notifications.create')"
-                        class="btn btn-primary btn-sm">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="mr-1 size-4">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        Create Notification
-                    </Link>
-                </template>
-            </PageHeader>
+    <main class="mx-auto max-w-7xl" aria-labelledby="admin-notifications">
+        <PageHeader
+            title="Admin Notifications"
+            description="Create and manage app notifications"
+            :breadcrumbs="breadcrumbs">
+            <template #actions>
+                <Link
+                    :href="route('admin.notifications.create')"
+                    class="btn btn-primary btn-sm">
+                    Create notification
+                </Link>
+            </template>
+        </PageHeader>
 
-            <section class="bg-[var(--color-bg)] p-6">
-                <div
-                    class="notifications-data-table rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-                    <Datatable
+        <div class="notifications-data-table card p-6">
+            <Datatable
                         class="datatable-admin-notifications"
                         :data="notifications.data"
                         :columns="columns"
@@ -555,77 +253,38 @@ const formatExportData = row => ({
                         @bulk-delete="handleBulkDelete"
                         @navigate="onNavigate"
                         @update:pagination="pagination = $event" />
-                </div>
-            </section>
         </div>
     </main>
 
-    <Modal :show="showDeleteModal" size="md" @close="closeDeleteModal">
-        <template #title>
-            <div class="flex items-center text-red-600">Delete Notification</div>
-        </template>
-
+    <Modal :show="showDeleteModal" size="sm" @close="closeDeleteModal">
+        <template #title>Delete notification</template>
         <template #default>
-            <div class="space-y-4">
-                <p class="text-sm text-[var(--color-text-muted)]">
-                    Are you sure you want to delete this notification? This action cannot be undone.
-                </p>
-                <Alert type="warning" title="Notification">
-                    <span class="font-medium">{{ deleteTarget?.title || 'Notification' }}</span>
-                </Alert>
-            </div>
+            <p class="text-sm text-(--color-text-muted)">
+                Delete <span class="font-medium text-(--color-text)">{{ deleteTarget?.title || 'this notification' }}</span>? This cannot be undone.
+            </p>
         </template>
-
         <template #footer>
-            <div class="flex items-center justify-end gap-8">
-                <button
-                    type="button"
-                    class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
-                    :disabled="loading"
-                    @click="closeDeleteModal">
-                    Cancel
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="loading"
-                    @click="destroyRow">
-                    {{ loading ? 'Deleting...' : 'Yes, Delete' }}
+            <div class="flex justify-end gap-3">
+                <button type="button" class="btn btn-secondary btn-sm" :disabled="loading" @click="closeDeleteModal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm" :disabled="loading" @click="destroyRow">
+                    {{ loading ? 'Deleting...' : 'Delete' }}
                 </button>
             </div>
         </template>
     </Modal>
 
-    <Modal :show="showBulkDeleteModal" size="md" @close="closeBulkDeleteModal">
-        <template #title>
-            <div class="flex items-center text-red-600">Delete Notifications</div>
-        </template>
-
+    <Modal :show="showBulkDeleteModal" size="sm" @close="closeBulkDeleteModal">
+        <template #title>Delete notifications</template>
         <template #default>
-            <div class="space-y-4">
-                <p class="text-sm text-[var(--color-text-muted)]">
-                    Delete
-                    <span class="font-medium">{{ selectedCount }}</span>
-                    selected notifications? This action cannot be undone.
-                </p>
-            </div>
+            <p class="text-sm text-(--color-text-muted)">
+                Delete <span class="font-medium text-(--color-text)">{{ selectedCount }}</span> selected notifications? This cannot be undone.
+            </p>
         </template>
-
         <template #footer>
-            <div class="flex items-center justify-end gap-8">
-                <button
-                    type="button"
-                    class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400"
-                    :disabled="loading"
-                    @click="closeBulkDeleteModal">
-                    Cancel
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="loading"
-                    @click="runBulkDelete">
-                    {{ loading ? 'Deleting...' : 'Yes, Delete' }}
+            <div class="flex justify-end gap-3">
+                <button type="button" class="btn btn-secondary btn-sm" :disabled="loading" @click="closeBulkDeleteModal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm" :disabled="loading" @click="runBulkDelete">
+                    {{ loading ? 'Deleting...' : 'Delete' }}
                 </button>
             </div>
         </template>

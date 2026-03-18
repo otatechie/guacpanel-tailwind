@@ -66,7 +66,7 @@ class AdminLoginHistoryController extends Controller
     {
         $request->validate([
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'exists:login_history,id'],
+            'ids.*' => ['required', 'integer', 'exists:login_history,id'],
         ]);
 
         LoginHistory::whereIn('id', $request->ids)->delete();

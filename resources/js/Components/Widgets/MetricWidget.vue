@@ -105,7 +105,7 @@ const formatChange = change => {
             <!-- Main value - monospace, large -->
             <div class="mb-2 sm:mb-3">
                 <span
-                    class="font-mono text-3xl leading-none font-semibold tracking-tight text-[var(--color-text)] tabular-nums sm:text-4xl">
+                    class="font-mono text-2xl leading-none font-semibold tracking-tight text-[var(--color-text)] tabular-nums sm:text-3xl lg:text-4xl">
                     {{ formatValue(value) }}
                 </span>
             </div>

@@ -90,20 +90,19 @@ const isPositiveChange = computed(() => props.change > 0)
 </script>
 
 <template>
-    <div
-        class="overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs sm:p-6">
+    <div class="card overflow-hidden p-4 sm:p-6">
         <!-- Header -->
         <div class="mb-3 sm:mb-4">
-            <h3 class="mb-2 text-xs font-medium text-[var(--color-text-muted)] sm:text-sm">
+            <h3 class="mb-2 text-xs font-medium text-(--color-text-muted) sm:text-sm">
                 {{ title }}
             </h3>
             <div class="flex items-baseline gap-2 sm:gap-3">
-                <p class="text-2xl font-semibold text-[var(--color-text)] sm:text-3xl">
+                <p class="text-2xl font-semibold tabular-nums text-(--color-text) sm:text-3xl">
                     {{ value }}
                 </p>
                 <span
                     v-if="change !== 0"
-                    class="flex shrink-0 items-center gap-1 text-xs font-semibold sm:text-sm"
+                    class="flex shrink-0 items-center gap-1 text-xs font-semibold tabular-nums sm:text-sm"
                     :class="
                         isPositiveChange
                             ? 'text-green-600 dark:text-green-400'
