@@ -7,8 +7,18 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding-top: 15vh;
+    padding-top: 10vh;
     backdrop-filter: blur(4px);
+}
+
+@media (min-width: 640px) {
+    .command-palette-overlay {
+        padding-top: 15vh;
+    }
+
+    .command-palette-modal {
+        margin: 0 1rem;
+    }
 }
 
 .dark .command-palette-overlay {
@@ -18,7 +28,7 @@
 .command-palette-modal {
     width: 100%;
     max-width: 640px;
-    margin: 0 1rem;
+    margin: 0 0.5rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 0.75rem;

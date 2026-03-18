@@ -14,7 +14,7 @@ class AppNotificationRead extends Model
 
     protected $keyType = 'string';
 
-    protected $fillable = ['app_notification_id', 'user_id', 'read_at', 'dismissed_at', 'u_del_notif_at', 'deleted_at'];
+    protected $fillable = ['app_notification_id', 'user_id'];
 
     protected $casts = [
         'read_at' => 'datetime',

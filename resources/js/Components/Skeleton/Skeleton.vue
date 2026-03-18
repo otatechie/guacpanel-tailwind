@@ -46,7 +46,7 @@ defineProps({
 
     <div
         v-else-if="variant === 'card'"
-        class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+        class="card p-4">
         <div class="flex gap-3">
             <div class="skeleton shrink-0 rounded-full" :style="{ width: size, height: size }" />
             <div class="flex-1">

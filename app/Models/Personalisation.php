@@ -14,8 +14,6 @@ class Personalisation extends Model
     use HasUlids;
     use HasFactory;
 
-    protected $guarded = ['id'];
-
     protected $fillable = ['app_name', 'app_logo', 'app_logo_dark', 'favicon', 'copyright_text'];
 
     protected $casts = [

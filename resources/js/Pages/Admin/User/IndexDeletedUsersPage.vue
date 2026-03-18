@@ -194,10 +194,10 @@ const columns = [
                     class: 'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
                     onClick: () => handleRestore(user),
                     type: 'button',
-                    title: 'Restore User',
+                    title: 'Restore user',
                 },
                 [
-                    h('span', { class: 'sr-only' }, 'Restore User'),
+                    h('span', { class: 'sr-only' }, 'Restore user'),
                     h(
                         'svg',
                         {
@@ -226,10 +226,10 @@ const columns = [
                     class: 'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
                     onClick: () => confirmDeleteUser(user),
                     type: 'button',
-                    title: 'Destroy User',
+                    title: 'Destroy user',
                 },
                 [
-                    h('span', { class: 'sr-only' }, 'Destroy User'),
+                    h('span', { class: 'sr-only' }, 'Destroy user'),
                     h(
                         'svg',
                         {
@@ -285,44 +285,40 @@ watch(
 
 <template>
     <Head title="Deleted Users Management" />
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
-        <div class="container-border">
-            <PageHeader
-                title="Deleted Users Management"
-                description="Manage system deleted users"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'System Settings', href: route('admin.setting.index') },
-                    { label: 'Users Management', href: route('admin.user.index') },
-                    { label: 'Deleted Users' },
-                ]">
-                <template #actions>
-                    <button @click="openDestroyAllUsersModal" class="btn btn-danger btn-sm">
-                        Destroy All
-                    </button>
-                </template>
-            </PageHeader>
+    <main class="mx-auto max-w-7xl" aria-labelledby="users-management">
+        <PageHeader
+            title="Deleted Users Management"
+            description="Manage system deleted users"
+            :breadcrumbs="[
+                { label: 'Dashboard', href: route('dashboard') },
+                { label: 'System Settings', href: route('admin.setting.index') },
+                { label: 'Users Management', href: route('admin.user.index') },
+                { label: 'Deleted Users' },
+            ]">
+            <template #actions>
+                <button @click="openDestroyAllUsersModal" class="btn btn-danger btn-sm">
+                    Destroy all
+</button>
+            </template>
+        </PageHeader>
 
-            <section class="p-6 dark:bg-gray-900">
-                <div
-                    class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                    <DataTable
-                        :data="users.data"
-                        :columns="columns"
-                        :loading="loading"
-                        :pagination="pagination"
-                        empty-message="No deleted users found"
-                        empty-description="Users will appear here once deleted"
-                        export-file-name="deleted_users"
-                        @update:pagination="pagination = $event" />
-                </div>
-            </section>
+        <div
+            class="card p-6">
+            <DataTable
+                :data="users.data"
+                :columns="columns"
+                :loading="loading"
+                :pagination="pagination"
+                empty-message="No deleted users found"
+                empty-description="Users will appear here once deleted"
+                export-file-name="deleted_users"
+                @update:pagination="pagination = $event" />
         </div>
     </main>
 
     <Modal :show="showDeleteModal" @close="closeModal" size="md">
         <template #title>
-            <div class="text-red-600 dark:text-red-400">Permanently Destroy User</div>
+            <div class="text-red-600 dark:text-red-400">Permanently destroy user</div>
         </template>
 
         <template #default>
@@ -437,7 +433,7 @@ watch(
     </Modal>
 
     <Modal :show="showDestroyAllUsersModal" @close="closeModal" size="lg">
-        <template #title>Destroy All Deleted Users</template>
+        <template #title>Destroy all deleted users</template>
 
         <template #default>
             <div class="w-full space-y-8">

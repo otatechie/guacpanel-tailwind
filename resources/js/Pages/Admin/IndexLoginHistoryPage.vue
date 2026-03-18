@@ -12,10 +12,7 @@ defineOptions({
 })
 
 const props = defineProps({
-    loginHistory: {
-        type: Object,
-        required: true,
-    },
+    loginHistory: { type: Object, required: true },
 })
 
 const columnHelper = createColumnHelper()
@@ -27,132 +24,72 @@ const pagination = ref({
 })
 
 const columns = [
-    columnHelper.accessor(row => row.login_at_diff, {
-        id: 'login_at',
-        header: 'Login Time',
-        cell: info => info.getValue(),
-        meta: {
-            ariaLabel: 'Login timestamp',
-        },
-    }),
     columnHelper.accessor('username', {
         header: 'User',
-        cell: info => info.row.original.username,
-        meta: {
-            ariaLabel: 'Username',
-        },
-    }),
-    columnHelper.accessor('user_agent', {
-        header: 'Browser & Device',
-        cell: info => {
-            const device = info.row.original.device_info
-            if (!device) return 'Unknown Device'
-            return h(
-                'span',
-                {
-                    'aria-label': `Browser: ${device.browser}, Platform: ${device.platform}, Device: ${device.device}`,
-                },
-                `${device.browser} on ${device.platform} (${device.device})`
-            )
-        },
-        meta: {
-            ariaLabel: 'Browser and device information',
-        },
+        cell: info => h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, info.getValue()),
     }),
     columnHelper.accessor('status', {
         header: 'Status',
         cell: info => {
-            const status = info.row.original.status
-            if (!status) return h('span', { 'aria-label': 'Status not available' }, '-')
-
-            return h(
-                'div',
-                {
-                    class: 'flex items-center gap-2',
-                    role: 'status',
-                    'aria-label': `Login ${status.success ? 'successful' : 'failed'} `,
-                },
-                [
-                    h(
-                        'span',
-                        {
-                            class: status.success
-                                ? 'px-2 py-1 text-sm rounded-md bg-green-50 text-green-700 dark:bg-green-900/50 dark:text-green-400'
-                                : 'px-2 py-1 text-sm rounded-md bg-red-50 text-red-700 dark:bg-red-900/50 dark:text-red-400',
-                        },
-                        status.success ? 'Success' : 'Failed'
-                    ),
-                ]
-            )
+            const s = info.row.original.status
+            if (!s) return '-'
+            return h('span', {
+                class: s.success
+                    ? 'flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400'
+                    : 'flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400',
+            }, [
+                h('span', { class: s.success ? 'h-1.5 w-1.5 rounded-full bg-green-500' : 'h-1.5 w-1.5 rounded-full bg-red-500' }),
+                s.success ? 'Success' : 'Failed',
+            ])
         },
-        meta: {
-            ariaLabel: 'Login status and IP address',
-        },
+    }),
+    columnHelper.accessor(row => row.login_at_diff, {
+        id: 'login_at',
+        header: 'When',
+        cell: info => h('span', { class: 'text-xs tabular-nums text-[var(--color-text-muted)]' }, info.getValue()),
     }),
 ]
 
 const handleBulkDelete = async ({ selectedRows }) => {
     if (!selectedRows?.length) return
-
     loading.value = true
-    const ids = selectedRows.map(row => row.id)
-
-    await axios.post(route('admin.login.history.bulk-destroy'), { ids })
+    await axios.post(route('admin.login.history.bulk-destroy'), { ids: selectedRows.map(r => r.id) })
     await router.reload({ preserveScroll: true })
     loading.value = false
 }
 
-watch(
-    pagination,
-    newPagination => {
-        loading.value = true
-        router.get(
-            route('admin.login.history.index'),
-            {
-                page: newPagination.current_page,
-                per_page: Number(newPagination.per_page),
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                onFinish: () => (loading.value = false),
-            }
-        )
-    },
-    { deep: true }
-)
+watch(pagination, p => {
+    loading.value = true
+    router.get(route('admin.login.history.index'), { page: p.current_page, per_page: Number(p.per_page) }, {
+        preserveState: true, preserveScroll: true, onFinish: () => (loading.value = false),
+    })
+}, { deep: true })
 </script>
 
 <template>
-    <Head title="Login History" />
+    <Head title="Login history" />
 
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="login-history">
-        <div class="container-border">
-            <PageHeader
-                title="Login History"
-                description="View and monitor login history"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'System Settings', href: route('admin.setting.index') },
-                    { label: 'Login History' },
-                ]" />
+    <main class="mx-auto max-w-7xl" aria-labelledby="login-history">
+        <PageHeader
+            title="Login history"
+            :breadcrumbs="[
+                { label: 'Dashboard', href: route('dashboard') },
+                { label: 'System Settings', href: route('admin.setting.index') },
+                { label: 'Login history' },
+            ]" />
 
-            <section class="bg-[var(--color-bg)] p-6">
-                <div
-                    class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-                    <Datatable
-                        :data="loginHistory.data"
-                        :columns="columns"
-                        :loading="loading"
-                        :pagination="pagination"
-                        empty-message="No login history records found"
-                        empty-description="Login history will appear here"
-                        export-file-name="login_history"
-                        :bulk-delete-route="route('admin.login.history.bulk-destroy')"
-                        @update:pagination="pagination = $event"
-                        @bulk-delete="handleBulkDelete"></Datatable>
-                </div>
-            </section>
+        <div class="card p-6">
+            <Datatable
+                :data="loginHistory.data"
+                :columns="columns"
+                :loading="loading"
+                :pagination="pagination"
+                empty-message="No login history"
+                empty-description="Records appear as users sign in"
+                export-file-name="login_history"
+                :bulk-delete-route="route('admin.login.history.bulk-destroy')"
+                @update:pagination="pagination = $event"
+                @bulk-delete="handleBulkDelete" />
         </div>
     </main>
 </template>

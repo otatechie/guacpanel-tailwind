@@ -1,107 +1,59 @@
-/* Form Elements */
-.select-input {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border: 1px solid var(--color-border-strong);
-    border-radius: 0.375rem;
+/* ─── Shared input base ─── */
+.form-input {
+    width: 100%;
+    border-radius: 0.5rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
+    caret-color: var(--color-text);
 }
 
-.select-input:focus {
-    border-color: var(--selection-color);
+.form-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+}
+
+.form-input:hover:not(:disabled):not(:focus) {
+    border-color: var(--color-border-strong);
+}
+
+.form-input:focus {
     outline: none;
-    --tw-ring-color: var(--selection-color);
-    --tw-ring-opacity: 1;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
-        var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width))
-        var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
-.dark .select-input:focus {
-    --tw-ring-color: var(--selection-color);
-    border-color: var(--selection-color);
-}
-
-.checkbox-input {
-    border-radius: 0.25rem;
-    border-color: #d1d5db;
-    color: #a855f7;
-}
-
-.checkbox-input:focus {
-    --tw-ring-color: #a855f7;
-    --tw-ring-opacity: 1;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
-        var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width))
-        var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
-/* Link Styles */
-.link {
-    color: var(--primary-color);
-    text-decoration: underline;
-    transition: color 0.2s ease-in-out;
-}
-
-.link:hover {
-    color: var(--primary-hover);
-}
-
-/* Link colors are variable-driven for both themes */
-
-/* Form Input States */
-input:focus,
-textarea:focus,
-select:focus {
-    outline: 0;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.15);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.12);
 }
 
-.dark input:focus,
-.dark textarea:focus,
-.dark select:focus {
-    outline: 0;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.15);
+.form-input-error {
+    border-color: #dc2626;
+    caret-color: #dc2626;
 }
 
-/* Form Input Error States */
-.error {
-    border-color: var(--error-color);
-    transition-property: box-shadow;
-    transition-duration: 150ms;
-    transition-timing-function: ease-in-out;
+.form-input-error:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
-.error:focus {
-    outline: 0;
-    border-color: var(--error-color);
-    box-shadow: 0 0 0 0.2rem rgba(var(--error-color-rgb), 0.15);
+.form-input-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: var(--color-surface-muted);
 }
 
-.dark .error {
-    border-color: var(--error-color);
+/* ─── Label (top-aligned) ─── */
+.form-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
 }
 
-.dark .error:focus {
-    outline: 0;
-    border-color: var(--error-color);
-    box-shadow: 0 0 0 0.2rem rgba(var(--error-color-rgb), 0.15);
-}
-
-/* Autofill Styles */
+/* ─── Autofill ─── */
 input:-webkit-autofill {
     -webkit-text-fill-color: inherit !important;
     background-color: var(--color-surface) !important;
@@ -114,13 +66,33 @@ input:-webkit-autofill {
     box-shadow: inset 0 0 0 9999px var(--color-surface) !important;
 }
 
-/* Code Block Styles */
+/* ─── Color scheme ─── */
+input,
+textarea,
+select {
+    color-scheme: light;
+}
+.dark input,
+.dark textarea,
+.dark select {
+    color-scheme: dark;
+}
+
+/* ─── Links ─── */
+.link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    transition: color 0.15s ease;
+}
+.link:hover {
+    color: var(--primary-hover);
+}
+
+/* ─── Code blocks ─── */
 pre {
-    font-family:
-        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-        monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     overflow-x: auto;
     white-space: pre-wrap;
-    word-break: break-words;
+    word-break: break-word;
     max-width: 100%;
 }

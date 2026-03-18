@@ -41,17 +41,19 @@ const submit = () => {
 <template>
     <Head title="Create account" />
 
-    <div class="mx-auto max-w-[384px] px-8" role="main">
-        <h1 class="main-heading text-center">Create account</h1>
+    <div class="w-full" role="main">
+        <header>
+            <h1 class="text-2xl font-bold text-(--color-text)">Create account</h1>
+            <p class="mt-1 text-sm text-(--color-text-muted)">
+                Get started with your free account
+            </p>
+        </header>
 
-        <form
-            class="container-border mt-6 space-y-6 p-5"
-            aria-labelledby="registration-form"
-            @submit.prevent="submit">
+        <form class="mt-6 space-y-4" @submit.prevent="submit">
             <FormInput
                 id="name"
                 v-model="form.name"
-                label="Name"
+                label="Full name"
                 name="name"
                 required
                 :error="form.errors.name"
@@ -59,7 +61,7 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
-                label="Email"
+                label="Email address"
                 name="email"
                 type="email"
                 required
@@ -73,8 +75,7 @@ const submit = () => {
                 type="password"
                 required
                 :error="form.errors.password"
-                autocomplete="new-password"
-                aria-describedby="password-requirements" />
+                autocomplete="new-password" />
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
@@ -85,49 +86,42 @@ const submit = () => {
                 :error="form.errors.password_confirmation"
                 autocomplete="new-password" />
 
-            <p class="text-sm text-[var(--color-text-muted)]" role="note">
+            <p class="text-xs leading-relaxed text-(--color-text-muted)">
                 By creating an account, you agree to our
-                <a href="#" class="font-medium underline" aria-label="Read Terms of Service">
-                    Terms
-                </a>
-                and have read and acknowledge the
-                <a href="#" class="font-medium underline" aria-label="Read Privacy Policy">
-                    Global Privacy
-                </a>
-                Statement.
+                <a href="#" class="font-medium underline">Terms</a>
+                and
+                <a href="#" class="font-medium underline">Privacy Policy</a>.
             </p>
 
             <button
                 type="submit"
                 :disabled="form.processing"
                 class="btn btn-primary w-full"
-                aria-busy="form.processing">
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Creating account...' : 'Create account' }}
             </button>
+        </form>
 
-            <template v-if="smLogin || passwordlessLogin">
-                <div class="relative flex items-center" role="separator" aria-label="or separator">
-                    <div class="w-full border-t border-[var(--color-border)]"></div>
-                    <span
-                        class="absolute left-1/2 -translate-x-1/2 bg-[var(--color-surface)] px-2 text-sm text-[var(--color-text-muted)]">
-                        OR
-                    </span>
-                </div>
-            </template>
+        <template v-if="smLogin || passwordlessLogin">
+            <div role="separator" class="relative my-6">
+                <hr class="border-t border-(--color-border)" />
+                <span
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-(--color-bg) px-3 text-xs text-(--color-text-muted)">
+                    or continue with
+                </span>
+            </div>
 
-            <template v-if="smLogin">
-                <Socialite :providers-config="providersConfig" />
-            </template>
+            <div class="space-y-3">
+                <Socialite v-if="smLogin" :providers-config="providersConfig" />
 
-            <template v-if="passwordlessLogin">
                 <Link
+                    v-if="passwordlessLogin"
                     :href="route('magic.create')"
-                    class="btn btn-secondary flex w-full cursor-pointer items-center justify-center gap-2 px-4 py-2.5 text-sm"
-                    role="button"
-                    aria-label="Create account with magic link">
+                    class="btn btn-secondary flex w-full items-center justify-center gap-2 text-sm"
+                    role="button">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -138,18 +132,15 @@ const submit = () => {
                             stroke-width="1.5"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <span>Create account with magic link</span>
+                    Sign up with magic link
                 </Link>
-                <p class="mt-2 text-center text-xs text-[var(--color-text-muted)]" role="note">
-                    No password needed - we'll send a secure login link to your email
-                </p>
-            </template>
-        </form>
+            </div>
+        </template>
 
-        <p class="my-8 text-center text-sm text-[var(--color-text-muted)]">
-            Already a member?
-            <Link :href="route('login')" class="link text-sm" aria-label="Go to login page">
-                Login
+        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
+            Already have an account?
+            <Link :href="route('login')" class="font-medium text-(--primary-color) hover:underline">
+                Sign in
             </Link>
         </p>
     </div>

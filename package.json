@@ -40,7 +40,7 @@
     "vite-plugin-minify": "^2.1.0"
   },
   "dependencies": {
-    "@heroicons/vue": "^2.1.5",
+    "@heroicons/vue": "^2.2.0",
     "@inertiajs/vue3": "^2.0.3",
     "@tanstack/vue-table": "^8.20.5",
     "algoliasearch": "^5.30.0",

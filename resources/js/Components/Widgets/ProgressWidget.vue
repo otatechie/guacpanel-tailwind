@@ -71,21 +71,20 @@ const bgColorClasses = {
 </script>
 
 <template>
-    <div
-        class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-xs">
+    <div class="card p-4 sm:p-6">
         <!-- Header -->
         <div class="mb-4 flex items-start justify-between">
             <div class="flex-1">
-                <h3 class="mb-1 text-sm font-medium text-[var(--color-text-muted)]">
+                <h3 class="mb-1 text-sm font-medium text-(--color-text-muted)">
                     {{ title }}
                 </h3>
-                <p class="text-2xl font-semibold text-[var(--color-text)]">
+                <p class="text-2xl font-semibold tabular-nums text-(--color-text)">
                     {{ value }}
-                    <span class="text-lg text-[var(--color-text-muted)]">/{{ max }}</span>
+                    <span class="text-lg text-(--color-text-muted)">/{{ max }}</span>
                 </p>
             </div>
             <div v-if="showPercentage" class="text-right">
-                <span class="text-2xl font-semibold text-[var(--color-text)]">
+                <span class="text-2xl font-semibold tabular-nums text-(--color-text)">
                     {{ percentage }}%
                 </span>
             </div>
@@ -96,13 +95,13 @@ const bgColorClasses = {
             class="relative h-3 w-full overflow-hidden rounded-full"
             :class="bgColorClasses[color]">
             <div
-                class="h-full rounded-full transition-all duration-500 ease-out"
+                class="h-full rounded-full transition-[width] duration-500 ease-out"
                 :class="colorClasses[color]"
                 :style="{ width: `${percentage}%` }"></div>
         </div>
 
         <!-- Description -->
-        <p v-if="description" class="mt-3 text-sm text-[var(--color-text-muted)]">
+        <p v-if="description" class="mt-3 text-sm text-(--color-text-muted)">
             {{ description }}
         </p>
     </div>

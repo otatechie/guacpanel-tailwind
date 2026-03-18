@@ -12,7 +12,13 @@ class FinancialMetric extends Model
 
     use Searchable;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'date',
+        'category',
+        'amount',
+        'type',
+        'description',
+    ];
 
     protected $casts = [
         'date' => 'date',

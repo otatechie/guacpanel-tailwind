@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
     show: Boolean,
@@ -12,37 +13,27 @@ const modalPanel = ref(null)
 const closeButton = ref(null)
 const previouslyFocused = ref(null)
 const modalId = `modal-${Math.random().toString(36).substr(2, 9)}`
+
 const sizeClasses = {
-    sm: 'w-full max-w-sm mx-2 sm:mx-4',
-    md: 'w-full max-w-md mx-2 sm:mx-4',
-    lg: 'w-full max-w-lg mx-2 sm:mx-4',
-    xl: 'w-full max-w-xl mx-2 sm:mx-4',
-    '2xl': 'w-full max-w-2xl mx-2 sm:mx-4',
-    '3xl': 'w-full max-w-3xl mx-2 sm:mx-4',
-    '4xl': 'w-full max-w-4xl mx-2 sm:mx-4',
-    '5xl': 'w-full max-w-5xl mx-2 sm:mx-4',
-    full: 'w-full max-w-full mx-1 sm:mx-2',
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+    '2xl': 'max-w-2xl',
+    '3xl': 'max-w-3xl',
 }
 
 const handleKeyDown = e => {
     if (e.key === 'Escape' && props.show) emit('close')
-
     if (e.key === 'Tab' && props.show && modalPanel.value) {
-        const focusableElements = modalPanel.value.querySelectorAll(
+        const focusable = modalPanel.value.querySelectorAll(
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         )
-        if (focusableElements.length === 0) return
-
-        const firstElement = focusableElements[0]
-        const lastElement = focusableElements[focusableElements.length - 1]
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-            e.preventDefault()
-            lastElement.focus()
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-            e.preventDefault()
-            firstElement.focus()
-        }
+        if (!focusable.length) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
     }
 }
 
@@ -50,18 +41,10 @@ const handleClickOutside = e => {
     if (props.closeOnClickOutside && !modalPanel.value?.contains(e.target)) emit('close')
 }
 
-watch(
-    () => props.show,
-    newValue => {
-        if (newValue) {
-            previouslyFocused.value = document.activeElement
-            nextTick(() => closeButton.value?.focus())
-        } else if (previouslyFocused.value) {
-            previouslyFocused.value.focus()
-        }
-    },
-    { immediate: true }
-)
+watch(() => props.show, v => {
+    if (v) { previouslyFocused.value = document.activeElement; nextTick(() => closeButton.value?.focus()) }
+    else if (previouslyFocused.value) previouslyFocused.value.focus()
+}, { immediate: true })
 
 onMounted(() => document.addEventListener('keydown', handleKeyDown))
 onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
@@ -69,60 +52,43 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
 
 <template>
     <Transition name="modal" :duration="150">
-        <div v-if="show" class="fixed inset-0 z-[999]" role="region" aria-labelledby="modalId">
-            <div
-                class="fixed inset-0 grid h-screen w-screen place-items-center bg-black/30 dark:bg-black/50"
-                aria-hidden="true"
-                @click="handleClickOutside"></div>
+        <div v-if="show" class="fixed inset-0 z-[999]">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-black/25 dark:bg-black/50" @click="handleClickOutside"></div>
 
-            <main
-                class="fixed inset-0 z-10 grid h-screen w-screen place-items-center p-2 sm:p-4 md:p-6"
-                role="dialog"
-                aria-modal="true"
-                :aria-labelledby="modalId">
-                <article
+            <!-- Dialog -->
+            <div class="fixed inset-0 z-10 grid place-items-center p-4" role="dialog" aria-modal="true" :aria-labelledby="modalId">
+                <div
                     ref="modalPanel"
                     tabindex="-1"
-                    class="relative flex max-h-[calc(100vh-1rem)] w-full flex-col overflow-visible rounded-xl bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-3rem)] dark:bg-gray-800 dark:ring-white/5"
-                    :class="sizeClasses[size] || sizeClasses['md']">
-                    <header
-                        class="flex flex-shrink-0 items-center justify-between border-b border-gray-200 px-3 py-3 sm:px-4 sm:py-4 md:px-6 dark:border-gray-700/50">
-                        <h2
-                            :id="modalId"
-                            class="pr-2 text-sm font-semibold text-gray-900 sm:text-base md:text-lg dark:text-white">
-                            <slot name="title"></slot>
+                    class="relative flex w-full flex-col rounded-lg border border-(--card-border) bg-(--color-surface) shadow-lg"
+                    :class="[sizeClasses[size] || sizeClasses.md, 'max-h-[calc(100vh-2rem)]']">
+
+                    <!-- Header -->
+                    <div class="flex shrink-0 items-center justify-between border-b border-(--card-border) px-5 py-3.5">
+                        <h2 :id="modalId" class="text-sm font-semibold text-(--color-text)">
+                            <slot name="title" />
                         </h2>
                         <button
                             ref="closeButton"
-                            class="flex-shrink-0 cursor-pointer rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-gray-200 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-700/50 dark:hover:text-gray-400 dark:focus:ring-gray-700"
-                            aria-label="Close modal"
+                            class="nav-bar-btn"
+                            aria-label="Close"
                             @click="emit('close')">
-                            <svg
-                                class="h-4 w-4 sm:h-5 sm:w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <XMarkIcon class="nav-bar-icon" />
                         </button>
-                    </header>
+                    </div>
 
-                    <section
-                        class="relative min-h-0 flex-1 px-3 py-3 sm:px-4 sm:py-4 md:px-6 dark:text-gray-200">
-                        <slot></slot>
-                    </section>
+                    <!-- Body -->
+                    <div class="min-h-0 flex-1 overflow-y-visible px-5 py-4">
+                        <slot />
+                    </div>
 
-                    <footer
-                        v-if="$slots.footer"
-                        class="flex flex-shrink-0 justify-end gap-8 rounded-b-xl border-t border-gray-100 bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-6 dark:border-gray-700/50 dark:bg-gray-800/50">
-                        <slot name="footer"></slot>
-                    </footer>
-                </article>
-            </main>
+                    <!-- Footer -->
+                    <div v-if="$slots.footer" class="shrink-0 border-t border-(--card-border) px-5 py-3.5">
+                        <slot name="footer" />
+                    </div>
+                </div>
+            </div>
         </div>
     </Transition>
 </template>
@@ -130,12 +96,10 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeyDown))
 <style scoped>
 .modal-enter-active,
 .modal-leave-active {
-    transition: all 0.15s ease-out;
+    transition: opacity 150ms ease-out;
 }
-
 .modal-enter-from,
 .modal-leave-to {
     opacity: 0;
-    transform: scale(0.95);
 }
 </style>

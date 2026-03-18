@@ -120,7 +120,11 @@ class AdminDeletedUsersController extends Controller
             'confirm_destroy_all' => ['accepted', 'boolean'],
         ]);
 
-        $users = User::onlyDeleted()->forceDelete();
+        User::onlyDeleted()->get()->each(function ($user) {
+            if ($user->canBeDeleted()) {
+                $user->forceDelete();
+            }
+        });
 
         return redirect()
             ->route('admin.user.index')

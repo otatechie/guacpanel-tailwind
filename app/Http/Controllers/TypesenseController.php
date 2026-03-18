@@ -31,12 +31,14 @@ class TypesenseController extends Controller
                 return response()->json(['error' => 'Search service configuration error'], 500);
             }
 
+            $payload = $request->only(['searches']);
+
             $response = Http::timeout(3)
                 ->withHeaders([
                     'X-TYPESENSE-API-KEY' => $typesenseApiKey,
                     'Content-Type' => 'application/json',
                 ])
-                ->post("{$typesenseProtocol}://{$typesenseHost}:{$typesensePort}/multi_search", $request->all());
+                ->post("{$typesenseProtocol}://{$typesenseHost}:{$typesensePort}/multi_search", $payload);
 
             return response()->json($response->json());
         } catch (\Exception $e) {

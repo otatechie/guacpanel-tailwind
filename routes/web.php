@@ -271,7 +271,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                             Route::controller(AdminPersonalisationController::class)->group(function () {
                                 Route::get('/', 'index')->name('index');
                                 Route::post('/upload', 'upload')->name('upload');
-                                Route::post('/delete', 'delete')->name('delete.file');
+                                Route::delete('/delete', 'delete')->name('delete.file');
                                 Route::post('/update-info', 'updateInfo')->name('update.info');
                             });
                         });
@@ -282,7 +282,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                         ->group(function () {
                             Route::controller(AdminBackupController::class)->group(function () {
                                 Route::get('/', 'index')->name('index');
-                                Route::post('/create', 'createBackup')->name('create');
+                                Route::post('/', 'createBackup')->name('create');
                                 Route::get('/download/{path}', 'download')->name('download');
                                 Route::delete('/{path}', 'destroy')->name('destroy');
                             });
@@ -316,7 +316,7 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
         });
 
         // Typesense routes
-        Route::middleware(['auth', 'throttle:60,1'])->group(function () {
+        Route::middleware(['throttle:60,1'])->group(function () {
             Route::get('/typesense/scoped-key', [TypesenseController::class, 'getScopedKey']);
             Route::post('/typesense/multi-search', [TypesenseController::class, 'multiSearch']);
         });

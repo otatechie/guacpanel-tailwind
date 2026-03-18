@@ -24,24 +24,21 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Register with Magic Link" />
+    <Head title="Register with magic link" />
 
-    <main class="mx-auto max-w-[384px] px-8" role="main">
-        <h1 class="main-heading text-center">Register with Magic Link</h1>
-
-        <form
-            class="container-border mt-6 space-y-6 p-5"
-            aria-labelledby="magic-link-form"
-            @submit.prevent="submit">
-            <p class="text-sm text-[var(--color-text-muted)]" role="note">
-                Enter your details to create an account. We'll send you a secure login link - no
-                password needed!
+    <div class="w-full" role="main">
+        <header>
+            <h1 class="text-2xl font-bold text-(--color-text)">Create account</h1>
+            <p class="mt-1 text-sm text-(--color-text-muted)">
+                No password needed. We'll email you a secure sign-in link.
             </p>
+        </header>
 
+        <form class="mt-6 space-y-4" @submit.prevent="submit">
             <FormInput
                 id="name"
                 v-model="form.name"
-                label="Legal name"
+                label="Full name"
                 name="name"
                 type="text"
                 required
@@ -51,42 +48,34 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
-                label="Email"
+                label="Email address"
                 name="email"
                 type="email"
                 required
                 autocomplete="email"
                 :error="form.errors.email" />
 
-            <p class="text-sm text-[var(--color-text-muted)]" role="note">
-                By continuing, you agree to our
-                <a href="#" class="font-medium underline" aria-label="Read Terms of Service">
-                    Terms
-                </a>
-                and have read and acknowledge the
-                <a href="#" class="font-medium underline" aria-label="Read Privacy Policy">
-                    Global Privacy
-                </a>
-                Statement.
+            <p class="text-xs leading-relaxed text-(--color-text-muted)">
+                By creating an account, you agree to our
+                <a href="#" class="font-medium underline">Terms</a>
+                and
+                <a href="#" class="font-medium underline">Privacy Policy</a>.
             </p>
 
             <button
                 type="submit"
                 :disabled="form.processing"
                 class="btn btn-primary w-full"
-                aria-busy="form.processing">
-                {{ form.processing ? 'Sending...' : 'Register with magic link' }}
+                :aria-busy="form.processing">
+                {{ form.processing ? 'Sending...' : 'Send magic link' }}
             </button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-[var(--color-text-muted)]">
-            Prefer password login?
-            <Link
-                :href="route('login')"
-                class="link text-sm"
-                aria-label="Go to password login page">
-                Login with password
+        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
+            Prefer a password?
+            <Link :href="route('register')" class="font-medium text-(--primary-color) hover:underline">
+                Sign up with password
             </Link>
         </p>
-    </main>
+    </div>
 </template>

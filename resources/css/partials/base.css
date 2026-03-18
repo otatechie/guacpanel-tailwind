@@ -22,20 +22,21 @@ input:focus {
 
 .container-border {
     background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
 }
 
 .main-container {
-    @apply rounded-[var(--main-container-radius)];
+    @apply rounded-(--main-container-radius);
     .container-border {
-        @apply rounded-[var(--main-container-radius)];
+        @apply rounded-(--main-container-radius);
         > div:last-child {
-            @apply rounded-b-[var(--main-container-radius)];
+            @apply rounded-b-(--main-container-radius);
         }
     }
     > div,
     > div > nav {
-        @apply rounded-t-[var(--main-container-radius)];
+        @apply rounded-t-(--main-container-radius);
     }
 }

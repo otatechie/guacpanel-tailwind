@@ -40,6 +40,14 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     protected $guarded = ['id'];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'restore_token',
+    ];
+
     protected $fillable = [
         'name',
         'email',

@@ -2,160 +2,99 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 defineProps({
-    user: {
-        type: Object,
-        required: true,
-    },
+    user: { type: Object, required: true },
 })
 
 const notificationsOpen = ref(false)
+const rootEl = ref(null)
 
 const notifications = ref([
-    {
-        id: 1,
-        title: 'New Update Available',
-        description: 'A new software update is available for installation',
-        time: '5 min ago',
-        read: false,
-        priority: 'high',
-    },
-    {
-        id: 2,
-        title: 'Welcome to Platform',
-        description: 'Thanks for joining! Take a quick tour of our features',
-        time: '1 hour ago',
-        read: false,
-        priority: 'normal',
-    },
-    {
-        id: 3,
-        title: 'System Maintenance',
-        description: 'Scheduled maintenance in 2 hours',
-        time: '2 hours ago',
-        read: true,
-        priority: 'low',
-    },
+    { id: 1, title: 'New update available', description: 'A new software update is ready to install', time: '5 min ago', read: false, priority: 'high' },
+    { id: 2, title: 'Welcome to the platform', description: 'Take a quick tour of the features', time: '1 hour ago', read: false, priority: 'normal' },
+    { id: 3, title: 'System maintenance', description: 'Scheduled maintenance in 2 hours', time: '2 hours ago', read: true, priority: 'low' },
 ])
 
-const toggleNotifications = () => {
-    notificationsOpen.value = !notificationsOpen.value
-}
+const unreadCount = ref(notifications.value.filter(n => !n.read).length)
 
-const markAsRead = notificationId => {
-    const notification = notifications.value.find(n => n.id === notificationId)
-    if (notification) {
-        notification.read = true
+const toggleNotifications = () => { notificationsOpen.value = !notificationsOpen.value }
+
+const markAsRead = id => {
+    const n = notifications.value.find(x => x.id === id)
+    if (n && !n.read) {
+        n.read = true
+        unreadCount.value = notifications.value.filter(x => !x.read).length
     }
 }
 
-const handleClickAway = event => {
-    const notificationButton = document.querySelector('[data-notification-button]')
-    const notificationDropdown = document.querySelector('[data-notification-dropdown]')
-
-    if (
-        !notificationButton?.contains(event.target) &&
-        !notificationDropdown?.contains(event.target)
-    ) {
-        notificationsOpen.value = false
-    }
+const priorityDot = p => {
+    if (p === 'critical') return 'bg-red-500'
+    if (p === 'high') return 'bg-amber-500'
+    if (p === 'normal') return 'bg-blue-500'
+    return 'bg-(--color-border-strong)'
 }
 
-const handleEscapeKey = event => {
-    if (event.key === 'Escape') {
-        notificationsOpen.value = false
-    }
+const handleClickAway = e => {
+    if (rootEl.value && !rootEl.value.contains(e.target)) notificationsOpen.value = false
 }
+const handleEscape = e => { if (e.key === 'Escape') notificationsOpen.value = false }
 
 onMounted(() => {
     document.addEventListener('click', handleClickAway)
-    document.addEventListener('keydown', handleEscapeKey)
+    document.addEventListener('keydown', handleEscape)
 })
-
 onUnmounted(() => {
     document.removeEventListener('click', handleClickAway)
-    document.removeEventListener('keydown', handleEscapeKey)
+    document.removeEventListener('keydown', handleEscape)
 })
 </script>
 
 <template>
-    <div class="relative">
-        <!-- Notification Bell Button -->
+    <div ref="rootEl" class="relative">
         <button
             type="button"
             data-notification-button
-            class="group relative cursor-pointer rounded-lg p-1.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:outline-none"
+            class="nav-bar-btn relative"
             aria-label="Notifications"
             :aria-expanded="notificationsOpen"
             @click="toggleNotifications">
-            <svg
-                class="size-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true">
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            <svg class="nav-bar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
             </svg>
-            <span
-                class="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-[var(--color-text)] px-2 py-1 text-xs whitespace-nowrap text-[var(--color-bg)] opacity-0 transition-opacity group-hover:opacity-100">
-                Notifications
+            <span v-if="unreadCount > 0" class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold text-white">
+                {{ unreadCount }}
             </span>
+            <span class="nav-bar-tooltip">Notifications</span>
         </button>
 
-        <!-- Notification Dropdown -->
         <div
             v-show="notificationsOpen"
             data-notification-dropdown
-            class="ring-opacity-5 absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl bg-[var(--color-surface)] py-2 shadow-lg ring-1 ring-[var(--color-border)]">
-            <!-- Dropdown Header -->
-            <div class="border-b border-[var(--color-border)] px-4 py-2">
-                <h3 class="text-sm font-semibold text-[var(--color-text)]">Notifications</h3>
+            class="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-(--card-border) bg-(--color-surface) shadow-lg"
+            @click.stop>
+
+            <div class="flex items-center justify-between border-b border-(--card-border) px-4 py-2.5">
+                <h3 class="text-sm font-semibold text-(--color-text)">Notifications</h3>
+                <span class="text-[10px] text-(--color-text-muted)">Demo</span>
             </div>
 
-            <!-- Notification List -->
             <div class="max-h-96 overflow-y-auto">
-                <div
-                    v-if="notifications.length === 0"
-                    class="px-4 py-3 text-sm text-[var(--color-text-muted)]">
-                    No notifications
-                </div>
+                <div v-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-(--color-text-muted)">No notifications</div>
 
-                <ul v-else>
-                    <li
-                        v-for="notification in notifications"
-                        :key="notification.id"
-                        class="cursor-pointer px-4 py-3 transition-colors hover:bg-[var(--color-surface-muted)]"
-                        :class="{
-                            'bg-blue-50/50 dark:bg-blue-900/20': !notification.read,
-                            'border-l-4': true,
-                            'border-red-500': notification.priority === 'critical',
-                            'border-yellow-500': notification.priority === 'high',
-                            'border-blue-500': notification.priority === 'normal',
-                            'border-gray-500': notification.priority === 'low',
-                        }"
-                        @click="markAsRead(notification.id)">
-                        <div class="flex gap-3">
-                            <div class="min-w-0 flex-1">
-                                <h4 class="text-sm font-medium text-[var(--color-text)]">
-                                    {{ notification.title }}
-                                </h4>
-                                <p class="truncate text-sm text-[var(--color-text-muted)]">
-                                    {{ notification.description }}
-                                </p>
-                                <time class="mt-1 text-xs text-[var(--color-text-muted)]">
-                                    {{ notification.time }}
-                                </time>
-                            </div>
-                            <div
-                                v-if="!notification.read"
-                                class="mt-2 h-2 w-2 rounded-full bg-blue-500"
-                                aria-hidden="true"></div>
+                <div v-else class="divide-y divide-(--card-border)">
+                    <div
+                        v-for="n in notifications"
+                        :key="n.id"
+                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-(--color-surface-muted)"
+                        :class="!n.read ? 'cursor-pointer' : ''"
+                        @click="markAsRead(n.id)">
+                        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" :class="priorityDot(n.priority)" />
+                        <div class="min-w-0 flex-1">
+                            <h4 class="truncate text-sm text-(--color-text)" :class="!n.read ? 'font-medium' : ''">{{ n.title }}</h4>
+                            <p class="mt-0.5 truncate text-xs text-(--color-text-muted)">{{ n.description }}</p>
+                            <time class="mt-1 block text-[10px] text-(--color-text-muted)">{{ n.time }}</time>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,222 +1,96 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
+import {
+    CheckCircleIcon,
+    XCircleIcon,
+    ExclamationTriangleIcon,
+    InformationCircleIcon,
+    XMarkIcon,
+} from '@heroicons/vue/24/outline'
 
-const alertConfigs = {
-    success: {
-        iconColor: 'text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-900/20',
-        bgColor: 'bg-green-100 dark:bg-green-900',
-        textColor: 'text-green-700 dark:text-green-300',
-        iconPath:
-            'M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z',
-    },
-    danger: {
-        iconColor: 'text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-900/20',
-        bgColor: 'bg-red-100 dark:bg-red-900',
-        textColor: 'text-red-700 dark:text-red-300',
-        iconPath:
-            'M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z',
-    },
-    warning: {
-        iconColor: 'text-orange-600 bg-orange-100 dark:text-orange-300 dark:bg-orange-900/20',
-        bgColor: 'bg-orange-100 dark:bg-orange-900',
-        textColor: 'text-orange-700 dark:text-orange-300',
-        iconPath:
-            'M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z',
-    },
-    info: {
-        iconColor: 'text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/20',
-        bgColor: 'bg-blue-100 dark:bg-blue-900',
-        textColor: 'text-blue-700 dark:text-blue-300',
-        iconPath:
-            'M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z',
-    },
+const typeConfig = {
+    success: { icon: CheckCircleIcon, accent: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-950/40', border: 'border-green-200 dark:border-green-900/50' },
+    danger: { icon: XCircleIcon, accent: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-950/40', border: 'border-red-200 dark:border-red-900/50' },
+    warning: { icon: ExclamationTriangleIcon, accent: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/40', border: 'border-amber-200 dark:border-amber-900/50' },
+    info: { icon: InformationCircleIcon, accent: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/40', border: 'border-blue-200 dark:border-blue-900/50' },
 }
 
 const flashMessageTypes = [
-    {
-        check: flash => flash.status === 'two-factor-authentication-enabled',
-        title: 'Two-Factor Authentication',
-        getMessage: () => 'Two-factor authentication has been enabled.',
-        type: 'success',
-    },
-    {
-        check: flash => flash.status === 'two-factor-authentication-disabled',
-        title: 'Two-Factor Authentication',
-        getMessage: () => 'Two-factor authentication has been disabled.',
-        type: 'warning',
-    },
-    {
-        check: flash => flash.status === 'recovery-codes-generated',
-        title: 'Recovery Codes',
-        getMessage: () => 'Recovery codes have been successfully generated.',
-        type: 'info',
-    },
-    {
-        check: flash => flash.status === 'verification-link-sent',
-        title: 'Verification Link',
-        getMessage: () => 'A new email verification link has been emailed to you!',
-        type: 'success',
-    },
-    {
-        check: flash => flash.status === 'profile-information-updated',
-        title: 'Profile Updated',
-        getMessage: () => 'Your profile information has been updated.',
-        type: 'success',
-    },
-    {
-        check: flash =>
-            flash.success ||
-            flash.message ||
-            (flash.status &&
-                ![
-                    'two-factor-authentication-enabled',
-                    'two-factor-authentication-disabled',
-                    'recovery-codes-generated',
-                    'verification-link-sent',
-                    'profile-information-updated',
-                ].includes(flash.status)),
-        title: 'Success',
-        getMessage: flash => flash.success || flash.message || flash.status,
-        type: 'success',
-    },
-    {
-        check: flash => flash.warning,
-        title: 'Warning',
-        getMessage: flash => flash.warning,
-        type: 'warning',
-    },
-    {
-        check: flash => flash.info,
-        title: 'Info',
-        getMessage: flash => flash.info,
-        type: 'info',
-    },
-    {
-        check: flash => flash.error || flash.danger,
-        title: 'Error',
-        getMessage: flash => flash.error || flash.danger,
-        type: 'danger',
-    },
+    { check: f => f.status === 'two-factor-authentication-enabled', message: 'Two-factor authentication enabled', type: 'success' },
+    { check: f => f.status === 'two-factor-authentication-disabled', message: 'Two-factor authentication disabled', type: 'warning' },
+    { check: f => f.status === 'recovery-codes-generated', message: 'Recovery codes generated', type: 'info' },
+    { check: f => f.status === 'verification-link-sent', message: 'Verification link sent to your email', type: 'success' },
+    { check: f => f.status === 'profile-information-updated', message: 'Profile updated', type: 'success' },
+    { check: f => f.success || f.message || (f.status && !['two-factor-authentication-enabled', 'two-factor-authentication-disabled', 'recovery-codes-generated', 'verification-link-sent', 'profile-information-updated'].includes(f.status)), message: f => f.success || f.message || f.status, type: 'success' },
+    { check: f => f.warning, message: f => f.warning, type: 'warning' },
+    { check: f => f.info, message: f => f.info, type: 'info' },
+    { check: f => f.error || f.danger, message: f => f.error || f.danger, type: 'danger' },
 ]
 
-const defaultAlertState = {
-    visible: false,
-    type: 'success',
-    title: '',
-    message: '',
-    ...alertConfigs.success,
-}
-
-const alert = ref({
-    ...defaultAlertState,
-})
-
+const toast = ref({ visible: false, type: 'success', message: '' })
 const page = usePage()
 
-const getAlertConfig = type => {
-    return alertConfigs[type] || alertConfigs.success
+const config = () => typeConfig[toast.value.type] || typeConfig.success
+
+const show = (message, type = 'success', timeout = 5000) => {
+    toast.value = { visible: true, type, message }
+    setTimeout(() => { toast.value.visible = false }, timeout)
 }
 
-const showAlert = (title, message, type = 'success', timeout = 10000) => {
-    const config = getAlertConfig(type)
-
-    alert.value = {
-        visible: true,
-        type,
-        title,
-        message,
-        ...config,
-    }
-
-    setTimeout(() => {
-        alert.value.visible = false
-    }, timeout)
-}
-
-const closeAlert = () => {
-    alert.value = { ...defaultAlertState }
-}
+const close = () => { toast.value.visible = false }
 
 if (typeof window !== 'undefined') {
-    window.$showAlert = showAlert
-    window.$closeAlert = closeAlert
+    window.$showAlert = (title, message, type) => show(message || title, type)
+    window.$closeAlert = close
 }
 
 watch(
     () => page.props.flash,
-    newFlash => {
-        if (!newFlash) return
+    flash => {
+        if (!flash) return
 
         const errors = page.props.errors || {}
         if (Object.keys(errors).length > 0) {
-            showAlert('Form Error', 'Please review the highlighted fields.', 'warning')
+            show('Please review the highlighted fields', 'warning')
             return
         }
 
-        for (const flashType of flashMessageTypes) {
-            if (flashType.check(newFlash)) {
-                const message =
-                    typeof flashType.getMessage === 'function'
-                        ? flashType.getMessage(newFlash)
-                        : flashType.getMessage
-
-                showAlert(flashType.title, message, flashType.type)
+        for (const ft of flashMessageTypes) {
+            if (ft.check(flash)) {
+                const msg = typeof ft.message === 'function' ? ft.message(flash) : ft.message
+                show(msg, ft.type)
                 return
             }
         }
     },
-    {
-        deep: true,
-        immediate: true,
-    }
+    { deep: true, immediate: true }
 )
 </script>
 
 <template>
-    <div
-        v-if="alert.visible"
-        :id="`toast-${alert.type}`"
-        role="alert"
-        aria-live="polite"
-        class="fixed top-4 right-4 z-80 flex items-center justify-center rounded-lg px-5 py-3 shadow-md"
-        :class="[alert.bgColor, alert.textColor]">
+    <Transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="translate-y-2 opacity-0"
+        enter-to-class="translate-y-0 opacity-100"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="translate-y-0 opacity-100"
+        leave-to-class="translate-y-2 opacity-0">
         <div
-            :class="`inline-flex h-8 w-8 flex-shrink-0 items-center justify-center ${alert.iconColor} rounded-lg`">
-            <svg
-                class="h-5 w-5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20">
-                <path :d="alert.iconPath" />
-            </svg>
-            <span class="sr-only">{{ alert.type }} icon</span>
+            v-if="toast.visible"
+            role="alert"
+            aria-live="polite"
+            class="fixed top-20 right-4 z-80 flex max-w-sm items-start gap-2.5 rounded-lg border px-4 py-3 shadow-lg"
+            :class="[config().bg, config().border]">
+            <component :is="config().icon" class="mt-0.5 h-5 w-5 shrink-0" :class="config().accent" aria-hidden="true" />
+            <p class="flex-1 text-sm text-(--color-text)">{{ toast.message }}</p>
+            <button
+                type="button"
+                class="shrink-0 rounded p-0.5 text-(--color-text-muted) transition-colors hover:text-(--color-text)"
+                aria-label="Dismiss"
+                @click="close">
+                <XMarkIcon class="h-4 w-4" />
+            </button>
         </div>
-
-        <div class="ml-3 text-sm font-normal">
-            <h2 class="block font-medium uppercase">{{ alert.title }}</h2>
-            <p class="mt-1 text-[var(--color-text)]" v-html="alert.message"></p>
-        </div>
-
-        <button
-            type="button"
-            class="relative -top-4 -right-2 -mx-1.5 -my-1.5 ml-auto inline-flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--color-surface)] p-1 text-[var(--color-text-muted)] hover:cursor-pointer hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)] focus:ring-2 focus:ring-[var(--color-border)]"
-            :aria-label="`Close ${alert.type} message`"
-            @click="closeAlert">
-            <svg
-                class="h-3 w-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 14">
-                <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-            </svg>
-        </button>
-    </div>
+    </Transition>
 </template>

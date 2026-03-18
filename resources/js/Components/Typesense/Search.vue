@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 import axios from 'axios'
 import SearchResults from './SearchResults.vue'
 import FederatedSearch from './FederatedSearch.vue'
@@ -26,7 +27,6 @@ const hasValidApiKey = ref(false)
 const isLoading = ref(true)
 const searchQuery = ref('')
 const showResults = ref(false)
-const isMobileSearchActive = ref(false)
 const federatedResults = ref([])
 const isFederatedSearching = ref(false)
 
@@ -46,99 +46,58 @@ const fetchTypesenseApiKey = async () => {
 
 const closeOverlay = () => {
     showResults.value = false
-    isMobileSearchActive.value = false
     searchQuery.value = ''
     emit('close')
 }
 
 const handleKeyDown = event => {
-    if (event.key === 'Escape') {
-        closeOverlay()
-    }
+    if (event.key === 'Escape') closeOverlay()
 }
 
-const handleSearch = e => {
-    searchQuery.value = e.target.value
-}
+const handleSearch = e => { searchQuery.value = e.target.value }
+const handleSearching = searching => { isFederatedSearching.value = searching }
+const handleSearchResults = results => { federatedResults.value = results }
 
-const handleSearching = searching => {
-    isFederatedSearching.value = searching
-}
-
-const handleSearchResults = results => {
-    federatedResults.value = results
-}
-
-const handleFocus = () => {
-    showResults.value = true
-    if (props.isMobile) {
-        isMobileSearchActive.value = true
-    }
-}
-
+const handleFocus = () => { showResults.value = true }
 const handleBlur = () => {
     if (!props.isMobile) {
-        setTimeout(() => {
-            showResults.value = false
-        }, 200)
+        setTimeout(() => { showResults.value = false }, 200)
     }
 }
 
 onMounted(async () => {
     await fetchTypesenseApiKey()
-    if (props.isOpen) {
-        document.addEventListener('keydown', handleKeyDown)
-    }
+    if (props.isOpen) document.addEventListener('keydown', handleKeyDown)
 })
 
-watch(
-    () => props.isOpen,
-    isOpen => {
-        if (isOpen) {
-            document.addEventListener('keydown', handleKeyDown)
-        } else {
-            document.removeEventListener('keydown', handleKeyDown)
-        }
-    }
-)
+watch(() => props.isOpen, isOpen => {
+    if (isOpen) document.addEventListener('keydown', handleKeyDown)
+    else document.removeEventListener('keydown', handleKeyDown)
+})
 </script>
 
 <template>
-    <div class="search-component">
+    <div class="relative w-full">
         <!-- Mobile Search Overlay -->
         <div
             v-if="isOpen && isMobile"
             role="dialog"
             aria-modal="true"
             aria-label="Search site"
-            class="fixed inset-0 z-[60] bg-gray-900/50 dark:bg-gray-900/80">
+            class="fixed inset-0 z-[60] bg-black/40">
             <div
-                class="fixed inset-x-0 top-0 z-[60] bg-white p-4 shadow-lg dark:bg-gray-800"
+                class="fixed inset-x-0 top-0 z-[60] border-b border-(--card-border) bg-(--color-surface) p-4 shadow-lg"
                 @click.stop>
-                <!-- Mobile Header -->
-                <div class="mb-2 flex items-center justify-between">
-                    <h2 class="text-sm font-medium text-gray-700 dark:text-gray-300">Search</h2>
+                <div class="mb-3 flex items-center justify-between">
+                    <h2 class="text-sm font-medium text-(--color-text)">Search</h2>
                     <button
                         aria-label="Close search"
-                        class="rounded-full p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                        class="nav-bar-btn"
                         @click="closeOverlay">
-                        <svg
-                            class="h-5 w-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <XMarkIcon class="h-5 w-5" />
                     </button>
                 </div>
 
-                <!-- Search Results Component -->
                 <SearchResults
                     :is-loading="isLoading"
                     :has-valid-api-key="hasValidApiKey"
@@ -167,7 +126,6 @@ watch(
             @focus="handleFocus"
             @blur="handleBlur" />
 
-        <!-- Federated Search Handler -->
         <FederatedSearch
             v-if="hasValidApiKey && typesenseApiKey"
             :search-query="searchQuery"
@@ -176,10 +134,3 @@ watch(
             @searching="handleSearching" />
     </div>
 </template>
-
-<style>
-.search-component {
-    position: relative;
-    width: 100%;
-}
-</style>

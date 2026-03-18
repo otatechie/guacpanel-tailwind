@@ -1,47 +1,77 @@
-/* Navigation Styles */
+/* Top bar icon buttons — consistent sizing across all nav actions */
+.nav-bar-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 150ms, background-color 150ms;
+}
+.nav-bar-btn:hover {
+    color: var(--color-text);
+    background-color: var(--color-surface-muted);
+}
+
+.nav-bar-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+/* Tooltip */
+.nav-bar-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    border-radius: 0.25rem;
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 150ms;
+    z-index: 70;
+}
+.nav-bar-btn:hover .nav-bar-tooltip {
+    opacity: 1;
+}
+
+/* Navigation Sidebar */
 .nav-sidebar {
     height: 100%;
     display: flex;
     flex-direction: column;
     background-color: var(--color-surface);
-    box-shadow:
-        0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition-property: all;
-    transition-duration: 300ms;
-    transition-timing-function: ease-in-out;
+    border-right: 1px solid var(--card-border);
 }
 
-.dark .nav-sidebar {
-    background-color: var(--color-surface);
-}
-
+/* Nav items */
 .nav-item {
     display: flex;
     align-items: center;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-radius: 0.5rem;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
+    gap: 0.5rem;
+    padding: 0.4375rem 0.625rem;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    transition: color 150ms, background-color 150ms;
 }
 
 .nav-item-active {
-    color: var(--primary-color);
-}
-
-.dark .nav-item-active {
-    color: var(--primary-color);
+    color: var(--color-text);
+    font-weight: 500;
+    background-color: var(--color-surface-muted);
 }
 
 .nav-item-default {
-    color: var(--color-text-muted);
-}
-
-.dark .nav-item-default {
     color: var(--color-text-muted);
 }
 
@@ -50,65 +80,50 @@
     background-color: var(--color-surface-muted);
 }
 
-.dark .nav-item-default:hover {
-    color: var(--color-text);
-    background-color: rgba(55, 65, 81, 0.5);
-}
-
+/* Nav icons */
 .nav-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 0.625rem;
-    transition-property: color;
-    transition-duration: 200ms;
-    transition-timing-function: linear;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    transition: color 150ms;
 }
 
 .nav-icon-active {
-    color: var(--primary-color);
-}
-
-.dark .nav-icon-active {
-    color: var(--primary-color);
+    color: var(--color-text);
 }
 
 .nav-icon-default {
     color: var(--color-text-muted);
 }
 
-.dark .nav-icon-default {
-    color: var(--color-text-muted);
+.nav-item-default:hover .nav-icon-default {
+    color: var(--color-text);
 }
 
+/* Divider */
+.nav-divider {
+    height: 1px;
+    width: 100%;
+    background-color: var(--card-border);
+}
+
+/* Dropdown (unused but kept for compat) */
 .nav-dropdown {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-radius: 0.5rem;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
+    padding: 0.4375rem 0.625rem;
+    border-radius: 0.375rem;
+    transition: color 150ms, background-color 150ms;
     cursor: pointer;
 }
 
 .nav-dropdown-active {
-    color: var(--primary-color);
-}
-
-.dark .nav-dropdown-active {
-    color: var(--primary-color);
+    color: var(--color-text);
 }
 
 .nav-dropdown-default {
-    color: var(--color-text-muted);
-}
-
-.dark .nav-dropdown-default {
     color: var(--color-text-muted);
 }
 
@@ -117,38 +132,22 @@
     background-color: var(--color-surface-muted);
 }
 
-.dark .nav-dropdown-default:hover {
-    color: var(--color-text);
-    background-color: rgba(55, 65, 81, 0.5);
-}
-
+/* Child items */
 .nav-child-item {
     display: flex;
     align-items: center;
-    padding-left: 0.375rem;
-    padding-right: 0.375rem;
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
-    border-radius: 0.5rem;
-    transition-property: all;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+    transition: color 150ms, background-color 150ms;
 }
 
 .nav-child-item-active {
-    color: var(--primary-color);
+    color: var(--color-text);
     font-weight: 500;
 }
 
-.dark .nav-child-item-active {
-    color: var(--primary-color);
-}
-
 .nav-child-item-default {
-    color: var(--color-text-muted);
-}
-
-.dark .nav-child-item-default {
     color: var(--color-text-muted);
 }
 
@@ -157,29 +156,9 @@
     background-color: var(--color-surface-muted);
 }
 
-.dark .nav-child-item-default:hover {
-    color: var(--color-text);
-    background-color: rgba(55, 65, 81, 0.5);
-}
-
-.nav-divider {
-    height: 1px;
-    width: 100%;
-    background-color: var(--color-border);
-}
-
-/* Divider color is the same in both themes via variable */
-
+/* Footer */
 .nav-footer {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-top: 1px solid var(--color-border);
-    background-color: var(--color-surface);
-}
-
-.dark .nav-footer {
-    border-color: var(--color-border);
+    padding: 0.75rem;
+    border-top: 1px solid var(--card-border);
     background-color: var(--color-surface);
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
@@ -15,134 +15,56 @@ defineOptions({
 })
 
 const props = defineProps({
-    user: {
-        type: Object,
-        required: true,
-    },
-    qrCodeSvg: {
-        type: String,
-        required: false,
-        default: null,
-    },
-    recoveryCodes: {
-        type: Array,
-        required: false,
-        default: () => [],
-    },
-    profileEnabled: {
-        type: Boolean,
-        default: false,
-    },
-    twoFactorEnabled: {
-        type: Boolean,
-        default: false,
-    },
-    passwordEnabled: {
-        type: Boolean,
-        default: false,
-    },
-    sessions: {
-        type: Object,
-    },
-    deactivateEnabled: {
-        type: Boolean,
-        default: false,
-    },
-    deleteEnabled: {
-        type: Boolean,
-        default: false,
-    },
+    user: { type: Object, required: true },
+    qrCodeSvg: { type: String, default: null },
+    recoveryCodes: { type: Array, default: () => [] },
+    profileEnabled: { type: Boolean, default: false },
+    twoFactorEnabled: { type: Boolean, default: false },
+    passwordEnabled: { type: Boolean, default: false },
+    sessions: { type: Object },
+    deactivateEnabled: { type: Boolean, default: false },
+    deleteEnabled: { type: Boolean, default: false },
 })
 
 const activeTab = ref(0)
-
-const tabs = [
-    { name: 'Profile', key: 'profile' },
-    { name: 'Password', key: 'password' },
-    { name: '2FA', key: '2fa' },
-    { name: 'Devices', key: 'devices' },
-    { name: 'Danger Zone', key: 'account' },
-]
-
-const breadcrumbs = computed(() => {
-    const currentTab = tabs[activeTab.value] ?? tabs[0]
-
-    return [
-        { label: 'Dashboard', href: route('dashboard') },
-        { label: 'Account Settings', href: route('user.index') },
-        { label: currentTab.name },
-    ]
-})
-
-const pageHeaderContent = computed(() => {
-    const currentTab = tabs[activeTab.value] ?? tabs[0]
-    let title = 'Account Settings'
-    let description = 'Manage your profile information, password, and account settings'
-
-    if (currentTab.key == '2fa') {
-        title = 'Multi-Factor Authentication'
-        description = 'Add an extra layer of security to your account'
-    }
-
-    if (currentTab.key == 'devices') {
-        title = 'Device Management'
-        description = 'View and manage your active sessions'
-    }
-
-    if (currentTab.key == 'account') {
-        title = 'Danger Zone'
-        description = 'Deactivate or permanently delete your account'
-    }
-
-    return {
-        title: title,
-        description: description,
-    }
-})
+const tabs = ['Profile', 'Security', 'Account']
 </script>
 
 <template>
-    <Head title="Account Settings" />
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="profile-settings">
-        <div class="container-border">
-            <PageHeader
-                :title="pageHeaderContent.title"
-                :description="pageHeaderContent.description"
-                :breadcrumbs="breadcrumbs" />
+    <Head title="Account" />
 
-            <div class="overflow-hidden">
-                <div class="px-3 sm:px-6">
-                    <Tabs v-model="activeTab" :tabs="tabs" />
+    <main class="mx-auto max-w-7xl">
+        <PageHeader
+            title="Account"
+            :breadcrumbs="[
+                { label: 'Dashboard', href: route('dashboard') },
+                { label: 'Account' },
+            ]" />
+
+        <div class="card overflow-hidden">
+            <div class="border-b border-(--card-border) bg-(--color-surface-muted) px-4 sm:px-6">
+                <Tabs v-model="activeTab" :tabs="tabs" />
+            </div>
+            <div class="px-4 py-5 sm:px-6">
+
+                <!-- Profile -->
+                <ProfileTab v-if="activeTab === 0" :user="user" :profileEnabled="profileEnabled" />
+
+                <!-- Security: password + 2FA + devices -->
+                <div v-else-if="activeTab === 1" class="space-y-8">
+                    <PasswordTab :passwordEnabled="passwordEnabled" />
+
+                    <div class="border-t border-(--card-border) pt-8">
+                        <TwoFactorTab :user="user" :qrCodeSvg="qrCodeSvg" :recoveryCodes="recoveryCodes" :twoFactorEnabled="twoFactorEnabled" />
+                    </div>
+
+                    <div class="border-t border-(--card-border) pt-8">
+                        <DevicesTab :user="user" :sessions="sessions" />
+                    </div>
                 </div>
 
-                <section class="relative">
-                    <div class="relative">
-                        <Transition name="tab-fade" mode="out-in" appear>
-                            <div v-if="activeTab === 0">
-                                <ProfileTab :user="user" :profileEnabled="profileEnabled" />
-                            </div>
-
-                            <div v-else-if="activeTab === 1">
-                                <PasswordTab :passwordEnabled="passwordEnabled" />
-                            </div>
-                            <div v-else-if="activeTab === 2">
-                                <TwoFactorTab
-                                    :user="user"
-                                    :qrCodeSvg="qrCodeSvg"
-                                    :recoveryCodes="recoveryCodes"
-                                    :twoFactorEnabled="twoFactorEnabled" />
-                            </div>
-                            <div v-else-if="activeTab === 3">
-                                <DevicesTab :user="user" :sessions="sessions" />
-                            </div>
-                            <div v-else-if="activeTab === 4">
-                                <AccountTab
-                                    :deactivateEnabled="deactivateEnabled"
-                                    :deleteEnabled="deleteEnabled" />
-                            </div>
-                        </Transition>
-                    </div>
-                </section>
+                <!-- Account: deactivate + delete -->
+                <AccountTab v-else-if="activeTab === 2" :deactivateEnabled="deactivateEnabled" :deleteEnabled="deleteEnabled" />
             </div>
         </div>
     </main>

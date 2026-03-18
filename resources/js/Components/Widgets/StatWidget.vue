@@ -57,17 +57,17 @@ const colorClasses = {
 
 <template>
     <div
-        class="overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs sm:p-6">
+        class="card overflow-hidden p-4 sm:p-6">
         <div class="flex items-start justify-between">
             <!-- Content -->
             <div class="min-w-0 flex-1">
-                <p class="mb-1 text-xs font-medium text-[var(--color-text-muted)] sm:text-sm">
+                <p class="mb-1 text-xs font-medium tracking-wide text-(--color-text-muted) uppercase sm:text-xs">
                     {{ title }}
                 </p>
-                <p class="mb-1 text-2xl font-semibold text-[var(--color-text)] sm:text-3xl">
+                <p class="mb-1 text-2xl font-semibold tabular-nums text-(--color-text) sm:text-3xl">
                     {{ value }}
                 </p>
-                <p v-if="description" class="text-xs text-[var(--color-text-muted)] sm:text-sm">
+                <p v-if="description" class="text-xs text-(--color-text-muted) sm:text-sm">
                     {{ description }}
                 </p>
             </div>

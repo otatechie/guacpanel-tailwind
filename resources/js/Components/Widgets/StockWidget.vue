@@ -67,7 +67,7 @@ const sizeClasses = {
 
 <template>
     <article
-        class="group hover:border-opacity-70 relative overflow-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xs transition-all duration-200"
+        class="card group relative overflow-hidden transition-shadow duration-200 hover:shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_6px_12px_rgba(18,42,66,0.07)]"
         :class="sizeClasses[size].card">
         <!-- Icon -->
         <div class="mb-4">
@@ -81,11 +81,11 @@ const sizeClasses = {
         <!-- Stock info -->
         <div class="mb-4 space-y-1">
             <h3
-                class="font-medium tracking-tight text-[var(--color-text)]"
+                class="font-medium tracking-tight text-(--color-text)"
                 :class="sizeClasses[size].symbol">
                 {{ stock.symbol }}
             </h3>
-            <p class="font-normal text-[var(--color-text-muted)]" :class="sizeClasses[size].name">
+            <p class="font-normal text-(--color-text-muted)" :class="sizeClasses[size].name">
                 {{ stock.name }}
             </p>
         </div>
@@ -93,7 +93,7 @@ const sizeClasses = {
         <!-- Price and change -->
         <div class="flex items-end justify-between gap-3">
             <div
-                class="font-semibold tracking-tight text-[var(--color-text)]"
+                class="font-semibold tracking-tight text-(--color-text)"
                 :class="sizeClasses[size].price">
                 {{ stock.currency }}{{ stock.price }}
             </div>

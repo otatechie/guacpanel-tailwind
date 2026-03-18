@@ -31,6 +31,8 @@ const props = defineProps({
 
 const hasError = ref(false)
 const hasDarkError = ref(false)
+const isDark = ref(false)
+
 const logoStyles = ref({
     maxWidth: props.maxSize,
     maxHeight: props.maxSize,
@@ -38,8 +40,20 @@ const logoStyles = ref({
     height: 'auto',
 })
 
+const activeLogo = computed(() => {
+    if (isDark.value && darkLogoUrl.value && !hasDarkError.value) return darkLogoUrl.value
+    if (logoUrl.value && !hasError.value) return logoUrl.value
+    // Fallback to static logo files
+    return isDark.value ? '/images/logo-dark.png' : '/images/logo.png'
+})
+
 function handleError() {
-    hasError.value = true
+    if (isDark.value && darkLogoUrl.value) hasDarkError.value = true
+    else hasError.value = true
+}
+
+function checkDarkMode() {
+    isDark.value = document.documentElement.classList.contains('dark')
 }
 
 onMounted(() => {
@@ -51,42 +65,27 @@ onMounted(() => {
             maxHeight: props.maxSize,
         }
     }
+
+    checkDarkMode()
+
+    // Watch for class changes on <html> to detect dark mode toggle
+    const observer = new MutationObserver(checkDarkMode)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 })
 </script>
 
 <template>
     <figure class="m-0 flex items-center justify-center p-0">
-        <picture v-if="(logoUrl && !hasError) || (darkLogoUrl && !hasDarkError)">
-            <!-- Dark mode logo -->
-            <source
-                v-if="darkLogoUrl && !hasDarkError"
-                :srcset="darkLogoUrl"
-                media="(prefers-color-scheme: dark)" />
+        <img
+            v-if="activeLogo"
+            :src="activeLogo"
+            :alt="appName"
+            :style="logoStyles"
+            class="object-contain"
+            @error="handleError" />
 
-            <!-- Light mode logo -->
-            <img
-                v-if="logoUrl && !hasError"
-                :src="logoUrl"
-                alt="Application Logo"
-                :style="logoStyles"
-                class="object-contain"
-                @error="handleError" />
-        </picture>
-
-        <!-- Fallback -->
-        <h1 v-else class="text-center text-3xl font-extrabold text-gray-800 dark:text-white">
+        <span v-else class="text-xl font-bold text-(--color-text)">
             {{ appName }}
-        </h1>
+        </span>
     </figure>
 </template>
-
-<style scoped>
-figure {
-    margin: 0;
-    padding: 0;
-}
-
-img {
-    display: block;
-}
-</style>

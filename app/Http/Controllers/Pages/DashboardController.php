@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller as ParentController;
+use App\Models\LoginHistory;
+use App\Models\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -13,52 +15,55 @@ class DashboardController extends ParentController
     {
         return Inertia::render('Dashboard', [
             'stats' => $this->getStats(),
+            'userGrowth' => $this->getUserGrowth(),
         ]);
     }
 
-    public function getStats()
+    private function getStats(): array
     {
         return Cache::remember('dashboard_stats', 60, function () {
-            $totalMembers = User::count();
-            $newMembersToday = User::whereDate('created_at', today())->count();
-            $memberGrowth = $this->calculateGrowthPercentage(
-                User::whereDate('created_at', '>=', now()->subDays(7))->count(),
-                User::whereDate('created_at', '>=', now()->subDays(14))
-                    ->whereDate('created_at', '<', now()->subDays(7))
-                    ->count(),
-            );
+            $totalUsers = User::count();
+            $activeSessions = Session::distinct('user_id')->count('user_id');
+            $loginsToday = LoginHistory::whereDate('login_at', today())
+                ->where('login_successful', true)
+                ->count();
+            $newUsersThisWeek = User::where('created_at', '>=', now()->subDays(7))->count();
+            $prevWeekUsers = User::where('created_at', '>=', now()->subDays(14))
+                ->where('created_at', '<', now()->subDays(7))
+                ->count();
 
             return [
-                [
-                    'title' => 'Total Members',
-                    'value' => number_format($totalMembers),
-                    'growth' => sprintf('%+.1f%%', $memberGrowth),
-                ],
-                [
-                    'title' => 'New Members Today',
-                    'value' => number_format($newMembersToday),
-                    'growth' => sprintf('%+.1f%%', $newMembersToday > 0 ? 100 : 0),
-                ],
-                [
-                    'title' => 'Weekly Growth',
-                    'value' => sprintf('%+.1f%%', $memberGrowth),
-                    'growth' => sprintf('%+.1f%%', $memberGrowth),
-                ],
-                [
-                    'title' => 'Total Sessions',
-                    'value' => number_format(rand(5000, 15000)),
-                    'growth' => sprintf('%+.1f%%', rand(5, 15)),
-                ],
+                'totalUsers' => $totalUsers,
+                'activeSessions' => $activeSessions,
+                'loginsToday' => $loginsToday,
+                'newUsersThisWeek' => $newUsersThisWeek,
+                'userGrowth' => $this->growthPercent($newUsersThisWeek, $prevWeekUsers),
             ];
         });
     }
 
-    private function calculateGrowthPercentage($current, $previous)
+    private function getUserGrowth(): array
     {
-        if ($previous == 0) {
-            return $current > 0 ? 100 : 0;
+        return Cache::remember('dashboard_user_growth', 300, function () {
+            return collect(range(5, 0))->map(function ($i) {
+                $date = now()->subMonths($i);
+
+                return [
+                    'month' => $date->format('M'),
+                    'count' => User::whereYear('created_at', $date->year)
+                        ->whereMonth('created_at', $date->month)
+                        ->count(),
+                ];
+            })->values()->toArray();
+        });
+    }
+
+    private function growthPercent(int $current, int $previous): float
+    {
+        if ($previous === 0) {
+            return $current > 0 ? 100.0 : 0.0;
         }
 
-        return (($current - $previous) / $previous) * 100;
+        return round((($current - $previous) / $previous) * 100, 1);
     }
 }

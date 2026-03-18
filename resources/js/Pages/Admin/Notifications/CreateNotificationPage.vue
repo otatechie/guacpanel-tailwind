@@ -69,133 +69,44 @@ const breadcrumbs = computed(() => [
 <template>
     <Head title="Create Notification" />
 
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="admin-notifications-create">
-        <div class="container-border">
-            <PageHeader
-                title="Create Notification"
-                description="Create a new app notification"
-                :breadcrumbs="breadcrumbs">
-                <template #actions>
-                    <Link
-                        :href="route('admin.notifications.index')"
-                        class="btn btn-secondary btn-sm">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="mr-1 size-3.5">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                        </svg>
+    <main class="mx-auto max-w-7xl" aria-labelledby="admin-notifications-create">
+        <PageHeader
+            title="Create Notification"
+            description="Create a new app notification"
+            :breadcrumbs="breadcrumbs">
+            <template #actions>
+                <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-sm">Back</Link>
+            </template>
+        </PageHeader>
 
-                        Back
-                    </Link>
-                </template>
-            </PageHeader>
-
-            <section class="bg-[var(--color-bg)] p-6">
-                <div
-                    class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-                    <form class="space-y-6" @submit.prevent="submit">
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            <FormSelect
-                                v-model="form.scope"
-                                label="Scope"
-                                :options="scopeOptions"
-                                :error="form.errors.scope" />
-
-                            <FormSelect
-                                v-model="form.type"
-                                label="Type"
-                                :options="typeOptions"
-                                :error="form.errors.type" />
-
-                            <FormSelect
-                                v-if="form.scope === 'user'"
-                                v-model="form.user_id"
-                                label="User"
-                                placeholder="Select user"
-                                :options="userOptions"
-                                :error="form.errors.user_id" />
-
-                            <div v-else class="hidden md:block"></div>
-
-                            <FormInput
-                                v-model="form.title"
-                                label="Title"
-                                :error="form.errors.title"
-                                required />
-
-                            <FormInput
-                                v-model="form.scheduled_on"
-                                label="Scheduled On"
-                                type="datetime-local"
-                                :error="form.errors.scheduled_on"
-                                help="Optional. Leave blank to send immediately." />
-
-                            <FormInput
-                                v-model="form.auto_expire_on"
-                                label="Auto Expire On"
-                                type="datetime-local"
-                                :error="form.errors.auto_expire_on"
-                                help="Optional." />
-                        </div>
-
-                        <FormTextarea
-                            v-model="form.message"
-                            label="Message"
-                            :error="form.errors.message"
-                            :rows="4"
-                            required />
-
-                        <div class="flex items-center justify-end gap-8">
-                            <Link
-                                :href="route('admin.notifications.index')"
-                                class="btn btn-secondary btn-md">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    stroke="currentColor"
-                                    class="mr-1 size-4">
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M6 18 18 6M6 6l12 12" />
-                                </svg>
-
-                                Cancel
-                            </Link>
-                            <div class="flex items-center justify-end gap-8">
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary btn-md"
-                                    :disabled="form.processing">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        class="mr-1 size-4">
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-
-                                    Create
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+        <div class="card max-w-3xl p-5">
+            <form class="space-y-5" @submit.prevent="submit">
+                <!-- Content -->
+                <div class="space-y-4">
+                    <FormInput v-model="form.title" label="Title" :error="form.errors.title" required />
+                    <FormTextarea v-model="form.message" label="Message" :error="form.errors.message" :rows="3" required />
                 </div>
-            </section>
+
+                <!-- Classification -->
+                <div class="grid grid-cols-1 gap-4 border-t border-(--card-border) pt-5 sm:grid-cols-3">
+                    <FormSelect v-model="form.scope" label="Scope" :options="scopeOptions" :error="form.errors.scope" />
+                    <FormSelect v-model="form.type" label="Type" :options="typeOptions" :error="form.errors.type" />
+                    <FormSelect v-if="form.scope === 'user'" v-model="form.user_id" label="User" placeholder="Select user" :options="userOptions" :error="form.errors.user_id" />
+                </div>
+
+                <!-- Timing -->
+                <div class="grid grid-cols-1 gap-4 border-t border-(--card-border) pt-5 sm:grid-cols-2">
+                    <FormInput v-model="form.scheduled_on" label="Schedule" type="datetime-local" :error="form.errors.scheduled_on" help="Leave blank to send immediately" />
+                    <FormInput v-model="form.auto_expire_on" label="Auto expire" type="datetime-local" :error="form.errors.auto_expire_on" help="Optional" />
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-sm">Cancel</Link>
+                    <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing">
+                        {{ form.processing ? 'Creating...' : 'Create notification' }}
+                    </button>
+                </div>
+            </form>
         </div>
     </main>
 </template>

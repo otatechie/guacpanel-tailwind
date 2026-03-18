@@ -7,6 +7,7 @@ use App\Models\Personalisation;
 use App\Traits\PersonalisationsHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class AdminPersonalisationController extends Controller
@@ -61,7 +62,7 @@ class AdminPersonalisationController extends Controller
                     : 'favicon');
 
             $file = $request->file($field);
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $fileName = time() . '_' . Str::random(16) . '.' . $file->guessExtension();
 
             $path = $request->file($field)->storeAs('personalisation', $fileName, 'public');
 

@@ -19,6 +19,8 @@ class AdminPermissionController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create-permissions');
+
         $validatedData = $request->validate(
             [
                 'name' => [

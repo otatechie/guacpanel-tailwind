@@ -10,9 +10,7 @@ const props = defineProps({
         type: Array,
         required: true,
         validator: value =>
-            value.every(
-                option => typeof option === 'object' && 'label' in option && 'value' in option
-            ),
+            value.every(option => typeof option === 'object' && 'label' in option && 'value' in option),
     },
     label: {
         type: String,
@@ -41,13 +39,13 @@ const groupName = computed(
 
 <template>
     <div class="space-y-3">
-        <label v-if="label" class="mb-2 block text-sm font-medium text-[var(--color-text)]">
+        <label v-if="label" class="mb-2 block text-sm font-medium text-(--color-text)">
             {{ label }}
             <span v-if="required" class="text-red-500">*</span>
         </label>
 
         <div class="flex flex-wrap gap-4">
-            <div v-for="option in options" :key="option.value" class="relative flex items-start">
+            <div v-for="option in options" :key="option.value" class="relative flex items-start gap-3">
                 <div class="flex h-5 items-center">
                     <input
                         :id="`${groupName}-${option.value}`"
@@ -55,23 +53,23 @@ const groupName = computed(
                         :name="groupName"
                         :value="option.value"
                         :checked="modelValue === option.value"
-                        class="h-4 w-4 border-[var(--color-border-strong)] text-blue-600 focus:ring-blue-500"
+                        class="h-4 w-4 cursor-pointer border-(--card-border) text-(--primary-color) focus:ring-2 focus:ring-(--primary-color) focus:ring-offset-0"
                         :class="{ 'border-red-500': error }"
                         @change="$emit('update:modelValue', option.value)" />
                 </div>
-                <div class="ml-3 text-sm">
+                <div class="text-sm">
                     <label
                         :for="`${groupName}-${option.value}`"
-                        class="cursor-pointer font-medium text-[var(--color-text)]">
+                        class="cursor-pointer font-medium text-(--color-text)">
                         {{ option.label }}
                     </label>
-                    <p v-if="option.description" class="text-[var(--color-text-muted)]">
+                    <p v-if="option.description" class="text-(--color-text-muted)">
                         {{ option.description }}
                     </p>
                 </div>
             </div>
         </div>
 
-        <div v-if="error" class="mt-1 text-xs text-red-500">{{ error }}</div>
+        <div v-if="error" class="mt-1.5 text-xs text-red-600">{{ error }}</div>
     </div>
 </template>

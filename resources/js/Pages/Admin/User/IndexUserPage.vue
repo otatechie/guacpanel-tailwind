@@ -132,149 +132,82 @@ const createUser = () => {
 const columns = [
     columnHelper.accessor('name', {
         header: 'Name',
-        cell: info => h('span', info.getValue() || '-'),
-    }),
-    columnHelper.accessor('email', {
-        header: 'Email',
-        cell: info => h('span', info.getValue() || '-'),
+        cell: info => {
+            const user = info.row.original
+            return h('div', { class: 'min-w-0' }, [
+                h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, user.name || '-'),
+                h('span', { class: 'ml-2 text-xs text-[var(--color-text-muted)]' }, user.email),
+            ])
+        },
     }),
     columnHelper.accessor('role', {
         header: 'Role',
         cell: info => {
-            const roleName = info.row.original.roles?.[0]?.name || 'No Role'
-            return h(
-                'span',
-                {
-                    class: 'px-1 py-1 text-xs capitalize rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
-                },
-                roleName
-            )
+            const roleName = info.row.original.roles?.[0]?.name || 'No role'
+            return h('span', { class: 'text-xs font-mono capitalize text-[var(--color-text-muted)]' }, roleName)
         },
     }),
-    columnHelper.accessor('email_verified_at', {
-        header: 'Verified',
-        cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
-    }),
-    columnHelper.accessor('disable_account', {
-        header: 'Disabled',
-        cell: info => h('span', info.getValue() ? 'Yes' : 'No'),
+    columnHelper.accessor('status', {
+        header: 'Status',
+        cell: info => {
+            const user = info.row.original
+            const verified = !!user.email_verified_at
+            const disabled = !!user.disable_account
+            const locked = !!user.account_locked
+
+            if (disabled) return h('span', { class: 'flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400' }, [
+                h('span', { class: 'h-1.5 w-1.5 rounded-full bg-red-500' }), 'Disabled'
+            ])
+            if (locked) return h('span', { class: 'flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400' }, [
+                h('span', { class: 'h-1.5 w-1.5 rounded-full bg-amber-500' }), 'Locked'
+            ])
+            if (!verified) return h('span', { class: 'flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400' }, [
+                h('span', { class: 'h-1.5 w-1.5 rounded-full bg-amber-500' }), 'Unverified'
+            ])
+            return h('span', { class: 'flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400' }, [
+                h('span', { class: 'h-1.5 w-1.5 rounded-full bg-green-500' }), 'Active'
+            ])
+        },
     }),
     columnHelper.accessor('created_at_formatted', {
-        header: 'Created At',
-        cell: info => h('span', info.getValue() || '-'),
-    }),
-    columnHelper.accessor('restore_date_full', {
-        header: 'Restored At',
-        cell: info => h('span', info.getValue() || '-'),
+        header: 'Created',
+        cell: info => h('span', { class: 'text-xs text-[var(--color-text-muted)]' }, info.getValue() || '-'),
     }),
     columnHelper.display({
         id: 'actions',
-        header: 'Actions',
+        header: '',
         cell: info => {
             const user = info.row.original
             if (!user?.id) return null
 
-            const editButton = h(
-                'button',
-                {
-                    class: 'p-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                    onClick: () => handleEdit(user),
-                    type: 'button',
-                    title: 'Edit User',
-                },
-                [
-                    h('span', { class: 'sr-only' }, 'Edit User'),
-                    h(
-                        'svg',
-                        {
-                            class: 'h-4 w-4',
-                            fill: 'none',
-                            stroke: 'currentColor',
-                            viewBox: '0 0 24 24',
-                            'aria-hidden': 'true',
-                        },
-                        [
-                            h('path', {
-                                'stroke-linecap': 'round',
-                                'stroke-linejoin': 'round',
-                                'stroke-width': '2',
-                                d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-                            }),
-                        ]
-                    ),
-                ]
-            )
+            const btnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]'
+            const iconClass = 'h-3.5 w-3.5'
+            const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
 
-            const impersonateButton = !isSuperUser(user)
-                ? h(
-                      'button',
-                      {
-                          class: 'p-2 text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                          onClick: () => confirmImpersonate(user),
-                          type: 'button',
-                          title: 'Impersonate User',
-                      },
-                      [
-                          h('span', { class: 'sr-only' }, 'Impersonate User'),
-                          h(
-                              'svg',
-                              {
-                                  class: 'h-4 w-4',
-                                  fill: 'none',
-                                  stroke: 'currentColor',
-                                  viewBox: '0 0 24 24',
-                                  'aria-hidden': 'true',
-                              },
-                              [
-                                  h('path', {
-                                      'stroke-linecap': 'round',
-                                      'stroke-linejoin': 'round',
-                                      'stroke-width': '2',
-                                      d: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z',
-                                  }),
-                              ]
-                          ),
-                      ]
-                  )
+            const editBtn = h('button', { class: btnClass, onClick: () => handleEdit(user), title: 'Edit' }, [
+                h('svg', { class: iconClass, ...svgAttrs }, [
+                    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'm16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10' }),
+                ]),
+            ])
+
+            const impersonateBtn = !isSuperUser(user)
+                ? h('button', { class: btnClass, onClick: () => confirmImpersonate(user), title: 'Impersonate' }, [
+                    h('svg', { class: iconClass, ...svgAttrs }, [
+                        h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z' }),
+                    ]),
+                ])
                 : null
 
-            const deleteButton = h(
-                'button',
-                {
-                    class: 'p-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg cursor-pointer hover:scale-105 transition-all duration-200',
-                    onClick: () => confirmDeleteUser(user),
-                    type: 'button',
-                    title: 'Delete User',
-                },
-                [
-                    h('span', { class: 'sr-only' }, 'Delete User'),
-                    h(
-                        'svg',
-                        {
-                            class: 'h-4 w-4',
-                            fill: 'none',
-                            stroke: 'currentColor',
-                            viewBox: '0 0 24 24',
-                            'aria-hidden': 'true',
-                        },
-                        [
-                            h('path', {
-                                'stroke-linecap': 'round',
-                                'stroke-linejoin': 'round',
-                                'stroke-width': '2',
-                                d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
-                            }),
-                        ]
-                    ),
-                ]
-            )
+            const deleteBtn = canDeleteUser(user)
+                ? h('button', { class: btnClass + ' hover:text-red-600! dark:hover:text-red-400!', onClick: () => confirmDeleteUser(user), title: 'Delete' }, [
+                    h('svg', { class: iconClass, ...svgAttrs }, [
+                        h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'm14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0' }),
+                    ]),
+                ])
+                : null
 
-            return h(
-                'div',
-                {
-                    class: 'flex items-center gap-2 justify-end',
-                },
-                [editButton, impersonateButton, canDeleteUser(user) && deleteButton].filter(Boolean)
+            return h('div', { class: 'flex items-center justify-end gap-0.5' },
+                [editBtn, impersonateBtn, deleteBtn].filter(Boolean)
             )
         },
     }),
@@ -303,169 +236,82 @@ watch(
 
 <template>
     <Head title="Users Management" />
-    <main class="main-container mx-auto max-w-7xl" aria-labelledby="users-management">
-        <div class="container-border">
-            <PageHeader
-                title="Users Management"
-                description="Manage system users and their access"
-                :breadcrumbs="[
-                    { label: 'Dashboard', href: route('dashboard') },
-                    { label: 'System Settings', href: route('admin.setting.index') },
-                    { label: 'Users Management' },
-                ]">
-                <template #actions>
-                    <button @click="openCreateModal" class="btn btn-primary btn-sm">
-                        Add User
-                    </button>
-                </template>
+    <main class="mx-auto max-w-7xl" aria-labelledby="users-management">
+        <PageHeader
+            title="Users Management"
+            description="Manage system users and their access"
+            :breadcrumbs="[
+                { label: 'Dashboard', href: route('dashboard') },
+                { label: 'System Settings', href: route('admin.setting.index') },
+                { label: 'Users Management' },
+            ]">
+            <template #actions>
+                <button @click="openCreateModal" class="btn btn-primary btn-sm">
+                    Add user
+                </button>
+            </template>
 
-                <template #bottom v-if="deletedUsers">
-                    <div class="mt-3 flex items-center justify-between">
-                        <span v-if="deletedUsers" class="text-xs">
-                            {{ deletedUsers }} Deleted
-                            {{ deletedUsers == 1 ? 'User' : 'Users' }}
-                        </span>
-                        <Link
-                            v-if="deletedUsers"
-                            :href="route('admin.user.deleted.index')"
-                            class="btn btn-secondary btn-xs">
-                            View Deleted {{ deletedUsers == 1 ? 'User' : 'Users' }}
-                        </Link>
-                    </div>
-                </template>
-            </PageHeader>
-
-            <section class="p-6 dark:bg-gray-900">
-                <div
-                    class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                    <DataTable
-                        :data="users.data"
-                        :columns="columns"
-                        :loading="loading"
-                        :pagination="pagination"
-                        :filters-enabled="false"
-                        empty-message="No users found"
-                        empty-description="Users will appear here once created"
-                        export-file-name="users"
-                        @update:pagination="pagination = $event" />
+            <template #bottom v-if="deletedUsers">
+                <div class="mt-3 flex items-center justify-between">
+                    <span v-if="deletedUsers" class="text-xs">
+                        {{ deletedUsers }} Deleted
+                        {{ deletedUsers == 1 ? 'User' : 'Users' }}
+                    </span>
+                    <Link
+                        v-if="deletedUsers"
+                        :href="route('admin.user.deleted.index')"
+                        class="btn btn-secondary btn-xs">
+                        View deleted {{ deletedUsers == 1 ? 'user' : 'users' }}
+                    </Link>
                 </div>
-            </section>
+            </template>
+        </PageHeader>
+
+        <div class="card p-6">
+            <DataTable
+                :data="users.data"
+                :columns="columns"
+                :loading="loading"
+                :pagination="pagination"
+                :filters-enabled="false"
+                empty-message="No users found"
+                empty-description="Users will appear here once created"
+                export-file-name="users"
+                @update:pagination="pagination = $event" />
         </div>
     </main>
 
-    <Modal :show="showDeleteModal" @close="closeModal" size="md">
-        <template #title>
-            <div class="text-red-600 dark:text-red-400">Delete User</div>
-        </template>
+    <Modal :show="showDeleteModal" @close="closeModal" size="sm">
+        <template #title>Delete user</template>
 
         <template #default>
-            <div class="space-y-4">
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Are you sure you want to delete this user?
-                </p>
-                <div
-                    class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
-                    <div class="flex gap-2">
-                        <svg
-                            class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path
-                                fill-rule="evenodd"
-                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <p class="text-sm text-amber-700 dark:text-amber-300">
-                            This will delete the user's account and all associated data. The account
-                            is recoverable up to the auto-delete date if it is set.
-                        </p>
-                    </div>
-                </div>
-                <div
-                    v-if="userToDelete"
-                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        User details:
-                    </h4>
-                    <dl class="space-y-1">
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.name }}
-                            </dd>
-                        </div>
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.email }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.disable_account ? 'Yes' : 'No' }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                <RolesBadges :roles="userToDelete.roles" />
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Created At:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.created_at_full }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
+            <p class="text-sm text-(--color-text-muted)">
+                Delete <span class="font-medium text-(--color-text)">{{ userToDelete?.name }}</span> ({{ userToDelete?.email }})? This action is recoverable until the auto-delete date.
+            </p>
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-8">
-                <button
-                    @click="closeModal"
-                    type="button"
-                    class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
-                    Cancel
-                </button>
-                <button
-                    @click="deleteUser"
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    :disabled="false">
-                    Yes, Delete User
-                </button>
+            <div class="flex justify-end gap-3">
+                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
+                <button @click="deleteUser" type="button" class="btn btn-danger btn-sm">Delete user</button>
             </div>
         </template>
     </Modal>
 
-    <Modal :show="showCreateUserModal" @close="closeModal" size="lg">
-        <template #title>Create New User</template>
+    <Modal :show="showCreateUserModal" @close="closeModal" size="md">
+        <template #title>Create new user</template>
 
         <template #default>
-            <div class="w-full space-y-8">
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FormInput
                         v-model="form.name"
-                        label="Legal name"
+                        label="Name"
                         :error="form.errors.name"
                         name="name" />
                     <FormInput
                         v-model="form.email"
-                        label="Email address"
+                        label="Email"
                         type="email"
                         :error="form.errors.email"
                         name="email" />
@@ -488,32 +334,24 @@ watch(
                         :error="form.errors.password_confirmation"
                         autocomplete="new-password" />
                 </div>
-                <div>
-                    <FormSelect
-                        v-model="form.role"
-                        :options="props.roles?.data || []"
-                        option-label="name"
-                        option-value="id"
-                        name="role"
-                        label="Assigned role"
-                        :error="form.errors.role" />
-                </div>
-                <div class="space-y-6">
-                    <FormCheckbox
-                        v-model="form.force_password_change"
-                        label="Force Password Reset"
-                        description="Require new password on next login"
-                        :error="form.errors.force_password_change" />
-                </div>
+                <FormSelect
+                    v-model="form.role"
+                    :options="props.roles?.data || []"
+                    option-label="name"
+                    option-value="id"
+                    name="role"
+                    label="Role"
+                    :error="form.errors.role" />
+                <FormCheckbox
+                    v-model="form.force_password_change"
+                    label="Force password reset on next login"
+                    :error="form.errors.force_password_change" />
             </div>
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-8">
-                <button
-                    @click="closeModal"
-                    type="button"
-                    class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+            <div class="flex justify-end gap-3">
+                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">
                     Cancel
                 </button>
                 <button
@@ -521,64 +359,25 @@ watch(
                     type="button"
                     class="btn btn-primary btn-sm"
                     :disabled="form.processing">
-                    Create User
+                    {{ form.processing ? 'Creating...' : 'Create user' }}
                 </button>
             </div>
         </template>
     </Modal>
 
-    <Modal :show="showImpersonateModal" @close="closeModal" size="md">
-        <template #title>
-            <div class="text-amber-600 dark:text-amber-400">Impersonate User</div>
-        </template>
+    <Modal :show="showImpersonateModal" @close="closeModal" size="sm">
+        <template #title>Impersonate user</template>
 
         <template #default>
-            <div class="space-y-4">
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    You will be logged in as this user and see what they see.
-                </p>
-                <div
-                    v-if="userToImpersonate"
-                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <dl class="space-y-1">
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToImpersonate.name }}
-                            </dd>
-                        </div>
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToImpersonate.email }}
-                            </dd>
-                        </div>
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                <RolesBadges :roles="userToImpersonate.roles" />
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
+            <p class="text-sm text-(--color-text-muted)">
+                You will be logged in as <span class="font-medium text-(--color-text)">{{ userToImpersonate?.name }}</span> ({{ userToImpersonate?.email }}) and see what they see.
+            </p>
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-8">
-                <button
-                    @click="closeModal"
-                    type="button"
-                    class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
-                    Cancel
-                </button>
-                <button
-                    @click="handleImpersonate"
-                    type="button"
-                    class="btn btn-warning btn-sm"
-                    :disabled="false">
-                    Yes, Impersonate User
-                </button>
+            <div class="flex justify-end gap-3">
+                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
+                <button @click="handleImpersonate" type="button" class="btn btn-danger btn-sm">Impersonate</button>
             </div>
         </template>
     </Modal>

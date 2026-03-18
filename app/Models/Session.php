@@ -32,6 +32,11 @@ class Session extends Model
     public $timestamps = false;
 
     /**
+     * The guarded attributes.
+     */
+    protected $guarded = [];
+
+    /**
      * The attributes that should be cast.
      */
     protected $casts = [

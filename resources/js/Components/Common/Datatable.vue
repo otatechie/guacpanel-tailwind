@@ -13,36 +13,19 @@ import {
     getFacetedUniqueValues,
     getFacetedMinMaxValues,
 } from '@tanstack/vue-table'
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    ChevronDoubleLeftIcon,
+    ChevronDoubleRightIcon,
+    XMarkIcon,
+    ArrowDownTrayIcon,
+    TrashIcon,
+    CheckCircleIcon,
+} from '@heroicons/vue/24/outline'
 import Modal from '@/Components/Notifications/Modal.vue'
 import Filter from '@/Components/Filter.vue'
 import { useServerPagination } from '@/Composables/useServerPagination'
-
-const selectionColor = 'var(--selection-color)'
-
-const styles = {
-    input: 'border border-gray-300 dark:border-gray-700 rounded-md text-sm dark:bg-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-opacity-50 focus:border-transparent',
-    button: 'btn btn-3d-secondary btn-xs !p-2 focus:outline-none focus:ring-2 focus:ring-opacity-50',
-    tableCell: 'px-6 py-4 text-xs text-gray-900 dark:text-gray-100 text-left',
-    tableHeader: 'table-header',
-    sortableHeader: 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700',
-    rowEven: 'bg-white dark:bg-gray-800',
-    rowOdd: 'bg-gray-50 dark:bg-gray-900',
-    rowHover: 'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors',
-    rowSelected: 'bg-[var(--selection-color-light)] dark:bg-[var(--selection-color-dark)]',
-    focusRing: 'focus:outline-none focus:ring-2 focus:ring-opacity-50',
-    dropdown:
-        'absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
-}
-
-const icons = {
-    clearSearch: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`,
-    export: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />`,
-    firstPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />`,
-    prevPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />`,
-    nextPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />`,
-    lastPage: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />`,
-    chevronDown: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />`,
-}
 
 const props = defineProps({
     data: {
@@ -455,14 +438,14 @@ watch(
         <div
             v-if="error"
             role="alert"
-            class="mb-4 rounded-md bg-red-50 p-4 text-red-700 dark:bg-red-950 dark:text-red-400">
+            class="mb-4 rounded-md bg-red-50 p-4 text-red-600 dark:bg-red-950 dark:text-red-400">
             {{ error }}
         </div>
 
         <div
             v-if="loading"
             role="status"
-            class="absolute inset-0 z-10 flex items-center justify-center bg-white/50 dark:bg-gray-900/50">
+            class="absolute inset-0 z-10 flex items-center justify-center bg-(--color-surface)/50">
             <span
                 class="h-8 w-8 animate-spin rounded-full border-b-2"
                 :style="{ borderColor: 'var(--primary-color)' }"></span>
@@ -472,13 +455,10 @@ watch(
             class="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div
                 class="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:items-center">
-                <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-700 dark:text-gray-300">
-                        {{ table.options.meta?.showRowsSelectLabel || 'Rows per page:' }}
-                    </label>
+                <div class="flex items-center gap-2">
+                    <label class="whitespace-nowrap text-sm text-(--color-text-muted)">Show</label>
                     <select
-                        class="focus:ring-opacity-50 rounded-md border border-gray-300 text-sm focus:ring-2 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="form-input w-auto py-1.5 pr-7 text-sm"
                         :value="
                             isServerPagination
                                 ? isAllSelected
@@ -499,38 +479,15 @@ watch(
                 <div v-if="hasSelection" class="flex items-center gap-6">
                     <span
                         role="status"
-                        class="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-4 w-4 text-green-600 dark:text-green-500">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
+                        class="flex items-center gap-1.5 text-xs font-medium text-(--color-text)">
+                        <CheckCircleIcon class="h-4 w-4 text-green-600 dark:text-green-500" />
                         {{ selectionCount }} selected
                     </span>
                     <button
                         v-if="bulkDeleteRoute"
                         @click="showDeleteModal = true"
-                        class="btn-3d-danger btn-xs inline-flex items-center gap-2">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-4 w-4">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                        </svg>
-                        Bulk Delete
+                        class="btn btn-danger btn-xs">
+                        Bulk delete
                     </button>
                     <slot name="bulk-actions" :selected-rows="selectedRows" />
                 </div>
@@ -544,64 +501,42 @@ watch(
                         type="text"
                         :value="globalFilter ?? ''"
                         @input="e => (globalFilter = String(e.target.value))"
-                        :class="[styles.input, styles.focusRing, 'w-full px-4 py-2 pr-8'].join(' ')"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="form-input w-full pr-8 text-sm"
                         placeholder="Search all columns..." />
                     <button
                         v-if="globalFilter"
                         @click="globalFilter = ''"
-                        :class="[
-                            styles.focusRing,
-                            'absolute top-1/2 right-2 -translate-y-1/2 text-gray-400 hover:text-gray-600',
-                        ]"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="absolute top-1/2 right-2 -translate-y-1/2 text-(--color-text-muted) hover:text-(--color-text)"
                         aria-label="Clear search">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                            v-html="icons.clearSearch"></svg>
+                        <XMarkIcon class="h-4 w-4" />
                     </button>
                 </div>
 
                 <button
                     v-if="enableExport"
                     @click="exportToCSV"
-                    class="btn-secondary btn-sm inline-flex cursor-pointer items-center gap-2">
-                    <svg
-                        class="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        v-html="icons.export"></svg>
+                    class="btn btn-secondary btn-sm cursor-pointer">
                     Export CSV
                 </button>
             </nav>
         </header>
 
-        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+        <div class="overflow-x-auto rounded-lg border border-(--card-border)">
             <div class="block space-y-3 p-3 md:hidden">
                 <div
-                    class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-800">
+                    class="flex items-center justify-between rounded-lg border border-(--card-border) bg-(--color-surface-muted) p-2">
                     <label class="inline-flex items-center">
                         <input
                             type="checkbox"
-                            class="form-checkbox focus:ring-opacity-50 rounded border-gray-300 focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                            :style="{
-                                '--tw-ring-color': 'var(--primary-color)',
-                                color: selectionColor,
-                            }"
+                            class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
                             :checked="table.getIsAllRowsSelected()"
                             :indeterminate="table.getIsSomeRowsSelected()"
                             @change="handleSelectAll" />
-                        <span class="ml-2 text-xs font-medium text-gray-700 dark:text-gray-300">
-                            {{ table.getIsAllRowsSelected() ? 'Deselect All' : 'Select All' }}
+                        <span class="ml-2 text-xs font-medium text-(--color-text)">
+                            {{ table.getIsAllRowsSelected() ? 'Deselect all' : 'Select all' }}
                         </span>
                     </label>
-                    <div class="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <div class="text-xs font-medium text-(--color-text-muted)">
                         {{ table.getFilteredSelectedRowModel().rows.length }} of
                         {{ table.getFilteredRowModel().rows.length }} selected
                     </div>
@@ -610,43 +545,25 @@ watch(
                 <div
                     v-for="(row, index) in table.getRowModel().rows"
                     :key="row.id"
-                    class="rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+                    class="card shadow-sm transition-all duration-200 hover:shadow-md">
                     <div class="p-2">
                         <div class="mb-1.5 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="form-checkbox focus:ring-opacity-50 rounded border-gray-300 focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                                        :style="{
-                                            '--tw-ring-color': 'var(--primary-color)',
-                                            color: selectionColor,
-                                        }"
+                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
                                         :checked="row.getIsSelected()"
                                         @change="row.toggleSelected()" />
                                     <span
-                                        class="ml-1.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                                        class="ml-1.5 text-xs font-medium text-(--color-text)">
                                         Select
                                     </span>
                                 </label>
                                 <button
                                     @click="toggleRow(index)"
-                                    class="group flex items-center gap-1 rounded bg-gray-50 px-1.5 py-0.5 transition-all duration-200 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600">
-                                    <svg
-                                        class="h-3 w-3 text-gray-500 transition-transform duration-200 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300"
-                                        :class="{ 'rotate-90': expandedRows.includes(index) }"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor">
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span
-                                        class="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                        {{ expandedRows.includes(index) ? 'Less' : 'More' }}
-                                    </span>
+                                    class="btn btn-ghost btn-xs text-xs font-medium text-(--color-text-muted)">
+                                    {{ expandedRows.includes(index) ? 'Less' : 'More' }}
                                 </button>
                             </div>
                             <div class="flex items-center gap-1.5">
@@ -654,7 +571,7 @@ watch(
                             </div>
                         </div>
 
-                        <div class="mb-1.5 border-b border-gray-100 dark:border-gray-700"></div>
+                        <div class="mb-1.5 border-b border-(--card-border)"></div>
 
                         <div class="grid grid-cols-1 gap-1.5">
                             <div
@@ -662,10 +579,10 @@ watch(
                                 :key="cell.id"
                                 class="flex flex-col space-y-0">
                                 <dt
-                                    class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                                    class="text-xs font-medium tracking-wide text-(--color-text-muted) uppercase">
                                     {{ getColumnHeader(cell.column.columnDef) }}
                                 </dt>
-                                <dd class="text-xs font-medium text-gray-900 dark:text-gray-100">
+                                <dd class="text-xs font-medium text-(--color-text)">
                                     <FlexRender
                                         :render="cell.column.columnDef.cell"
                                         :props="cell.getContext()" />
@@ -676,7 +593,7 @@ watch(
 
                     <div
                         v-if="expandedRows.includes(index)"
-                        class="border-t border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-700/30">
+                        class="border-t border-(--card-border) bg-(--color-surface-muted)">
                         <div class="space-y-2 p-2">
                             <div class="grid grid-cols-1 gap-2">
                                 <div
@@ -684,11 +601,11 @@ watch(
                                     :key="cell.id"
                                     class="flex flex-col space-y-0">
                                     <dt
-                                        class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                                        class="text-xs font-medium tracking-wide text-(--color-text-muted) uppercase">
                                         {{ getColumnHeader(cell.column.columnDef) }}
                                     </dt>
                                     <dd
-                                        class="text-xs font-medium text-gray-700 dark:text-gray-300">
+                                        class="text-xs font-medium text-(--color-text)">
                                         <FlexRender
                                             :render="cell.column.columnDef.cell"
                                             :props="cell.getContext()" />
@@ -701,20 +618,16 @@ watch(
             </div>
 
             <table
-                class="hidden min-w-full divide-y divide-gray-200 md:table dark:divide-gray-700"
+                class="hidden min-w-full divide-y divide-(--card-border) md:table"
                 role="grid">
-                <thead class="bg-gray-50 dark:bg-gray-900">
+                <thead class="bg-(--color-surface-muted)">
                     <tr>
                         <th class="w-10 px-6 py-3">
                             <div class="flex items-center">
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="form-checkbox focus:ring-opacity-50 rounded border-gray-300 text-blue-600 focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                                        :style="{
-                                            '--tw-ring-color': 'var(--primary-color)',
-                                            color: selectionColor,
-                                        }"
+                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
                                         :checked="table.getIsAllRowsSelected()"
                                         :indeterminate="table.getIsSomeRowsSelected()"
                                         @change="handleSelectAll" />
@@ -726,18 +639,18 @@ watch(
                             v-for="header in table.getHeaderGroups()[0].headers"
                             :key="header.id"
                             :class="[
-                                styles.tableHeader,
-                                header.column.getCanSort() ? styles.sortableHeader : '',
+                                'px-3 py-3 sm:px-6 text-xs font-medium uppercase tracking-wide text-(--color-text-muted) text-left',
+                                header.column.getCanSort() ? 'cursor-pointer hover:bg-(--color-surface-muted)' : '',
                             ]"
                             @click="header.column.getToggleSortingHandler()?.($event)">
                             <div class="flex items-center gap-2">
-                                <span class="text-gray-900 dark:text-gray-400">
+                                <span class="text-(--color-text-muted)">
                                     {{ header.column.columnDef.header }}
                                 </span>
                                 <span
                                     v-if="header.column.getIsSorted()"
-                                    :style="{ color: selectionColor }"
-                                    class="text-gray-900 dark:text-gray-200">
+                                    :style="{ color: 'var(--primary-color)' }"
+                                    class="text-(--color-text)">
                                     {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                 </span>
                             </div>
@@ -764,13 +677,13 @@ watch(
                 </thead>
 
                 <tbody
-                    class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-                    <tr v-if="!table.getRowModel().rows.length" :class="styles.rowHover">
+                    class="divide-y divide-(--card-border) bg-(--color-surface)">
+                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-(--color-surface-muted) transition-colors">
                         <td :colspan="columns.length + 1" class="px-6 py-8 text-center">
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                            <p class="text-sm text-(--color-text-muted)">
                                 {{ emptyMessage }}
                             </p>
-                            <p class="mt-1 text-sm text-gray-400 dark:text-gray-500">
+                            <p class="mt-1 text-sm text-(--color-text-muted)">
                                 {{ emptyDescription }}
                             </p>
                         </td>
@@ -780,23 +693,19 @@ watch(
                         v-for="(row, index) in table.getRowModel().rows"
                         :key="row.id"
                         :class="[
-                            styles.rowHover,
+                            'hover:bg-(--color-surface-muted) transition-colors',
                             row.getIsSelected()
-                                ? styles.rowSelected
-                                : index % 2 === 0
-                                  ? styles.rowEven
-                                  : styles.rowOdd,
+                                ? 'bg-(--selection-color-light) dark:bg-(--selection-color-dark)'
+                                : index % 2 === 1
+                                  ? 'bg-(--color-surface-muted)'
+                                  : '',
                         ]">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="form-checkbox focus:ring-opacity-50 rounded border-gray-300 focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                                        :style="{
-                                            '--tw-ring-color': 'var(--primary-color)',
-                                            color: selectionColor,
-                                        }"
+                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
                                         :checked="row.getIsSelected()"
                                         @change="row.toggleSelected()" />
                                 </label>
@@ -806,7 +715,7 @@ watch(
                         <td
                             v-for="cell in row.getVisibleCells()"
                             :key="cell.id"
-                            :class="styles.tableCell">
+                            class="px-3 py-3 sm:px-6 text-sm text-(--color-text) text-left">
                             <FlexRender
                                 :render="cell.column.columnDef.cell"
                                 :props="cell.getContext()" />
@@ -817,137 +726,64 @@ watch(
         </div>
 
         <footer
-            class="mt-6 flex flex-col items-center justify-between gap-4 px-3 sm:flex-row sm:px-1">
-            <p class="text-center text-xs text-gray-700 sm:text-left dark:text-gray-300">
-                Showing
-                <span class="font-medium">{{ paginationInfo.start }}</span>
-                to
-                <span class="font-medium">{{ paginationInfo.end }}</span>
-                of
-                <span class="font-medium">{{ paginationInfo.total }}</span>
-                results
+            class="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p class="text-sm text-(--color-text-muted)">
+                {{ paginationInfo.start }}–{{ paginationInfo.end }} of {{ paginationInfo.total }}
             </p>
 
             <nav class="flex items-center gap-2" aria-label="Pagination">
                 <template v-if="isServerPagination">
                     <button
-                        :class="[styles.button, styles.focusRing]"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="btn btn-ghost btn-xs"
                         :disabled="isFirstPage"
                         @click="goToPage(1)">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            v-html="icons.firstPage"></svg>
+                        <ChevronDoubleLeftIcon class="h-4 w-4" />
                     </button>
 
                     <button
-                        :class="[styles.button, styles.focusRing]"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="btn btn-ghost btn-xs"
                         :disabled="isFirstPage"
                         @click="goToPage(paginationInfo.currentPage - 1)">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            v-html="icons.prevPage"></svg>
+                        <ChevronLeftIcon class="h-4 w-4" />
                     </button>
 
-                    <div class="flex items-center gap-1">
-                        <span class="hidden text-xs text-gray-700 sm:inline dark:text-gray-300">
-                            Page
-                        </span>
-                        <input
-                            type="number"
-                            :value="paginationInfo.currentPage"
-                            @change="handlePageChange"
-                            :class="[styles.input, styles.focusRing, 'w-16 px-3 py-2 text-center']"
-                            :style="{ '--tw-ring-color': 'var(--primary-color)' }" />
-                        <span class="hidden text-xs text-gray-700 sm:inline dark:text-gray-300">
-                            of {{ paginationInfo.pageCount }}
-                        </span>
-                    </div>
+                    <span class="text-sm text-(--color-text-muted)">
+                        {{ paginationInfo.currentPage }} / {{ paginationInfo.pageCount }}
+                    </span>
 
                     <button
-                        :class="[styles.button, styles.focusRing]"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="btn btn-ghost btn-xs"
                         :disabled="isLastPage"
                         @click="goToPage(paginationInfo.currentPage + 1)">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            v-html="icons.nextPage"></svg>
+                        <ChevronRightIcon class="h-4 w-4" />
                     </button>
 
                     <button
-                        :class="[styles.button, styles.focusRing]"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        class="btn btn-ghost btn-xs"
                         :disabled="isLastPage"
                         @click="goToPage(paginationInfo.pageCount)">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            v-html="icons.lastPage"></svg>
+                        <ChevronDoubleRightIcon class="h-4 w-4" />
                     </button>
                 </template>
 
                 <template v-else>
                     <button
-                        class="rounded-md px-2 py-1 disabled:cursor-not-allowed disabled:opacity-50"
-                        :class="[
-                            table.getCanPreviousPage()
-                                ? 'text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700'
-                                : 'text-gray-400 dark:text-gray-600',
-                            styles.focusRing,
-                        ]"
-                        :style="
-                            table.getCanPreviousPage()
-                                ? { '--tw-ring-color': 'var(--primary-color)' }
-                                : {}
-                        "
+                        class="btn btn-ghost btn-xs disabled:cursor-not-allowed disabled:opacity-50"
                         :disabled="!table.getCanPreviousPage()"
                         @click="table.previousPage()">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            v-html="icons.prevPage"></svg>
+                        <ChevronLeftIcon class="h-4 w-4" />
                     </button>
 
-                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                    <span class="text-sm text-(--color-text)">
                         Page {{ table.getState().pagination.pageIndex + 1 }} of
                         {{ table.getPageCount() }}
                     </span>
 
                     <button
-                        class="rounded-md px-2 py-1 disabled:cursor-not-allowed disabled:opacity-50"
-                        :class="[
-                            table.getCanNextPage()
-                                ? 'text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700'
-                                : 'text-gray-400 dark:text-gray-600',
-                            styles.focusRing,
-                        ]"
-                        :style="
-                            table.getCanNextPage()
-                                ? { '--tw-ring-color': 'var(--primary-color)' }
-                                : {}
-                        "
+                        class="btn btn-ghost btn-xs disabled:cursor-not-allowed disabled:opacity-50"
                         :disabled="!table.getCanNextPage()"
                         @click="table.nextPage()">
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            v-html="icons.nextPage"></svg>
+                        <ChevronRightIcon class="h-4 w-4" />
                     </button>
                 </template>
             </nav>
@@ -962,7 +798,7 @@ watch(
 
             <div class="sm:flex sm:items-start">
                 <div class="text-center sm:text-left">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                    <p class="text-sm text-(--color-text-muted)">
                         Are you sure you want to delete {{ selectionCount }} selected records? This
                         action cannot be undone.
                     </p>
@@ -970,18 +806,18 @@ watch(
             </div>
 
             <template #footer>
-                <div class="flex justify-end gap-8">
+                <div class="flex justify-end gap-3">
                     <button
                         type="button"
                         @click="showDeleteModal = false"
-                        class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
+                        class="btn btn-secondary btn-sm">
                         Cancel
                     </button>
                     <button
                         type="button"
                         :disabled="loading"
                         @click="handleBulkDelete"
-                        class="btn-3d-danger btn-sm">
+                        class="btn btn-danger btn-sm">
                         <template v-if="loading">
                             <svg
                                 class="mr-2 -ml-1 h-4 w-4 animate-spin"

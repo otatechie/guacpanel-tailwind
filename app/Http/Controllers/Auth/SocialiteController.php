@@ -45,6 +45,7 @@ class SocialiteController extends Controller
 
         if ($existingUser) {
             Auth::login($existingUser);
+            $request->session()->regenerate();
 
             return redirect()
                 ->intended($this->redirectSuccessLogin)
@@ -64,6 +65,7 @@ class SocialiteController extends Controller
         event(new Verified($newUser));
 
         Auth::login($newUser);
+        $request->session()->regenerate();
 
         return redirect()
             ->intended('/dashboard')

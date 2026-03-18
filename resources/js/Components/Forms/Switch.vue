@@ -19,15 +19,12 @@ defineEmits(['update:modelValue'])
 
 <template>
     <label
+        class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors duration-150"
         :class="[
-            'relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full',
-            disabled ? 'cursor-not-allowed opacity-50' : modelValue ? '' : 'hover:bg-gray-300',
+            disabled ? 'cursor-not-allowed opacity-50' : '',
+            modelValue ? '' : 'hover:bg-(--color-border-strong)',
         ]"
-        :style="
-            modelValue
-                ? { backgroundColor: 'var(--selection-color)' }
-                : { backgroundColor: 'rgb(229, 231, 235)' }
-        ">
+        :style="{ backgroundColor: modelValue ? 'var(--primary-color)' : 'var(--card-border)' }">
         <input
             type="checkbox"
             :checked="modelValue"
@@ -38,10 +35,8 @@ defineEmits(['update:modelValue'])
             class="peer sr-only"
             @change="$emit('update:modelValue', $event.target.checked)" />
         <span
-            :class="[
-                'inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform duration-150 ease-in-out',
-                modelValue ? 'translate-x-[1.375rem]' : 'translate-x-0.5',
-            ]"
+            class="inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-150"
+            :class="modelValue ? 'translate-x-5.5' : 'translate-x-0.5'"
             aria-hidden="true" />
     </label>
 </template>
