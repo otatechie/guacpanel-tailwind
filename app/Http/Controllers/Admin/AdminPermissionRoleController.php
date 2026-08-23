@@ -19,7 +19,7 @@ class AdminPermissionRoleController extends Controller
 
     public function __construct(private DataTableService $dataTable)
     {
-        $this->middleware('permission:view-permissions-roles');
+        $this->middleware('permission:view-permissions-roles|manage-roles|manage-permissions');
     }
 
     public function index(Request $request)

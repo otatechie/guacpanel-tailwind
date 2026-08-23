@@ -133,10 +133,10 @@ test('it allows admin to delete user', function () {
             '_token' => $this->testToken,
         ]);
 
-    $response->assertRedirect(route('admin.user.index'));
+    $response->assertRedirect(route('admin.user.deleted.index'));
     $response->assertSessionHas('success');
 
-    $this->assertDatabaseMissing('users', [
+    $this->assertSoftDeleted('users', [
         'id' => $user->id,
     ]);
 });

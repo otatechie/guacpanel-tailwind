@@ -15,7 +15,7 @@ class AdminUserController extends Controller
 {
     public function __construct(private DataTableService $dataTable)
     {
-        $this->middleware('permission:view-users');
+        $this->middleware('permission:view-users|manage-users');
     }
 
     public function index(Request $request)
@@ -79,7 +79,7 @@ class AdminUserController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create-users');
+        abort_unless($request->user()->canAny(['create-users', 'manage-users']), 403);
 
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -100,7 +100,7 @@ class AdminUserController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $this->authorize('edit-users');
+        abort_unless($request->user()->canAny(['edit-users', 'manage-users']), 403);
 
         $user = User::with(['permissions:id,name', 'roles:id,name'])->findOrFail($id);
 
@@ -150,7 +150,7 @@ class AdminUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->authorize('edit-users');
+        abort_unless($request->user()->canAny(['edit-users', 'manage-users']), 403);
 
         $user = User::findOrFail($id);
 
@@ -183,9 +183,9 @@ class AdminUserController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'force_password_change' => $request->force_password_change,
-            'disable_account' => $request->disable_account,
-            'auto_destroy' => $request->auto_destroy,
+            'force_password_change' => $request->boolean('force_password_change'),
+            'disable_account' => $request->boolean('disable_account'),
+            'auto_destroy' => $request->boolean('auto_destroy'),
         ]);
 
         if ($request->filled('role')) {
@@ -199,9 +199,9 @@ class AdminUserController extends Controller
         return redirect()->back()->with('success', __('notifications.admin.user_account_updated_successfully'));
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $this->authorize('delete-users');
+        abort_unless($request->user()->canAny(['delete-users', 'manage-users']), 403);
 
         $user = User::findOrFail($id);
 

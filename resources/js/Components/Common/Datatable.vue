@@ -25,7 +25,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import Modal from '@/Components/Notifications/Modal.vue'
 import Filter from '@/Components/Filter.vue'
-import { useServerPagination } from '@/Composables/useServerPagination'
+import { useServerPagination } from '@/composables/useServerPagination'
 
 const props = defineProps({
     data: {

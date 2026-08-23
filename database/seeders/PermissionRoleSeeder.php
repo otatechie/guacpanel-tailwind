@@ -23,6 +23,7 @@ class PermissionRoleSeeder extends Seeder
             // User Management
             'manage-users' => 'Manage user accounts',
             'view-users' => 'View user accounts',
+            'create-users' => 'Create user accounts',
             'edit-users' => 'Edit user accounts',
             'delete-users' => 'Delete user accounts',
             'edit-profile' => 'Edit own profile',

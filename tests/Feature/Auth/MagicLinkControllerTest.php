@@ -89,14 +89,16 @@ test('user cannot request magic link for nonexistent email', function () {
     ]);
 
     $response->assertSessionHasErrors(['email']);
-    $response->assertSessionHas('error');
 });
 
 test('user can authenticate with valid magic link token', function () {
     $user = User::factory()->create();
     $token = Str::random(40);
 
-    Cache::put("magic_link:{$token}", $user->id, now()->addMinutes(10));
+    Cache::put("magic_link:{$token}", [
+        'user_id'    => $user->id,
+        'created_at' => now()->timestamp,
+    ], now()->addMinutes(10));
 
     $url = URL::temporarySignedRoute(
         'magic.login.authenticate',

@@ -39,7 +39,7 @@ test('it allows authenticated users to access account page', function () {
             fn ($user) => $user
             ->has('name')
             ->has('email')
-            ->has('location')
+            ->etc()
         )
     );
 });

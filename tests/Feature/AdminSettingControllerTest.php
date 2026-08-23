@@ -44,7 +44,7 @@ test('it allows admin to access settings management page', function () {
     $response->assertStatus(200);
     $response->assertInertia(
         fn ($page) => $page->component('Admin/IndexManageSettingPage')
-            ->has('settings')
+            ->has('systemSettings')
     );
 });
 

@@ -77,7 +77,7 @@ class AdminRoleController extends Controller
 
         $role = Role::create([
             'name' => $validatedData['name'],
-            'description' => $validatedData['description'],
+            'description' => $validatedData['description'] ?? null,
         ]);
 
         if ($request->has('permissions')) {
@@ -112,7 +112,7 @@ class AdminRoleController extends Controller
 
         $role->update([
             'name' => $validatedData['name'],
-            'description' => $validatedData['description'],
+            'description' => $validatedData['description'] ?? null,
         ]);
 
         if ($request->has('permissions')) {
