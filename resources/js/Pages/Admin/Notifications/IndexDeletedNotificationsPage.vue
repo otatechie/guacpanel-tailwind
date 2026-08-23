@@ -32,8 +32,8 @@ const breadcrumbs = computed(() => [
         </PageHeader>
 
         <div
-            class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-            <p class="text-sm text-[var(--color-text-muted)]">
+            class="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <p class="text-sm text-muted-foreground">
                 This page will be implemented next for managing soft deleted notifications.
                 We may not need it since we have a job to clean them up.
             </p>

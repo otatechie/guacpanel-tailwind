@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import Button from '@/Components/Button.vue'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/Components/ui/tooltip'
 import GoogleIcon from '@js/Components/Icons/GoogleIcon.vue'
 import FacebookIcon from '@js/Components/Icons/FacebookIcon.vue'
 import GitHubIcon from '@js/Components/Icons/GitHubIcon.vue'
@@ -59,16 +61,29 @@ const providerLabel = provider => {
 </script>
 
 <template>
-    <div class="grid gap-2" :class="gridClass">
-        <template v-for="(provider, index) in providersConfig.providers" :key="index">
-            <button
-                type="button"
-                @click="redirect(index)"
-                :aria-label="iconsOnly ? `Continue with ${providerLabel(index)}` : undefined"
-                class="flex w-full items-center justify-center gap-2 rounded-lg border border-(--color-border-strong) px-3 py-2 text-sm font-medium text-(--color-text) transition-colors hover:bg-(--color-surface-muted)">
-                <component :is="providerIcon(index)" class="size-5" />
-                <span v-if="!iconsOnly">{{ providerLabel(index) }}</span>
-            </button>
-        </template>
-    </div>
+    <TooltipProvider :delay-duration="200">
+        <div class="grid gap-2" :class="gridClass">
+            <template v-for="(provider, index) in providersConfig.providers" :key="index">
+                <Tooltip v-if="iconsOnly">
+                    <TooltipTrigger as-child>
+                        <Button
+                            variant="secondary"
+                            class="w-full"
+                            :aria-label="`Continue with ${providerLabel(index)}`"
+                            @click="redirect(index)">
+                            <component :is="providerIcon(index)" class="size-5" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        Continue with {{ providerLabel(index) }}
+                    </TooltipContent>
+                </Tooltip>
+
+                <Button v-else variant="secondary" class="w-full" @click="redirect(index)">
+                    <component :is="providerIcon(index)" class="size-5" />
+                    <span>{{ providerLabel(index) }}</span>
+                </Button>
+            </template>
+        </div>
+    </TooltipProvider>
 </template>

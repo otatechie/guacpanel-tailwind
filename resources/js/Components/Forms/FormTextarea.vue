@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { Textarea } from '@/Components/ui/textarea'
 import { Label } from '@/Components/ui/label'
 
-// Public API unchanged — see docs/ui-contract.md. Internals sit on shadcn Textarea.
 const props = defineProps({
     modelValue: {
         type: [String, Number],

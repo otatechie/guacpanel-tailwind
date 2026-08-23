@@ -29,8 +29,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Create account</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Create account</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 No password needed. We'll email you a secure sign-in link.
             </p>
         </header>
@@ -39,9 +39,11 @@ const submit = () => {
             <FormInput
                 id="name"
                 v-model="form.name"
+                placeholder=""
                 label="Full name"
                 name="name"
                 type="text"
+                :show-required-marker="false"
                 required
                 autocomplete="name"
                 :error="form.errors.name" />
@@ -49,14 +51,16 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
+                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"
+                :show-required-marker="false"
                 required
                 autocomplete="email"
                 :error="form.errors.email" />
 
-            <p class="text-xs leading-relaxed text-(--color-text-muted)">
+            <p class="text-xs leading-relaxed text-muted-foreground">
                 By creating an account, you agree to our
                 <a href="#" class="font-medium underline">Terms</a>
                 and
@@ -68,9 +72,9 @@ const submit = () => {
             </Button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
+        <p class="mt-8 text-center text-sm text-muted-foreground">
             Prefer a password?
-            <Link :href="route('register')" class="font-medium text-(--primary-color) hover:underline">
+            <Link :href="route('register')" class="font-medium text-primary hover:underline">
                 Sign up with password
             </Link>
         </p>

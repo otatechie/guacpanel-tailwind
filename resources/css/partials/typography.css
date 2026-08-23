@@ -1,11 +1,3 @@
-.text-primary {
-    color: var(--primary-color);
-}
-
-.text-secondary {
-    color: var(--secondary-color);
-}
-
 .text-info {
     color: var(--info-color);
 }
@@ -19,7 +11,7 @@
 }
 
 .text-danger {
-    color: var(--error-color);
+    color: var(--destructive);
 }
 
 .text-xxs {

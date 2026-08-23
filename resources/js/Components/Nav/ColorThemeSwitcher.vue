@@ -43,12 +43,12 @@ onMounted(() => {
 
         <div
             v-if="isOpen"
-            class="absolute right-0 z-50 mt-1 w-40 rounded-lg border border-(--card-border) bg-(--color-surface) py-1 shadow-lg">
+            class="absolute right-0 z-50 mt-1 w-40 rounded-lg border border-border bg-card py-1 shadow-lg">
             <button
                 v-for="color in colors"
                 :key="color.value"
-                class="flex w-full cursor-pointer items-center gap-2.5 px-3 py-1.5 text-sm text-(--color-text) transition-colors hover:bg-(--color-surface-muted)"
-                :class="{ 'bg-(--color-surface-muted)': selectedColor === color.value }"
+                class="flex w-full cursor-pointer items-center gap-2.5 px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+                :class="{ 'bg-muted': selectedColor === color.value }"
                 @click="updateTheme(color.value)">
                 <div
                     class="h-3.5 w-3.5 shrink-0 rounded-full"

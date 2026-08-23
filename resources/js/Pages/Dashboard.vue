@@ -47,34 +47,34 @@ const sparklineArea = (data, key) => {
 
         <!-- Header -->
         <div class="mb-6 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-            <h1 class="text-xl font-semibold text-(--color-text)">{{ greeting }}, {{ userName }}</h1>
-            <time class="text-xs text-(--color-text-muted)">{{ today }}</time>
+            <h1 class="text-xl font-semibold text-foreground">{{ greeting }}, {{ userName }}</h1>
+            <time class="text-xs text-muted-foreground">{{ today }}</time>
         </div>
 
         <!-- Primary metrics -->
         <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
             <div class="card px-4 py-4 sm:px-5">
-                <p class="text-xs font-medium text-(--color-text-muted)">Total users</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-(--color-text)">{{ stats?.totalUsers?.toLocaleString() || '0' }}</p>
+                <p class="text-xs font-medium text-muted-foreground">Total users</p>
+                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-foreground">{{ stats?.totalUsers?.toLocaleString() || '0' }}</p>
                 <p v-if="stats?.userGrowth != null" class="mt-1 text-xs tabular-nums"
                    :class="stats.userGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
                     {{ stats.userGrowth >= 0 ? '+' : '' }}{{ stats.userGrowth }}% vs last week
                 </p>
             </div>
             <div class="card px-4 py-4 sm:px-5">
-                <p class="text-xs font-medium text-(--color-text-muted)">Active now</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-(--color-text)">{{ stats?.activeSessions?.toLocaleString() || '0' }}</p>
-                <p class="mt-1 text-xs text-(--color-text-muted)">sessions</p>
+                <p class="text-xs font-medium text-muted-foreground">Active now</p>
+                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-foreground">{{ stats?.activeSessions?.toLocaleString() || '0' }}</p>
+                <p class="mt-1 text-xs text-muted-foreground">sessions</p>
             </div>
             <div class="card px-4 py-4 sm:px-5">
-                <p class="text-xs font-medium text-(--color-text-muted)">Logins today</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-(--color-text)">{{ stats?.loginsToday?.toLocaleString() || '0' }}</p>
-                <p class="mt-1 text-xs text-(--color-text-muted)">successful</p>
+                <p class="text-xs font-medium text-muted-foreground">Logins today</p>
+                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-foreground">{{ stats?.loginsToday?.toLocaleString() || '0' }}</p>
+                <p class="mt-1 text-xs text-muted-foreground">successful</p>
             </div>
             <div class="card px-4 py-4 sm:px-5">
-                <p class="text-xs font-medium text-(--color-text-muted)">New this week</p>
-                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-(--color-text)">{{ stats?.newUsersThisWeek?.toLocaleString() || '0' }}</p>
-                <p class="mt-1 text-xs text-(--color-text-muted)">sign-ups</p>
+                <p class="text-xs font-medium text-muted-foreground">New this week</p>
+                <p class="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-foreground">{{ stats?.newUsersThisWeek?.toLocaleString() || '0' }}</p>
+                <p class="mt-1 text-xs text-muted-foreground">sign-ups</p>
             </div>
         </div>
 
@@ -91,25 +91,25 @@ const sparklineArea = (data, key) => {
             <!-- User growth -->
             <div class="card px-5 py-4">
                 <div class="flex items-baseline justify-between">
-                    <h2 class="text-sm font-medium text-(--color-text)">User growth</h2>
-                    <span class="text-[11px] text-(--color-text-muted)">6 months</span>
+                    <h2 class="text-sm font-medium text-foreground">User growth</h2>
+                    <span class="text-[11px] text-muted-foreground">6 months</span>
                 </div>
                 <div class="mt-4 h-20">
                     <svg v-if="userGrowth?.length" viewBox="0 0 100 36" class="h-full w-full" preserveAspectRatio="none">
                         <defs>
                             <linearGradient id="ug" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="var(--primary-color)" stop-opacity="0.08" />
-                                <stop offset="100%" stop-color="var(--primary-color)" stop-opacity="0" />
+                                <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.08" />
+                                <stop offset="100%" stop-color="var(--primary)" stop-opacity="0" />
                             </linearGradient>
                         </defs>
                         <path :d="sparklineArea(userGrowth, 'count')" fill="url(#ug)" />
-                        <path :d="sparklinePath(userGrowth, 'count')" fill="none" stroke="var(--primary-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path :d="sparklinePath(userGrowth, 'count')" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <p v-else class="flex h-full items-center justify-center text-xs text-(--color-text-muted)">
+                    <p v-else class="flex h-full items-center justify-center text-xs text-muted-foreground">
                         Populates as users register
                     </p>
                 </div>
-                <div v-if="userGrowth?.length" class="mt-2 flex justify-between text-[10px] tabular-nums text-(--color-text-muted)">
+                <div v-if="userGrowth?.length" class="mt-2 flex justify-between text-[10px] tabular-nums text-muted-foreground">
                     <span v-for="m in userGrowth" :key="m.month">{{ m.month }}</span>
                 </div>
             </div>

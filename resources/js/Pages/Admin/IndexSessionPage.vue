@@ -39,7 +39,7 @@ const confirmTerminate = session => {
     showTerminateModal.value = true
 }
 
-const btnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-red-600 dark:hover:text-red-400'
+const btnClass = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-red-600 dark:hover:text-red-400'
 const iconClass = 'h-3.5 w-3.5'
 const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
 
@@ -52,7 +52,7 @@ const columns = [
             const d = s.device_info
             return h('div', { class: 'min-w-0' }, [
                 h('div', { class: 'flex items-center gap-2' }, [
-                    h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, user.name),
+                    h('span', { class: 'text-sm font-medium text-foreground' }, user.name),
                     s.is_current
                         ? h('span', { class: 'flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400' }, [
                             h('span', { class: 'h-1 w-1 rounded-full bg-green-500' }),
@@ -60,14 +60,14 @@ const columns = [
                         ])
                         : null,
                 ]),
-                h('p', { class: 'mt-0.5 text-xs text-[var(--color-text-muted)]' }, `${user.email}`),
-                h('p', { class: 'mt-0.5 text-[10px] text-[var(--color-text-muted)]' }, `${d.browser} · ${d.platform}`),
+                h('p', { class: 'mt-0.5 text-xs text-muted-foreground' }, `${user.email}`),
+                h('p', { class: 'mt-0.5 text-[10px] text-muted-foreground' }, `${d.browser} · ${d.platform}`),
             ])
         },
     }),
     columnHelper.accessor('last_active_diff', {
         header: 'Last active',
-        cell: info => h('span', { class: 'text-xs tabular-nums text-[var(--color-text-muted)]' }, info.getValue() || '-'),
+        cell: info => h('span', { class: 'text-xs tabular-nums text-muted-foreground' }, info.getValue() || '-'),
     }),
     columnHelper.display({
         id: 'actions',
@@ -122,8 +122,8 @@ watch(pagination, p => {
     <Modal :show="showTerminateModal" size="sm" @close="closeModal">
         <template #title>Terminate session</template>
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                Terminate session for <span class="font-medium text-(--color-text)">{{ selectedSession?.user?.name }}</span>? They will be logged out immediately.
+            <p class="text-sm text-muted-foreground">
+                Terminate session for <span class="font-medium text-foreground">{{ selectedSession?.user?.name }}</span>? They will be logged out immediately.
             </p>
         </template>
         <template #footer>

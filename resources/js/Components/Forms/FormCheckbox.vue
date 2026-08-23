@@ -46,7 +46,7 @@ function onUpdate(value) {
 
 <template>
     <div>
-        <div class="flex items-start gap-3">
+        <div class="flex gap-3" :class="help ? 'items-start' : 'items-center'">
             <Checkbox
                 :id="inputId"
                 :model-value="modelValue"
@@ -54,7 +54,7 @@ function onUpdate(value) {
                 :disabled="disabled"
                 :aria-invalid="!!error"
                 :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
-                class="mt-0.5"
+                :class="help ? 'mt-0.5' : undefined"
                 @update:model-value="onUpdate" />
 
             <div class="text-sm">

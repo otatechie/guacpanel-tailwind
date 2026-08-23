@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
             <button
                 v-if="modelValue && !disabled"
                 type="button"
-                class="absolute top-1/2 right-7 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-(--color-surface-muted) text-(--color-text-muted) transition-colors hover:text-(--color-text)"
+                class="absolute top-1/2 right-7 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground"
                 :aria-label="'Clear ' + label"
                 @click.stop="clearSelection">
                 <XMarkIcon class="h-2.5 w-2.5" />
@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
 
             <!-- Chevron -->
             <ChevronDownIcon
-                class="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-(--color-text-muted) transition-transform duration-150"
+                class="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-transform duration-150"
                 :class="{ 'rotate-180': isOpen }"
                 aria-hidden="true" />
 
@@ -226,16 +226,16 @@ onBeforeUnmount(() => {
                 v-show="isOpen"
                 :id="`${inputId}-listbox`"
                 role="listbox"
-                class="absolute z-50 flex max-h-[180px] w-full flex-col overflow-hidden rounded-lg border border-(--card-border) bg-(--color-surface) shadow-lg sm:max-h-[250px]"
+                class="absolute z-50 flex max-h-[180px] w-full flex-col overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:max-h-[250px]"
                 :class="dropdownPosition === 'top' ? 'bottom-full mb-1.5' : 'top-full mt-1.5'">
-                <div class="relative shrink-0 border-b border-(--card-border)">
-                    <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-(--color-text-muted)" />
+                <div class="relative shrink-0 border-b border-border">
+                    <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                     <input
                         v-model="searchQuery"
                         type="search"
                         :aria-label="'Search ' + label"
                         placeholder="Search..."
-                        class="w-full border-0 bg-transparent py-2.5 pl-8 pr-3 text-sm text-(--color-text) shadow-none placeholder:text-(--color-text-muted) focus:border-0 focus:shadow-none focus:outline-none focus:ring-0"
+                        class="w-full border-0 bg-transparent py-2.5 pl-8 pr-3 text-sm text-foreground shadow-none placeholder:text-muted-foreground focus:border-0 focus:shadow-none focus:outline-none focus:ring-0"
                         @click.stop />
                 </div>
 
@@ -243,7 +243,7 @@ onBeforeUnmount(() => {
                     <li
                         v-if="loading"
                         role="status"
-                        class="px-4 py-6 text-center text-sm text-(--color-text-muted)">
+                        class="px-4 py-6 text-center text-sm text-muted-foreground">
                         Loading...
                     </li>
                     <li
@@ -253,18 +253,18 @@ onBeforeUnmount(() => {
                         :key="option[optionValue]"
                         role="option"
                         :aria-selected="isOptionSelected(option)"
-                        class="flex cursor-pointer items-center justify-between px-3 py-2 text-sm text-(--color-text) transition-colors hover:bg-(--color-surface-muted)"
+                        class="flex cursor-pointer items-center justify-between px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted"
                         :class="{
-                            'bg-(--color-surface-muted)': isOptionSelected(option) || highlightedIndex === index,
+                            'bg-muted': isOptionSelected(option) || highlightedIndex === index,
                         }"
                         @mouseenter="highlightedIndex = index"
                         @click="selectOption(option)">
                         <span class="capitalize">{{ option[optionLabel] }}</span>
-                        <CheckIcon v-if="isOptionSelected(option)" class="h-4 w-4 shrink-0 text-(--primary-color)" />
+                        <CheckIcon v-if="isOptionSelected(option)" class="h-4 w-4 shrink-0 text-primary" />
                     </li>
                     <li
                         v-if="!loading && filteredOptions.length === 0"
-                        class="px-4 py-6 text-center text-sm text-(--color-text-muted)">
+                        class="px-4 py-6 text-center text-sm text-muted-foreground">
                         No matches found
                     </li>
                 </ul>

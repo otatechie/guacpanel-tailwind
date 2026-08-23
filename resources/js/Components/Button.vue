@@ -3,8 +3,7 @@ import { computed } from 'vue'
 import { Button as UiButton } from '@/Components/ui/button'
 import { cn } from '@/lib/utils'
 
-// GuacPanel button contract — see docs/ui-contract.md.
-// Pages import this wrapper, never @/Components/ui/button directly.
+// Contract in docs/ui-contract.md. Pages import this, never @/Components/ui/button.
 const props = defineProps({
     /** primary | secondary | danger | ghost | outline | link */
     variant: { type: String, default: 'primary' },
@@ -36,16 +35,31 @@ const UI_SIZE = {
     'icon-xs': 'icon-xs',
 }
 
-// The app's danger button is solid red (see the old .btn-danger), while shadcn's
-// destructive is a soft tint. The contract wins: override here, not in ui/.
+// --primary-hover tracks the theme picker; see utils/themeInit.js.
 const VARIANT_OVERRIDE = {
-    danger: 'bg-destructive text-white hover:bg-destructive/90 dark:bg-destructive dark:text-white dark:hover:bg-destructive/90',
+    primary: 'bg-primary text-primary-foreground shadow-xs hover:bg-[var(--primary-hover)]',
+    danger: 'bg-destructive text-white shadow-xs hover:bg-destructive/90 dark:bg-destructive dark:text-white dark:hover:bg-destructive/90',
+    secondary: 'bg-card text-foreground shadow-xs hover:bg-muted',
+}
+
+const SIZE_OVERRIDE = {
+    xs: 'h-7 px-2.5',
+    sm: 'px-3',
+    md: 'px-3.5',
+    lg: 'px-4',
 }
 
 const uiVariant = computed(() => UI_VARIANT[props.variant] ?? 'default')
 const uiSize = computed(() => UI_SIZE[props.size] ?? 'default')
 const isNativeButton = computed(() => props.as === 'button')
-const classes = computed(() => cn(VARIANT_OVERRIDE[props.variant], props.class))
+const classes = computed(() =>
+    cn(
+        'rounded-lg',
+        SIZE_OVERRIDE[props.size],
+        VARIANT_OVERRIDE[props.variant],
+        props.class
+    )
+)
 </script>
 
 <template>

@@ -116,8 +116,8 @@ const areaChartData = computed(() => ({
     <main class="mx-auto max-w-7xl">
 
         <div class="mb-6">
-            <h1 class="text-xl font-semibold text-(--color-text)">Charts</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">Financial metrics overview</p>
+            <h1 class="text-xl font-semibold text-foreground">Charts</h1>
+            <p class="mt-1 text-sm text-muted-foreground">Financial metrics overview</p>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-2">

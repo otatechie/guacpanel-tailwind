@@ -3,9 +3,7 @@ import { computed } from 'vue'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/Components/ui/dialog'
 import { cn } from '@/lib/utils'
 
-// Public API unchanged (show / @close / size / closeOnClickOutside) — see
-// docs/ui-contract.md. Focus trap, escape handling, scroll lock and aria wiring
-// now come from reka-ui instead of being hand-rolled here.
+// Focus trap, escape, scroll lock and aria wiring come from reka-ui.
 const props = defineProps({
     show: Boolean,
     size: { type: String, default: 'md' },

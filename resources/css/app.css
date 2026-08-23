@@ -16,11 +16,8 @@
 @import '@css/partials/pagination.css';
 @import '@css/partials/forms.css';
 @import '@css/partials/nav.css';
-@import '@css/partials/datatable.css';
 @import '@css/partials/badges.css';
-@import '@css/partials/tabs.css';
 @import '@css/partials/typography.css';
-@import '@css/partials/wells.css';
 @import '@css/partials/cards.css';
 @import '@css/partials/notifications.css';
 @import '@css/partials/commandpalette.css';
@@ -68,16 +65,16 @@
 }
 
 :root {
-    /* Mapped onto the existing GuacPanel palette (teal primary, gray scale) —
-       change these, not the component files, to retheme. */
+    /* Retheme here, not in the component files. */
     --radius: 0.5rem;
-    --background: #f9fafb; /* gray-50 — matches current body */
+    --background: #f9fafb;
     --foreground: #111827; /* gray-900 */
     --card: #ffffff;
     --card-foreground: #111827;
     --popover: #ffffff;
     --popover-foreground: #111827;
-    --primary: #0d9488; /* --primary-color */
+    /* The theme picker (utils/themeInit.js) writes --primary-color at runtime. */
+    --primary: var(--primary-color, #0d9488);
     --primary-foreground: #ffffff;
     --secondary: #f3f4f6; /* gray-100 */
     --secondary-foreground: #111827;
@@ -88,7 +85,7 @@
     --destructive: #ef4444; /* --error-color */
     --border: #e5e7eb; /* gray-200 */
     --input: #e5e7eb;
-    --ring: #0d9488;
+    --ring: var(--primary);
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
@@ -96,46 +93,45 @@
     --chart-5: oklch(0.769 0.188 70.08);
     --sidebar: #ffffff;
     --sidebar-foreground: #111827;
-    --sidebar-primary: #0d9488;
+    --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: #f3f4f6;
     --sidebar-accent-foreground: #111827;
     --sidebar-border: #e5e7eb;
-    --sidebar-ring: #0d9488;
+    --sidebar-ring: var(--primary);
 }
 
 .dark {
-    --background: #111827; /* gray-900 — matches current dark body */
-    --foreground: #f3f4f6; /* gray-100 */
-    --card: #1f2937; /* gray-800 — matches current dark surfaces */
-    --card-foreground: #f3f4f6;
-    --popover: #1f2937;
-    --popover-foreground: #f3f4f6;
-    --primary: #2dd4bf; /* teal-400 — lighter for dark contrast */
-    --primary-foreground: #134e4a; /* teal-900 */
-    --secondary: #1f2937;
-    --secondary-foreground: #f3f4f6;
-    --muted: #374151; /* gray-700 */
-    --muted-foreground: #9ca3af; /* gray-400 */
-    --accent: #374151;
-    --accent-foreground: #f3f4f6;
+    --background: #181a1f;
+    --foreground: #e3e5e9;
+    --card: #1f2229;
+    --card-foreground: #e3e5e9;
+    --popover: #1f2229;
+    --popover-foreground: #e3e5e9;
+    /* --primary and --primary-foreground inherit from :root. */
+    --secondary: #1f2229;
+    --secondary-foreground: #e3e5e9;
+    --muted: #272b33;
+    --muted-foreground: #9ba1ab;
+    --accent: #272b33;
+    --accent-foreground: #e3e5e9;
     --destructive: #f87171; /* red-400 */
-    --border: #374151; /* gray-700 */
-    --input: #374151;
-    --ring: #2dd4bf;
+    --border: #2c313a;
+    --input: #2c313a;
+    --ring: var(--primary);
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
     --chart-3: oklch(0.769 0.188 70.08);
     --chart-4: oklch(0.627 0.265 303.9);
     --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: #1f2937;
-    --sidebar-foreground: #f3f4f6;
-    --sidebar-primary: #2dd4bf;
-    --sidebar-primary-foreground: #134e4a;
-    --sidebar-accent: #374151;
-    --sidebar-accent-foreground: #f3f4f6;
-    --sidebar-border: #374151;
-    --sidebar-ring: #2dd4bf;
+    --sidebar: #1f2229;
+    --sidebar-foreground: #e3e5e9;
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #272b33;
+    --sidebar-accent-foreground: #e3e5e9;
+    --sidebar-border: #2c313a;
+    --sidebar-ring: var(--primary);
 }
 
 @layer base {

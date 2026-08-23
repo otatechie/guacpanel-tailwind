@@ -44,7 +44,7 @@ const formatName = name => {
     return words.charAt(0).toUpperCase() + words.slice(1)
 }
 
-const btnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]'
+const btnClass = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
 const iconClass = 'h-3.5 w-3.5'
 const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
 
@@ -55,12 +55,12 @@ const columns = [
         cell: ({ row }) => {
             const p = row.original
             return h('div', {}, [
-                h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, formatName(p.name)),
+                h('span', { class: 'text-sm font-medium text-foreground' }, formatName(p.name)),
                 p.is_protected
-                    ? h('span', { class: 'ml-2 text-[10px] text-[var(--color-text-muted)]' }, 'Protected')
+                    ? h('span', { class: 'ml-2 text-[10px] text-muted-foreground' }, 'Protected')
                     : null,
                 p.description
-                    ? h('p', { class: 'mt-0.5 text-xs text-[var(--color-text-muted)]' }, p.description)
+                    ? h('p', { class: 'mt-0.5 text-xs text-muted-foreground' }, p.description)
                     : null,
             ])
         },
@@ -159,7 +159,7 @@ const handlePaginationUpdate = paginationData => {
 <template>
     <section class="space-y-4">
         <div class="flex items-center justify-between">
-            <p class="text-xs text-(--color-text-muted)">{{ permissions.total || (Array.isArray(permissions) ? permissions.length : permissions?.data?.length) || 0 }} permissions</p>
+            <p class="text-xs text-muted-foreground">{{ permissions.total || (Array.isArray(permissions) ? permissions.length : permissions?.data?.length) || 0 }} permissions</p>
             <Button variant="primary" size="sm" @click="showAddModal = true">
                 Add permission
             </Button>
@@ -249,8 +249,8 @@ const handlePaginationUpdate = paginationData => {
         <Modal :show="showDeleteModal" @close="closeModal" size="sm">
             <template #title>Delete permission</template>
             <template #default>
-                <p class="text-sm text-(--color-text-muted)">
-                    Delete <span class="font-medium text-(--color-text)">{{ permissionToDelete?.name }}</span>? This removes it from all roles that use it.
+                <p class="text-sm text-muted-foreground">
+                    Delete <span class="font-medium text-foreground">{{ permissionToDelete?.name }}</span>? This removes it from all roles that use it.
                 </p>
             </template>
             <template #footer>

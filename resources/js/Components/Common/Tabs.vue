@@ -33,8 +33,8 @@ const switchTab = index => {
                 class="shrink-0 cursor-pointer border-b-2 py-3 text-sm font-medium whitespace-nowrap transition-colors"
                 :class="[
                     activeTab === index
-                        ? 'border-(--primary-color) text-(--color-text)'
-                        : 'border-transparent text-(--color-text-muted) hover:text-(--color-text)',
+                        ? 'border-primary text-foreground'
+                        : 'border-transparent text-muted-foreground hover:text-foreground',
                 ]"
                 :aria-current="activeTab === index ? 'page' : undefined"
                 @click="switchTab(index)">

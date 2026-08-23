@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
             @click="switchMode">
             <component :is="iconComponent" class="nav-bar-icon" />
             <span class="nav-bar-tooltip">{{ label }}</span>
-            <span v-if="showLabelText" class="ml-2 text-sm text-(--color-text-muted)">{{ currentLabel }}</span>
+            <span v-if="showLabelText" class="ml-2 text-sm text-muted-foreground">{{ currentLabel }}</span>
         </button>
     </div>
 </template>

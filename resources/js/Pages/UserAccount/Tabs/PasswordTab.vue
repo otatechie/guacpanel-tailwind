@@ -19,8 +19,8 @@ const submit = () => form.put('/user/password', { preserveScroll: true, onSucces
 
 <template>
     <div class="max-w-md">
-        <h2 class="text-base font-medium text-(--color-text)">Password</h2>
-        <p class="mt-1 text-sm text-(--color-text-muted)">Update your password to keep your account secure</p>
+        <h2 class="text-base font-medium text-foreground">Password</h2>
+        <p class="mt-1 text-sm text-muted-foreground">Update your password to keep your account secure</p>
 
         <Alert v-if="!passwordEnabled" type="info" class="mt-4">
             Password changes are disabled by your administrator.

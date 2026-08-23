@@ -42,7 +42,7 @@ const tabs = ['Profile', 'Security', 'Account']
             ]" />
 
         <div class="card overflow-hidden">
-            <div class="border-b border-(--card-border) bg-(--color-surface-muted) px-4 sm:px-6">
+            <div class="border-b border-border bg-muted px-4 sm:px-6">
                 <Tabs v-model="activeTab" :tabs="tabs" />
             </div>
             <div class="px-4 py-5 sm:px-6">
@@ -54,11 +54,11 @@ const tabs = ['Profile', 'Security', 'Account']
                 <div v-else-if="activeTab === 1" class="space-y-8">
                     <PasswordTab :passwordEnabled="passwordEnabled" />
 
-                    <div class="border-t border-(--card-border) pt-8">
+                    <div class="border-t border-border pt-8">
                         <TwoFactorTab :user="user" :qrCodeSvg="qrCodeSvg" :recoveryCodes="recoveryCodes" :twoFactorEnabled="twoFactorEnabled" />
                     </div>
 
-                    <div class="border-t border-(--card-border) pt-8">
+                    <div class="border-t border-border pt-8">
                         <DevicesTab :user="user" :sessions="sessions" />
                     </div>
                 </div>

@@ -60,7 +60,7 @@ const groups = [
 
         <div class="space-y-6">
             <section v-for="group in groups" :key="group.label">
-                <h2 class="mb-2.5 text-xs font-medium text-(--color-text-muted)">{{ group.label }}</h2>
+                <h2 class="mb-2.5 text-xs font-medium text-muted-foreground">{{ group.label }}</h2>
                 <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
                     <Link
                         v-for="item in group.items"
@@ -69,11 +69,11 @@ const groups = [
                         class="card group flex items-start gap-3.5 px-4 py-3.5 transition-shadow hover:shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_6px_12px_rgba(18,42,66,0.07)]">
                         <component
                             :is="item.icon"
-                            class="mt-0.5 h-4 w-4 shrink-0 text-(--color-text-muted) transition-colors group-hover:text-(--color-text)"
+                            class="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
                             aria-hidden="true" />
                         <div class="min-w-0">
-                            <p class="text-sm font-medium text-(--color-text)">{{ item.label }}</p>
-                            <p class="mt-0.5 text-xs text-(--color-text-muted)">{{ item.desc }}</p>
+                            <p class="text-sm font-medium text-foreground">{{ item.label }}</p>
+                            <p class="mt-0.5 text-xs text-muted-foreground">{{ item.desc }}</p>
                         </div>
                     </Link>
                 </div>

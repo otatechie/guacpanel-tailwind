@@ -51,24 +51,24 @@ const logoutAllSessions = () => {
     <div class="space-y-4">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-base font-medium text-(--color-text)">Active sessions</h2>
-                <p class="mt-1 text-sm text-(--color-text-muted)">{{ formattedSessions.length }} {{ formattedSessions.length === 1 ? 'session' : 'sessions' }} across your devices</p>
+                <h2 class="text-base font-medium text-foreground">Active sessions</h2>
+                <p class="mt-1 text-sm text-muted-foreground">{{ formattedSessions.length }} {{ formattedSessions.length === 1 ? 'session' : 'sessions' }} across your devices</p>
             </div>
             <button v-if="formattedSessions.length > 1" type="button" class="shrink-0 text-sm text-red-600 hover:text-red-700 dark:text-red-400" @click="confirmLogoutAll">
                 Sign out others
             </button>
         </div>
 
-        <div v-if="formattedSessions.length" class="divide-y divide-(--card-border) rounded-lg border border-(--card-border)">
+        <div v-if="formattedSessions.length" class="divide-y divide-border rounded-lg border border-border">
             <div v-for="s in formattedSessions" :key="s.id" class="flex items-center justify-between gap-4 px-4 py-3">
                 <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-medium text-(--color-text)">{{ s.browser }} · {{ s.platform }}</span>
+                        <span class="text-sm font-medium text-foreground">{{ s.browser }} · {{ s.platform }}</span>
                         <span v-if="s.isCurrent" class="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400">
                             <span class="h-1 w-1 rounded-full bg-green-500"></span>You
                         </span>
                     </div>
-                    <p class="mt-0.5 text-xs text-(--color-text-muted)">{{ s.lastActive }}</p>
+                    <p class="mt-0.5 text-xs text-muted-foreground">{{ s.lastActive }}</p>
                 </div>
                 <button
                     v-if="!s.isCurrent"
@@ -80,14 +80,14 @@ const logoutAllSessions = () => {
             </div>
         </div>
 
-        <p v-else class="py-6 text-center text-sm text-(--color-text-muted)">No active sessions</p>
+        <p v-else class="py-6 text-center text-sm text-muted-foreground">No active sessions</p>
     </div>
 
     <Modal :show="logoutModal" @close="logoutModal = false" size="sm">
         <template #title>Sign out session</template>
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                Sign out the session on <span class="font-medium text-(--color-text)">{{ selectedSession?.browser }} · {{ selectedSession?.platform }}</span>?
+            <p class="text-sm text-muted-foreground">
+                Sign out the session on <span class="font-medium text-foreground">{{ selectedSession?.browser }} · {{ selectedSession?.platform }}</span>?
             </p>
         </template>
         <template #footer>
@@ -104,7 +104,7 @@ const logoutAllSessions = () => {
         <template #title>Sign out all other sessions</template>
         <template #default>
             <div class="space-y-4">
-                <p class="text-sm text-(--color-text-muted)">Enter your password to sign out all other browser sessions.</p>
+                <p class="text-sm text-muted-foreground">Enter your password to sign out all other browser sessions.</p>
                 <FormInput v-model="passwordForm.password" label="Password" type="password" :error="passwordForm.errors.password" required autocomplete="current-password" />
             </div>
         </template>

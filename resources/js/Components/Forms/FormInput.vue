@@ -4,7 +4,6 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
 
-// Public API unchanged — see docs/ui-contract.md. Internals sit on shadcn Input.
 const props = defineProps({
     modelValue: {
         type: [String, Number],
@@ -42,19 +41,30 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    /**
+     * Render the `*` next to the label. Turn off where every field in the form
+     * is required and the marker carries no information (e.g. the auth pages).
+     */
+    showRequiredMarker: {
+        type: Boolean,
+        default: true,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
 const showPassword = ref(false)
 
-const inputPlaceholder = computed(() => props.placeholder || props.label)
+// placeholder="" means no placeholder; omitting it falls back to the label.
+const inputPlaceholder = computed(() =>
+    props.placeholder === null ? props.label : props.placeholder || undefined
+)
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 </script>
 
 <template>
     <div>
         <Label :for="inputId" class="form-label">
-            {{ label }}<span v-if="required" class="text-destructive"> *</span>
+            {{ label }}<span v-if="required && showRequiredMarker" class="text-destructive"> *</span>
         </Label>
 
         <div class="relative">

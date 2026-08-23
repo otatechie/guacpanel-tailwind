@@ -26,7 +26,7 @@ const pagination = ref({
 const columns = [
     columnHelper.accessor('username', {
         header: 'User',
-        cell: info => h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, info.getValue()),
+        cell: info => h('span', { class: 'text-sm font-medium text-foreground' }, info.getValue()),
     }),
     columnHelper.accessor('status', {
         header: 'Status',
@@ -46,7 +46,7 @@ const columns = [
     columnHelper.accessor(row => row.login_at_diff, {
         id: 'login_at',
         header: 'When',
-        cell: info => h('span', { class: 'text-xs tabular-nums text-[var(--color-text-muted)]' }, info.getValue()),
+        cell: info => h('span', { class: 'text-xs tabular-nums text-muted-foreground' }, info.getValue()),
     }),
 ]
 

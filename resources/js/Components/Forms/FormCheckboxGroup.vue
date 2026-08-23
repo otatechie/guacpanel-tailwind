@@ -75,11 +75,11 @@ function isChecked(optionValue) {
 
 <template>
     <div>
-        <label v-if="label" class="mb-2 block text-sm font-medium text-(--color-text)">
+        <label v-if="label" class="mb-2 block text-sm font-medium text-foreground">
             {{ label }}
         </label>
 
-        <p v-if="help" class="mb-2 text-sm text-(--color-text-muted)">
+        <p v-if="help" class="mb-2 text-sm text-muted-foreground">
             {{ help }}
         </p>
 
@@ -87,7 +87,7 @@ function isChecked(optionValue) {
             <div
                 v-for="option in options"
                 :key="option[optionValue]"
-                class="rounded-lg border border-(--card-border) bg-(--color-surface) p-3">
+                class="rounded-lg border border-border bg-card p-3">
                 <label
                     :for="`${name}-${option[optionValue]}`"
                     class="flex cursor-pointer items-start gap-3">
@@ -101,9 +101,9 @@ function isChecked(optionValue) {
                                 :aria-invalid="!!error"
                                 :aria-describedby="error ? `${name}-error` : undefined"
                                 class="col-start-1 row-start-1 cursor-pointer appearance-none rounded-sm border transition-colors
-                                    border-(--card-border) bg-(--color-surface)
-                                    checked:border-(--primary-color) checked:bg-(--primary-color)
-                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary-color)
+                                    border-border bg-card
+                                    checked:border-primary checked:bg-primary
+                                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
                                     disabled:cursor-not-allowed disabled:opacity-50"
                                 @change="updateValue(option[optionValue], $event.target.checked)" />
                             <svg
@@ -126,10 +126,10 @@ function isChecked(optionValue) {
                         </div>
                     </div>
                     <div class="text-sm">
-                        <span class="font-medium text-(--color-text)">
+                        <span class="font-medium text-foreground">
                             {{ option[optionLabel] }}
                         </span>
-                        <p v-if="option[optionDescription]" class="mt-0.5 text-xs text-(--color-text-muted)">
+                        <p v-if="option[optionDescription]" class="mt-0.5 text-xs text-muted-foreground">
                             {{ option[optionDescription] }}
                         </p>
                     </div>
@@ -137,7 +137,7 @@ function isChecked(optionValue) {
             </div>
         </div>
 
-        <p v-if="!options?.length" class="py-2 text-center text-sm text-(--color-text-muted)">
+        <p v-if="!options?.length" class="py-2 text-center text-sm text-muted-foreground">
             No options available
         </p>
 

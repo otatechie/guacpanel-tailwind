@@ -72,7 +72,7 @@ const sizeClasses = {
         <!-- Icon -->
         <div class="mb-4">
             <div
-                class="flex items-center justify-center rounded-lg bg-[var(--color-surface-muted)]"
+                class="flex items-center justify-center rounded-lg bg-muted"
                 :class="sizeClasses[size].icon">
                 <img :src="src" :alt="alt" class="h-full w-full object-contain p-1.5" />
             </div>
@@ -81,11 +81,11 @@ const sizeClasses = {
         <!-- Stock info -->
         <div class="mb-4 space-y-1">
             <h3
-                class="font-medium tracking-tight text-(--color-text)"
+                class="font-medium tracking-tight text-foreground"
                 :class="sizeClasses[size].symbol">
                 {{ stock.symbol }}
             </h3>
-            <p class="font-normal text-(--color-text-muted)" :class="sizeClasses[size].name">
+            <p class="font-normal text-muted-foreground" :class="sizeClasses[size].name">
                 {{ stock.name }}
             </p>
         </div>
@@ -93,7 +93,7 @@ const sizeClasses = {
         <!-- Price and change -->
         <div class="flex items-end justify-between gap-3">
             <div
-                class="font-semibold tracking-tight text-(--color-text)"
+                class="font-semibold tracking-tight text-foreground"
                 :class="sizeClasses[size].price">
                 {{ stock.currency }}{{ stock.price }}
             </div>

@@ -32,8 +32,8 @@ const submitRecovery = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Two-factor authentication</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Two-factor authentication</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 {{ useRecovery ? 'Enter one of your emergency recovery codes' : 'Enter the 6-digit code from your authenticator app' }}
             </p>
         </header>
@@ -43,10 +43,12 @@ const submitRecovery = () => {
             <FormInput
                 id="code"
                 v-model="codeForm.code"
+                placeholder=""
                 label="Authentication code"
                 type="text"
                 inputmode="numeric"
                 pattern="[0-9]*"
+                :show-required-marker="false"
                 required
                 :disabled="codeForm.processing"
                 :error="codeForm.errors.code"
@@ -63,8 +65,10 @@ const submitRecovery = () => {
             <FormInput
                 id="recovery_code"
                 v-model="recoveryForm.recovery_code"
+                placeholder=""
                 label="Recovery code"
                 type="text"
+                :show-required-marker="false"
                 required
                 :disabled="recoveryForm.processing"
                 :error="recoveryForm.errors.recovery_code"
@@ -75,10 +79,10 @@ const submitRecovery = () => {
             </Button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-(--color-text-muted)">
+        <p class="mt-6 text-center text-sm text-muted-foreground">
             <button
                 type="button"
-                class="font-medium text-(--primary-color) hover:underline"
+                class="font-medium text-primary hover:underline"
                 @click="useRecovery = !useRecovery">
                 {{ useRecovery ? 'Use authenticator code instead' : 'Use a recovery code instead' }}
             </button>

@@ -32,7 +32,7 @@ const statusColor = s => {
     if (key === 'ok') return 'text-green-600 dark:text-green-400'
     if (key === 'warning') return 'text-amber-600 dark:text-amber-400'
     if (key === 'failed' || key === 'crashed') return 'text-red-600 dark:text-red-400'
-    return 'text-(--color-text-muted)'
+    return 'text-muted-foreground'
 }
 
 const statusDot = s => {
@@ -40,7 +40,7 @@ const statusDot = s => {
     if (key === 'ok') return 'bg-green-500'
     if (key === 'warning') return 'bg-amber-500'
     if (key === 'failed' || key === 'crashed') return 'bg-red-500'
-    return 'bg-(--color-border-strong)'
+    return 'bg-border'
 }
 
 const results = computed(() => props.healthChecks?.results || [])
@@ -86,7 +86,7 @@ const runHealthChecks = () => {
         </PageHeader>
 
         <!-- Summary bar -->
-        <div v-if="results.length" class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-(--color-text-muted)">
+        <div v-if="results.length" class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
             <span v-if="lastChecked">Updated {{ lastChecked }}</span>
             <span class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>{{ counts.ok }} ok</span>
             <span v-if="counts.warning" class="flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>{{ counts.warning }} warning</span>
@@ -98,14 +98,14 @@ const runHealthChecks = () => {
         <div v-if="isRunning" class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
             <div v-for="n in 6" :key="n" class="card animate-pulse p-4">
                 <div class="flex items-center gap-3">
-                    <div class="h-4 w-4 rounded-full bg-(--color-surface-muted)"></div>
-                    <div class="h-3 w-24 rounded bg-(--color-surface-muted)"></div>
+                    <div class="h-4 w-4 rounded-full bg-muted"></div>
+                    <div class="h-3 w-24 rounded bg-muted"></div>
                 </div>
             </div>
         </div>
 
         <div v-else-if="results.length === 0" class="card px-5 py-12 text-center">
-            <p class="text-sm text-(--color-text-muted)">No health checks available. Click "Run checks" to start.</p>
+            <p class="text-sm text-muted-foreground">No health checks available. Click "Run checks" to start.</p>
         </div>
 
         <div v-else class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -119,12 +119,12 @@ const runHealthChecks = () => {
                     aria-hidden="true" />
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-(--color-text)">{{ result.label }}</p>
+                        <p class="text-sm font-medium text-foreground">{{ result.label }}</p>
                         <span class="shrink-0 text-[10px] font-medium uppercase tabular-nums" :class="statusColor(result.status)">
                             {{ result.status }}
                         </span>
                     </div>
-                    <p v-if="result.notificationMessage" class="mt-1 text-xs text-(--color-text-muted)">
+                    <p v-if="result.notificationMessage" class="mt-1 text-xs text-muted-foreground">
                         {{ result.notificationMessage }}
                     </p>
                 </div>

@@ -21,8 +21,8 @@
     }
 
     .badge-secondary {
-        color: var(--color-text);
-        background-color: var(--color-surface-muted);
+        color: var(--foreground);
+        background-color: var(--muted);
     }
 
     .badge-info {
@@ -66,5 +66,5 @@
 }
 
 .notification-badge-default {
-    @apply border-(--card-border) bg-(--color-surface-muted) text-(--color-text-muted);
+    @apply border-border bg-muted text-muted-foreground;
 }

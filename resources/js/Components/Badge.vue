@@ -3,14 +3,12 @@ import { computed } from 'vue'
 import { Badge as UiBadge } from '@/Components/ui/badge'
 import { cn } from '@/lib/utils'
 
-// GuacPanel badge contract — see docs/ui-contract.md.
 const props = defineProps({
     /** neutral | primary | info | success | warning | danger */
     variant: { type: String, default: 'neutral' },
     class: { type: null, default: undefined },
 })
 
-// Semantic colours the shadcn palette has no equivalent for; the contract wins.
 const VARIANT_CLASS = {
     neutral: 'bg-muted text-muted-foreground',
     primary: 'bg-primary/10 text-primary dark:bg-primary/20',

@@ -103,7 +103,7 @@ const refreshPersonalisation = () => {
         <div class="space-y-4">
             <!-- App details -->
             <div class="card px-5 py-4">
-                <h2 class="text-base font-medium text-(--color-text)">Application details</h2>
+                <h2 class="text-base font-medium text-foreground">Application details</h2>
                 <form id="app-details-form" class="mt-4 max-w-lg" @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <FormInput
@@ -127,8 +127,8 @@ const refreshPersonalisation = () => {
 
             <!-- Branding -->
             <div class="card px-5 py-4">
-                <h2 class="text-base font-medium text-(--color-text)">Branding</h2>
-                <p class="mt-1 text-sm text-(--color-text-muted)">
+                <h2 class="text-base font-medium text-foreground">Branding</h2>
+                <p class="mt-1 text-sm text-muted-foreground">
                     Upload logos and favicon. Changes apply immediately.
                 </p>
 

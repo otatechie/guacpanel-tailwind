@@ -84,7 +84,7 @@ onMounted(() => {
             class="object-contain"
             @error="handleError" />
 
-        <span v-else class="text-xl font-bold text-(--color-text)">
+        <span v-else class="text-xl font-bold text-foreground">
             {{ appName }}
         </span>
     </figure>

@@ -30,15 +30,15 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Change your password</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Change your password</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 Your password has expired or needs to be changed
             </p>
         </header>
 
         <form class="mt-6 space-y-4" @submit.prevent="submit">
             <ul
-                class="rounded-lg border border-(--color-border) bg-(--color-surface-muted) px-4 py-3 text-xs leading-relaxed text-(--color-text-muted)"
+                class="rounded-lg border border-border bg-muted px-4 py-3 text-xs leading-relaxed text-muted-foreground"
                 aria-label="Password requirements">
                 <li>At least 8 characters</li>
                 <li>One uppercase letter, one number, one special character</li>
@@ -47,8 +47,10 @@ const submit = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
+                placeholder=""
                 label="New password"
                 type="password"
+                :show-required-marker="false"
                 required
                 autocomplete="new-password"
                 :error="form.errors.password" />
@@ -56,8 +58,10 @@ const submit = () => {
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
+                placeholder=""
                 label="Confirm new password"
                 type="password"
+                :show-required-marker="false"
                 required
                 autocomplete="new-password"
                 :error="form.errors.password_confirmation" />

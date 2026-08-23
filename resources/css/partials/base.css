@@ -15,14 +15,14 @@ input:focus {
     font-size: 1.5rem;
     line-height: 2rem;
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--foreground);
 }
 
 /* Dark heading colors inherit from variables; no override needed */
 
 .container-border {
-    background-color: var(--color-surface);
-    border: 1px solid var(--card-border);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: var(--card-shadow);
 }
@@ -38,5 +38,20 @@ input:focus {
     > div,
     > div > nav {
         @apply rounded-t-(--main-container-radius);
+    }
+}
+
+/* Tailwind's preflight sets `cursor: default` on buttons. */
+@layer base {
+    button:not(:disabled),
+    [role='button']:not([aria-disabled='true']),
+    summary,
+    label[for] {
+        cursor: pointer;
+    }
+
+    button:disabled,
+    [role='button'][aria-disabled='true'] {
+        cursor: not-allowed;
     }
 }

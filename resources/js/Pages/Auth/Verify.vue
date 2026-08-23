@@ -41,8 +41,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Verify your email</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Verify your email</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 We need to verify your email address before you can continue
             </p>
         </header>

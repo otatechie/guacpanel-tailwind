@@ -64,17 +64,17 @@ defineProps({
 
     <div
         v-else-if="variant === 'table'"
-        class="overflow-hidden rounded-lg border border-[var(--color-border)]">
+        class="overflow-hidden rounded-lg border border-border">
         <table class="w-full">
-            <thead class="bg-[var(--color-surface-muted)]">
+            <thead class="bg-muted">
                 <tr>
                     <th v-for="col in columns" :key="col" class="px-4 py-3 text-left">
                         <div class="skeleton rounded-md" style="width: 60%; height: 0.75rem" />
                     </th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-[var(--color-border)]">
-                <tr v-for="row in rows" :key="row" class="bg-[var(--color-surface)]">
+            <tbody class="divide-y divide-border">
+                <tr v-for="row in rows" :key="row" class="bg-card">
                     <td v-for="col in columns" :key="col" class="px-4 py-3">
                         <div
                             class="skeleton rounded-md"
@@ -90,9 +90,9 @@ defineProps({
 .skeleton {
     background: linear-gradient(
         90deg,
-        var(--color-surface-muted) 25%,
-        var(--color-border) 50%,
-        var(--color-surface-muted) 75%
+        var(--muted) 25%,
+        var(--border) 50%,
+        var(--muted) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;

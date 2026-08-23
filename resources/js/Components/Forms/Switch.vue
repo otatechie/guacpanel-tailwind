@@ -1,7 +1,6 @@
 <script setup>
 import { Switch as UiSwitch } from '@/Components/ui/switch'
 
-// Public API unchanged — see docs/ui-contract.md. Internals sit on shadcn Switch.
 defineProps({
     modelValue: {
         type: Boolean,

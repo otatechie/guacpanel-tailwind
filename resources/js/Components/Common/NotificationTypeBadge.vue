@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import Badge from '@/Components/Badge.vue'
 
-// Public API unchanged — see docs/ui-contract.md.
 const props = defineProps({
     type: {
         type: [String, null],

@@ -30,7 +30,7 @@ const priorityDot = p => {
     if (p === 'critical') return 'bg-red-500'
     if (p === 'high') return 'bg-amber-500'
     if (p === 'normal') return 'bg-blue-500'
-    return 'bg-(--color-border-strong)'
+    return 'bg-border'
 }
 
 const handleClickAway = e => {
@@ -69,29 +69,29 @@ onUnmounted(() => {
         <div
             v-show="notificationsOpen"
             data-notification-dropdown
-            class="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-(--card-border) bg-(--color-surface) shadow-lg"
+            class="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-lg"
             @click.stop>
 
-            <div class="flex items-center justify-between border-b border-(--card-border) px-4 py-2.5">
-                <h3 class="text-sm font-semibold text-(--color-text)">Notifications</h3>
-                <span class="text-[10px] text-(--color-text-muted)">Demo</span>
+            <div class="flex items-center justify-between border-b border-border px-4 py-2.5">
+                <h3 class="text-sm font-semibold text-foreground">Notifications</h3>
+                <span class="text-[10px] text-muted-foreground">Demo</span>
             </div>
 
             <div class="max-h-96 overflow-y-auto">
-                <div v-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-(--color-text-muted)">No notifications</div>
+                <div v-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-muted-foreground">No notifications</div>
 
-                <div v-else class="divide-y divide-(--card-border)">
+                <div v-else class="divide-y divide-border">
                     <div
                         v-for="n in notifications"
                         :key="n.id"
-                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-(--color-surface-muted)"
+                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-muted"
                         :class="!n.read ? 'cursor-pointer' : ''"
                         @click="markAsRead(n.id)">
                         <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" :class="priorityDot(n.priority)" />
                         <div class="min-w-0 flex-1">
-                            <h4 class="truncate text-sm text-(--color-text)" :class="!n.read ? 'font-medium' : ''">{{ n.title }}</h4>
-                            <p class="mt-0.5 truncate text-xs text-(--color-text-muted)">{{ n.description }}</p>
-                            <time class="mt-1 block text-[10px] text-(--color-text-muted)">{{ n.time }}</time>
+                            <h4 class="truncate text-sm text-foreground" :class="!n.read ? 'font-medium' : ''">{{ n.title }}</h4>
+                            <p class="mt-0.5 truncate text-xs text-muted-foreground">{{ n.description }}</p>
+                            <time class="mt-1 block text-[10px] text-muted-foreground">{{ n.time }}</time>
                         </div>
                     </div>
                 </div>

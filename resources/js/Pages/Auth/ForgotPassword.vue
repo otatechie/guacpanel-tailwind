@@ -23,8 +23,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Reset password</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Reset password</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 Enter your email and we'll send a reset link
             </p>
         </header>
@@ -33,9 +33,11 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
+                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"
+                :show-required-marker="false"
                 required
                 autocomplete="email"
                 :error="form.errors.email" />
@@ -45,8 +47,8 @@ const submit = () => {
             </Button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
-            <Link :href="route('login')" class="font-medium text-(--primary-color) hover:underline">
+        <p class="mt-8 text-center text-sm text-muted-foreground">
+            <Link :href="route('login')" class="font-medium text-primary hover:underline">
                 Back to sign in
             </Link>
         </p>

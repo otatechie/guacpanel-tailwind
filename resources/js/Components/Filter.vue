@@ -119,7 +119,7 @@ onBeforeUnmount(() => {
                     v-if="columnFilterValue"
                     @click="clearFilter"
                     class="focus:ring-opacity-50 absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                    :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                    :style="{ '--tw-ring-color': 'var(--primary)' }"
                     aria-label="Clear filter">
                     <svg
                         class="h-3 w-3"
@@ -170,7 +170,7 @@ onBeforeUnmount(() => {
                     v-if="columnFilterValue"
                     @click="clearFilter"
                     class="focus:ring-opacity-50 absolute top-1/2 right-6 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                    :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                    :style="{ '--tw-ring-color': 'var(--primary)' }"
                     aria-label="Clear filter">
                     <svg
                         class="h-3 w-3"
@@ -198,7 +198,7 @@ onBeforeUnmount(() => {
                         v-if="selectedRange[0]"
                         @click="handleRangeChange(0, '')"
                         class="focus:ring-opacity-50 absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :style="{ '--tw-ring-color': 'var(--primary)' }"
                         aria-label="Clear min value">
                         <svg
                             class="h-3 w-3"
@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
                         v-if="selectedRange[1]"
                         @click="handleRangeChange(1, '')"
                         class="focus:ring-opacity-50 absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 focus:ring-2 focus:outline-none dark:hover:text-gray-200"
-                        :style="{ '--tw-ring-color': 'var(--primary-color)' }"
+                        :style="{ '--tw-ring-color': 'var(--primary)' }"
                         aria-label="Clear max value">
                         <svg
                             class="h-3 w-3"
