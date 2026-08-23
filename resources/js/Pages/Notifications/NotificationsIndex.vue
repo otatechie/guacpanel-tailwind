@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
@@ -812,11 +813,7 @@ onUnmounted(() => {
                             </svg>
                         </button>
                     </div>
-                    <button
-                        type="button"
-                        class="btn btn-lg btn-secondary mt-2 gap-2 sm:mt-0"
-                        :disabled="isFiltering || isWorking"
-                        @click="resetFilters">
+                    <Button variant="secondary" size="lg" class="mt-2 gap-2 sm:mt-0" :disabled="isFiltering || isWorking" @click="resetFilters">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -831,7 +828,7 @@ onUnmounted(() => {
                                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
                         Reset
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -840,13 +837,9 @@ onUnmounted(() => {
             class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-secondary"
-                        :disabled="!hasRows || isWorking"
-                        @click="toggleSelectAll">
+                    <Button variant="secondary" size="sm" :disabled="!hasRows || isWorking" @click="toggleSelectAll">
                         Select all
-                    </button>
+                    </Button>
                     <div v-if="selectedCount > 0" class="flex items-center gap-6">
                         <span
                             role="status"
@@ -872,11 +865,7 @@ onUnmounted(() => {
             <div class="w-full sm:w-auto">
                 <div
                     class="xs:gap-0 grid w-full grid-cols-2 gap-1 overflow-visible rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] sm:inline-grid sm:grid-cols-5">
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('read')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('read')">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -895,13 +884,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Mark selected notifications as read
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('unread')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('unread')">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -920,13 +905,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Mark selected notifications as unread
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('dismiss')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('dismiss')">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -948,13 +929,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Dismiss selected notifications
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('undismiss')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('undismiss')">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -975,13 +952,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Undo dismissal for selected notifications
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('delete')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('delete')">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -1005,7 +978,7 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Delete selected notifications
                         </span>
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -1321,15 +1294,7 @@ onUnmounted(() => {
                                     <div class="mt-3">
                                         <div
                                             class="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
-                                                :disabled="isWorking"
-                                                @click="
-                                                    row.is_read
-                                                        ? markUnread(row)
-                                                        : markRead(row)
-                                                ">
+                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click=" row.is_read ? markUnread(row) : markRead(row) ">
                                                 <svg
                                                     v-if="row.is_read"
                                                     class="size-4"
@@ -1359,17 +1324,9 @@ onUnmounted(() => {
                                                 <span class="xs:hidden">
                                                     {{ row.is_read ? 'Undo' : 'Read' }}
                                                 </span>
-                                            </button>
+                                            </Button>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
-                                                :disabled="isWorking"
-                                                @click="
-                                                    row.is_dismissed
-                                                        ? undismiss(row)
-                                                        : dismiss(row)
-                                                ">
+                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click=" row.is_dismissed ? undismiss(row) : dismiss(row) ">
                                                 <svg
                                                     v-if="row.is_dismissed"
                                                     class="size-4"
@@ -1409,13 +1366,9 @@ onUnmounted(() => {
                                                             : 'Dismiss'
                                                     }}
                                                 </span>
-                                            </button>
+                                            </Button>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
-                                                :disabled="isWorking"
-                                                @click="confirmDelete(row)">
+                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click="confirmDelete(row)">
                                                 <svg
                                                     class="size-4"
                                                     viewBox="0 0 24 24"
@@ -1433,7 +1386,7 @@ onUnmounted(() => {
                                                     <path d="M4 7h16" />
                                                 </svg>
                                                 <span>Delete</span>
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -2202,22 +2155,7 @@ onUnmounted(() => {
         </div>
 
         <div v-if="links?.length" class="mt-4 flex flex-wrap gap-2">
-            <button
-                v-for="l in links"
-                :key="l.label"
-                type="button"
-                class="btn btn-sm btn-secondary"
-                :class="l.active ? 'btn-primary' : ''"
-                :disabled="!l.url || isWorking"
-                v-html="l.label"
-                @click="
-                    l.url &&
-                    router.visit(l.url, {
-                        preserveScroll: true,
-                        preserveState: true,
-                        only: ['notifications', 'filters'],
-                    })
-                " />
+            <Button v-for="l in links" :key="l.label" :variant="l.active ? 'primary' : 'secondary'" size="sm" :disabled="!l.url || isWorking" v-html="l.label" @click=" l.url && router.visit(l.url, { preserveScroll: true, preserveState: true, only: ['notifications', 'filters'], }) " />
         </div>
     </main>
 
@@ -2246,13 +2184,9 @@ onUnmounted(() => {
                     @click="closeDeleteModal">
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="isWorking"
-                    @click="destroyRow">
+                <Button variant="primary" size="sm" :disabled="isWorking" @click="destroyRow">
                     {{ isWorking ? 'Deleting...' : 'Yes, Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -2281,13 +2215,9 @@ onUnmounted(() => {
                     @click="closeBulkDeleteModal">
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="isWorking"
-                    @click="runBulkDelete">
+                <Button variant="primary" size="sm" :disabled="isWorking" @click="runBulkDelete">
                     {{ isWorking ? 'Deleting...' : 'Yes, Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

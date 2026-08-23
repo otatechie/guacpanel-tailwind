@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
 import { useForm, usePage, router } from '@inertiajs/vue3'
@@ -117,13 +118,9 @@ const refreshPersonalisation = () => {
                             :error="form.errors.copyright_text" />
                     </div>
                     <div class="mt-4">
-                        <button
-                            type="submit"
-                            class="btn btn-sm btn-primary"
-                            :disabled="form.processing"
-                            :aria-busy="form.processing">
+                        <Button variant="primary" size="sm" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                             {{ form.processing ? 'Saving...' : 'Save' }}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

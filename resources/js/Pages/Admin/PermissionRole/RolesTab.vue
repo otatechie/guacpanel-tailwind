@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@js/Components/Notifications/Modal.vue'
@@ -94,7 +95,7 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
     <div class="space-y-4">
         <div class="flex items-center justify-between">
             <p class="text-xs text-(--color-text-muted)">{{ roles.length }} {{ roles.length === 1 ? 'role' : 'roles' }}</p>
-            <button type="button" @click="showAddModal = true" class="btn btn-primary btn-sm">Add role</button>
+            <Button variant="primary" size="sm" @click="showAddModal = true">Add role</Button>
         </div>
 
         <!-- Roles list -->
@@ -180,10 +181,10 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-primary" :disabled="form.processing" @click="submitRole">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="primary" size="sm" :disabled="form.processing" @click="submitRole">
                     {{ form.processing ? 'Saving...' : editingRole ? 'Save' : 'Add role' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -198,10 +199,10 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="form.processing" @click="deleteRole">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="form.processing" @click="deleteRole">
                     {{ form.processing ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/vue/24/outline'
@@ -24,12 +25,10 @@ const stopImpersonation = () => {
                 viewing as
                 <span class="font-medium">{{ currentUserName }}</span>
             </span>
-            <button
-                class="btn btn-xs inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-white px-2.5 py-1 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-900/50 dark:text-amber-300 dark:hover:bg-amber-900"
-                @click="stopImpersonation">
+            <Button size="xs" class="inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-white px-2.5 py-1 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-900/50 dark:text-amber-300 dark:hover:bg-amber-900" @click="stopImpersonation">
                 <ArrowRightStartOnRectangleIcon class="h-3.5 w-3.5" />
                 Exit
-            </button>
+            </Button>
         </div>
     </div>
 </template>

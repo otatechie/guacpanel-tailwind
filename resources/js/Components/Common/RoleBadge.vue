@@ -1,6 +1,8 @@
 <script setup>
-import { capitalize } from '@vue/shared'
+import { computed } from 'vue'
+import Badge from '@/Components/Badge.vue'
 
+// Public API unchanged — see docs/ui-contract.md.
 const props = defineProps({
     role: {
         type: Object,
@@ -12,25 +14,21 @@ const props = defineProps({
     },
 })
 
-const badgeClass = name => {
-    if (props.roleClass) return props.roleClass
-    if (!name) return ''
-
-    const role = String(name).toLowerCase()
-
-    const roleMap = {
-        user: 'badge-info',
-        admin: 'badge-warning',
-        superuser: 'badge-danger',
-        superadmin: 'badge-danger',
-    }
-
-    return roleMap[role] ?? ''
+const ROLE_VARIANT = {
+    user: 'info',
+    admin: 'warning',
+    superuser: 'danger',
+    superadmin: 'danger',
 }
+
+const name = computed(() => String(props.role?.name ?? ''))
+const variant = computed(() => ROLE_VARIANT[name.value.toLowerCase()] ?? 'neutral')
+// A role without a name is possible (the prop defaults to {}); don't crash on it.
+const label = computed(() => (name.value ? name.value.charAt(0).toUpperCase() + name.value.slice(1) : ''))
 </script>
 
 <template>
-    <span class="badge" :class="badgeClass(role.name)">
-        {{ capitalize(role.name) }}
-    </span>
+    <Badge :variant="variant" :class="roleClass">
+        {{ label }}
+    </Badge>
 </template>

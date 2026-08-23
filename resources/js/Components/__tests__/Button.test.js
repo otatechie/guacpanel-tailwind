@@ -51,4 +51,26 @@ describe('Button wrapper contract', () => {
 
         expect(wrapper.attributes('class')).toContain('w-full')
     })
+
+    it('renders danger as a solid fill, matching the old .btn-danger', () => {
+        const wrapper = mount(Button, { props: { variant: 'danger' } })
+        const classes = wrapper.attributes('class')
+
+        // Solid base fill, not shadcn's soft `bg-destructive/10` tint
+        expect(classes).toMatch(/(^|\s)bg-destructive(\s|$)/)
+        expect(classes).not.toMatch(/(^|\s)bg-destructive\/\d+/)
+        expect(classes).toContain('text-white')
+    })
+
+    it('can render as another component and drops the button-only type attr', () => {
+        const Stub = { props: ['href'], template: '<a :href="href"><slot /></a>' }
+        const wrapper = mount(Button, {
+            props: { as: Stub },
+            attrs: { href: '/somewhere' },
+        })
+
+        expect(wrapper.element.tagName).toBe('A')
+        expect(wrapper.attributes('href')).toBe('/somewhere')
+        expect(wrapper.attributes('type')).toBeUndefined()
+    })
 })

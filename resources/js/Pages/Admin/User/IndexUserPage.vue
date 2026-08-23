@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm, router, Link } from '@inertiajs/vue3'
 import DataTable from '@js/Components/Common/Datatable.vue'
 import Default from '@js/Layouts/Default.vue'
@@ -246,9 +247,9 @@ watch(
                 { label: 'Users Management' },
             ]">
             <template #actions>
-                <button @click="openCreateModal" class="btn btn-primary btn-sm">
+                <Button variant="primary" size="sm" @click="openCreateModal">
                     Add user
-                </button>
+                </Button>
             </template>
 
             <template #bottom v-if="deletedUsers">
@@ -257,12 +258,9 @@ watch(
                         {{ deletedUsers }} Deleted
                         {{ deletedUsers == 1 ? 'User' : 'Users' }}
                     </span>
-                    <Link
-                        v-if="deletedUsers"
-                        :href="route('admin.user.deleted.index')"
-                        class="btn btn-secondary btn-xs">
+                    <Button :as="Link" variant="secondary" size="xs" v-if="deletedUsers" :href="route('admin.user.deleted.index')">
                         View deleted {{ deletedUsers == 1 ? 'user' : 'users' }}
-                    </Link>
+                    </Button>
                 </div>
             </template>
         </PageHeader>
@@ -292,8 +290,8 @@ watch(
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
-                <button @click="deleteUser" type="button" class="btn btn-danger btn-sm">Delete user</button>
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" @click="deleteUser">Delete user</Button>
             </div>
         </template>
     </Modal>
@@ -351,16 +349,12 @@ watch(
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">
+                <Button variant="secondary" size="sm" @click="closeModal">
                     Cancel
-                </button>
-                <button
-                    @click="createUser"
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="form.processing">
+                </Button>
+                <Button variant="primary" size="sm" @click="createUser" :disabled="form.processing">
                     {{ form.processing ? 'Creating...' : 'Create user' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -376,8 +370,8 @@ watch(
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
-                <button @click="handleImpersonate" type="button" class="btn btn-danger btn-sm">Impersonate</button>
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" @click="handleImpersonate">Impersonate</Button>
             </div>
         </template>
     </Modal>

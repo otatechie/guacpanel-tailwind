@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -52,13 +53,9 @@ const submitRecovery = () => {
                 maxlength="6"
                 autocomplete="one-time-code" />
 
-            <button
-                type="submit"
-                :disabled="codeForm.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="codeForm.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="codeForm.processing" :aria-busy="codeForm.processing">
                 {{ codeForm.processing ? 'Verifying...' : 'Verify' }}
-            </button>
+            </Button>
         </form>
 
         <!-- Recovery code -->
@@ -73,13 +70,9 @@ const submitRecovery = () => {
                 :error="recoveryForm.errors.recovery_code"
                 autocomplete="off" />
 
-            <button
-                type="submit"
-                :disabled="recoveryForm.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="recoveryForm.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="recoveryForm.processing" :aria-busy="recoveryForm.processing">
                 {{ recoveryForm.processing ? 'Verifying...' : 'Verify' }}
-            </button>
+            </Button>
         </form>
 
         <p class="mt-6 text-center text-sm text-(--color-text-muted)">

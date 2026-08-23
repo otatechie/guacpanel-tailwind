@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { computed } from 'vue'
 import { Form, Link, Head, useForm, router, usePage } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -58,22 +59,14 @@ const submit = () => {
                 v-if="status !== 'verification-link-sent'"
                 @submit.prevent="submit"
                 v-slot="{ processing }">
-                <button
-                    type="submit"
-                    class="btn btn-primary w-full"
-                    :aria-busy="form.processing"
-                    :disabled="form.processing">
+                <Button variant="primary" class="w-full" type="submit" :aria-busy="form.processing" :disabled="form.processing">
                     {{ form.processing ? 'Sending...' : 'Resend verification email' }}
-                </button>
+                </Button>
             </Form>
 
-            <button
-                @click="returnToLogin"
-                type="button"
-                class="btn btn-secondary w-full"
-                :disabled="form.processing">
+            <Button variant="secondary" class="w-full" @click="returnToLogin" :disabled="form.processing">
                 Sign out
-            </button>
+            </Button>
         </div>
     </div>
 </template>

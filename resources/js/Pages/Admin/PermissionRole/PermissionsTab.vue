@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, h, watch } from 'vue'
 import { useForm, router } from '@inertiajs/vue3'
 import Modal from '@js/Components/Notifications/Modal.vue'
@@ -159,9 +160,9 @@ const handlePaginationUpdate = paginationData => {
     <section class="space-y-4">
         <div class="flex items-center justify-between">
             <p class="text-xs text-(--color-text-muted)">{{ permissions.total || (Array.isArray(permissions) ? permissions.length : permissions?.data?.length) || 0 }} permissions</p>
-            <button type="button" @click="showAddModal = true" class="btn btn-primary btn-sm">
+            <Button variant="primary" size="sm" @click="showAddModal = true">
                 Add permission
-            </button>
+            </Button>
         </div>
 
         <Datatable
@@ -237,10 +238,10 @@ const handlePaginationUpdate = paginationData => {
             </template>
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-primary" :disabled="form.processing" @click="submitPermission">
+                    <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                    <Button variant="primary" size="sm" :disabled="form.processing" @click="submitPermission">
                         {{ form.processing ? 'Saving...' : editingPermission ? 'Save' : 'Add' }}
-                    </button>
+                    </Button>
                 </div>
             </template>
         </Modal>
@@ -254,10 +255,10 @@ const handlePaginationUpdate = paginationData => {
             </template>
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-danger" :disabled="form.processing" @click="deletePermission">
+                    <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                    <Button variant="danger" size="sm" :disabled="form.processing" @click="deletePermission">
                         {{ form.processing ? 'Deleting...' : 'Delete' }}
-                    </button>
+                    </Button>
                 </div>
             </template>
         </Modal>

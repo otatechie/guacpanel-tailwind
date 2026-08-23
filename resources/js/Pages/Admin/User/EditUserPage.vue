@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -239,9 +240,9 @@ const sendVerificationEmail = () => {
 
             <!-- Save -->
             <div class="flex items-center justify-between">
-                <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing" :aria-busy="form.processing">
+                <Button variant="primary" size="sm" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                     {{ form.processing ? 'Saving...' : 'Save' }}
-                </button>
+                </Button>
                 <button v-if="!props.user.is_superuser" type="button" class="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" @click="showDeleteModal = true">
                     Delete account
                 </button>
@@ -259,10 +260,10 @@ const sendVerificationEmail = () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="form.processing" @click="deleteUser">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="form.processing" @click="deleteUser">
                     {{ form.processing ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -278,10 +279,10 @@ const sendVerificationEmail = () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-primary" :disabled="form.processing" @click="toggleVerified">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="primary" size="sm" :disabled="form.processing" @click="toggleVerified">
                     {{ form.processing ? 'Confirming...' : 'Confirm' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -296,10 +297,10 @@ const sendVerificationEmail = () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-primary" :disabled="form.processing" @click="sendVerificationEmail">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="primary" size="sm" :disabled="form.processing" @click="sendVerificationEmail">
                     {{ form.processing ? 'Sending...' : 'Send' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

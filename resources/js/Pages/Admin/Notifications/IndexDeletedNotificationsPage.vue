@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -24,9 +25,9 @@ const breadcrumbs = computed(() => [
             description="Manage soft-deleted notifications (coming soon)"
             :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Link :href="route('admin.notifications.index')" class="btn btn-secondary">
+                <Button :as="Link" variant="secondary" :href="route('admin.notifications.index')">
                     Back
-                </Link>
+                </Button>
             </template>
         </PageHeader>
 

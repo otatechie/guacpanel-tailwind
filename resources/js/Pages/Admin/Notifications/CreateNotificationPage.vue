@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { computed, watch } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -75,7 +76,7 @@ const breadcrumbs = computed(() => [
             description="Create a new app notification"
             :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-sm">Back</Link>
+                <Button :as="Link" variant="secondary" size="sm" :href="route('admin.notifications.index')">Back</Button>
             </template>
         </PageHeader>
 
@@ -101,10 +102,10 @@ const breadcrumbs = computed(() => [
                 </div>
 
                 <div class="flex justify-end gap-3 pt-2">
-                    <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-sm">Cancel</Link>
-                    <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing">
+                    <Button :as="Link" variant="secondary" size="sm" :href="route('admin.notifications.index')">Cancel</Button>
+                    <Button variant="primary" size="sm" type="submit" :disabled="form.processing">
                         {{ form.processing ? 'Creating...' : 'Create notification' }}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
@@ -91,10 +92,10 @@ const logoutAllSessions = () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="logoutModal = false">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="logoutForm.processing" @click="logoutSession">
+                <Button variant="secondary" size="sm" @click="logoutModal = false">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="logoutForm.processing" @click="logoutSession">
                     {{ logoutForm.processing ? 'Signing out...' : 'Sign out' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -109,10 +110,10 @@ const logoutAllSessions = () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="logoutAllModal = false">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="passwordForm.processing" @click="logoutAllSessions">
+                <Button variant="secondary" size="sm" @click="logoutAllModal = false">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="passwordForm.processing" @click="logoutAllSessions">
                     {{ passwordForm.processing ? 'Signing out...' : 'Sign out all' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

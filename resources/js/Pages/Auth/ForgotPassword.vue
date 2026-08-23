@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -39,13 +40,9 @@ const submit = () => {
                 autocomplete="email"
                 :error="form.errors.email" />
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Sending...' : 'Send reset link' }}
-            </button>
+            </Button>
         </form>
 
         <p class="mt-8 text-center text-sm text-(--color-text-muted)">

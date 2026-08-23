@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -322,14 +323,12 @@ const getDeviceIcon = device => {
                             This will terminate access from any other devices where you're
                             currently logged in. Your current session will remain active.
                         </p>
-                        <button
-                            @click="confirmLogoutAll"
-                            class="btn btn-danger btn-sm flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto">
+                        <Button variant="danger" size="sm" class="flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto" @click="confirmLogoutAll">
                             <span class="hidden sm:inline">
                                 Sign out of all other sessions
                             </span>
                             <span class="sm:hidden">Sign out all</span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -389,13 +388,9 @@ const getDeviceIcon = device => {
                     :disabled="logoutForm.processing">
                     Cancel
                 </button>
-                <button
-                    @click="logoutSession"
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    :disabled="logoutForm.processing">
+                <Button variant="danger" size="sm" @click="logoutSession" :disabled="logoutForm.processing">
                     {{ logoutForm.processing ? 'Signing out...' : 'Yes, sign out' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -437,13 +432,9 @@ const getDeviceIcon = device => {
                     :disabled="passwordForm.processing">
                     Cancel
                 </button>
-                <button
-                    @click="logoutAllSessions"
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    :disabled="passwordForm.processing">
+                <Button variant="danger" size="sm" @click="logoutAllSessions" :disabled="passwordForm.processing">
                     {{ passwordForm.processing ? 'Signing out...' : 'Yes, sign out all' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

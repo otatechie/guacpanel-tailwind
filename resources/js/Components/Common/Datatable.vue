@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
@@ -483,12 +484,9 @@ watch(
                         <CheckCircleIcon class="h-4 w-4 text-green-600 dark:text-green-500" />
                         {{ selectionCount }} selected
                     </span>
-                    <button
-                        v-if="bulkDeleteRoute"
-                        @click="showDeleteModal = true"
-                        class="btn btn-danger btn-xs">
+                    <Button variant="danger" size="xs" v-if="bulkDeleteRoute" @click="showDeleteModal = true">
                         Bulk delete
-                    </button>
+                    </Button>
                     <slot name="bulk-actions" :selected-rows="selectedRows" />
                 </div>
             </div>
@@ -512,12 +510,9 @@ watch(
                     </button>
                 </div>
 
-                <button
-                    v-if="enableExport"
-                    @click="exportToCSV"
-                    class="btn btn-secondary btn-sm cursor-pointer">
+                <Button variant="secondary" size="sm" class="cursor-pointer" v-if="enableExport" @click="exportToCSV">
                     Export CSV
-                </button>
+                </Button>
             </nav>
         </header>
 
@@ -560,11 +555,9 @@ watch(
                                         Select
                                     </span>
                                 </label>
-                                <button
-                                    @click="toggleRow(index)"
-                                    class="btn btn-ghost btn-xs text-xs font-medium text-(--color-text-muted)">
+                                <Button variant="ghost" size="xs" class="text-xs font-medium text-(--color-text-muted)" @click="toggleRow(index)">
                                     {{ expandedRows.includes(index) ? 'Less' : 'More' }}
-                                </button>
+                                </Button>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <slot name="mobile-actions" :row="row.original" />
@@ -733,58 +726,40 @@ watch(
 
             <nav class="flex items-center gap-2" aria-label="Pagination">
                 <template v-if="isServerPagination">
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isFirstPage"
-                        @click="goToPage(1)">
+                    <Button variant="ghost" size="xs" :disabled="isFirstPage" @click="goToPage(1)">
                         <ChevronDoubleLeftIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isFirstPage"
-                        @click="goToPage(paginationInfo.currentPage - 1)">
+                    <Button variant="ghost" size="xs" :disabled="isFirstPage" @click="goToPage(paginationInfo.currentPage - 1)">
                         <ChevronLeftIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
                     <span class="text-sm text-(--color-text-muted)">
                         {{ paginationInfo.currentPage }} / {{ paginationInfo.pageCount }}
                     </span>
 
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isLastPage"
-                        @click="goToPage(paginationInfo.currentPage + 1)">
+                    <Button variant="ghost" size="xs" :disabled="isLastPage" @click="goToPage(paginationInfo.currentPage + 1)">
                         <ChevronRightIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isLastPage"
-                        @click="goToPage(paginationInfo.pageCount)">
+                    <Button variant="ghost" size="xs" :disabled="isLastPage" @click="goToPage(paginationInfo.pageCount)">
                         <ChevronDoubleRightIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
                 </template>
 
                 <template v-else>
-                    <button
-                        class="btn btn-ghost btn-xs disabled:cursor-not-allowed disabled:opacity-50"
-                        :disabled="!table.getCanPreviousPage()"
-                        @click="table.previousPage()">
+                    <Button variant="ghost" size="xs" class="disabled:cursor-not-allowed disabled:opacity-50" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
                         <ChevronLeftIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
                     <span class="text-sm text-(--color-text)">
                         Page {{ table.getState().pagination.pageIndex + 1 }} of
                         {{ table.getPageCount() }}
                     </span>
 
-                    <button
-                        class="btn btn-ghost btn-xs disabled:cursor-not-allowed disabled:opacity-50"
-                        :disabled="!table.getCanNextPage()"
-                        @click="table.nextPage()">
+                    <Button variant="ghost" size="xs" class="disabled:cursor-not-allowed disabled:opacity-50" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
                         <ChevronRightIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
                 </template>
             </nav>
         </footer>
@@ -807,17 +782,10 @@ watch(
 
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button
-                        type="button"
-                        @click="showDeleteModal = false"
-                        class="btn btn-secondary btn-sm">
+                    <Button variant="secondary" size="sm" @click="showDeleteModal = false">
                         Cancel
-                    </button>
-                    <button
-                        type="button"
-                        :disabled="loading"
-                        @click="handleBulkDelete"
-                        class="btn btn-danger btn-sm">
+                    </Button>
+                    <Button variant="danger" size="sm" :disabled="loading" @click="handleBulkDelete">
                         <template v-if="loading">
                             <svg
                                 class="mr-2 -ml-1 h-4 w-4 animate-spin"
@@ -839,7 +807,7 @@ watch(
                             Deleting...
                         </template>
                         <template v-else>Delete</template>
-                    </button>
+                    </Button>
                 </div>
             </template>
         </Modal>

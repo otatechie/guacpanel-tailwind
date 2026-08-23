@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, onMounted, watch } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
@@ -147,13 +148,9 @@ const sendMagicLink = () => {
                 </Link>
             </div>
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Signing in...' : 'Sign in' }}
-            </button>
+            </Button>
         </form>
 
         <template v-if="smLogin || passwordlessLogin">
@@ -168,11 +165,7 @@ const sendMagicLink = () => {
             <div class="space-y-3">
                 <Socialite v-if="smLogin" :providers-config="providersConfig" />
 
-                <button
-                    v-if="passwordlessLogin"
-                    type="button"
-                    class="btn btn-secondary flex w-full items-center justify-center gap-2 text-sm"
-                    @click="showMagicLinkModal = true">
+                <Button variant="secondary" class="flex w-full items-center justify-center gap-2 text-sm" v-if="passwordlessLogin" @click="showMagicLinkModal = true">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-4 w-4"
@@ -187,7 +180,7 @@ const sendMagicLink = () => {
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     Sign in with magic link
-                </button>
+                </Button>
             </div>
         </template>
 
@@ -230,20 +223,12 @@ const sendMagicLink = () => {
 
         <template #footer>
             <div class="flex justify-end gap-4">
-                <button
-                    type="button"
-                    class="btn btn-secondary btn-sm"
-                    @click="showMagicLinkModal = false">
+                <Button variant="secondary" size="sm" @click="showMagicLinkModal = false">
                     Cancel
-                </button>
-                <button
-                    :disabled="magicLinkForm.processing"
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :aria-busy="magicLinkForm.processing"
-                    @click="sendMagicLink">
+                </Button>
+                <Button variant="primary" size="sm" :disabled="magicLinkForm.processing" :aria-busy="magicLinkForm.processing" @click="sendMagicLink">
                     {{ magicLinkForm.processing ? 'Sending...' : 'Send link' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

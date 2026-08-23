@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -78,13 +79,9 @@ const runHealthChecks = () => {
                 { label: 'Health Status' },
             ]">
             <template #actions>
-                <button
-                    class="btn btn-sm btn-primary"
-                    :disabled="isRunning"
-                    :aria-busy="isRunning"
-                    @click="runHealthChecks">
+                <Button variant="primary" size="sm" :disabled="isRunning" :aria-busy="isRunning" @click="runHealthChecks">
                     {{ isRunning ? 'Running...' : 'Run checks' }}
-                </button>
+                </Button>
             </template>
         </PageHeader>
 

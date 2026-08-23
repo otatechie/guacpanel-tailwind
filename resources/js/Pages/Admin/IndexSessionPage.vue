@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm, router } from '@inertiajs/vue3'
 import { ref, watch, h } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -127,10 +128,10 @@ watch(pagination, p => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="form.processing" @click="terminateSession">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="form.processing" @click="terminateSession">
                     {{ form.processing ? 'Terminating...' : 'Terminate' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref } from 'vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
@@ -70,13 +71,9 @@ const actionBtnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-m
                 { label: 'Data Backups' },
             ]">
             <template #actions>
-                <button
-                    class="btn btn-sm btn-primary"
-                    :disabled="isBackupRunning"
-                    :aria-busy="isBackupRunning"
-                    @click="runBackup">
+                <Button variant="primary" size="sm" :disabled="isBackupRunning" :aria-busy="isBackupRunning" @click="runBackup">
                     {{ isBackupRunning ? 'Creating...' : 'Create backup' }}
-                </button>
+                </Button>
             </template>
         </PageHeader>
 
@@ -152,12 +149,12 @@ const actionBtnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-m
         </template>
         <template #footer>
             <div class="flex items-center justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" :disabled="form.processing" @click="closeDeleteModal">
+                <Button variant="secondary" size="sm" :disabled="form.processing" @click="closeDeleteModal">
                     Cancel
-                </button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="form.processing" @click="deleteBackup">
+                </Button>
+                <Button variant="danger" size="sm" :disabled="form.processing" @click="deleteBackup">
                     {{ form.processing ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

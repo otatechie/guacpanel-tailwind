@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { DocumentDuplicateIcon } from '@heroicons/vue/24/outline'
@@ -43,13 +44,9 @@ const copyAllCodes = async () => {
 
         <!-- Not enabled yet -->
         <template v-if="!user.two_factor_secret">
-            <button
-                @click="enableTwoFactor"
-                :disabled="enableForm.processing || !twoFactorEnabled"
-                class="btn btn-primary btn-sm"
-                :aria-busy="enableForm.processing">
+            <Button variant="primary" size="sm" @click="enableTwoFactor" :disabled="enableForm.processing || !twoFactorEnabled" :aria-busy="enableForm.processing">
                 {{ enableForm.processing ? 'Enabling...' : 'Enable two-factor' }}
-            </button>
+            </Button>
         </template>
 
         <!-- Enabled: setup + recovery codes -->
@@ -83,13 +80,9 @@ const copyAllCodes = async () => {
                             <DocumentDuplicateIcon class="h-4 w-4" />
                             {{ copied ? 'Copied!' : 'Copy all' }}
                         </button>
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-secondary"
-                            :disabled="regenerateForm.processing"
-                            @click="regenerateCodes">
+                        <Button variant="secondary" size="sm" :disabled="regenerateForm.processing" @click="regenerateCodes">
                             {{ regenerateForm.processing ? 'Generating...' : 'Regenerate' }}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -98,7 +91,7 @@ const copyAllCodes = async () => {
             <div class="border-t border-red-200 pt-5 dark:border-red-900/30">
                 <p class="text-base font-medium text-red-600 dark:text-red-400">Disable two-factor</p>
                 <p class="mt-1 text-sm text-(--color-text-muted)">This removes 2FA protection from your account.</p>
-                <button @click="showDisableModal = true" class="btn btn-danger btn-sm mt-3">Disable</button>
+                <Button variant="danger" size="sm" class="mt-3" @click="showDisableModal = true">Disable</Button>
             </div>
         </template>
     </div>
@@ -110,10 +103,10 @@ const copyAllCodes = async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="showDisableModal = false">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="disableForm.processing" @click="disableTwoFactor">
+                <Button variant="secondary" size="sm" @click="showDisableModal = false">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="disableForm.processing" @click="disableTwoFactor">
                     {{ disableForm.processing ? 'Disabling...' : 'Disable' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

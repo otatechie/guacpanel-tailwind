@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -93,13 +94,9 @@ const submit = () => {
                 <a href="#" class="font-medium underline">Privacy Policy</a>.
             </p>
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Creating account...' : 'Create account' }}
-            </button>
+            </Button>
         </form>
 
         <template v-if="smLogin || passwordlessLogin">
@@ -114,11 +111,7 @@ const submit = () => {
             <div class="space-y-3">
                 <Socialite v-if="smLogin" :providers-config="providersConfig" />
 
-                <Link
-                    v-if="passwordlessLogin"
-                    :href="route('magic.create')"
-                    class="btn btn-secondary flex w-full items-center justify-center gap-2 text-sm"
-                    role="button">
+                <Button :as="Link" variant="secondary" class="flex w-full items-center justify-center gap-2 text-sm" v-if="passwordlessLogin" :href="route('magic.create')" role="button">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-4 w-4"
@@ -133,7 +126,7 @@ const submit = () => {
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     Sign up with magic link
-                </Link>
+                </Button>
             </div>
         </template>
 

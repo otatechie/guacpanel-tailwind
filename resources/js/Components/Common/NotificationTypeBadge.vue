@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import Badge from '@/Components/Badge.vue'
 
+// Public API unchanged — see docs/ui-contract.md.
 const props = defineProps({
     type: {
         type: [String, null],
@@ -8,38 +10,31 @@ const props = defineProps({
     },
 })
 
-const normalizeType = t =>
-    String(t ?? '')
+const TYPE_VARIANT = {
+    success: 'success',
+    info: 'info',
+    warning: 'warning',
+    error: 'danger',
+    danger: 'danger',
+}
+
+const normalized = computed(() =>
+    String(props.type ?? '')
         .trim()
         .toLowerCase()
+)
 
-const typeLabel = t => {
-    const v = normalizeType(t)
-    if (!v) return 'Info'
-    if (v === 'success') return 'Success'
-    if (v === 'info') return 'Info'
-    if (v === 'warning') return 'Warning'
-    if (v === 'error') return 'Error'
-    if (v === 'danger') return 'Danger'
-    return v.charAt(0).toUpperCase() + v.slice(1)
-}
+const label = computed(() => {
+    const value = normalized.value
+    if (!value) return 'Info'
+    return value.charAt(0).toUpperCase() + value.slice(1)
+})
 
-const typeBadgeClass = t => {
-    const v = normalizeType(t)
-    if (v === 'success') return 'notification-badge-success'
-    if (v === 'info') return 'notification-badge-info'
-    if (v === 'warning') return 'notification-badge-warning'
-    if (v === 'error') return 'notification-badge-error'
-    if (v === 'danger') return 'notification-badge-danger'
-    return 'notification-badge-default'
-}
-
-const label = computed(() => typeLabel(props.type))
-const badgeClass = computed(() => typeBadgeClass(props.type))
+const variant = computed(() => TYPE_VARIANT[normalized.value] ?? 'neutral')
 </script>
 
 <template>
-    <span class="notification-badge" :class="badgeClass">
+    <Badge :variant="variant">
         {{ label }}
-    </span>
+    </Badge>
 </template>

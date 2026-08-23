@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { computed, h, ref, watch } from 'vue'
@@ -226,11 +227,9 @@ const formatExportData = row => ({
             description="Create and manage app notifications"
             :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Link
-                    :href="route('admin.notifications.create')"
-                    class="btn btn-primary btn-sm">
+                <Button :as="Link" variant="primary" size="sm" :href="route('admin.notifications.create')">
                     Create notification
-                </Link>
+                </Button>
             </template>
         </PageHeader>
 
@@ -265,10 +264,10 @@ const formatExportData = row => ({
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-secondary btn-sm" :disabled="loading" @click="closeDeleteModal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-sm" :disabled="loading" @click="destroyRow">
+                <Button variant="secondary" size="sm" :disabled="loading" @click="closeDeleteModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="loading" @click="destroyRow">
                     {{ loading ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -282,10 +281,10 @@ const formatExportData = row => ({
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-secondary btn-sm" :disabled="loading" @click="closeBulkDeleteModal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-sm" :disabled="loading" @click="runBulkDelete">
+                <Button variant="secondary" size="sm" :disabled="loading" @click="closeBulkDeleteModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="loading" @click="runBulkDelete">
                     {{ loading ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

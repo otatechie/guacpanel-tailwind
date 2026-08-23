@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -61,13 +62,9 @@ const submit = () => {
                 autocomplete="new-password"
                 :error="form.errors.password_confirmation" />
 
-            <button
-                type="submit"
-                class="btn btn-primary w-full"
-                :disabled="form.processing"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Updating...' : 'Update password' }}
-            </button>
+            </Button>
         </form>
     </div>
 </template>

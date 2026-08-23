@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { useForm } from '@inertiajs/vue3'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
@@ -31,9 +32,9 @@ const submit = () => form.put('/user/password', { preserveScroll: true, onSucces
             <FormInput v-model="form.password_confirmation" label="Confirm new password" type="password" autocomplete="new-password" :error="form.errors.password_confirmation" required />
 
             <div class="pt-2">
-                <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing || !passwordEnabled">
+                <Button variant="primary" size="sm" type="submit" :disabled="form.processing || !passwordEnabled">
                     {{ form.processing ? 'Updating...' : 'Update password' }}
-                </button>
+                </Button>
             </div>
         </form>
     </div>

@@ -1,6 +1,9 @@
 <script setup>
 import { computed } from 'vue'
+import { Textarea } from '@/Components/ui/textarea'
+import { Label } from '@/Components/ui/label'
 
+// Public API unchanged — see docs/ui-contract.md. Internals sit on shadcn Textarea.
 const props = defineProps({
     modelValue: {
         type: [String, Number],
@@ -44,38 +47,30 @@ const emit = defineEmits(['update:modelValue'])
 
 const inputPlaceholder = computed(() => props.placeholder || props.label)
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
-
-function updateValue(event) {
-    emit('update:modelValue', event.target.value)
-}
 </script>
 
 <template>
     <div>
-        <label :for="inputId" class="form-label">
-            {{ label }}<span v-if="required" class="text-red-500"> *</span>
-        </label>
+        <Label :for="inputId" class="form-label">
+            {{ label }}<span v-if="required" class="text-destructive"> *</span>
+        </Label>
 
-        <textarea
+        <Textarea
             :id="inputId"
-            :value="modelValue"
+            :model-value="modelValue"
             :required="required"
             :disabled="disabled"
             :rows="rows"
-            class="form-input resize-y"
-            :class="{
-                'form-input-error': error,
-                'form-input-disabled': disabled,
-            }"
+            class="resize-y"
             :placeholder="inputPlaceholder"
             :aria-invalid="!!error"
             :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
-            @input="updateValue" />
+            @update:model-value="emit('update:modelValue', $event)" />
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-red-600">
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-destructive">
             {{ error }}
         </p>
-        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-(--color-text-muted)">
+        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-muted-foreground">
             {{ help }}
         </p>
     </div>
