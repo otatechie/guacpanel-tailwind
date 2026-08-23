@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-/* @import 'tw-animate-css'; */
+@import 'tw-animate-css';
 
 @theme {
     --breakpoint-xxs: 360px;
@@ -26,3 +26,124 @@
 @import '@css/partials/notifications.css';
 @import '@css/partials/commandpalette.css';
 @import '~/nprogress/nprogress.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+    /* Mapped onto the existing GuacPanel palette (teal primary, gray scale) —
+       change these, not the component files, to retheme. */
+    --radius: 0.5rem;
+    --background: #f9fafb; /* gray-50 — matches current body */
+    --foreground: #111827; /* gray-900 */
+    --card: #ffffff;
+    --card-foreground: #111827;
+    --popover: #ffffff;
+    --popover-foreground: #111827;
+    --primary: #0d9488; /* --primary-color */
+    --primary-foreground: #ffffff;
+    --secondary: #f3f4f6; /* gray-100 */
+    --secondary-foreground: #111827;
+    --muted: #f3f4f6;
+    --muted-foreground: #6b7280; /* gray-500 */
+    --accent: #f3f4f6;
+    --accent-foreground: #111827;
+    --destructive: #ef4444; /* --error-color */
+    --border: #e5e7eb; /* gray-200 */
+    --input: #e5e7eb;
+    --ring: #0d9488;
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: #ffffff;
+    --sidebar-foreground: #111827;
+    --sidebar-primary: #0d9488;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f3f4f6;
+    --sidebar-accent-foreground: #111827;
+    --sidebar-border: #e5e7eb;
+    --sidebar-ring: #0d9488;
+}
+
+.dark {
+    --background: #111827; /* gray-900 — matches current dark body */
+    --foreground: #f3f4f6; /* gray-100 */
+    --card: #1f2937; /* gray-800 — matches current dark surfaces */
+    --card-foreground: #f3f4f6;
+    --popover: #1f2937;
+    --popover-foreground: #f3f4f6;
+    --primary: #2dd4bf; /* teal-400 — lighter for dark contrast */
+    --primary-foreground: #134e4a; /* teal-900 */
+    --secondary: #1f2937;
+    --secondary-foreground: #f3f4f6;
+    --muted: #374151; /* gray-700 */
+    --muted-foreground: #9ca3af; /* gray-400 */
+    --accent: #374151;
+    --accent-foreground: #f3f4f6;
+    --destructive: #f87171; /* red-400 */
+    --border: #374151; /* gray-700 */
+    --input: #374151;
+    --ring: #2dd4bf;
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: #1f2937;
+    --sidebar-foreground: #f3f4f6;
+    --sidebar-primary: #2dd4bf;
+    --sidebar-primary-foreground: #134e4a;
+    --sidebar-accent: #374151;
+    --sidebar-accent-foreground: #f3f4f6;
+    --sidebar-border: #374151;
+    --sidebar-ring: #2dd4bf;
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}

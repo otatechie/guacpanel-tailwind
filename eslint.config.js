@@ -13,7 +13,42 @@ export default [
       "**/vendor/**",
       "**/public/**",
       "tailwind.config.js",
+      // Generated shadcn-vue source (TypeScript) — regenerate, don't lint
+      "resources/js/Components/ui/**",
+      "resources/js/lib/**",
     ],
+  },
+  {
+    // The wrapper boundary: pages never touch the shadcn layer directly.
+    // See docs/ui-contract.md.
+    files: [
+      "resources/js/Pages/**/*.{js,vue}",
+      "resources/js/Layouts/**/*.{js,vue}",
+      "resources/js/composables/**/*.js",
+      "resources/js/utils/**/*.js",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/Components/ui/*", "@/Components/ui/**", "@js/Components/ui/*", "@js/Components/ui/**"],
+              message:
+                "Import the wrapper from @/Components/* instead — pages must not depend on shadcn directly (docs/ui-contract.md).",
+            },
+            {
+              group: ["reka-ui", "reka-ui/*"],
+              message: "reka-ui is only used inside Components/ui/ (docs/ui-contract.md).",
+            },
+            {
+              group: ["class-variance-authority", "@/lib/*", "@/lib/**"],
+              message: "cva/cn belong to the ui layer (docs/ui-contract.md).",
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
