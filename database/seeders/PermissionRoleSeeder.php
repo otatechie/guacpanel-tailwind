@@ -34,6 +34,7 @@ class PermissionRoleSeeder extends Seeder
             'manage-settings' => 'Manage system settings',
             'manage-security-settings' => 'Manage system security settings',
             'view-sessions' => 'View Sessions',
+            'manage-sessions' => 'Terminate user sessions',
             'view-health' => 'View Health',
 
             // Audit & Monitoring
@@ -57,6 +58,7 @@ class PermissionRoleSeeder extends Seeder
 
             // Login History
             'view-login-history' => 'View user login history',
+            'manage-login-history' => 'Delete user login history records',
 
             // App Notifications
             'view-notifications' => 'User Can View Notifications',

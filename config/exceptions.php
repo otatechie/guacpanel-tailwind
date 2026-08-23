@@ -9,7 +9,7 @@ return [
     | Enable/Disable exception email notifications
     |
     */
-    'emailExceptionEnabled' => env('EMAIL_EXCEPTION_ENABLED', true),
+    'emailExceptionEnabled' => env('EMAIL_EXCEPTION_ENABLED', false),
 
     /*
     |--------------------------------------------------------------------------

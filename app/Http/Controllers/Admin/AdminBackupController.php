@@ -11,7 +11,8 @@ class AdminBackupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view-backups');
+        $this->middleware('permission:view-backups|manage-backups');
+        $this->middleware('permission:manage-backups')->only(['createBackup', 'download', 'destroy']);
     }
 
     private function getDisk()

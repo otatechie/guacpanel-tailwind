@@ -13,7 +13,8 @@ class AdminLoginHistoryController extends Controller
 {
     public function __construct(private DataTableService $dataTable)
     {
-        $this->middleware('permission:view-login-history');
+        $this->middleware('permission:view-login-history|manage-login-history');
+        $this->middleware('permission:manage-login-history')->only(['bulkDestroy']);
     }
 
     public function index(Request $request)

@@ -15,7 +15,8 @@ class AdminSessionController extends Controller
 {
     public function __construct(private DataTableService $dataTable)
     {
-        $this->middleware('permission:view-sessions');
+        $this->middleware('permission:view-sessions|manage-sessions');
+        $this->middleware('permission:manage-sessions')->only(['destroy', 'destroyAllForUser']);
     }
 
     public function index(Request $request): Response
