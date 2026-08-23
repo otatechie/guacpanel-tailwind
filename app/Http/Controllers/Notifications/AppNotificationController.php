@@ -9,26 +9,28 @@ use App\Models\AppNotification;
 use App\Traits\AppNotificationsHelperTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class AppNotificationController extends Controller
+class AppNotificationController extends Controller implements HasMiddleware
 {
     use AppNotificationsHelperTrait;
 
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-notifications')->only(['index']);
-
-        $this->middleware('permission:edit-notifications')->only([
-            'markRead',
-            'markUnread',
-            'markAllRead',
-            'dismiss',
-            'undismiss',
-            'dismissAll',
-            'bulk',
-        ]);
-
-        $this->middleware('permission:delete-notifications|manage-notifications')->only(['destroy']);
+        return [
+            new Middleware('permission:view-notifications', only: ['index']),
+            new Middleware('permission:edit-notifications', only: [
+                'markRead',
+                'markUnread',
+                'markAllRead',
+                'dismiss',
+                'undismiss',
+                'dismissAll',
+                'bulk',
+            ]),
+            new Middleware('permission:delete-notifications|manage-notifications', only: ['destroy']),
+        ];
     }
 
     public function index(ListNotificationsRequest $request): JsonResponse

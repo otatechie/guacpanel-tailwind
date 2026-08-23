@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Traits\HasProtectedPermission;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 
-class AdminPermissionController extends Controller
+class AdminPermissionController extends Controller implements HasMiddleware
 {
     use HasProtectedPermission;
 
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:manage-permissions');
+        return [
+            new Middleware('permission:manage-permissions'),
+        ];
     }
 
     public function store(Request $request)

@@ -7,14 +7,20 @@ use App\Models\LoginHistory;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Jenssegers\Agent\Agent;
 
-class AdminLoginHistoryController extends Controller
+class AdminLoginHistoryController extends Controller implements HasMiddleware
 {
-    public function __construct(private DataTableService $dataTable)
+    public function __construct(private DataTableService $dataTable) {}
+
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-login-history|manage-login-history');
-        $this->middleware('permission:manage-login-history')->only(['bulkDestroy']);
+        return [
+            new Middleware('permission:view-login-history|manage-login-history'),
+            new Middleware('permission:manage-login-history', only: ['bulkDestroy']),
+        ];
     }
 
     public function index(Request $request)

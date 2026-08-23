@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
-class AdminBackupController extends Controller
+class AdminBackupController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-backups|manage-backups');
-        $this->middleware('permission:manage-backups')->only(['createBackup', 'download', 'destroy']);
+        return [
+            new Middleware('permission:view-backups|manage-backups'),
+            new Middleware('permission:manage-backups', only: ['createBackup', 'download', 'destroy']),
+        ];
     }
 
     private function getDisk()

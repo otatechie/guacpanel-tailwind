@@ -11,14 +11,20 @@ use App\Models\AppNotification;
 use App\Models\User;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 
-class AdminAppNotificationsController extends Controller
+class AdminAppNotificationsController extends Controller implements HasMiddleware
 {
-    public function __construct(private DataTableService $dataTable)
+    public function __construct(private DataTableService $dataTable) {}
+
+    public static function middleware(): array
     {
-        $this->middleware('permission:manage-notifications');
+        return [
+            new Middleware('permission:manage-notifications'),
+        ];
     }
 
     public function index(Request $request)

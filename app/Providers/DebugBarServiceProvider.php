@@ -20,12 +20,12 @@ class DebugBarServiceProvider extends ServiceProvider
             /*
              * Load third party local providers
              */
-            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+            $this->app->register(\Fruitcake\LaravelDebugbar\ServiceProvider::class);
 
             /*
              * Load third party local aliases
              */
-            $loader->alias('Debugbar', \Barryvdh\Debugbar\Facade::class);
+            $loader->alias('Debugbar', \Fruitcake\LaravelDebugbar\Facades\Debugbar::class);
         }
     }
 }

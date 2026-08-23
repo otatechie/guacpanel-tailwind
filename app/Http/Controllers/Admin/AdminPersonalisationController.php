@@ -6,17 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Personalisation;
 use App\Traits\PersonalisationsHelper;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
-class AdminPersonalisationController extends Controller
+class AdminPersonalisationController extends Controller implements HasMiddleware
 {
     use PersonalisationsHelper;
 
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-personalisation|manage-personalization');
+        return [
+            new Middleware('permission:view-personalisation|manage-personalization'),
+        ];
     }
 
     public function index()

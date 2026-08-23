@@ -6,16 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class AdminUserController extends Controller
+class AdminUserController extends Controller implements HasMiddleware
 {
-    public function __construct(private DataTableService $dataTable)
+    public function __construct(private DataTableService $dataTable) {}
+
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-users|manage-users');
+        return [
+            new Middleware('permission:view-users|manage-users'),
+        ];
     }
 
     public function index(Request $request)
