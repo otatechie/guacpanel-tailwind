@@ -6,13 +6,9 @@ import path from "path";
 // import { viteCommonjs, esbuildCommonjs } from "@originjs/vite-plugin-commonjs";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-  const useChunkOutput = env.VITE_APP_CHUNK_OUTPUT === "true";
-
+export default defineConfig(() => {
   return {
     optimizeDeps: {
-      force: true,
       esbuildOptions: {
         target: "es2020",
       },
@@ -25,7 +21,6 @@ export default defineConfig(({ mode }) => {
       }),
       tailwindcss(),
       vue({
-        reactivityTransform: true,
         template: {
           transformAssetUrls: {
             base: null,
@@ -60,7 +55,6 @@ export default defineConfig(({ mode }) => {
         "~": path.resolve(__dirname, "node_modules"),
         "@js": path.resolve(__dirname, "./resources/js"),
         "@css": path.resolve(__dirname, "resources/css"),
-        vue: "vue/dist/vue.esm-bundler.js",
       },
     },
     server: {
@@ -68,7 +62,6 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       reportCompressedSize: true,
-      chunkSizeWarningLimit: 1600,
       manifest: "manifest.json",
       outDir: "public/build",
       assetsDir: "assets",
@@ -88,28 +81,6 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (!useChunkOutput) {
-              return;
-            }
-
-            if (id.includes("node_modules")) {
-              const modulePath = id.split("node_modules/")[1];
-              const topLevelFolder = modulePath.split("/")[0];
-
-              if (topLevelFolder !== ".pnpm") {
-                return topLevelFolder;
-              }
-
-              const scopedPackageName = modulePath.split("/")[1];
-              const chunkName =
-                scopedPackageName.split("@")[
-                  scopedPackageName.startsWith("@") ? 1 : 0
-                ];
-
-              return chunkName;
-            }
-          },
           entryFileNames: "js/[name].js",
           chunkFileNames: "js/[name].js",
           assetFileNames: "assets/[name].[ext]",
