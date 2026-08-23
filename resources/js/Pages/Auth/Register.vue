@@ -1,9 +1,11 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import Socialite from '@js/Components/Auth/Socialite.vue'
+import { EnvelopeIcon } from '@heroicons/vue/24/outline'
 
 defineOptions({
     layout: Auth,
@@ -43,103 +45,93 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Create account</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
-                Get started with your free account
-            </p>
+            <h1 class="text-xl font-semibold text-foreground">Create account</h1>
         </header>
 
         <form class="mt-6 space-y-4" @submit.prevent="submit">
             <FormInput
                 id="name"
                 v-model="form.name"
+                placeholder=""
                 label="Full name"
                 name="name"
+                :show-required-marker="false"
                 required
                 :error="form.errors.name"
                 autocomplete="name" />
             <FormInput
                 id="email"
                 v-model="form.email"
+                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"
+                :show-required-marker="false"
                 required
                 :error="form.errors.email"
                 autocomplete="email" />
             <FormInput
                 id="password"
                 v-model="form.password"
+                placeholder=""
                 label="Password"
                 name="password"
                 type="password"
+                :show-required-marker="false"
                 required
                 :error="form.errors.password"
                 autocomplete="new-password" />
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
+                placeholder=""
                 label="Confirm password"
                 name="password_confirmation"
                 type="password"
+                :show-required-marker="false"
                 required
                 :error="form.errors.password_confirmation"
                 autocomplete="new-password" />
 
-            <p class="text-xs leading-relaxed text-(--color-text-muted)">
+            <p class="text-xs leading-relaxed text-muted-foreground">
                 By creating an account, you agree to our
                 <a href="#" class="font-medium underline">Terms</a>
                 and
                 <a href="#" class="font-medium underline">Privacy Policy</a>.
             </p>
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Creating account...' : 'Create account' }}
-            </button>
+            </Button>
         </form>
 
         <template v-if="smLogin || passwordlessLogin">
             <div role="separator" class="relative my-6">
-                <hr class="border-t border-(--color-border)" />
+                <hr class="border-t border-border" />
                 <span
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-(--color-bg) px-3 text-xs text-(--color-text-muted)">
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">
                     or continue with
                 </span>
             </div>
 
             <div class="space-y-3">
-                <Socialite v-if="smLogin" :providers-config="providersConfig" />
+                <Socialite v-if="smLogin" :providers-config="providersConfig" icons-only />
 
-                <Link
+                <Button
                     v-if="passwordlessLogin"
-                    :href="route('magic.create')"
-                    class="btn btn-secondary flex w-full items-center justify-center gap-2 text-sm"
-                    role="button">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                    :as="Link"
+                    variant="secondary"
+                    class="w-full"
+                    :href="route('magic.create')">
+                    <EnvelopeIcon class="h-4 w-4" aria-hidden="true" />
                     Sign up with magic link
-                </Link>
+                </Button>
             </div>
         </template>
 
-        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
+        <p class="mt-8 text-center text-sm text-muted-foreground">
             Already have an account?
-            <Link :href="route('login')" class="font-medium text-(--primary-color) hover:underline">
+            <Link :href="route('login')" class="font-medium text-primary hover:underline">
                 Sign in
             </Link>
         </p>

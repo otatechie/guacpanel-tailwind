@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": true,
+        "strict": false,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./resources/js/*"],
+            "@js/*": ["./resources/js/*"],
+            "@css/*": ["./resources/css/*"]
+        }
+    },
+    "include": ["resources/js/**/*.js", "resources/js/**/*.ts", "resources/js/**/*.vue"],
+    "exclude": ["node_modules", "public", "vendor"]
+}

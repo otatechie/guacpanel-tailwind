@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -127,13 +128,9 @@ const benefits = [
                 </div>
 
                 <div class="flex justify-end">
-                    <button
-                        @click="enableTwoFactor"
-                        :disabled="enableForm.processing || !twoFactorEnabled"
-                        class="btn btn-primary btn-sm w-full sm:w-auto"
-                        :aria-busy="enableForm.processing">
+                    <Button variant="primary" size="sm" class="w-full sm:w-auto" @click="enableTwoFactor" :disabled="enableForm.processing || !twoFactorEnabled" :aria-busy="enableForm.processing">
                         {{ enableForm.processing ? 'Enabling...' : 'Enable 2FA' }}
-                    </button>
+                    </Button>
                 </div>
             </section>
 
@@ -316,12 +313,7 @@ const benefits = [
                                 </p>
                             </div>
                         </header>
-                        <button
-                            @click="regenerateCodes"
-                            :disabled="regenerateForm.processing"
-                            class="btn btn-secondary btn-sm inline-flex min-h-[44px] w-full items-center justify-center gap-2 sm:min-h-0 sm:w-auto"
-                            :aria-busy="regenerateForm.processing"
-                            aria-label="Regenerate recovery codes">
+                        <Button variant="secondary" size="sm" class="inline-flex min-h-[44px] w-full items-center justify-center gap-2 sm:min-h-0 sm:w-auto" @click="regenerateCodes" :disabled="regenerateForm.processing" :aria-busy="regenerateForm.processing" aria-label="Regenerate recovery codes">
                             <svg
                                 v-if="regenerateForm.processing"
                                 class="h-4 w-4 animate-spin"
@@ -346,7 +338,7 @@ const benefits = [
                                     ? 'Generating...'
                                     : 'Regenerate Codes'
                             }}
-                        </button>
+                        </Button>
                     </div>
 
                     <div
@@ -414,14 +406,12 @@ const benefits = [
                                 reduce your account security. This action will immediately
                                 remove all 2FA protections for your account.
                             </p>
-                            <button
-                                @click="showDisableModal = true"
-                                class="btn btn-danger btn-sm inline-flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto">
+                            <Button variant="danger" size="sm" class="inline-flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto" @click="showDisableModal = true">
                                 <span class="hidden sm:inline">
                                     Disable Multi-Factor Authentication
                                 </span>
                                 <span class="sm:hidden">Disable 2FA</span>
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </section>
@@ -472,13 +462,9 @@ const benefits = [
                     :disabled="disableForm.processing">
                     Cancel
                 </button>
-                <button
-                    @click="disableTwoFactor"
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    :disabled="disableForm.processing">
+                <Button variant="danger" size="sm" @click="disableTwoFactor" :disabled="disableForm.processing">
                     {{ disableForm.processing ? 'Disabling...' : 'Yes, Disable 2FA' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm, usePage, router, Link } from '@inertiajs/vue3'
 import DataTable from '@js/Components/Common/Datatable.vue'
 import Default from '@js/Layouts/Default.vue'
@@ -296,9 +297,9 @@ watch(
                 { label: 'Deleted Users' },
             ]">
             <template #actions>
-                <button @click="openDestroyAllUsersModal" class="btn btn-danger btn-sm">
+                <Button variant="danger" size="sm" @click="openDestroyAllUsersModal">
                     Destroy all
-</button>
+</Button>
             </template>
         </PageHeader>
 
@@ -421,13 +422,9 @@ watch(
                     class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
                     Cancel
                 </button>
-                <button
-                    @click="destroyUser"
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    :disabled="false">
+                <Button variant="danger" size="sm" @click="destroyUser" :disabled="false">
                     Confirm
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -473,13 +470,9 @@ watch(
                     class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
                     Cancel
                 </button>
-                <button
-                    @click="destroyAllUsers"
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    :disabled="form.processing">
+                <Button variant="danger" size="sm" @click="destroyAllUsers" :disabled="form.processing">
                     Confirm
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

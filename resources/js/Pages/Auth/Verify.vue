@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { computed } from 'vue'
 import { Form, Link, Head, useForm, router, usePage } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -40,8 +41,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Verify your email</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Verify your email</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 We need to verify your email address before you can continue
             </p>
         </header>
@@ -58,22 +59,14 @@ const submit = () => {
                 v-if="status !== 'verification-link-sent'"
                 @submit.prevent="submit"
                 v-slot="{ processing }">
-                <button
-                    type="submit"
-                    class="btn btn-primary w-full"
-                    :aria-busy="form.processing"
-                    :disabled="form.processing">
+                <Button variant="primary" class="w-full" type="submit" :aria-busy="form.processing" :disabled="form.processing">
                     {{ form.processing ? 'Sending...' : 'Resend verification email' }}
-                </button>
+                </Button>
             </Form>
 
-            <button
-                @click="returnToLogin"
-                type="button"
-                class="btn btn-secondary w-full"
-                :disabled="form.processing">
+            <Button variant="secondary" class="w-full" @click="returnToLogin" :disabled="form.processing">
                 Sign out
-            </button>
+            </Button>
         </div>
     </div>
 </template>

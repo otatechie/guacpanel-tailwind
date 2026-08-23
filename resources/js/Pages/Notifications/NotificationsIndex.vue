@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import apiFetch from '@js/utils/apiFetch'
@@ -459,8 +460,8 @@ const dismissedIconName = isDismissed => (isDismissed ? 'x' : 'check')
 const readIconName = isRead => (isRead ? 'check' : 'dot')
 
 const tooltipStyle = {
-    backgroundColor: 'var(--color-text)',
-    color: 'var(--color-bg)',
+    backgroundColor: 'var(--foreground)',
+    color: 'var(--background)',
 }
 
 const tooltipClass =
@@ -706,15 +707,15 @@ onUnmounted(() => {
             ]" />
 
         <div
-            class="mb-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm">
+            class="mb-4 rounded-xl border border-border bg-card p-4 shadow-sm">
             <div class="flex flex-col gap-4">
                 <div
                     class="xs:grid-cols-2 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
                     <div>
-                        <label class="text-xs text-[var(--color-text-muted)]">Scope</label>
+                        <label class="text-xs text-muted-foreground">Scope</label>
                         <select
                             v-model="filters.scope"
-                            class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="user">User</option>
                             <option value="system">System</option>
@@ -723,10 +724,10 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-[var(--color-text-muted)]">Read</label>
+                        <label class="text-xs text-muted-foreground">Read</label>
                         <select
                             v-model="filters.read"
-                            class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="unread">Unread</option>
                             <option value="read">Read</option>
@@ -734,12 +735,12 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-[var(--color-text-muted)]">
+                        <label class="text-xs text-muted-foreground">
                             Dismissed
                         </label>
                         <select
                             v-model="filters.dismissed"
-                            class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="dismissed">Dismissed</option>
                             <option value="undismissed">Undismissed</option>
@@ -747,10 +748,10 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-[var(--color-text-muted)]">Type</label>
+                        <label class="text-xs text-muted-foreground">Type</label>
                         <select
                             v-model="filters.type"
-                            class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="info">Info</option>
                             <option value="success">Success</option>
@@ -760,22 +761,22 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-[var(--color-text-muted)]">Sort</label>
+                        <label class="text-xs text-muted-foreground">Sort</label>
                         <select
                             v-model="filters.sort"
-                            class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
                             <option value="newest">Newest</option>
                             <option value="oldest">Oldest</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="text-xs text-[var(--color-text-muted)]">
+                        <label class="text-xs text-muted-foreground">
                             Per page
                         </label>
                         <select
                             v-model="filters.per_page"
-                            class="mt-1 w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 text-sm">
+                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
                             <option :value="10">10</option>
                             <option :value="25">25</option>
                             <option :value="50">50</option>
@@ -791,12 +792,12 @@ onUnmounted(() => {
                         <input
                             v-model="filters.search"
                             type="text"
-                            class="w-full rounded-md border border-[var(--color-border)] bg-transparent p-2 pr-10 text-sm"
+                            class="w-full rounded-md border border-border bg-transparent p-2 pr-10 text-sm"
                             placeholder="Search title or message..." />
                         <button
                             v-if="filters.search"
                             type="button"
-                            class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                            class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                             @click="clearSearch">
                             <svg
                                 class="size-4"
@@ -812,11 +813,7 @@ onUnmounted(() => {
                             </svg>
                         </button>
                     </div>
-                    <button
-                        type="button"
-                        class="btn btn-lg btn-secondary mt-2 gap-2 sm:mt-0"
-                        :disabled="isFiltering || isWorking"
-                        @click="resetFilters">
+                    <Button variant="secondary" size="lg" class="mt-2 gap-2 sm:mt-0" :disabled="isFiltering || isWorking" @click="resetFilters">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -831,7 +828,7 @@ onUnmounted(() => {
                                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
                         </svg>
                         Reset
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -840,17 +837,13 @@ onUnmounted(() => {
             class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-secondary"
-                        :disabled="!hasRows || isWorking"
-                        @click="toggleSelectAll">
+                    <Button variant="secondary" size="sm" :disabled="!hasRows || isWorking" @click="toggleSelectAll">
                         Select all
-                    </button>
+                    </Button>
                     <div v-if="selectedCount > 0" class="flex items-center gap-6">
                         <span
                             role="status"
-                            class="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text)]">
+                            class="flex items-center gap-1.5 text-xs font-medium text-foreground">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -871,12 +864,8 @@ onUnmounted(() => {
 
             <div class="w-full sm:w-auto">
                 <div
-                    class="xs:gap-0 grid w-full grid-cols-2 gap-1 overflow-visible rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] sm:inline-grid sm:grid-cols-5">
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('read')">
+                    class="xs:gap-0 grid w-full grid-cols-2 gap-1 overflow-visible rounded-lg border border-border bg-background sm:inline-grid sm:grid-cols-5">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('read')">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -895,13 +884,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Mark selected notifications as read
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('unread')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('unread')">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -920,13 +905,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Mark selected notifications as unread
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('dismiss')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('dismiss')">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -948,13 +929,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Dismiss selected notifications
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('undismiss')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('undismiss')">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -975,13 +952,9 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Undo dismissal for selected notifications
                         </span>
-                    </button>
+                    </Button>
 
-                    <button
-                        type="button"
-                        class="btn btn-xs text-xxs btn-secondary group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs"
-                        :disabled="selectedCount === 0 || isWorking"
-                        @click="bulk('delete')">
+                    <Button variant="secondary" size="xs" class="text-xxs group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('delete')">
                         <svg
                             class="size-4"
                             viewBox="0 0 24 24"
@@ -1005,20 +978,20 @@ onUnmounted(() => {
                             class="max-sm:hidden">
                             Delete selected notifications
                         </span>
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
 
         <div
-            class="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-            <div v-if="!hasRows" class="p-6 text-sm text-[var(--color-text-muted)]">
+            class="overflow-hidden rounded-xl border border-border bg-card">
+            <div v-if="!hasRows" class="p-6 text-sm text-muted-foreground">
                 No notifications match your filters.
             </div>
 
             <template v-else>
                 <div class="sm:hidden">
-                    <div class="divide-y divide-[var(--color-border)]">
+                    <div class="divide-y divide-border">
                         <div
                             v-for="row in displayedRows"
                             :key="row.id"
@@ -1054,7 +1027,7 @@ onUnmounted(() => {
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="min-w-0">
                                             <div
-                                                class="flex items-center justify-start gap-1 font-medium text-[var(--color-text)]">
+                                                class="flex items-center justify-start gap-1 font-medium text-foreground">
                                                 <div
                                                     v-if="!row.is_read && !row.is_dismissed"
                                                     class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
@@ -1065,7 +1038,7 @@ onUnmounted(() => {
                                                 {{ row.title || 'Notification' }}
                                             </div>
                                             <div
-                                                class="mt-1 text-sm break-words text-[var(--color-text-muted)]">
+                                                class="mt-1 text-sm break-words text-muted-foreground">
                                                 {{ row.message }}
                                             </div>
                                         </div>
@@ -1080,9 +1053,9 @@ onUnmounted(() => {
                                     </div>
 
                                     <div
-                                        class="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--color-text-muted)]">
+                                        class="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                                         <span
-                                            class="inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1">
+                                            class="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1">
                                             <svg
                                                 v-if="scopeIconName(row.scope) === 'user'"
                                                 class="size-3.5"
@@ -1120,7 +1093,7 @@ onUnmounted(() => {
                                                 viewBox="0 0 288 288"
                                                 fill="none"
                                                 aria-hidden="true"
-                                                class="size-3.5 text-[var(--color-text-muted)]">
+                                                class="size-3.5 text-muted-foreground">
                                                 <path
                                                     d="M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z"
                                                     fill="currentColor"
@@ -1287,13 +1260,13 @@ onUnmounted(() => {
                                         </span>
 
                                         <span
-                                            class="text-xxs inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 uppercase">
+                                            class="text-xxs inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1 uppercase">
                                             <span class="font-medium">Read:</span>
                                             <span>{{ row.is_read ? 'Yes' : 'No' }}</span>
                                         </span>
 
                                         <span
-                                            class="text-xxs inline-flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 uppercase">
+                                            class="text-xxs inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1 uppercase">
                                             <span class="font-medium">Dismissed:</span>
                                             <span>
                                                 {{ row.is_dismissed ? 'Yes' : 'No' }}
@@ -1301,7 +1274,7 @@ onUnmounted(() => {
                                         </span>
 
                                         <span
-                                            class="flex w-full items-center gap-1.5 text-[var(--color-text-muted)]">
+                                            class="flex w-full items-center gap-1.5 text-muted-foreground">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
@@ -1320,16 +1293,8 @@ onUnmounted(() => {
 
                                     <div class="mt-3">
                                         <div
-                                            class="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
-                                                :disabled="isWorking"
-                                                @click="
-                                                    row.is_read
-                                                        ? markUnread(row)
-                                                        : markRead(row)
-                                                ">
+                                            class="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-border bg-background">
+                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click=" row.is_read ? markUnread(row) : markRead(row) ">
                                                 <svg
                                                     v-if="row.is_read"
                                                     class="size-4"
@@ -1359,17 +1324,9 @@ onUnmounted(() => {
                                                 <span class="xs:hidden">
                                                     {{ row.is_read ? 'Undo' : 'Read' }}
                                                 </span>
-                                            </button>
+                                            </Button>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
-                                                :disabled="isWorking"
-                                                @click="
-                                                    row.is_dismissed
-                                                        ? undismiss(row)
-                                                        : dismiss(row)
-                                                ">
+                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click=" row.is_dismissed ? undismiss(row) : dismiss(row) ">
                                                 <svg
                                                     v-if="row.is_dismissed"
                                                     class="size-4"
@@ -1409,13 +1366,9 @@ onUnmounted(() => {
                                                             : 'Dismiss'
                                                     }}
                                                 </span>
-                                            </button>
+                                            </Button>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-xs btn-secondary inline-flex items-center justify-center gap-2 rounded-none border-0"
-                                                :disabled="isWorking"
-                                                @click="confirmDelete(row)">
+                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click="confirmDelete(row)">
                                                 <svg
                                                     class="size-4"
                                                     viewBox="0 0 24 24"
@@ -1433,7 +1386,7 @@ onUnmounted(() => {
                                                     <path d="M4 7h16" />
                                                 </svg>
                                                 <span>Delete</span>
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -1446,7 +1399,7 @@ onUnmounted(() => {
                     <table
                         class="hidden w-full min-w-max table-auto border-collapse text-left text-sm sm:table">
                         <thead
-                            class="border-b border-[var(--color-border)] text-[var(--color-text-muted)]">
+                            class="border-b border-border text-muted-foreground">
                             <tr>
                                 <th class="w-10 p-3">
                                     <input
@@ -1460,13 +1413,13 @@ onUnmounted(() => {
                                 <th class="p-3">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center gap-1 hover:text-[var(--color-text)]"
+                                        class="inline-flex items-center gap-1 hover:text-foreground"
                                         @click="toggleTableSort('title')">
                                         <span>Notification</span>
 
                                         <span
                                             v-if="isTableSortedBy('title')"
-                                            class="text-[var(--color-text-muted)]">
+                                            class="text-muted-foreground">
                                             <svg
                                                 v-if="tableSortDir === 'asc'"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -1500,13 +1453,13 @@ onUnmounted(() => {
                                 <th class="w-20 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
                                         @click="toggleTableSort('scope')">
                                         <span>Scope</span>
 
                                         <span
                                             v-if="isTableSortedBy('scope')"
-                                            class="text-[var(--color-text-muted)]">
+                                            class="text-muted-foreground">
                                             <svg
                                                 v-if="tableSortDir === 'asc'"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -1540,13 +1493,13 @@ onUnmounted(() => {
                                 <th class="w-24 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
                                         @click="toggleTableSort('type')">
                                         <span>Type</span>
 
                                         <span
                                             v-if="isTableSortedBy('type')"
-                                            class="text-[var(--color-text-muted)]">
+                                            class="text-muted-foreground">
                                             <svg
                                                 v-if="tableSortDir === 'asc'"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -1580,13 +1533,13 @@ onUnmounted(() => {
                                 <th class="w-20 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
                                         @click="toggleTableSort('read')">
                                         <span>Read</span>
 
                                         <span
                                             v-if="isTableSortedBy('read')"
-                                            class="text-[var(--color-text-muted)]">
+                                            class="text-muted-foreground">
                                             <svg
                                                 v-if="tableSortDir === 'asc'"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -1620,13 +1573,13 @@ onUnmounted(() => {
                                 <th class="w-28 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-[var(--color-text)]"
+                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
                                         @click="toggleTableSort('dismissed')">
                                         <span>Dismissed</span>
 
                                         <span
                                             v-if="isTableSortedBy('dismissed')"
-                                            class="text-[var(--color-text-muted)]">
+                                            class="text-muted-foreground">
                                             <svg
                                                 v-if="tableSortDir === 'asc'"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -1661,11 +1614,11 @@ onUnmounted(() => {
                             </tr>
                         </thead>
 
-                        <tbody class="divide-y divide-[var(--color-border)]">
+                        <tbody class="divide-y divide-border">
                             <tr
                                 v-for="row in displayedRows"
                                 :key="row.id"
-                                class="transition-colors hover:bg-[var(--color-surface-muted)]"
+                                class="transition-colors hover:bg-muted"
                                 :class="{
                                     'border-l-4': true,
                                     'bg-blue-50/50 dark:bg-blue-900/20':
@@ -1696,7 +1649,7 @@ onUnmounted(() => {
                                     <div class="flex items-start gap-3">
                                         <div class="min-w-0">
                                             <div
-                                                class="flex items-center justify-start gap-1 font-medium text-[var(--color-text)]">
+                                                class="flex items-center justify-start gap-1 font-medium text-foreground">
                                                 <div
                                                     v-if="!row.is_read && !row.is_dismissed"
                                                     class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
@@ -1707,11 +1660,11 @@ onUnmounted(() => {
                                                 {{ row.title || 'Notification' }}
                                             </div>
                                             <div
-                                                class="mt-1 truncate text-[var(--color-text-muted)]">
+                                                class="mt-1 truncate text-muted-foreground">
                                                 {{ row.message }}
                                             </div>
                                             <div
-                                                class="mt-1 flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                                                class="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
@@ -1735,7 +1688,7 @@ onUnmounted(() => {
                                         class="group relative flex flex-col items-center gap-1">
                                         <svg
                                             v-if="scopeIconName(row.scope) === 'user'"
-                                            class="size-5 text-[var(--color-text-muted)]"
+                                            class="size-5 text-muted-foreground"
                                             viewBox="0 0 24 24"
                                             fill="none"
                                             stroke="currentColor"
@@ -1749,7 +1702,7 @@ onUnmounted(() => {
 
                                         <svg
                                             v-else-if="scopeIconName(row.scope) === 'cpu'"
-                                            class="size-5 text-[var(--color-text-muted)]"
+                                            class="size-5 text-muted-foreground"
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
                                             viewBox="0 0 24 24"
@@ -1769,7 +1722,7 @@ onUnmounted(() => {
                                             viewBox="0 0 288 288"
                                             fill="none"
                                             aria-hidden="true"
-                                            class="size-5.5 text-[var(--color-text-muted)]">
+                                            class="size-5.5 text-muted-foreground">
                                             <path
                                                 d="M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z"
                                                 fill="currentColor"
@@ -1919,7 +1872,7 @@ onUnmounted(() => {
 
                                         <svg
                                             v-else
-                                            class="size-4.5 text-[var(--color-text-muted)]"
+                                            class="size-4.5 text-muted-foreground"
                                             viewBox="0 0 24 24"
                                             fill="none"
                                             stroke="currentColor"
@@ -1957,7 +1910,7 @@ onUnmounted(() => {
                                         class="group relative inline-flex items-center justify-center">
                                         <button
                                             type="button"
-                                            class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                                            class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                                             :disabled="isWorking"
                                             @click="
                                                 row.is_read
@@ -1971,7 +1924,7 @@ onUnmounted(() => {
                                                 viewBox="0 0 24 24"
                                                 stroke-width="1.5"
                                                 stroke="currentColor"
-                                                class="size-4.5 text-[var(--color-text-muted)]">
+                                                class="size-4.5 text-muted-foreground">
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
@@ -1984,7 +1937,7 @@ onUnmounted(() => {
                                                 viewBox="0 0 24 24"
                                                 stroke-width="1.5"
                                                 stroke="currentColor"
-                                                class="size-4.5 text-[var(--color-text-muted)]">
+                                                class="size-4.5 text-muted-foreground">
                                                 <path
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
@@ -2012,7 +1965,7 @@ onUnmounted(() => {
                                         class="group relative inline-flex items-center justify-center">
                                         <button
                                             type="button"
-                                            class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                                            class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                                             :disabled="isWorking"
                                             @click="
                                                 row.is_dismissed
@@ -2066,10 +2019,10 @@ onUnmounted(() => {
                                 <td class="overflow-visible p-3 align-middle">
                                     <div class="flex justify-end overflow-visible">
                                         <div
-                                            class="inline-flex overflow-visible rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
+                                            class="inline-flex overflow-visible rounded-lg border border-border bg-background">
                                             <button
                                                 type="button"
-                                                class="group relative cursor-pointer rounded-l-lg px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                                                class="group relative cursor-pointer rounded-l-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                                                 :disabled="isWorking"
                                                 @click="
                                                     row.is_read
@@ -2112,11 +2065,11 @@ onUnmounted(() => {
                                             </button>
 
                                             <div
-                                                class="w-px bg-[var(--color-border)]"></div>
+                                                class="w-px bg-border"></div>
 
                                             <button
                                                 type="button"
-                                                class="group relative cursor-pointer px-2 py-2 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"
+                                                class="group relative cursor-pointer px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                                                 :disabled="isWorking"
                                                 @click="
                                                     row.is_dismissed
@@ -2161,7 +2114,7 @@ onUnmounted(() => {
                                             </button>
 
                                             <div
-                                                class="w-px bg-[var(--color-border)]"></div>
+                                                class="w-px bg-border"></div>
 
                                             <button
                                                 type="button"
@@ -2202,22 +2155,7 @@ onUnmounted(() => {
         </div>
 
         <div v-if="links?.length" class="mt-4 flex flex-wrap gap-2">
-            <button
-                v-for="l in links"
-                :key="l.label"
-                type="button"
-                class="btn btn-sm btn-secondary"
-                :class="l.active ? 'btn-primary' : ''"
-                :disabled="!l.url || isWorking"
-                v-html="l.label"
-                @click="
-                    l.url &&
-                    router.visit(l.url, {
-                        preserveScroll: true,
-                        preserveState: true,
-                        only: ['notifications', 'filters'],
-                    })
-                " />
+            <Button v-for="l in links" :key="l.label" :variant="l.active ? 'primary' : 'secondary'" size="sm" :disabled="!l.url || isWorking" v-html="l.label" @click=" l.url && router.visit(l.url, { preserveScroll: true, preserveState: true, only: ['notifications', 'filters'], }) " />
         </div>
     </main>
 
@@ -2228,7 +2166,7 @@ onUnmounted(() => {
 
         <template #default>
             <div class="space-y-4">
-                <p class="text-sm text-[var(--color-text-muted)]">
+                <p class="text-sm text-muted-foreground">
                     Are you sure you want to delete this notification? This action cannot be undone.
                 </p>
                 <Alert type="warning" title="Notification">
@@ -2246,13 +2184,9 @@ onUnmounted(() => {
                     @click="closeDeleteModal">
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="isWorking"
-                    @click="destroyRow">
+                <Button variant="primary" size="sm" :disabled="isWorking" @click="destroyRow">
                     {{ isWorking ? 'Deleting...' : 'Yes, Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -2264,7 +2198,7 @@ onUnmounted(() => {
 
         <template #default>
             <div class="space-y-4">
-                <p class="text-sm text-[var(--color-text-muted)]">
+                <p class="text-sm text-muted-foreground">
                     Delete
                     <span class="font-medium">{{ selectedCount }}</span>
                     selected notifications? This action cannot be undone.
@@ -2281,13 +2215,9 @@ onUnmounted(() => {
                     @click="closeBulkDeleteModal">
                     Cancel
                 </button>
-                <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="isWorking"
-                    @click="runBulkDelete">
+                <Button variant="primary" size="sm" :disabled="isWorking" @click="runBulkDelete">
                     {{ isWorking ? 'Deleting...' : 'Yes, Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

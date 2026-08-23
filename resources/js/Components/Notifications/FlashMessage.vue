@@ -83,10 +83,10 @@ watch(
             class="fixed top-20 right-4 z-80 flex max-w-sm items-start gap-2.5 rounded-lg border px-4 py-3 shadow-lg"
             :class="[config().bg, config().border]">
             <component :is="config().icon" class="mt-0.5 h-5 w-5 shrink-0" :class="config().accent" aria-hidden="true" />
-            <p class="flex-1 text-sm text-(--color-text)">{{ toast.message }}</p>
+            <p class="flex-1 text-sm text-foreground">{{ toast.message }}</p>
             <button
                 type="button"
-                class="shrink-0 rounded p-0.5 text-(--color-text-muted) transition-colors hover:text-(--color-text)"
+                class="shrink-0 rounded p-0.5 text-muted-foreground transition-colors hover:text-foreground"
                 aria-label="Dismiss"
                 @click="close">
                 <XMarkIcon class="h-4 w-4" />

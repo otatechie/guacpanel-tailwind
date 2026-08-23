@@ -75,16 +75,16 @@ const bgColorClasses = {
         <!-- Header -->
         <div class="mb-4 flex items-start justify-between">
             <div class="flex-1">
-                <h3 class="mb-1 text-sm font-medium text-(--color-text-muted)">
+                <h3 class="mb-1 text-sm font-medium text-muted-foreground">
                     {{ title }}
                 </h3>
-                <p class="text-2xl font-semibold tabular-nums text-(--color-text)">
+                <p class="text-2xl font-semibold tabular-nums text-foreground">
                     {{ value }}
-                    <span class="text-lg text-(--color-text-muted)">/{{ max }}</span>
+                    <span class="text-lg text-muted-foreground">/{{ max }}</span>
                 </p>
             </div>
             <div v-if="showPercentage" class="text-right">
-                <span class="text-2xl font-semibold tabular-nums text-(--color-text)">
+                <span class="text-2xl font-semibold tabular-nums text-foreground">
                     {{ percentage }}%
                 </span>
             </div>
@@ -101,7 +101,7 @@ const bgColorClasses = {
         </div>
 
         <!-- Description -->
-        <p v-if="description" class="mt-3 text-sm text-(--color-text-muted)">
+        <p v-if="description" class="mt-3 text-sm text-muted-foreground">
             {{ description }}
         </p>
     </div>

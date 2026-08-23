@@ -39,7 +39,7 @@ const groupName = computed(
 
 <template>
     <div class="space-y-3">
-        <label v-if="label" class="mb-2 block text-sm font-medium text-(--color-text)">
+        <label v-if="label" class="mb-2 block text-sm font-medium text-foreground">
             {{ label }}
             <span v-if="required" class="text-red-500">*</span>
         </label>
@@ -53,17 +53,17 @@ const groupName = computed(
                         :name="groupName"
                         :value="option.value"
                         :checked="modelValue === option.value"
-                        class="h-4 w-4 cursor-pointer border-(--card-border) text-(--primary-color) focus:ring-2 focus:ring-(--primary-color) focus:ring-offset-0"
+                        class="h-4 w-4 cursor-pointer border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0"
                         :class="{ 'border-red-500': error }"
                         @change="$emit('update:modelValue', option.value)" />
                 </div>
                 <div class="text-sm">
                     <label
                         :for="`${groupName}-${option.value}`"
-                        class="cursor-pointer font-medium text-(--color-text)">
+                        class="cursor-pointer font-medium text-foreground">
                         {{ option.label }}
                     </label>
-                    <p v-if="option.description" class="text-(--color-text-muted)">
+                    <p v-if="option.description" class="text-muted-foreground">
                         {{ option.description }}
                     </p>
                 </div>

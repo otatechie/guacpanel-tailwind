@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, onMounted, watch } from 'vue'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
@@ -8,6 +9,7 @@ import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import Socialite from '@js/Components/Auth/Socialite.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
+import { EnvelopeIcon } from '@heroicons/vue/24/outline'
 
 defineOptions({
     layout: Auth,
@@ -101,10 +103,7 @@ const sendMagicLink = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Sign in</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
-                Enter your credentials to access your account
-            </p>
+            <h1 class="text-xl font-semibold text-foreground">Sign in</h1>
         </header>
 
         <Alert v-if="status" type="info" class="mt-4">
@@ -115,9 +114,11 @@ const sendMagicLink = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
+                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"
+                :show-required-marker="false"
                 required
                 autocomplete="email"
                 :error="form.errors.email" />
@@ -125,9 +126,11 @@ const sendMagicLink = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
+                placeholder=""
                 label="Password"
                 name="password"
                 type="password"
+                :show-required-marker="false"
                 required
                 autocomplete="current-password"
                 :error="form.errors.password" />
@@ -141,61 +144,45 @@ const sendMagicLink = () => {
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="text-sm font-medium text-(--primary-color) hover:underline"
+                    class="text-sm font-medium text-primary hover:underline"
                     aria-label="Reset forgotten password">
                     Forgot password?
                 </Link>
             </div>
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Signing in...' : 'Sign in' }}
-            </button>
+            </Button>
         </form>
 
         <template v-if="smLogin || passwordlessLogin">
             <div role="separator" class="relative my-6">
-                <hr class="border-t border-(--color-border)" />
+                <hr class="border-t border-border" />
                 <span
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-(--color-bg) px-3 text-xs text-(--color-text-muted)">
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">
                     or continue with
                 </span>
             </div>
 
             <div class="space-y-3">
-                <Socialite v-if="smLogin" :providers-config="providersConfig" />
+                <Socialite v-if="smLogin" :providers-config="providersConfig" icons-only />
 
-                <button
+                <Button
                     v-if="passwordlessLogin"
-                    type="button"
-                    class="btn btn-secondary flex w-full items-center justify-center gap-2 text-sm"
+                    variant="secondary"
+                    class="w-full"
                     @click="showMagicLinkModal = true">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
+                    <EnvelopeIcon class="h-4 w-4" aria-hidden="true" />
                     Sign in with magic link
-                </button>
+                </Button>
             </div>
         </template>
 
-        <p v-if="canRegister" class="mt-8 text-center text-sm text-(--color-text-muted)">
+        <p v-if="canRegister" class="mt-8 text-center text-sm text-muted-foreground">
             Don't have an account?
             <Link
                 :href="route('register')"
-                class="font-medium text-(--primary-color) hover:underline">
+                class="font-medium text-primary hover:underline">
                 Create one
             </Link>
         </p>
@@ -213,15 +200,17 @@ const sendMagicLink = () => {
 
         <template #default>
             <form class="space-y-4" @submit.prevent="sendMagicLink">
-                <p class="text-sm text-(--color-text-muted)">
+                <p class="text-sm text-muted-foreground">
                     Enter your email and we'll send a secure sign-in link.
                 </p>
                 <FormInput
                     id="magic-link-email"
                     v-model="magicLinkForm.email"
+                    placeholder=""
                     label="Email address"
                     name="magic-link-email"
                     type="email"
+                    :show-required-marker="false"
                     required
                     :error="magicLinkForm.errors.email"
                     autocomplete="email" />
@@ -230,20 +219,12 @@ const sendMagicLink = () => {
 
         <template #footer>
             <div class="flex justify-end gap-4">
-                <button
-                    type="button"
-                    class="btn btn-secondary btn-sm"
-                    @click="showMagicLinkModal = false">
+                <Button variant="secondary" size="sm" @click="showMagicLinkModal = false">
                     Cancel
-                </button>
-                <button
-                    :disabled="magicLinkForm.processing"
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :aria-busy="magicLinkForm.processing"
-                    @click="sendMagicLink">
+                </Button>
+                <Button variant="primary" size="sm" :disabled="magicLinkForm.processing" :aria-busy="magicLinkForm.processing" @click="sendMagicLink">
                     {{ magicLinkForm.processing ? 'Sending...' : 'Send link' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

@@ -4,7 +4,7 @@
 
 # GuacPanel - Laravel Vue Admin Starter Kit
 
-[![Laravel](https://img.shields.io/badge/Laravel-v12.x-FF2D20?style=flat&logo=laravel)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/Laravel-v13.x-FF2D20?style=flat&logo=laravel)](https://laravel.com)
 [![Vue.js](https://img.shields.io/badge/Vue.js-v3.x-4FC08D?style=flat&logo=vue.js)](https://vuejs.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4.x-06B6D4?style=flat&logo=tailwind-css)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/MIT)
@@ -45,11 +45,10 @@ An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind C
     - Dark/Light mode with system preference detection
     - Responsive design with [Tailwind CSS v4](https://tailwindcss.com/docs)
     - Auto-generated avatars via [Laravel Avatar](https://github.com/laravolt/avatar)
-    - Local Google Fonts via [Spatie Laravel Google Fonts](https://github.com/spatie/laravel-google-fonts)
     - Customizable theme settings
 
 - 📊 **Data Visualization**
-    - Interactive charts with [ApexCharts v3](https://apexcharts.com)
+    - Interactive charts with [ApexCharts v5](https://apexcharts.com)
         - Line, Area, Bar, and Donut charts
         - Responsive and mobile-friendly
         - Export capabilities
@@ -61,7 +60,6 @@ An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind C
         - Server-side pagination
         - Column sorting
         - Search functionality
-    - Data export with [Laravel Excel](https://docs.laravel-excel.com)
     - Action buttons with confirmation dialogs
 
 - 📁 **File Management**
@@ -90,7 +88,7 @@ An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind C
 
 ### Prerequisites
 
-- PHP >= 8.2
+- PHP >= 8.3
 - Node.js & NPM (Latest LTS)
 - Composer
 
@@ -143,6 +141,15 @@ php artisan serve
 ```
 
 **🎉 That's it!** Visit `http://localhost:8000` to see the app in action.
+
+### Default login
+
+Seeding creates two accounts (configurable via the `SEED_*` variables in `.env`):
+
+| Account | Email | Password |
+|---|---|---|
+| Superuser | `ota@example.com` | `password` |
+| Regular user | `user@example.com` | `password` |
 
 **🔗 External Resources**
 

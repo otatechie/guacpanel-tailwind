@@ -36,7 +36,7 @@
 
         <!-- Favicon -->
 
-        @if ($personalisation->favicon)
+        @if (($personalisation ?? null)?->favicon)
             <link rel="icon" type="image/png" href="{{ asset('storage/' . $personalisation->favicon) }}" />
         @else
             <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />

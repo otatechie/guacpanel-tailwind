@@ -6,14 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
-class AdminDeletedUsersController extends Controller
+class AdminDeletedUsersController extends Controller implements HasMiddleware
 {
-    public function __construct(private DataTableService $dataTable)
+    public function __construct(private DataTableService $dataTable) {}
+
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-users');
+        return [
+            new Middleware('permission:view-users|manage-users'),
+        ];
     }
 
     public function index(Request $request)
@@ -76,7 +82,7 @@ class AdminDeletedUsersController extends Controller
 
     public function restore(Request $request, $id)
     {
-        $this->authorize('edit-users');
+        abort_unless($request->user()->canAny(['edit-users', 'manage-users']), 403);
 
         $user = User::onlyTrashed()->findOrFail($id);
         $user->restore();
@@ -92,7 +98,7 @@ class AdminDeletedUsersController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $this->authorize('delete-users');
+        abort_unless($request->user()->canAny(['delete-users', 'manage-users']), 403);
 
         $user = User::onlyTrashed()->findOrFail($id);
 
@@ -114,7 +120,7 @@ class AdminDeletedUsersController extends Controller
 
     public function destroyAll(Request $request)
     {
-        $this->authorize('delete-users');
+        abort_unless($request->user()->canAny(['delete-users', 'manage-users']), 403);
 
         $validatedData = $request->validate([
             'confirm_destroy_all' => ['accepted', 'boolean'],

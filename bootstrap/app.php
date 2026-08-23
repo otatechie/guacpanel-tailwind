@@ -73,13 +73,19 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->report(function (Throwable $e) {
             if (config('exceptions.emailExceptionEnabled')) {
                 try {
+                    // Never mail credentials or secrets submitted with the failing request
+                    $redacted = ['password', 'password_confirmation', 'current_password', 'token', 'code', 'two_factor_code'];
+                    $body = collect(request()?->all() ?? [])
+                        ->map(fn($value, $key) => in_array(strtolower((string) $key), $redacted, true) ? '[REDACTED]' : $value)
+                        ->all();
+
                     $content = [
                         'message' => $e->getMessage(),
                         'file'    => $e->getFile(),
                         'line'    => $e->getLine(),
                         'trace'   => $e->getTrace(),
                         'url'     => request()?->url(),
-                        'body'    => request()?->all(),
+                        'body'    => $body,
                         'ip'      => request()?->ip(),
                     ];
                     Mail::send(new ExceptionOccurred($content));

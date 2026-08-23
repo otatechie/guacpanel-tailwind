@@ -22,7 +22,7 @@ class ImpersonationController extends Controller
             return back()->with('error', 'You cannot impersonate yourself.');
         }
 
-        if ($user->hasRole('super-admin') && !$impersonator->hasRole('super-admin')) {
+        if ($user->isSuperUser() && !$impersonator->isSuperUser()) {
             return back()->with('error', 'You cannot impersonate a super admin.');
         }
 

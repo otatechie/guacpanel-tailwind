@@ -43,7 +43,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
                 <div
-                    class="flex items-center justify-start gap-1 font-medium text-[var(--color-text)]">
+                    class="flex items-center justify-start gap-1 font-medium text-foreground">
                     <div
                         v-if="isUnread"
                         class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
@@ -55,7 +55,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
                     </span>
                 </div>
 
-                <div class="mt-1 text-sm break-words text-[var(--color-text-muted)]">
+                <div class="mt-1 text-sm break-words text-muted-foreground">
                     {{ messageDisplay }}
                 </div>
             </div>
@@ -67,7 +67,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
             </div>
         </div>
 
-        <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--color-text-muted)]">
+        <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <span class="pill">
                 <svg
                     v-if="scopeIconName(props.row?.scope) === 'user'"
@@ -102,7 +102,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
                     viewBox="0 0 288 288"
                     fill="none"
                     aria-hidden="true"
-                    class="size-3.5 text-[var(--color-text-muted)]">
+                    class="size-3.5 text-muted-foreground">
                     <path
                         d="M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Z"
                         fill="currentColor"
@@ -139,7 +139,7 @@ const isDismissed = computed(() => Boolean(props.row?.is_dismissed))
                 <span>{{ isDismissed ? 'Yes' : 'No' }}</span>
             </span>
 
-            <span class="flex w-full items-center gap-1.5 text-[var(--color-text-muted)]">
+            <span class="flex w-full items-center gap-1.5 text-muted-foreground">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

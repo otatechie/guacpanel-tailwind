@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
 import { useForm, usePage, router } from '@inertiajs/vue3'
@@ -102,7 +103,7 @@ const refreshPersonalisation = () => {
         <div class="space-y-4">
             <!-- App details -->
             <div class="card px-5 py-4">
-                <h2 class="text-base font-medium text-(--color-text)">Application details</h2>
+                <h2 class="text-base font-medium text-foreground">Application details</h2>
                 <form id="app-details-form" class="mt-4 max-w-lg" @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <FormInput
@@ -117,21 +118,17 @@ const refreshPersonalisation = () => {
                             :error="form.errors.copyright_text" />
                     </div>
                     <div class="mt-4">
-                        <button
-                            type="submit"
-                            class="btn btn-sm btn-primary"
-                            :disabled="form.processing"
-                            :aria-busy="form.processing">
+                        <Button variant="primary" size="sm" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                             {{ form.processing ? 'Saving...' : 'Save' }}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>
 
             <!-- Branding -->
             <div class="card px-5 py-4">
-                <h2 class="text-base font-medium text-(--color-text)">Branding</h2>
-                <p class="mt-1 text-sm text-(--color-text-muted)">
+                <h2 class="text-base font-medium text-foreground">Branding</h2>
+                <p class="mt-1 text-sm text-muted-foreground">
                     Upload logos and favicon. Changes apply immediately.
                 </p>
 

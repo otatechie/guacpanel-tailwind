@@ -10,12 +10,19 @@ use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;
 use App\Services\DataTableService;
 use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class AdminSessionController extends Controller
+class AdminSessionController extends Controller implements HasMiddleware
 {
-    public function __construct(private DataTableService $dataTable)
+    public function __construct(private DataTableService $dataTable) {}
+
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-sessions');
+        return [
+            new Middleware('permission:view-sessions|manage-sessions'),
+            new Middleware('permission:manage-sessions', only: ['destroy', 'destroyAllForUser']),
+        ];
     }
 
     public function index(Request $request): Response

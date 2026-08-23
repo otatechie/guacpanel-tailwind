@@ -1,6 +1,9 @@
 <script setup>
 import { computed } from 'vue'
+import { Checkbox } from '@/Components/ui/checkbox'
+import { Label } from '@/Components/ui/label'
 
+// Public API unchanged — see docs/ui-contract.md. Internals sit on shadcn Checkbox.
 const props = defineProps({
     modelValue: {
         type: Boolean,
@@ -35,60 +38,36 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 
-function updateValue(event) {
-    emit('update:modelValue', event.target.checked)
+// reka-ui can emit `indeterminate`; the app contract is strictly boolean.
+function onUpdate(value) {
+    emit('update:modelValue', value === true)
 }
 </script>
 
 <template>
     <div>
-        <label :for="inputId" class="flex cursor-pointer items-start gap-3">
-            <div class="flex h-5 items-center">
-                <div class="group grid size-4 grid-cols-1">
-                    <input
-                        :id="inputId"
-                        type="checkbox"
-                        :checked="modelValue"
-                        :required="required"
-                        :disabled="disabled"
-                        :aria-invalid="!!error"
-                        :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
-                        class="col-start-1 row-start-1 cursor-pointer appearance-none rounded-sm border transition-colors
-                            border-(--card-border) bg-(--color-surface)
-                            checked:border-(--primary-color) checked:bg-(--primary-color)
-                            focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary-color)
-                            disabled:cursor-not-allowed disabled:opacity-50"
-                        @change="updateValue" />
-                    <svg
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-white/50">
-                        <path
-                            d="M3 8L6 11L11 3.5"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="opacity-0 group-has-checked:opacity-100" />
-                        <path
-                            d="M3 7H11"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="opacity-0 group-has-indeterminate:opacity-100" />
-                    </svg>
-                </div>
-            </div>
+        <div class="flex gap-3" :class="help ? 'items-start' : 'items-center'">
+            <Checkbox
+                :id="inputId"
+                :model-value="modelValue"
+                :required="required"
+                :disabled="disabled"
+                :aria-invalid="!!error"
+                :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
+                :class="help ? 'mt-0.5' : undefined"
+                @update:model-value="onUpdate" />
+
             <div class="text-sm">
-                <span class="font-medium text-(--color-text)">
+                <Label :for="inputId" class="cursor-pointer font-medium text-foreground">
                     {{ label }}{{ required ? ' *' : '' }}
-                </span>
-                <p v-if="help && !error" :id="`${inputId}-help`" class="mt-0.5 text-xs text-(--color-text-muted)">
+                </Label>
+                <p v-if="help && !error" :id="`${inputId}-help`" class="mt-0.5 text-xs text-muted-foreground">
                     {{ help }}
                 </p>
             </div>
-        </label>
+        </div>
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-red-600">
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-destructive">
             {{ error }}
         </p>
     </div>

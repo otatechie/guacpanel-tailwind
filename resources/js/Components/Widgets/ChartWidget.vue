@@ -93,11 +93,11 @@ const isPositiveChange = computed(() => props.change > 0)
     <div class="card overflow-hidden p-4 sm:p-6">
         <!-- Header -->
         <div class="mb-3 sm:mb-4">
-            <h3 class="mb-2 text-xs font-medium text-(--color-text-muted) sm:text-sm">
+            <h3 class="mb-2 text-xs font-medium text-muted-foreground sm:text-sm">
                 {{ title }}
             </h3>
             <div class="flex items-baseline gap-2 sm:gap-3">
-                <p class="text-2xl font-semibold tabular-nums text-(--color-text) sm:text-3xl">
+                <p class="text-2xl font-semibold tabular-nums text-foreground sm:text-3xl">
                     {{ value }}
                 </p>
                 <span

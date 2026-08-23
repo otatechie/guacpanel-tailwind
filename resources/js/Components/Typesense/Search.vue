@@ -86,10 +86,10 @@ watch(() => props.isOpen, isOpen => {
             aria-label="Search site"
             class="fixed inset-0 z-[60] bg-black/40">
             <div
-                class="fixed inset-x-0 top-0 z-[60] border-b border-(--card-border) bg-(--color-surface) p-4 shadow-lg"
+                class="fixed inset-x-0 top-0 z-[60] border-b border-border bg-card p-4 shadow-lg"
                 @click.stop>
                 <div class="mb-3 flex items-center justify-between">
-                    <h2 class="text-sm font-medium text-(--color-text)">Search</h2>
+                    <h2 class="text-sm font-medium text-foreground">Search</h2>
                     <button
                         aria-label="Close search"
                         class="nav-bar-btn"

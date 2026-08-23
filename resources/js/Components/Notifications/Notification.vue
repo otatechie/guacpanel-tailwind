@@ -271,7 +271,7 @@ const priorityIconClass = priority => {
     if (priority === 'critical') return 'text-red-500'
     if (priority === 'high') return 'text-yellow-500'
     if (priority === 'normal') return 'text-blue-500'
-    return 'text-[var(--color-text-muted)]'
+    return 'text-muted-foreground'
 }
 
 const closeDropdown = () => {
@@ -388,59 +388,59 @@ onUnmounted(() => {
         <div
             v-show="notificationsOpen"
             data-notification-dropdown
-            class="fixed inset-x-3 top-[80px] z-50 overflow-hidden rounded-lg border border-(--card-border) bg-(--color-surface) shadow-lg sm:absolute sm:inset-auto sm:top-auto sm:right-0 sm:mt-2 sm:w-80"
+            class="fixed inset-x-3 top-[80px] z-50 overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:absolute sm:inset-auto sm:top-auto sm:right-0 sm:mt-2 sm:w-80"
             @click.stop>
 
             <!-- Header -->
-            <div class="flex items-center justify-between border-b border-(--card-border) px-4 py-2.5">
-                <h3 class="text-sm font-semibold text-(--color-text)">Notifications</h3>
+            <div class="flex items-center justify-between border-b border-border px-4 py-2.5">
+                <h3 class="text-sm font-semibold text-foreground">Notifications</h3>
                 <div class="flex items-center gap-3">
-                    <button v-if="hasUnreadNotifications" type="button" class="cursor-pointer text-xs text-(--color-text-muted) hover:text-(--color-text)" @click="markAllRead">Read all</button>
-                    <button v-if="hasAnyNotifications" type="button" class="cursor-pointer text-xs text-(--color-text-muted) hover:text-(--color-text)" @click="dismissAll">Clear</button>
+                    <button v-if="hasUnreadNotifications" type="button" class="cursor-pointer text-xs text-muted-foreground hover:text-foreground" @click="markAllRead">Read all</button>
+                    <button v-if="hasAnyNotifications" type="button" class="cursor-pointer text-xs text-muted-foreground hover:text-foreground" @click="dismissAll">Clear</button>
                 </div>
             </div>
 
             <!-- List -->
             <div class="max-h-96 overflow-y-auto">
-                <div v-if="isLoading" class="px-4 py-6 text-center text-xs text-(--color-text-muted)">Loading...</div>
+                <div v-if="isLoading" class="px-4 py-6 text-center text-xs text-muted-foreground">Loading...</div>
 
-                <div v-else-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-(--color-text-muted)">No notifications</div>
+                <div v-else-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-muted-foreground">No notifications</div>
 
-                <div v-else class="divide-y divide-(--card-border)">
+                <div v-else class="divide-y divide-border">
                     <div
                         v-for="n in notifications"
                         :key="n.id"
-                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-(--color-surface-muted)"
+                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-muted"
                         :class="!n.is_read ? 'cursor-pointer' : ''"
                         @click="markAsRead(n, $event)">
 
                         <!-- Priority dot -->
-                        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" :class="priorityIconClass(n.priority)?.replace('text-', 'bg-') || 'bg-(--color-border-strong)'" />
+                        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" :class="priorityIconClass(n.priority)?.replace('text-', 'bg-') || 'bg-border'" />
 
                         <!-- Content -->
                         <div class="min-w-0 flex-1">
                             <div class="flex items-start justify-between gap-2">
-                                <h4 class="truncate text-sm text-(--color-text)" :class="!n.is_read ? 'font-medium' : ''">{{ n.title }}</h4>
+                                <h4 class="truncate text-sm text-foreground" :class="!n.is_read ? 'font-medium' : ''">{{ n.title }}</h4>
                                 <button
                                     type="button"
-                                    class="shrink-0 cursor-pointer rounded p-0.5 text-(--color-text-muted) hover:text-(--color-text)"
+                                    class="shrink-0 cursor-pointer rounded p-0.5 text-muted-foreground hover:text-foreground"
                                     aria-label="Dismiss"
                                     @click.stop="dismissNotification(n, $event)">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
-                            <p v-if="n.description" class="mt-0.5 line-clamp-2 text-xs text-(--color-text-muted)">{{ n.description }}</p>
-                            <time class="mt-1 block text-xs text-(--color-text-muted)">{{ n.time }}</time>
+                            <p v-if="n.description" class="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{{ n.description }}</p>
+                            <time class="mt-1 block text-xs text-muted-foreground">{{ n.time }}</time>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div v-if="canViewAll" class="border-t border-(--card-border)">
+            <div v-if="canViewAll" class="border-t border-border">
                 <Link
                     href="/notifications/all"
-                    class="block px-4 py-2.5 text-center text-xs text-(--color-text-muted) transition-colors hover:bg-(--color-surface-muted) hover:text-(--color-text)"
+                    class="block px-4 py-2.5 text-center text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     @click="closeDropdown">
                     View all
                 </Link>

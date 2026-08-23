@@ -129,7 +129,7 @@ onUnmounted(() => {
 
 <template>
     <div
-        class="min-h-screen bg-[var(--color-bg)]"
+        class="min-h-screen bg-background"
         role="document"
         :class="{ 'opacity-0': !isLayoutReady }">
         <!-- System Notification Banner - Fixed at very top -->
@@ -167,7 +167,7 @@ onUnmounted(() => {
         <div class="flex min-h-screen flex-col">
             <header
                 role="banner"
-                class="fixed right-0 left-0 z-55 h-[70px] w-full border-b border-(--card-border) bg-(--color-surface)"
+                class="fixed right-0 left-0 z-55 h-[70px] w-full border-b border-border bg-card"
                 :style="{ top: headerTop }">
                 <nav
                     class="flex h-full items-center gap-2 px-3 sm:gap-4 sm:px-4"
@@ -228,7 +228,7 @@ onUnmounted(() => {
                         <Link
                             v-else
                             href="/login"
-                            class="text-sm font-medium text-(--color-text-muted) hover:text-(--color-text)">
+                            class="text-sm font-medium text-muted-foreground hover:text-foreground">
                             Sign in
                         </Link>
                     </section>

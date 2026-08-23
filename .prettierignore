@@ -13,3 +13,5 @@ resources/views/mail/*
 resources/views/email/*
 resources/views/vendor/*
 
+resources/js/Components/ui/
+resources/js/lib/

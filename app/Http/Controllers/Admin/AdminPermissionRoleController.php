@@ -8,18 +8,24 @@ use App\Services\DataTableService;
 use App\Traits\HasProtectedPermission;
 use App\Traits\HasProtectedRoles;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class AdminPermissionRoleController extends Controller
+class AdminPermissionRoleController extends Controller implements HasMiddleware
 {
     use HasProtectedRoles;
     use HasProtectedPermission;
 
-    public function __construct(private DataTableService $dataTable)
+    public function __construct(private DataTableService $dataTable) {}
+
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-permissions-roles');
+        return [
+            new Middleware('permission:view-permissions-roles|manage-roles|manage-permissions'),
+        ];
     }
 
     public function index(Request $request)

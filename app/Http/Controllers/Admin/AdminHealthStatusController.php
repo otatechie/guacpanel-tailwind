@@ -4,16 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Artisan;
 use Inertia\Inertia;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 use Spatie\Health\ResultStores\ResultStore;
 
-class AdminHealthStatusController extends Controller
+class AdminHealthStatusController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-health');
+        return [
+            new Middleware('permission:view-health'),
+        ];
     }
 
     public function index(ResultStore $resultStore)

@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
@@ -83,13 +84,9 @@ const submit = () => {
                 :disabled="form.processing"
                 :error="form.errors.password_confirmation" />
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" aria-busy="form.processing">
                 {{ form.processing ? 'Updating password...' : 'Update password' }}
-            </button>
+            </Button>
         </form>
 
         <footer class="mt-8 text-center text-sm text-gray-700 dark:text-gray-300">

@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { computed } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import FormInput from '@js/Components/Forms/FormInput.vue'
@@ -54,9 +55,9 @@ const currentAvatarUrl = computed(() =>
             </div>
 
             <div class="pt-2">
-                <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing || !profileEnabled">
+                <Button variant="primary" size="sm" type="submit" :disabled="form.processing || !profileEnabled">
                     {{ form.processing ? 'Saving...' : 'Save' }}
-                </button>
+                </Button>
             </div>
         </form>
     </div>

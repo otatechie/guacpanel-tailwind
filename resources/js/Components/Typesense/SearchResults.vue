@@ -35,17 +35,17 @@ onMounted(() => {
                 :disabled="isLoading"
                 :placeholder="isLoading ? 'Loading search...' : placeholder"
                 :value="searchQuery"
-                class="w-full rounded-lg border border-(--color-border-strong) bg-(--color-surface-muted) py-2 pr-16 pl-9 text-sm text-(--color-text) transition-colors placeholder:text-(--color-text-muted) focus:border-(--primary-color) focus:outline-none focus:ring-2 focus:ring-(--primary-color)/15"
+                class="w-full rounded-lg border border-border bg-muted py-2 pr-16 pl-9 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
                 :class="{ 'opacity-50 cursor-wait': isLoading }"
                 @input="$emit('search', $event)"
                 @focus="$emit('focus')"
                 @blur="$emit('blur')" />
 
             <MagnifyingGlassIcon
-                class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-(--color-text-muted)"
+                class="pointer-events-none absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                 aria-hidden="true" />
 
-            <kbd class="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-(--card-border) bg-(--color-surface) px-1.5 py-0.5 font-mono text-[10px] text-(--color-text-muted)">
+            <kbd class="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                 {{ isMac ? 'Cmd+K' : 'Ctrl+K' }}
             </kbd>
         </div>
@@ -58,13 +58,13 @@ onMounted(() => {
         </div>
 
         <!-- Results dropdown -->
-        <div v-else-if="showResultsContainer" class="absolute top-full z-50 mt-1.5 w-full overflow-hidden rounded-lg border border-(--card-border) bg-(--color-surface) shadow-lg">
-            <div class="border-b border-(--card-border) px-3 py-2 text-xs text-(--color-text-muted)">
+        <div v-else-if="showResultsContainer" class="absolute top-full z-50 mt-1.5 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+            <div class="border-b border-border px-3 py-2 text-xs text-muted-foreground">
                 {{ hasResults ? `${federatedResults.length} results` : 'No results' }}
             </div>
 
             <!-- Loading -->
-            <div v-if="isFederatedSearching" class="px-4 py-6 text-center text-sm text-(--color-text-muted)">
+            <div v-if="isFederatedSearching" class="px-4 py-6 text-center text-sm text-muted-foreground">
                 Searching...
             </div>
 
@@ -75,13 +75,13 @@ onMounted(() => {
                         v-for="item in federatedResults"
                         :key="item.id"
                         :href="item.url"
-                        class="block border-b border-(--card-border) px-3 py-2.5 transition-colors last:border-0 hover:bg-(--color-surface-muted)">
-                        <p class="text-sm font-medium text-(--color-text)">{{ item.displayTitle }}</p>
-                        <p class="mt-0.5 text-xs text-(--color-text-muted)">{{ item.displaySubtitle }}</p>
+                        class="block border-b border-border px-3 py-2.5 transition-colors last:border-0 hover:bg-muted">
+                        <p class="text-sm font-medium text-foreground">{{ item.displayTitle }}</p>
+                        <p class="mt-0.5 text-xs text-muted-foreground">{{ item.displaySubtitle }}</p>
                     </a>
                 </div>
 
-                <div v-else class="px-4 py-6 text-center text-sm text-(--color-text-muted)">
+                <div v-else class="px-4 py-6 text-center text-sm text-muted-foreground">
                     No results for "{{ searchQuery }}"
                 </div>
             </template>

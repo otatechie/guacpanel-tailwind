@@ -75,13 +75,13 @@ const formatChange = change => {
 
 <template>
     <div
-        class="relative overflow-hidden border-2 border-[var(--color-text)] bg-[var(--color-surface)]">
+        class="relative overflow-hidden border-2 border-foreground bg-card">
         <div class="h-1" :class="colorClasses[color]"></div>
         <div class="p-4 sm:p-6">
             <div class="mb-4 flex items-start justify-between sm:mb-6">
                 <div class="min-w-0 flex-1">
                     <h3
-                        class="mb-1 text-[9px] leading-tight font-semibold tracking-[0.15em] text-[var(--color-text-muted)] uppercase sm:text-[10px]">
+                        class="mb-1 text-[9px] leading-tight font-semibold tracking-[0.15em] text-muted-foreground uppercase sm:text-[10px]">
                         {{ title }}
                     </h3>
                 </div>
@@ -105,7 +105,7 @@ const formatChange = change => {
             <!-- Main value - monospace, large -->
             <div class="mb-2 sm:mb-3">
                 <span
-                    class="font-mono text-2xl leading-none font-semibold tracking-tight text-[var(--color-text)] tabular-nums sm:text-3xl lg:text-4xl">
+                    class="font-mono text-2xl leading-none font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl lg:text-4xl">
                     {{ formatValue(value) }}
                 </span>
             </div>
@@ -116,7 +116,7 @@ const formatChange = change => {
                     :class="{
                         'text-green-700 dark:text-green-400': trend === 'up',
                         'text-red-700 dark:text-red-400': trend === 'down',
-                        'text-[var(--color-text-muted)]': !trend,
+                        'text-muted-foreground': !trend,
                     }">
                     <span v-if="trend === 'up'">▲</span>
                     <span v-else-if="trend === 'down'">▼</span>

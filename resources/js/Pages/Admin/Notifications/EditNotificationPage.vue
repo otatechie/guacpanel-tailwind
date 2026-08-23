@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import { computed, watch } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -87,11 +88,9 @@ const breadcrumbs = computed(() => [
             description="Update an existing app notification"
             :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Link
-                    :href="route('admin.notifications.index')"
-                    class="btn btn-secondary btn-sm">
+                <Button :as="Link" variant="secondary" size="sm" :href="route('admin.notifications.index')">
                     Back
-                </Link>
+                </Button>
             </template>
         </PageHeader>
 
@@ -104,23 +103,23 @@ const breadcrumbs = computed(() => [
                 </div>
 
                 <!-- Classification -->
-                <div class="grid grid-cols-1 gap-4 border-t border-(--card-border) pt-5 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-4 border-t border-border pt-5 sm:grid-cols-3">
                     <FormSelect v-model="form.scope" label="Scope" :options="scopeOptions" :error="form.errors.scope" />
                     <FormSelect v-model="form.type" label="Type" :options="typeOptions" :error="form.errors.type" />
                     <FormSelect v-if="form.scope === 'user'" v-model="form.user_id" label="User" placeholder="Select user" :options="userOptions" :error="form.errors.user_id" />
                 </div>
 
                 <!-- Timing -->
-                <div class="grid grid-cols-1 gap-4 border-t border-(--card-border) pt-5 sm:grid-cols-2">
+                <div class="grid grid-cols-1 gap-4 border-t border-border pt-5 sm:grid-cols-2">
                     <FormInput v-model="form.scheduled_on" label="Schedule" type="datetime-local" :error="form.errors.scheduled_on" help="Leave blank to send immediately" />
                     <FormInput v-model="form.auto_expire_on" label="Auto expire" type="datetime-local" :error="form.errors.auto_expire_on" help="Optional" />
                 </div>
 
                 <div class="flex justify-end gap-3 pt-2">
-                    <Link :href="route('admin.notifications.index')" class="btn btn-secondary btn-sm">Cancel</Link>
-                    <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing">
+                    <Button :as="Link" variant="secondary" size="sm" :href="route('admin.notifications.index')">Cancel</Button>
+                    <Button variant="primary" size="sm" type="submit" :disabled="form.processing">
                         {{ form.processing ? 'Saving...' : 'Save changes' }}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

@@ -180,14 +180,14 @@ const showDivider = item =>
 
                                     <ChevronDownIcon
                                         v-if="item.children && hasVisibleChildren(item)"
-                                        :class="['h-3.5 w-3.5 shrink-0 text-(--color-text-muted) transition-transform duration-150', isParentExpanded(item) ? 'rotate-180' : '']"
+                                        :class="['h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-150', isParentExpanded(item) ? 'rotate-180' : '']"
                                         aria-hidden="true" />
                                 </Link>
                             </li>
 
                             <!-- Children -->
                             <li v-if="item.children && hasVisibleChildren(item) && isParentExpanded(item)">
-                                <ul class="ml-5 space-y-0.5 border-l border-(--card-border) pl-2.5">
+                                <ul class="ml-5 space-y-0.5 border-l border-border pl-2.5">
                                     <li v-for="child in item.children" :key="child.name">
                                         <Link
                                             v-if="hasPermission(child.permission)"
@@ -203,7 +203,7 @@ const showDivider = item =>
                                         <!-- Grandchildren -->
                                         <ul
                                             v-if="child.children && hasVisibleChildren(child) && isParentExpanded(child)"
-                                            class="ml-3 space-y-0.5 border-l border-(--card-border) pl-2.5">
+                                            class="ml-3 space-y-0.5 border-l border-border pl-2.5">
                                             <li v-for="gc in child.children" :key="gc.name">
                                                 <Link
                                                     v-if="hasPermission(gc.permission)"

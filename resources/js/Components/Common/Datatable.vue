@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
@@ -25,7 +26,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import Modal from '@/Components/Notifications/Modal.vue'
 import Filter from '@/Components/Filter.vue'
-import { useServerPagination } from '@/Composables/useServerPagination'
+import { useServerPagination } from '@/composables/useServerPagination'
 
 const props = defineProps({
     data: {
@@ -445,10 +446,10 @@ watch(
         <div
             v-if="loading"
             role="status"
-            class="absolute inset-0 z-10 flex items-center justify-center bg-(--color-surface)/50">
+            class="absolute inset-0 z-10 flex items-center justify-center bg-card/50">
             <span
                 class="h-8 w-8 animate-spin rounded-full border-b-2"
-                :style="{ borderColor: 'var(--primary-color)' }"></span>
+                :style="{ borderColor: 'var(--primary)' }"></span>
         </div>
 
         <header
@@ -456,7 +457,7 @@ watch(
             <div
                 class="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <div class="flex items-center gap-2">
-                    <label class="whitespace-nowrap text-sm text-(--color-text-muted)">Show</label>
+                    <label class="whitespace-nowrap text-sm text-muted-foreground">Show</label>
                     <select
                         class="form-input w-auto py-1.5 pr-7 text-sm"
                         :value="
@@ -479,16 +480,13 @@ watch(
                 <div v-if="hasSelection" class="flex items-center gap-6">
                     <span
                         role="status"
-                        class="flex items-center gap-1.5 text-xs font-medium text-(--color-text)">
+                        class="flex items-center gap-1.5 text-xs font-medium text-foreground">
                         <CheckCircleIcon class="h-4 w-4 text-green-600 dark:text-green-500" />
                         {{ selectionCount }} selected
                     </span>
-                    <button
-                        v-if="bulkDeleteRoute"
-                        @click="showDeleteModal = true"
-                        class="btn btn-danger btn-xs">
+                    <Button variant="danger" size="xs" v-if="bulkDeleteRoute" @click="showDeleteModal = true">
                         Bulk delete
-                    </button>
+                    </Button>
                     <slot name="bulk-actions" :selected-rows="selectedRows" />
                 </div>
             </div>
@@ -506,37 +504,34 @@ watch(
                     <button
                         v-if="globalFilter"
                         @click="globalFilter = ''"
-                        class="absolute top-1/2 right-2 -translate-y-1/2 text-(--color-text-muted) hover:text-(--color-text)"
+                        class="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         aria-label="Clear search">
                         <XMarkIcon class="h-4 w-4" />
                     </button>
                 </div>
 
-                <button
-                    v-if="enableExport"
-                    @click="exportToCSV"
-                    class="btn btn-secondary btn-sm cursor-pointer">
+                <Button variant="secondary" size="sm" class="cursor-pointer" v-if="enableExport" @click="exportToCSV">
                     Export CSV
-                </button>
+                </Button>
             </nav>
         </header>
 
-        <div class="overflow-x-auto rounded-lg border border-(--card-border)">
+        <div class="overflow-x-auto rounded-lg border border-border">
             <div class="block space-y-3 p-3 md:hidden">
                 <div
-                    class="flex items-center justify-between rounded-lg border border-(--card-border) bg-(--color-surface-muted) p-2">
+                    class="flex items-center justify-between rounded-lg border border-border bg-muted p-2">
                     <label class="inline-flex items-center">
                         <input
                             type="checkbox"
-                            class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
+                            class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
                             :checked="table.getIsAllRowsSelected()"
                             :indeterminate="table.getIsSomeRowsSelected()"
                             @change="handleSelectAll" />
-                        <span class="ml-2 text-xs font-medium text-(--color-text)">
+                        <span class="ml-2 text-xs font-medium text-foreground">
                             {{ table.getIsAllRowsSelected() ? 'Deselect all' : 'Select all' }}
                         </span>
                     </label>
-                    <div class="text-xs font-medium text-(--color-text-muted)">
+                    <div class="text-xs font-medium text-muted-foreground">
                         {{ table.getFilteredSelectedRowModel().rows.length }} of
                         {{ table.getFilteredRowModel().rows.length }} selected
                     </div>
@@ -552,26 +547,24 @@ watch(
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
+                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
                                         :checked="row.getIsSelected()"
                                         @change="row.toggleSelected()" />
                                     <span
-                                        class="ml-1.5 text-xs font-medium text-(--color-text)">
+                                        class="ml-1.5 text-xs font-medium text-foreground">
                                         Select
                                     </span>
                                 </label>
-                                <button
-                                    @click="toggleRow(index)"
-                                    class="btn btn-ghost btn-xs text-xs font-medium text-(--color-text-muted)">
+                                <Button variant="ghost" size="xs" class="text-xs font-medium text-muted-foreground" @click="toggleRow(index)">
                                     {{ expandedRows.includes(index) ? 'Less' : 'More' }}
-                                </button>
+                                </Button>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <slot name="mobile-actions" :row="row.original" />
                             </div>
                         </div>
 
-                        <div class="mb-1.5 border-b border-(--card-border)"></div>
+                        <div class="mb-1.5 border-b border-border"></div>
 
                         <div class="grid grid-cols-1 gap-1.5">
                             <div
@@ -579,10 +572,10 @@ watch(
                                 :key="cell.id"
                                 class="flex flex-col space-y-0">
                                 <dt
-                                    class="text-xs font-medium tracking-wide text-(--color-text-muted) uppercase">
+                                    class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                     {{ getColumnHeader(cell.column.columnDef) }}
                                 </dt>
-                                <dd class="text-xs font-medium text-(--color-text)">
+                                <dd class="text-xs font-medium text-foreground">
                                     <FlexRender
                                         :render="cell.column.columnDef.cell"
                                         :props="cell.getContext()" />
@@ -593,7 +586,7 @@ watch(
 
                     <div
                         v-if="expandedRows.includes(index)"
-                        class="border-t border-(--card-border) bg-(--color-surface-muted)">
+                        class="border-t border-border bg-muted">
                         <div class="space-y-2 p-2">
                             <div class="grid grid-cols-1 gap-2">
                                 <div
@@ -601,11 +594,11 @@ watch(
                                     :key="cell.id"
                                     class="flex flex-col space-y-0">
                                     <dt
-                                        class="text-xs font-medium tracking-wide text-(--color-text-muted) uppercase">
+                                        class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                         {{ getColumnHeader(cell.column.columnDef) }}
                                     </dt>
                                     <dd
-                                        class="text-xs font-medium text-(--color-text)">
+                                        class="text-xs font-medium text-foreground">
                                         <FlexRender
                                             :render="cell.column.columnDef.cell"
                                             :props="cell.getContext()" />
@@ -618,16 +611,16 @@ watch(
             </div>
 
             <table
-                class="hidden min-w-full divide-y divide-(--card-border) md:table"
+                class="hidden min-w-full divide-y divide-border md:table"
                 role="grid">
-                <thead class="bg-(--color-surface-muted)">
+                <thead class="bg-muted">
                     <tr>
                         <th class="w-10 px-6 py-3">
                             <div class="flex items-center">
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
+                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
                                         :checked="table.getIsAllRowsSelected()"
                                         :indeterminate="table.getIsSomeRowsSelected()"
                                         @change="handleSelectAll" />
@@ -639,18 +632,18 @@ watch(
                             v-for="header in table.getHeaderGroups()[0].headers"
                             :key="header.id"
                             :class="[
-                                'px-3 py-3 sm:px-6 text-xs font-medium uppercase tracking-wide text-(--color-text-muted) text-left',
-                                header.column.getCanSort() ? 'cursor-pointer hover:bg-(--color-surface-muted)' : '',
+                                'px-3 py-3 sm:px-6 text-xs font-medium uppercase tracking-wide text-muted-foreground text-left',
+                                header.column.getCanSort() ? 'cursor-pointer hover:bg-muted' : '',
                             ]"
                             @click="header.column.getToggleSortingHandler()?.($event)">
                             <div class="flex items-center gap-2">
-                                <span class="text-(--color-text-muted)">
+                                <span class="text-muted-foreground">
                                     {{ header.column.columnDef.header }}
                                 </span>
                                 <span
                                     v-if="header.column.getIsSorted()"
-                                    :style="{ color: 'var(--primary-color)' }"
-                                    class="text-(--color-text)">
+                                    :style="{ color: 'var(--primary)' }"
+                                    class="text-foreground">
                                     {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                 </span>
                             </div>
@@ -677,13 +670,13 @@ watch(
                 </thead>
 
                 <tbody
-                    class="divide-y divide-(--card-border) bg-(--color-surface)">
-                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-(--color-surface-muted) transition-colors">
+                    class="divide-y divide-border bg-card">
+                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-muted transition-colors">
                         <td :colspan="columns.length + 1" class="px-6 py-8 text-center">
-                            <p class="text-sm text-(--color-text-muted)">
+                            <p class="text-sm text-muted-foreground">
                                 {{ emptyMessage }}
                             </p>
-                            <p class="mt-1 text-sm text-(--color-text-muted)">
+                            <p class="mt-1 text-sm text-muted-foreground">
                                 {{ emptyDescription }}
                             </p>
                         </td>
@@ -693,11 +686,11 @@ watch(
                         v-for="(row, index) in table.getRowModel().rows"
                         :key="row.id"
                         :class="[
-                            'hover:bg-(--color-surface-muted) transition-colors',
+                            'hover:bg-muted transition-colors',
                             row.getIsSelected()
                                 ? 'bg-(--selection-color-light) dark:bg-(--selection-color-dark)'
                                 : index % 2 === 1
-                                  ? 'bg-(--color-surface-muted)'
+                                  ? 'bg-muted'
                                   : '',
                         ]">
                         <td class="px-6 py-4">
@@ -705,7 +698,7 @@ watch(
                                 <label class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary-color)"
+                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
                                         :checked="row.getIsSelected()"
                                         @change="row.toggleSelected()" />
                                 </label>
@@ -715,7 +708,7 @@ watch(
                         <td
                             v-for="cell in row.getVisibleCells()"
                             :key="cell.id"
-                            class="px-3 py-3 sm:px-6 text-sm text-(--color-text) text-left">
+                            class="px-3 py-3 sm:px-6 text-sm text-foreground text-left">
                             <FlexRender
                                 :render="cell.column.columnDef.cell"
                                 :props="cell.getContext()" />
@@ -727,64 +720,46 @@ watch(
 
         <footer
             class="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p class="text-sm text-(--color-text-muted)">
+            <p class="text-sm text-muted-foreground">
                 {{ paginationInfo.start }}–{{ paginationInfo.end }} of {{ paginationInfo.total }}
             </p>
 
             <nav class="flex items-center gap-2" aria-label="Pagination">
                 <template v-if="isServerPagination">
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isFirstPage"
-                        @click="goToPage(1)">
+                    <Button variant="ghost" size="xs" :disabled="isFirstPage" @click="goToPage(1)">
                         <ChevronDoubleLeftIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isFirstPage"
-                        @click="goToPage(paginationInfo.currentPage - 1)">
+                    <Button variant="ghost" size="xs" :disabled="isFirstPage" @click="goToPage(paginationInfo.currentPage - 1)">
                         <ChevronLeftIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
-                    <span class="text-sm text-(--color-text-muted)">
+                    <span class="text-sm text-muted-foreground">
                         {{ paginationInfo.currentPage }} / {{ paginationInfo.pageCount }}
                     </span>
 
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isLastPage"
-                        @click="goToPage(paginationInfo.currentPage + 1)">
+                    <Button variant="ghost" size="xs" :disabled="isLastPage" @click="goToPage(paginationInfo.currentPage + 1)">
                         <ChevronRightIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
-                    <button
-                        class="btn btn-ghost btn-xs"
-                        :disabled="isLastPage"
-                        @click="goToPage(paginationInfo.pageCount)">
+                    <Button variant="ghost" size="xs" :disabled="isLastPage" @click="goToPage(paginationInfo.pageCount)">
                         <ChevronDoubleRightIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
                 </template>
 
                 <template v-else>
-                    <button
-                        class="btn btn-ghost btn-xs disabled:cursor-not-allowed disabled:opacity-50"
-                        :disabled="!table.getCanPreviousPage()"
-                        @click="table.previousPage()">
+                    <Button variant="ghost" size="xs" class="disabled:cursor-not-allowed disabled:opacity-50" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
                         <ChevronLeftIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
 
-                    <span class="text-sm text-(--color-text)">
+                    <span class="text-sm text-foreground">
                         Page {{ table.getState().pagination.pageIndex + 1 }} of
                         {{ table.getPageCount() }}
                     </span>
 
-                    <button
-                        class="btn btn-ghost btn-xs disabled:cursor-not-allowed disabled:opacity-50"
-                        :disabled="!table.getCanNextPage()"
-                        @click="table.nextPage()">
+                    <Button variant="ghost" size="xs" class="disabled:cursor-not-allowed disabled:opacity-50" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
                         <ChevronRightIcon class="h-4 w-4" />
-                    </button>
+                    </Button>
                 </template>
             </nav>
         </footer>
@@ -798,7 +773,7 @@ watch(
 
             <div class="sm:flex sm:items-start">
                 <div class="text-center sm:text-left">
-                    <p class="text-sm text-(--color-text-muted)">
+                    <p class="text-sm text-muted-foreground">
                         Are you sure you want to delete {{ selectionCount }} selected records? This
                         action cannot be undone.
                     </p>
@@ -807,17 +782,10 @@ watch(
 
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button
-                        type="button"
-                        @click="showDeleteModal = false"
-                        class="btn btn-secondary btn-sm">
+                    <Button variant="secondary" size="sm" @click="showDeleteModal = false">
                         Cancel
-                    </button>
-                    <button
-                        type="button"
-                        :disabled="loading"
-                        @click="handleBulkDelete"
-                        class="btn btn-danger btn-sm">
+                    </Button>
+                    <Button variant="danger" size="sm" :disabled="loading" @click="handleBulkDelete">
                         <template v-if="loading">
                             <svg
                                 class="mr-2 -ml-1 h-4 w-4 animate-spin"
@@ -839,7 +807,7 @@ watch(
                             Deleting...
                         </template>
                         <template v-else>Delete</template>
-                    </button>
+                    </Button>
                 </div>
             </template>
         </Modal>

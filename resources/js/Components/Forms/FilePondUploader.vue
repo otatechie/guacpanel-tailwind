@@ -65,9 +65,9 @@ defineEmits(['processfile', 'removefile'])
 
 <template>
     <div>
-        <p class="mb-1.5 text-xs font-medium text-(--color-text)">
+        <p class="mb-1.5 text-xs font-medium text-foreground">
             {{ label }}
-            <span class="ml-1 font-normal text-(--color-text-muted)">
+            <span class="ml-1 font-normal text-muted-foreground">
                 {{ acceptedFileTypes.map(t => t.split('/')[1].toUpperCase()).join(', ') }}
             </span>
         </p>
@@ -100,10 +100,10 @@ defineEmits(['processfile', 'removefile'])
     border: none !important;
 }
 .filepond--root .filepond--drop-label {
-    background-color: var(--color-surface) !important;
-    border: 1.5px dashed var(--color-border-strong) !important;
+    background-color: var(--card) !important;
+    border: 1.5px dashed var(--border) !important;
     border-radius: 8px !important;
-    color: var(--color-text-muted) !important;
+    color: var(--muted-foreground) !important;
     font-size: 0.8125rem !important;
 }
 .filepond--drop-label label {
@@ -111,7 +111,7 @@ defineEmits(['processfile', 'removefile'])
 }
 .filepond--label-action {
     text-decoration: underline !important;
-    color: var(--color-text) !important;
+    color: var(--foreground) !important;
     font-weight: 500 !important;
 }
 .filepond--root {

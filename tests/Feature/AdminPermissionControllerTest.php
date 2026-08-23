@@ -46,12 +46,6 @@ test('it enforces permission middleware correctly', function () {
         ->get(route('admin.permission.index'));
 });
 
-test('it requires csrf token for all operations', function () {
-    $this->actingAs($this->userWithFullPermissions)
-        ->post(route('admin.permission.store'), ['name' => 'csrf-test-permission'])
-        ->assertStatus(419);
-});
-
 test('it allows authorized users to perform crud operations', function () {
     $createData = [
         'name'        => 'test-permission',

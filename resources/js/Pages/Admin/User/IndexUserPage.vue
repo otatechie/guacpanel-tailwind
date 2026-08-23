@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, useForm, router, Link } from '@inertiajs/vue3'
 import DataTable from '@js/Components/Common/Datatable.vue'
 import Default from '@js/Layouts/Default.vue'
@@ -135,8 +136,8 @@ const columns = [
         cell: info => {
             const user = info.row.original
             return h('div', { class: 'min-w-0' }, [
-                h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, user.name || '-'),
-                h('span', { class: 'ml-2 text-xs text-[var(--color-text-muted)]' }, user.email),
+                h('span', { class: 'text-sm font-medium text-foreground' }, user.name || '-'),
+                h('span', { class: 'ml-2 text-xs text-muted-foreground' }, user.email),
             ])
         },
     }),
@@ -144,7 +145,7 @@ const columns = [
         header: 'Role',
         cell: info => {
             const roleName = info.row.original.roles?.[0]?.name || 'No role'
-            return h('span', { class: 'text-xs font-mono capitalize text-[var(--color-text-muted)]' }, roleName)
+            return h('span', { class: 'text-xs font-mono capitalize text-muted-foreground' }, roleName)
         },
     }),
     columnHelper.accessor('status', {
@@ -171,7 +172,7 @@ const columns = [
     }),
     columnHelper.accessor('created_at_formatted', {
         header: 'Created',
-        cell: info => h('span', { class: 'text-xs text-[var(--color-text-muted)]' }, info.getValue() || '-'),
+        cell: info => h('span', { class: 'text-xs text-muted-foreground' }, info.getValue() || '-'),
     }),
     columnHelper.display({
         id: 'actions',
@@ -180,7 +181,7 @@ const columns = [
             const user = info.row.original
             if (!user?.id) return null
 
-            const btnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]'
+            const btnClass = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
             const iconClass = 'h-3.5 w-3.5'
             const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
 
@@ -246,9 +247,9 @@ watch(
                 { label: 'Users Management' },
             ]">
             <template #actions>
-                <button @click="openCreateModal" class="btn btn-primary btn-sm">
+                <Button variant="primary" size="sm" @click="openCreateModal">
                     Add user
-                </button>
+                </Button>
             </template>
 
             <template #bottom v-if="deletedUsers">
@@ -257,12 +258,9 @@ watch(
                         {{ deletedUsers }} Deleted
                         {{ deletedUsers == 1 ? 'User' : 'Users' }}
                     </span>
-                    <Link
-                        v-if="deletedUsers"
-                        :href="route('admin.user.deleted.index')"
-                        class="btn btn-secondary btn-xs">
+                    <Button :as="Link" variant="secondary" size="xs" v-if="deletedUsers" :href="route('admin.user.deleted.index')">
                         View deleted {{ deletedUsers == 1 ? 'user' : 'users' }}
-                    </Link>
+                    </Button>
                 </div>
             </template>
         </PageHeader>
@@ -285,15 +283,15 @@ watch(
         <template #title>Delete user</template>
 
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                Delete <span class="font-medium text-(--color-text)">{{ userToDelete?.name }}</span> ({{ userToDelete?.email }})? This action is recoverable until the auto-delete date.
+            <p class="text-sm text-muted-foreground">
+                Delete <span class="font-medium text-foreground">{{ userToDelete?.name }}</span> ({{ userToDelete?.email }})? This action is recoverable until the auto-delete date.
             </p>
         </template>
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
-                <button @click="deleteUser" type="button" class="btn btn-danger btn-sm">Delete user</button>
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" @click="deleteUser">Delete user</Button>
             </div>
         </template>
     </Modal>
@@ -351,16 +349,12 @@ watch(
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">
+                <Button variant="secondary" size="sm" @click="closeModal">
                     Cancel
-                </button>
-                <button
-                    @click="createUser"
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :disabled="form.processing">
+                </Button>
+                <Button variant="primary" size="sm" @click="createUser" :disabled="form.processing">
                     {{ form.processing ? 'Creating...' : 'Create user' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -369,15 +363,15 @@ watch(
         <template #title>Impersonate user</template>
 
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                You will be logged in as <span class="font-medium text-(--color-text)">{{ userToImpersonate?.name }}</span> ({{ userToImpersonate?.email }}) and see what they see.
+            <p class="text-sm text-muted-foreground">
+                You will be logged in as <span class="font-medium text-foreground">{{ userToImpersonate?.name }}</span> ({{ userToImpersonate?.email }}) and see what they see.
             </p>
         </template>
 
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button @click="closeModal" type="button" class="btn btn-secondary btn-sm">Cancel</button>
-                <button @click="handleImpersonate" type="button" class="btn btn-danger btn-sm">Impersonate</button>
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" @click="handleImpersonate">Impersonate</Button>
             </div>
         </template>
     </Modal>

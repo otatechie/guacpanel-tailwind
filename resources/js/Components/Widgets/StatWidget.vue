@@ -61,13 +61,13 @@ const colorClasses = {
         <div class="flex items-start justify-between">
             <!-- Content -->
             <div class="min-w-0 flex-1">
-                <p class="mb-1 text-xs font-medium tracking-wide text-(--color-text-muted) uppercase sm:text-xs">
+                <p class="mb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:text-xs">
                     {{ title }}
                 </p>
-                <p class="mb-1 text-2xl font-semibold tabular-nums text-(--color-text) sm:text-3xl">
+                <p class="mb-1 text-2xl font-semibold tabular-nums text-foreground sm:text-3xl">
                     {{ value }}
                 </p>
-                <p v-if="description" class="text-xs text-(--color-text-muted) sm:text-sm">
+                <p v-if="description" class="text-xs text-muted-foreground sm:text-sm">
                     {{ description }}
                 </p>
             </div>
@@ -87,7 +87,7 @@ const colorClasses = {
         </div>
 
         <!-- Trend indicator at bottom -->
-        <div v-if="trend !== 'neutral'" class="mt-4 border-t border-[var(--color-border)] pt-4">
+        <div v-if="trend !== 'neutral'" class="mt-4 border-t border-border pt-4">
             <div
                 v-if="trend === 'up'"
                 class="flex items-center gap-1 text-green-600 dark:text-green-400">

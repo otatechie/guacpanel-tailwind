@@ -6,17 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Personalisation;
 use App\Traits\PersonalisationsHelper;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
-class AdminPersonalisationController extends Controller
+class AdminPersonalisationController extends Controller implements HasMiddleware
 {
     use PersonalisationsHelper;
 
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:view-personalisation');
+        return [
+            new Middleware('permission:view-personalisation|manage-personalization'),
+        ];
     }
 
     public function index()
@@ -30,7 +34,7 @@ class AdminPersonalisationController extends Controller
 
     public function updateInfo(Request $request)
     {
-        $this->authorize('update-personalisation');
+        abort_unless($request->user()->canAny(['update-personalisation', 'manage-personalization']), 403);
 
         $validated = $request->validate([
             'app_name' => ['nullable', 'string', 'max:100'],
@@ -46,7 +50,7 @@ class AdminPersonalisationController extends Controller
 
     public function upload(Request $request)
     {
-        $this->authorize('upload-personalisation-files');
+        abort_unless($request->user()->canAny(['upload-personalisation-files', 'manage-personalization']), 403);
 
         $request->validate([
             'app_logo' => ['nullable', 'image', 'max:2048'],
@@ -84,7 +88,7 @@ class AdminPersonalisationController extends Controller
 
     public function delete(Request $request)
     {
-        $this->authorize('delete-personalisation-files');
+        abort_unless($request->user()->canAny(['delete-personalisation-files', 'manage-personalization']), 403);
 
         $request->validate([
             'field' => ['required', 'string', 'in:app_logo,app_logo_dark,favicon'],

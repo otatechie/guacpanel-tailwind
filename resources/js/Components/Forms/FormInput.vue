@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
+import { Input } from '@/Components/ui/input'
+import { Label } from '@/Components/ui/label'
 
 const props = defineProps({
     modelValue: {
@@ -39,46 +41,49 @@ const props = defineProps({
         type: String,
         default: null,
     },
+    /**
+     * Render the `*` next to the label. Turn off where every field in the form
+     * is required and the marker carries no information (e.g. the auth pages).
+     */
+    showRequiredMarker: {
+        type: Boolean,
+        default: true,
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
 const showPassword = ref(false)
 
-const inputPlaceholder = computed(() => props.placeholder || props.label)
+// placeholder="" means no placeholder; omitting it falls back to the label.
+const inputPlaceholder = computed(() =>
+    props.placeholder === null ? props.label : props.placeholder || undefined
+)
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
-
-function updateValue(event) {
-    emit('update:modelValue', event.target.value)
-}
 </script>
 
 <template>
     <div>
-        <label :for="inputId" class="form-label">
-            {{ label }}<span v-if="required" class="text-red-500"> *</span>
-        </label>
+        <Label :for="inputId" class="form-label">
+            {{ label }}<span v-if="required && showRequiredMarker" class="text-destructive"> *</span>
+        </Label>
 
         <div class="relative">
-            <input
+            <Input
                 :id="inputId"
                 :type="showPassword ? 'text' : type"
-                :value="modelValue"
+                :model-value="modelValue"
                 :required="required"
                 :disabled="disabled"
-                class="form-input"
-                :class="{
-                    'form-input-error': error,
-                    'form-input-disabled': disabled,
-                }"
                 :placeholder="inputPlaceholder"
                 :aria-invalid="!!error"
                 :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
-                @input="updateValue" />
+                :class="type === 'password' ? 'pr-11' : undefined"
+                @update:model-value="emit('update:modelValue', $event)" />
 
             <button
                 v-if="type === 'password'"
                 type="button"
-                class="absolute inset-y-0 right-0 flex min-w-[44px] cursor-pointer items-center justify-center px-3 text-(--color-text-muted) transition-colors hover:text-(--color-text)"
+                class="absolute inset-y-0 right-0 flex min-w-[44px] cursor-pointer items-center justify-center px-3 text-muted-foreground transition-colors hover:text-foreground"
                 :aria-label="showPassword ? 'Hide password' : 'Show password'"
                 :aria-pressed="showPassword"
                 @click="showPassword = !showPassword">
@@ -87,10 +92,10 @@ function updateValue(event) {
             </button>
         </div>
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-red-600">
+        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-destructive">
             {{ error }}
         </p>
-        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-(--color-text-muted)">
+        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-muted-foreground">
             {{ help }}
         </p>
     </div>

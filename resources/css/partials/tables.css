@@ -1,8 +1,8 @@
 /* Container border uses variables in both themes */
 
 .container-border-table {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-strong);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     padding: 0.125rem;
 }
@@ -17,7 +17,7 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 500;
-    color: var(--color-text-muted);
+    color: var(--muted-foreground);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }

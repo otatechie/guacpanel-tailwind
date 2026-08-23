@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
@@ -22,8 +23,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-2xl font-bold text-(--color-text)">Confirm access</h1>
-            <p class="mt-1 text-sm text-(--color-text-muted)">
+            <h1 class="text-xl font-semibold text-foreground">Confirm access</h1>
+            <p class="mt-1.5 text-sm text-muted-foreground">
                 Re-enter your password to continue
             </p>
         </header>
@@ -32,25 +33,23 @@ const submit = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
+                placeholder=""
                 label="Password"
                 name="password"
                 type="password"
+                :show-required-marker="false"
                 required
                 autocomplete="current-password"
                 :disabled="form.processing"
                 :error="form.errors.password" />
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                class="btn btn-primary w-full"
-                :aria-busy="form.processing">
+            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
                 {{ form.processing ? 'Confirming...' : 'Confirm' }}
-            </button>
+            </Button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-(--color-text-muted)">
-            <Link :href="route('home')" class="font-medium text-(--primary-color) hover:underline">
+        <p class="mt-8 text-center text-sm text-muted-foreground">
+            <Link :href="route('home')" class="font-medium text-primary hover:underline">
                 Back to dashboard
             </Link>
         </p>

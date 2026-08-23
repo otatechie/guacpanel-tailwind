@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { DocumentDuplicateIcon } from '@heroicons/vue/24/outline'
@@ -33,8 +34,8 @@ const copyAllCodes = async () => {
 <template>
     <div class="max-w-2xl space-y-5">
         <div>
-            <h2 class="text-base font-semibold text-(--color-text)">Two-factor authentication</h2>
-            <p class="mt-1 text-sm text-(--color-text-muted)">Add an extra security layer with an authenticator app</p>
+            <h2 class="text-base font-semibold text-foreground">Two-factor authentication</h2>
+            <p class="mt-1 text-sm text-muted-foreground">Add an extra security layer with an authenticator app</p>
         </div>
 
         <Alert v-if="!twoFactorEnabled" type="info">
@@ -43,53 +44,45 @@ const copyAllCodes = async () => {
 
         <!-- Not enabled yet -->
         <template v-if="!user.two_factor_secret">
-            <button
-                @click="enableTwoFactor"
-                :disabled="enableForm.processing || !twoFactorEnabled"
-                class="btn btn-primary btn-sm"
-                :aria-busy="enableForm.processing">
+            <Button variant="primary" size="sm" @click="enableTwoFactor" :disabled="enableForm.processing || !twoFactorEnabled" :aria-busy="enableForm.processing">
                 {{ enableForm.processing ? 'Enabling...' : 'Enable two-factor' }}
-            </button>
+            </Button>
         </template>
 
         <!-- Enabled: setup + recovery codes -->
         <template v-else>
             <!-- QR code -->
             <div>
-                <p class="text-base font-medium text-(--color-text)">Scan QR code</p>
-                <p class="mt-1 text-sm text-(--color-text-muted)">Open your authenticator app and scan this code.</p>
-                <div v-if="qrCodeSvg" class="mt-3 inline-block rounded-lg border border-(--card-border) bg-white p-3" v-html="qrCodeSvg" />
+                <p class="text-base font-medium text-foreground">Scan QR code</p>
+                <p class="mt-1 text-sm text-muted-foreground">Open your authenticator app and scan this code.</p>
+                <div v-if="qrCodeSvg" class="mt-3 inline-block rounded-lg border border-border bg-white p-3" v-html="qrCodeSvg" />
             </div>
 
             <!-- Recovery codes -->
-            <div class="border-t border-(--card-border) pt-5">
-                <p class="text-base font-medium text-(--color-text)">Recovery codes</p>
-                <p class="mt-1 text-sm text-(--color-text-muted)">Save these codes somewhere safe. Each can only be used once.</p>
+            <div class="border-t border-border pt-5">
+                <p class="text-base font-medium text-foreground">Recovery codes</p>
+                <p class="mt-1 text-sm text-muted-foreground">Save these codes somewhere safe. Each can only be used once.</p>
 
-                <div v-if="recoveryCodes.length" class="mt-3 rounded-lg border border-(--card-border) bg-(--color-surface-muted)">
+                <div v-if="recoveryCodes.length" class="mt-3 rounded-lg border border-border bg-muted">
                     <div class="columns-2 gap-0 px-4 py-3 sm:columns-3">
                         <p
                             v-for="code in recoveryCodes"
                             :key="code"
-                            class="py-1 font-mono text-sm tabular-nums text-(--color-text) select-all">
+                            class="py-1 font-mono text-sm tabular-nums text-foreground select-all">
                             {{ code }}
                         </p>
                     </div>
-                    <div class="flex items-center justify-between border-t border-(--card-border) px-4 py-2.5">
+                    <div class="flex items-center justify-between border-t border-border px-4 py-2.5">
                         <button
                             type="button"
-                            class="inline-flex items-center gap-1.5 text-sm font-medium text-(--color-text) transition-colors hover:text-(--primary-color)"
+                            class="inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-primary"
                             @click="copyAllCodes">
                             <DocumentDuplicateIcon class="h-4 w-4" />
                             {{ copied ? 'Copied!' : 'Copy all' }}
                         </button>
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-secondary"
-                            :disabled="regenerateForm.processing"
-                            @click="regenerateCodes">
+                        <Button variant="secondary" size="sm" :disabled="regenerateForm.processing" @click="regenerateCodes">
                             {{ regenerateForm.processing ? 'Generating...' : 'Regenerate' }}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -97,8 +90,8 @@ const copyAllCodes = async () => {
             <!-- Disable -->
             <div class="border-t border-red-200 pt-5 dark:border-red-900/30">
                 <p class="text-base font-medium text-red-600 dark:text-red-400">Disable two-factor</p>
-                <p class="mt-1 text-sm text-(--color-text-muted)">This removes 2FA protection from your account.</p>
-                <button @click="showDisableModal = true" class="btn btn-danger btn-sm mt-3">Disable</button>
+                <p class="mt-1 text-sm text-muted-foreground">This removes 2FA protection from your account.</p>
+                <Button variant="danger" size="sm" class="mt-3" @click="showDisableModal = true">Disable</Button>
             </div>
         </template>
     </div>
@@ -106,14 +99,14 @@ const copyAllCodes = async () => {
     <Modal :show="showDisableModal" @close="showDisableModal = false" size="sm">
         <template #title>Disable two-factor</template>
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">This immediately removes 2FA from your account. You can re-enable it later.</p>
+            <p class="text-sm text-muted-foreground">This immediately removes 2FA from your account. You can re-enable it later.</p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="showDisableModal = false">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="disableForm.processing" @click="disableTwoFactor">
+                <Button variant="secondary" size="sm" @click="showDisableModal = false">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="disableForm.processing" @click="disableTwoFactor">
                     {{ disableForm.processing ? 'Disabling...' : 'Disable' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

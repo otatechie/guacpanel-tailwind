@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class AdminUsersVerificationController extends Controller
+class AdminUsersVerificationController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('permission:edit-users');
+        return [
+            new Middleware('permission:edit-users|manage-users'),
+        ];
     }
 
     public function toggle(Request $request, User $user)

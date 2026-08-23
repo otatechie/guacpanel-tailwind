@@ -37,7 +37,7 @@ const activeTab = ref(0)
             ]" />
 
         <div class="card overflow-hidden">
-            <div class="border-b border-(--card-border) bg-(--color-surface-muted) px-4 sm:px-6">
+            <div class="border-b border-border bg-muted px-4 sm:px-6">
                 <Tabs v-model="activeTab" :tabs="tabs" />
             </div>
             <div class="px-4 py-5 sm:px-6">

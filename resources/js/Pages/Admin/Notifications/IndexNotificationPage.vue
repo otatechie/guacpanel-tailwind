@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { computed, h, ref, watch } from 'vue'
@@ -121,7 +122,7 @@ const dash = v => {
 
 const columnHelper = createColumnHelper()
 
-const btnClass = 'cursor-pointer rounded-md p-1.5 text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]'
+const btnClass = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
 const iconClass = 'h-3.5 w-3.5'
 const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
 
@@ -131,8 +132,8 @@ const columns = [
         cell: info => {
             const row = info.row.original
             return h('div', { class: 'min-w-0' }, [
-                h('p', { class: 'truncate text-sm font-medium text-[var(--color-text)]' }, dash(row.title)),
-                h('p', { class: 'mt-0.5 text-xs text-[var(--color-text-muted)]' }, [
+                h('p', { class: 'truncate text-sm font-medium text-foreground' }, dash(row.title)),
+                h('p', { class: 'mt-0.5 text-xs text-muted-foreground' }, [
                     h('span', { class: 'capitalize' }, dash(row.scope)),
                     h('span', { class: 'mx-1' }, '·'),
                     h(NotificationTypeBadge, { type: row.type }),
@@ -143,12 +144,12 @@ const columns = [
     columnHelper.accessor(row => dash(row.created_by_name), {
         id: 'created_by',
         header: 'Author',
-        cell: info => h('span', { class: 'text-sm text-[var(--color-text)]' }, info.getValue()),
+        cell: info => h('span', { class: 'text-sm text-foreground' }, info.getValue()),
     }),
     columnHelper.accessor(row => dash(row.created_at_diff), {
         id: 'created_at',
         header: 'Created',
-        cell: info => h('span', { class: 'text-xs text-[var(--color-text-muted)]' }, info.getValue()),
+        cell: info => h('span', { class: 'text-xs text-muted-foreground' }, info.getValue()),
     }),
     columnHelper.display({
         id: 'actions',
@@ -226,11 +227,9 @@ const formatExportData = row => ({
             description="Create and manage app notifications"
             :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Link
-                    :href="route('admin.notifications.create')"
-                    class="btn btn-primary btn-sm">
+                <Button :as="Link" variant="primary" size="sm" :href="route('admin.notifications.create')">
                     Create notification
-                </Link>
+                </Button>
             </template>
         </PageHeader>
 
@@ -259,16 +258,16 @@ const formatExportData = row => ({
     <Modal :show="showDeleteModal" size="sm" @close="closeDeleteModal">
         <template #title>Delete notification</template>
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                Delete <span class="font-medium text-(--color-text)">{{ deleteTarget?.title || 'this notification' }}</span>? This cannot be undone.
+            <p class="text-sm text-muted-foreground">
+                Delete <span class="font-medium text-foreground">{{ deleteTarget?.title || 'this notification' }}</span>? This cannot be undone.
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-secondary btn-sm" :disabled="loading" @click="closeDeleteModal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-sm" :disabled="loading" @click="destroyRow">
+                <Button variant="secondary" size="sm" :disabled="loading" @click="closeDeleteModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="loading" @click="destroyRow">
                     {{ loading ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -276,16 +275,16 @@ const formatExportData = row => ({
     <Modal :show="showBulkDeleteModal" size="sm" @close="closeBulkDeleteModal">
         <template #title>Delete notifications</template>
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                Delete <span class="font-medium text-(--color-text)">{{ selectedCount }}</span> selected notifications? This cannot be undone.
+            <p class="text-sm text-muted-foreground">
+                Delete <span class="font-medium text-foreground">{{ selectedCount }}</span> selected notifications? This cannot be undone.
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-secondary btn-sm" :disabled="loading" @click="closeBulkDeleteModal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-sm" :disabled="loading" @click="runBulkDelete">
+                <Button variant="secondary" size="sm" :disabled="loading" @click="closeBulkDeleteModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="loading" @click="runBulkDelete">
                     {{ loading ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

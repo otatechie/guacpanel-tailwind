@@ -8,21 +8,19 @@
  * Background: pure surface, no tint.
  */
 .card {
-    background-color: var(--color-surface);
-    border: 1px solid var(--card-border);
+    background-color: var(--card);
+    border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: var(--card-shadow);
 }
 
 :root {
-    --card-border: #e3e8ee;
     --card-shadow:
         0px 1px 1px rgba(0, 0, 0, 0.03),
         0px 3px 6px rgba(18, 42, 66, 0.04);
 }
 
 .dark {
-    --card-border: #2a2f45;
     --card-shadow:
         0px 1px 1px rgba(0, 0, 0, 0.12),
         0px 3px 6px rgba(0, 0, 0, 0.18);

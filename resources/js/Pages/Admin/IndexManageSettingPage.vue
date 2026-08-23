@@ -45,8 +45,8 @@ const toggle = field => {
             <div class="card px-5 py-4" :class="{ 'opacity-50 pointer-events-none': form.processing }">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <p class="text-base font-medium text-(--color-text)">Password expiration</p>
-                        <p class="mt-0.5 text-sm text-(--color-text-muted)">Require password change every 90 days</p>
+                        <p class="text-base font-medium text-foreground">Password expiration</p>
+                        <p class="mt-0.5 text-sm text-muted-foreground">Require password change every 90 days</p>
                     </div>
                     <Switch :model-value="form.password_expiry" @update:model-value="toggle('password_expiry')" aria-label="Toggle password expiration" />
                 </div>
@@ -55,8 +55,8 @@ const toggle = field => {
             <div class="card px-5 py-4" :class="{ 'opacity-50 pointer-events-none': form.processing }">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <p class="text-base font-medium text-(--color-text)">Two-factor authentication</p>
-                        <p class="mt-0.5 text-sm text-(--color-text-muted)">
+                        <p class="text-base font-medium text-foreground">Two-factor authentication</p>
+                        <p class="mt-0.5 text-sm text-muted-foreground">
                             {{ twoFactorEnabled ? 'Require 2FA for all users' : 'Enable in Fortify config first' }}
                         </p>
                     </div>
@@ -67,8 +67,8 @@ const toggle = field => {
             <div class="card px-5 py-4" :class="{ 'opacity-50 pointer-events-none': form.processing }">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <p class="text-base font-medium text-(--color-text)">Passwordless login</p>
-                        <p class="mt-0.5 text-sm text-(--color-text-muted)">Allow magic link sign-in without password</p>
+                        <p class="text-base font-medium text-foreground">Passwordless login</p>
+                        <p class="mt-0.5 text-sm text-muted-foreground">Allow magic link sign-in without password</p>
                     </div>
                     <Switch :model-value="form.passwordless_login" @update:model-value="toggle('passwordless_login')" aria-label="Toggle passwordless login" />
                 </div>

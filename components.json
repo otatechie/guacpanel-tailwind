@@ -1,0 +1,23 @@
+{
+  "$schema": "https://shadcn-vue.com/schema.json",
+  "style": "reka-vega",
+  "typescript": true,
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "resources/css/app.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "pointer": false,
+  "aliases": {
+    "components": "@/Components",
+    "utils": "@/lib/utils",
+    "ui": "@/Components/ui",
+    "lib": "@/lib",
+    "composables": "@/composables"
+  },
+  "registries": {}
+}

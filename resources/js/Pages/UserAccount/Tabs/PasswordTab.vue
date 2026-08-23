@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { useForm } from '@inertiajs/vue3'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
@@ -18,8 +19,8 @@ const submit = () => form.put('/user/password', { preserveScroll: true, onSucces
 
 <template>
     <div class="max-w-md">
-        <h2 class="text-base font-medium text-(--color-text)">Password</h2>
-        <p class="mt-1 text-sm text-(--color-text-muted)">Update your password to keep your account secure</p>
+        <h2 class="text-base font-medium text-foreground">Password</h2>
+        <p class="mt-1 text-sm text-muted-foreground">Update your password to keep your account secure</p>
 
         <Alert v-if="!passwordEnabled" type="info" class="mt-4">
             Password changes are disabled by your administrator.
@@ -31,9 +32,9 @@ const submit = () => form.put('/user/password', { preserveScroll: true, onSucces
             <FormInput v-model="form.password_confirmation" label="Confirm new password" type="password" autocomplete="new-password" :error="form.errors.password_confirmation" required />
 
             <div class="pt-2">
-                <button type="submit" class="btn btn-primary btn-sm" :disabled="form.processing || !passwordEnabled">
+                <Button variant="primary" size="sm" type="submit" :disabled="form.processing || !passwordEnabled">
                     {{ form.processing ? 'Updating...' : 'Update password' }}
-                </button>
+                </Button>
             </div>
         </form>
     </div>

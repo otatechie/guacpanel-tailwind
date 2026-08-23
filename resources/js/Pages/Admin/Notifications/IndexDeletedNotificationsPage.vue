@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import Default from '@js/Layouts/Default.vue'
@@ -24,15 +25,15 @@ const breadcrumbs = computed(() => [
             description="Manage soft-deleted notifications (coming soon)"
             :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Link :href="route('admin.notifications.index')" class="btn btn-secondary">
+                <Button :as="Link" variant="secondary" :href="route('admin.notifications.index')">
                     Back
-                </Link>
+                </Button>
             </template>
         </PageHeader>
 
         <div
-            class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-sm">
-            <p class="text-sm text-[var(--color-text-muted)]">
+            class="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <p class="text-sm text-muted-foreground">
                 This page will be implemented next for managing soft deleted notifications.
                 We may not need it since we have a job to clean them up.
             </p>

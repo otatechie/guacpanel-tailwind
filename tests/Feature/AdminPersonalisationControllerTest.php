@@ -23,7 +23,6 @@ beforeEach(function () {
     $this->validData = [
         '_token'         => $this->testToken,
         'app_name'       => 'New App Name',
-        'timezone'       => 'UTC',
         'copyright_text' => '© 2024',
     ];
 });
@@ -37,7 +36,6 @@ test('it allows users with manage permission to access personalisation page', fu
         fn ($page) => $page
             ->component('Admin/Personalisation/IndexPage')
             ->has('personalisation')
-            ->has('timezones')
     );
 });
 
@@ -159,21 +157,20 @@ test('it denies file deletion to users without delete permission', function () {
 test('it allows users with update permission to update personalisation settings', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
-        ->post(route('admin.personalization.update'), $this->validData);
+        ->post(route('admin.personalization.update.info'), $this->validData);
 
     $response->assertRedirect();
     $response->assertSessionHas('success');
 
     $this->personalisation->refresh();
     $this->assertEquals($this->validData['app_name'], $this->personalisation->app_name);
-    $this->assertEquals($this->validData['timezone'], $this->personalisation->timezone);
     $this->assertEquals($this->validData['copyright_text'], $this->personalisation->copyright_text);
 });
 
 test('it denies settings update to users without update permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->withSession(['_token' => $this->testToken])
-        ->post(route('admin.personalization.update'), $this->validData);
+        ->post(route('admin.personalization.update.info'), $this->validData);
 
     $response->assertForbidden();
 });

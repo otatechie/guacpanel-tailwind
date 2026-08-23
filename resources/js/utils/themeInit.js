@@ -98,25 +98,6 @@ const colors = [
     },
 ]
 
-function addThemeTransitions() {
-    const root = document.documentElement
-    root.style.setProperty('--theme-transition', 'all 0.3s ease-in-out')
-
-    const transitionStyle = document.createElement('style')
-    transitionStyle.textContent = `
-        * {
-            transition: var(--theme-transition);
-        }
-        [class*="text-primary"],
-        [class*="bg-primary"],
-        [class*="border-primary"],
-        [class*="ring-primary"] {
-            transition: var(--theme-transition);
-        }
-    `
-    document.head.appendChild(transitionStyle)
-}
-
 function adjustThemeIntensity(intensity = 1) {
     const root = document.documentElement
     const currentColor = localStorage.getItem('theme-color') || 'cyan'
@@ -165,8 +146,6 @@ export function initializeTheme() {
     const savedColor = localStorage.getItem('theme-color') || 'cyan'
     const savedPreset = localStorage.getItem('theme-preset')
     const savedIntensity = parseFloat(localStorage.getItem('theme-intensity') || '1')
-
-    addThemeTransitions()
 
     if (savedPreset && presets[savedPreset]) {
         applyThemePreset(savedPreset)

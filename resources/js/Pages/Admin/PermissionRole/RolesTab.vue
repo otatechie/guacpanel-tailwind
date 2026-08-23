@@ -1,4 +1,5 @@
 <script setup>
+import Button from '@/Components/Button.vue'
 import { ref, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@js/Components/Notifications/Modal.vue'
@@ -87,39 +88,39 @@ const formatPerm = name => {
     return words.charAt(0).toUpperCase() + words.slice(1)
 }
 
-const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) transition-colors hover:bg-(--color-surface-muted) hover:text-(--color-text)'
+const actionBtn = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
 </script>
 
 <template>
     <div class="space-y-4">
         <div class="flex items-center justify-between">
-            <p class="text-xs text-(--color-text-muted)">{{ roles.length }} {{ roles.length === 1 ? 'role' : 'roles' }}</p>
-            <button type="button" @click="showAddModal = true" class="btn btn-primary btn-sm">Add role</button>
+            <p class="text-xs text-muted-foreground">{{ roles.length }} {{ roles.length === 1 ? 'role' : 'roles' }}</p>
+            <Button variant="primary" size="sm" @click="showAddModal = true">Add role</Button>
         </div>
 
         <!-- Roles list -->
-        <div v-if="roles.length" class="divide-y divide-(--card-border) rounded-lg border border-(--card-border)">
+        <div v-if="roles.length" class="divide-y divide-border rounded-lg border border-border">
             <div v-for="role in roles" :key="role.id" class="px-4 py-3">
                 <div class="flex items-start justify-between gap-4">
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
-                            <p class="text-sm font-medium capitalize text-(--color-text)">{{ role.name }}</p>
-                            <span v-if="role.is_protected" class="text-[10px] text-(--color-text-muted)">Protected</span>
+                            <p class="text-sm font-medium capitalize text-foreground">{{ role.name }}</p>
+                            <span v-if="role.is_protected" class="text-[10px] text-muted-foreground">Protected</span>
                         </div>
-                        <p v-if="role.description" class="mt-0.5 text-xs text-(--color-text-muted)">{{ role.description }}</p>
+                        <p v-if="role.description" class="mt-0.5 text-xs text-muted-foreground">{{ role.description }}</p>
 
                         <!-- Permissions -->
                         <div v-if="role.permissions?.length" class="mt-2 flex flex-wrap gap-1">
                             <template v-if="expandedRoles.has(role.id)">
-                                <span v-for="p in role.permissions" :key="p.id" class="rounded bg-(--color-surface-muted) px-1.5 py-0.5 font-mono text-[10px] text-(--color-text-muted)">{{ p.name }}</span>
-                                <button type="button" @click="toggleExpand(role.id)" class="px-1 text-[10px] text-(--color-text-muted) hover:text-(--color-text)">Less</button>
+                                <span v-for="p in role.permissions" :key="p.id" class="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{{ p.name }}</span>
+                                <button type="button" @click="toggleExpand(role.id)" class="px-1 text-[10px] text-muted-foreground hover:text-foreground">Less</button>
                             </template>
                             <template v-else>
-                                <span v-for="p in role.permissions.slice(0, 4)" :key="p.id" class="rounded bg-(--color-surface-muted) px-1.5 py-0.5 font-mono text-[10px] text-(--color-text-muted)">{{ p.name }}</span>
-                                <button v-if="role.permissions.length > 4" type="button" @click="toggleExpand(role.id)" class="px-1 text-[10px] text-(--color-text-muted) hover:text-(--color-text)">+{{ role.permissions.length - 4 }}</button>
+                                <span v-for="p in role.permissions.slice(0, 4)" :key="p.id" class="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{{ p.name }}</span>
+                                <button v-if="role.permissions.length > 4" type="button" @click="toggleExpand(role.id)" class="px-1 text-[10px] text-muted-foreground hover:text-foreground">+{{ role.permissions.length - 4 }}</button>
                             </template>
                         </div>
-                        <p v-else class="mt-1 text-[10px] text-(--color-text-muted)">No permissions</p>
+                        <p v-else class="mt-1 text-[10px] text-muted-foreground">No permissions</p>
                     </div>
 
                     <div v-if="!role.is_protected" class="flex shrink-0 gap-0.5">
@@ -138,9 +139,9 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
             </div>
         </div>
 
-        <p v-else class="py-6 text-center text-sm text-(--color-text-muted)">
+        <p v-else class="py-6 text-center text-sm text-muted-foreground">
             No roles yet.
-            <button type="button" @click="showAddModal = true" class="text-(--primary-color) hover:underline">Add one</button>
+            <button type="button" @click="showAddModal = true" class="text-primary hover:underline">Add one</button>
         </p>
 
 
@@ -154,24 +155,24 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
 
                 <div>
                     <div class="mb-2 flex items-center justify-between">
-                        <p class="text-xs font-medium text-(--color-text)">Permissions</p>
-                        <p class="text-xs tabular-nums text-(--color-text-muted)">{{ form.permissions.length }}/{{ permissions.length }}</p>
+                        <p class="text-xs font-medium text-foreground">Permissions</p>
+                        <p class="text-xs tabular-nums text-muted-foreground">{{ form.permissions.length }}/{{ permissions.length }}</p>
                     </div>
-                    <div class="rounded-lg border border-(--card-border)">
-                        <div class="flex items-center gap-3 border-b border-(--card-border) px-3 py-2">
+                    <div class="rounded-lg border border-border">
+                        <div class="flex items-center gap-3 border-b border-border px-3 py-2">
                             <FormCheckbox :model-value="Boolean(allPermissionsSelected)" @update:model-value="toggleAllPermissions" label="Select all" />
-                            <input v-model="permissionSearch" type="text" placeholder="Filter..." class="ml-auto w-32 rounded-md border border-(--color-border-strong) bg-(--color-surface) px-2 py-1 text-xs text-(--color-text) placeholder-(--color-text-muted) focus:border-(--primary-color) focus:outline-none" />
+                            <input v-model="permissionSearch" type="text" placeholder="Filter..." class="ml-auto w-32 rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none" />
                         </div>
                         <div class="max-h-48 overflow-y-auto p-2">
                             <div v-if="filteredPermissions.length" class="grid gap-0.5 sm:grid-cols-2">
                                 <label v-for="p in filteredPermissions" :key="p.id" :for="`rp-${p.id}`"
-                                    class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-xs transition-colors hover:bg-(--color-surface-muted)"
-                                    :class="form.permissions.includes(p.id) ? 'text-(--color-text) font-medium' : 'text-(--color-text-muted)'">
-                                    <input :id="`rp-${p.id}`" type="checkbox" :checked="form.permissions.includes(p.id)" @change="togglePermission(p.id, $event.target.checked)" class="h-3 w-3 shrink-0 rounded border-(--color-border-strong) text-(--primary-color)" />
+                                    class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-xs transition-colors hover:bg-muted"
+                                    :class="form.permissions.includes(p.id) ? 'text-foreground font-medium' : 'text-muted-foreground'">
+                                    <input :id="`rp-${p.id}`" type="checkbox" :checked="form.permissions.includes(p.id)" @change="togglePermission(p.id, $event.target.checked)" class="h-3 w-3 shrink-0 rounded border-border text-primary" />
                                     {{ formatPerm(p.name) }}
                                 </label>
                             </div>
-                            <p v-else class="py-3 text-center text-xs text-(--color-text-muted)">No match</p>
+                            <p v-else class="py-3 text-center text-xs text-muted-foreground">No match</p>
                         </div>
                     </div>
                     <p v-if="form.errors.permissions" class="mt-1 text-xs text-red-600">{{ form.errors.permissions }}</p>
@@ -180,10 +181,10 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-primary" :disabled="form.processing" @click="submitRole">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="primary" size="sm" :disabled="form.processing" @click="submitRole">
                     {{ form.processing ? 'Saving...' : editingRole ? 'Save' : 'Add role' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -192,16 +193,16 @@ const actionBtn = 'cursor-pointer rounded-md p-1.5 text-(--color-text-muted) tra
     <Modal :show="showDeleteModal" @close="closeModal" size="sm">
         <template #title>Delete role</template>
         <template #default>
-            <p class="text-sm text-(--color-text-muted)">
-                Delete <span class="font-medium text-(--color-text)">{{ roleToDelete?.name }}</span>? This removes the role from all assigned users.
+            <p class="text-sm text-muted-foreground">
+                Delete <span class="font-medium text-foreground">{{ roleToDelete?.name }}</span>? This removes the role from all assigned users.
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button type="button" class="btn btn-sm btn-secondary" @click="closeModal">Cancel</button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="form.processing" @click="deleteRole">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" :disabled="form.processing" @click="deleteRole">
                     {{ form.processing ? 'Deleting...' : 'Delete' }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>

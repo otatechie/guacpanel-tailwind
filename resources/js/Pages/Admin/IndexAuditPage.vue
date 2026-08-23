@@ -27,7 +27,7 @@ const eventColor = e => {
     if (k === 'created') return 'text-green-600 dark:text-green-400'
     if (k === 'updated') return 'text-amber-600 dark:text-amber-400'
     if (k === 'deleted') return 'text-red-600 dark:text-red-400'
-    return 'text-[var(--color-text-muted)]'
+    return 'text-muted-foreground'
 }
 
 const eventDot = e => {
@@ -35,14 +35,14 @@ const eventDot = e => {
     if (k === 'created') return 'bg-green-500'
     if (k === 'updated') return 'bg-amber-500'
     if (k === 'deleted') return 'bg-red-500'
-    return 'bg-[var(--color-border-strong)]'
+    return 'bg-border'
 }
 
 const columns = [
     columnHelper.accessor(row => row.user?.name, {
         id: 'user',
         header: 'User',
-        cell: info => h('span', { class: 'text-sm font-medium text-[var(--color-text)]' }, info.getValue() || 'System'),
+        cell: info => h('span', { class: 'text-sm font-medium text-foreground' }, info.getValue() || 'System'),
     }),
     columnHelper.accessor('event', {
         header: 'Action',
@@ -59,7 +59,7 @@ const columns = [
         header: 'Resource',
         cell: info => {
             const full = info.getValue() || ''
-            return h('span', { class: 'text-xs text-[var(--color-text-muted)]' }, full.split('\\').pop() || 'Unknown')
+            return h('span', { class: 'text-xs text-muted-foreground' }, full.split('\\').pop() || 'Unknown')
         },
     }),
     columnHelper.accessor('created_at', {
@@ -68,7 +68,7 @@ const columns = [
             const raw = info.getValue()
             const d = raw ? new Date(raw) : null
             if (!d || isNaN(d.getTime())) return '-'
-            return h('span', { class: 'text-xs tabular-nums text-[var(--color-text-muted)]' },
+            return h('span', { class: 'text-xs tabular-nums text-muted-foreground' },
                 d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
                 d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
             )
