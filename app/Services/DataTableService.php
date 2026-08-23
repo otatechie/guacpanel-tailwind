@@ -19,7 +19,7 @@ class DataTableService
     {
         $search = $this->getRequestValue($request, 'search');
 
-        if (!$search) {
+        if (!$search || !is_string($search)) {
             return $query;
         }
 
@@ -98,32 +98,7 @@ class DataTableService
 
     public function buildFilters(Request $request): array
     {
-        return $request->all();
-    }
-
-    public function applyAll(
-        Builder $query,
-        Request $request,
-        array $searchableColumns = [],
-        array $sortConfig = [],
-        string $resourceName = 'items',
-    ): array {
-        if (!empty($searchableColumns)) {
-            $query = $this->applySearch($query, $request, $searchableColumns);
-        }
-
-        if (!empty($sortConfig)) {
-            $query = $this->applySorting($query, $request, $sortConfig);
-        }
-
-        $filteredTotal = $query->count();
-        $perPage = $this->resolvePerPageWithDefaults($request, $resourceName, $filteredTotal);
-
-        return [
-            'query' => $query,
-            'perPage' => $perPage,
-            'filteredTotal' => $filteredTotal,
-        ];
+        return $request->only(['search', 'sort_by', 'sort_dir', 'per_page', 'page']);
     }
 
     public function process(Builder|QueryBuilder $query, Request $request, array $config): array
@@ -136,9 +111,14 @@ class DataTableService
             $query = $this->applySorting($query, $request, $config['sortable']);
         }
 
-        $filteredTotal = $query->count();
-        $resourceName = $config['resource'] ?? 'items';
-        $perPage = $this->resolvePerPageWithDefaults($request, $resourceName, $filteredTotal);
+        // Only pre-count when "all" is requested; paginate() runs its own count query
+        $rawPerPage = $request->get('per_page');
+
+        if ($this->isAllOption($rawPerPage, self::ALLOW_ALL_OPTION)) {
+            $perPage = $this->calculateAllPageSize($query->count(), self::MAX_ROWS_WHEN_ALL);
+        } else {
+            $perPage = $this->normalizePageSize($rawPerPage, self::DEFAULT_PAGE_SIZE, self::ALLOWED_PAGE_SIZES);
+        }
 
         $paginator = $query->paginate($perPage)->withQueryString();
 
@@ -168,7 +148,8 @@ class DataTableService
         if (str_contains($column, '.')) {
             $this->applyRelationshipSearch($query, $column, $search);
         } else {
-            $query->orWhere($column, 'like', '%' . $search . '%');
+            $wrapped = $query->getQuery()->getGrammar()->wrap($column);
+            $query->orWhereRaw("{$wrapped} LIKE ? ESCAPE '!'", [$this->buildLikePattern($search)]);
         }
     }
 
@@ -177,8 +158,21 @@ class DataTableService
         [$relation, $field] = explode('.', $column, 2);
 
         $query->orWhereHas($relation, function ($subQuery) use ($field, $search) {
-            $subQuery->where($field, 'like', '%' . $search . '%');
+            $wrapped = $subQuery->getQuery()->getGrammar()->wrap($field);
+            $subQuery->whereRaw("{$wrapped} LIKE ? ESCAPE '!'", [$this->buildLikePattern($search)]);
         });
+    }
+
+    /**
+     * Escape LIKE wildcards so user input matches literally
+     * ('%' and '_' would otherwise force full scans or match everything).
+     * Column names are developer-defined allowlists, never user input.
+     */
+    private function buildLikePattern(string $search): string
+    {
+        $escaped = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search);
+
+        return '%' . $escaped . '%';
     }
 
     private function applyFilter(Builder $query, array $config, string $filterKey, mixed $value): void
@@ -217,11 +211,24 @@ class DataTableService
 
     private function applyRelationshipSort(Builder $query, array $config, string $sortDirection): void
     {
-        $query
-            ->leftJoin($config['table'], $config['foreign_key'], '=', $config['local_key'])
-            ->select($query->getModel()->getTable() . '.*')
-            ->distinct()
-            ->orderBy($config['order_by'], $sortDirection);
+        $table = $query->getModel()->getTable();
+        $columns = $query->getQuery()->columns;
+
+        $query->leftJoin($config['table'], $config['foreign_key'], '=', $config['local_key']);
+
+        // Preserve the controller's select(); qualify bare columns to avoid join ambiguity
+        if (empty($columns)) {
+            $query->select($table . '.*');
+        } else {
+            $query->getQuery()->columns = array_map(
+                fn($column) => is_string($column) && !str_contains($column, '.')
+                    ? $table . '.' . $column
+                    : $column,
+                $columns,
+            );
+        }
+
+        $query->distinct()->orderBy($config['order_by'], $sortDirection);
     }
 
     private function normalizeSortDirection(mixed $direction): string

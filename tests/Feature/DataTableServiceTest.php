@@ -161,6 +161,91 @@ test('it falls back to the default direction for invalid sort_dir', function () 
     expect($result['data']->items()[0]->name)->toBe('Zed');
 });
 
+test('LIKE wildcards in search input are matched literally', function () {
+    User::factory()->create(['name' => 'Normal Name']);
+    User::factory()->create(['name' => '100% Legit']);
+    User::factory()->create(['name' => 'under_score']);
+
+    $percent = $this->service->process(User::query(), dataTableRequest(['search' => '100%']), [
+        'searchable' => ['name'],
+        'resource' => 'users',
+    ]);
+    expect($percent['data']->total())->toBe(1)
+        ->and($percent['data']->items()[0]->name)->toBe('100% Legit');
+
+    // '%' alone must not match every row
+    $bare = $this->service->process(User::query(), dataTableRequest(['search' => '%%%%']), [
+        'searchable' => ['name'],
+        'resource' => 'users',
+    ]);
+    expect($bare['data']->total())->toBe(0);
+
+    $underscore = $this->service->process(User::query(), dataTableRequest(['search' => 'under_s']), [
+        'searchable' => ['name'],
+        'resource' => 'users',
+    ]);
+    expect($underscore['data']->total())->toBe(1);
+});
+
+test('array search input is ignored instead of throwing', function () {
+    User::factory()->count(3)->create();
+
+    $result = $this->service->process(User::query(), dataTableRequest(['search' => ['x', 'y']]), [
+        'searchable' => ['name', 'email'],
+        'resource' => 'users',
+    ]);
+
+    expect($result['data']->total())->toBe(3);
+});
+
+test('buildFilters only echoes datatable keys back to the page', function () {
+    $result = $this->service->process(
+        User::query(),
+        dataTableRequest(['search' => 'abc', 'per_page' => 10, 'utm_source' => 'evil', 'foo' => 'bar']),
+        ['resource' => 'users'],
+    );
+
+    expect($result['filters'])->toHaveKeys(['search', 'per_page'])
+        ->and($result['filters'])->not->toHaveKey('utm_source')
+        ->and($result['filters'])->not->toHaveKey('foo');
+});
+
+test('relationship sort preserves the controller select', function () {
+    $userA = User::factory()->create(['name' => 'Anna']);
+    $userZ = User::factory()->create(['name' => 'Zed']);
+
+    foreach ([$userA, $userZ] as $user) {
+        \App\Models\Session::create([
+            'id' => 'session-' . $user->id,
+            'user_id' => $user->id,
+            'payload' => 'should-not-be-selected',
+            'last_activity' => now()->timestamp,
+        ]);
+    }
+
+    $result = $this->service->process(
+        \App\Models\Session::query()->select(['id', 'user_id', 'last_activity']),
+        dataTableRequest(['sort_by' => 'user.name', 'sort_dir' => 'asc']),
+        [
+            'sortable' => [
+                'user.name' => [
+                    'type' => 'relationship',
+                    'table' => 'users',
+                    'foreign_key' => 'sessions.user_id',
+                    'local_key' => 'users.id',
+                    'order_by' => 'users.name',
+                ],
+            ],
+            'resource' => 'sessions',
+        ],
+    );
+
+    $first = $result['data']->items()[0];
+
+    expect($first->user_id)->toBe($userA->id)
+        ->and($first->getAttributes())->not->toHaveKey('payload');
+});
+
 test('it resolves sane page numbers from garbage input', function () {
     expect($this->service->resolvePage(dataTableRequest(['page' => -5])))->toBe(1)
         ->and($this->service->resolvePage(dataTableRequest(['page' => 'abc'])))->toBe(1)
