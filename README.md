@@ -42,25 +42,28 @@ An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind C
         - Password policies enforcement
 
 - 🎨 **Interface & Design**
+    - [shadcn-vue](https://www.shadcn-vue.com) primitives behind a wrapper layer, so pages
+      stay decoupled from the component library — see [docs/ui-contract.md](docs/ui-contract.md)
     - Dark/Light mode with system preference detection
     - Responsive design with [Tailwind CSS v4](https://tailwindcss.com/docs)
+    - Command palette on `Cmd/Ctrl+K`, searching pages, actions and your data
     - Auto-generated avatars via [Laravel Avatar](https://github.com/laravolt/avatar)
     - Customizable theme settings
 
 - 📊 **Data Visualization**
-    - Interactive charts with [ApexCharts v5](https://apexcharts.com)
-        - Line, Area, Bar, and Donut charts
+    - Interactive charts with [Unovis v1.6](https://unovis.dev)
+        - Line, Area, Bar, Donut and Sparkline
         - Responsive and mobile-friendly
-        - Export capabilities
-    - Automatic data formatting
-    - Dynamic chart resizing
+        - Themed by the app's design tokens, so charts follow light/dark mode
+    - Shared legend, tooltip and axis formatting
 
 - 📊 **Data Tables**
     - Modern tables with [@tanstack/vue-table v8](https://tanstack.com/table/v8/docs)
         - Server-side pagination
         - Column sorting
-        - Search functionality
-    - Action buttons with confirmation dialogs
+        - Search and filtering
+        - CSV export and bulk actions
+    - Row action menus with confirmation dialogs
 
 - 📁 **File Management**
     - Drag & drop uploads with [FilePond v4](https://pqina.nl/filepond/docs/)
@@ -162,7 +165,8 @@ Seeding creates two accounts (configurable via the `SEED_*` variables in `.env`)
 - [Inertia.js Documentation](https://inertiajs.com/)
 - [TanStack Table Documentation](https://tanstack.com/table/v8)
 - [FilePond Documentation](https://pqina.nl/filepond/)
-- [ApexCharts Documentation](https://apexcharts.com/docs/)
+- [Unovis Documentation](https://unovis.dev/docs/intro)
+- [shadcn-vue Documentation](https://www.shadcn-vue.com/docs/introduction.html)
 
 ## Contributing
 
