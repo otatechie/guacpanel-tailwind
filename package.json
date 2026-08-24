@@ -6,6 +6,7 @@
         "build": "vite build",
         "optimize": "vite optimize",
         "lint": "eslint . --fix",
+        "lint:check": "eslint .",
         "test": "vitest run",
         "format": "prettier --write \"resources/**/*.{js,vue,css}\" \"app/**/*.php\" \"routes/**/*.php\" \"database/**/*.php\" \"tests/**/*.php\"",
         "format:check": "prettier --check \"resources/**/*.{js,vue,css}\" \"app/**/*.php\" \"routes/**/*.php\" \"database/**/*.php\" \"tests/**/*.php\"",
