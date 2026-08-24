@@ -6,6 +6,7 @@ use App\Events\AppNotificationsBulkChanged;
 use App\Events\AppNotificationStateChanged;
 use App\Models\AppNotification;
 use App\Models\AppNotificationRead;
+use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -75,6 +76,8 @@ trait AppNotificationsHelperTrait
                         ->whereNull('anr.u_del_notif_at');
                 });
             });
+
+        $this->applyNotificationPreferences($query, $user);
 
         if ($scope !== 'all' && in_array($scope, ['user', 'system', 'release'], true)) {
             if ($scope === 'user') {
@@ -195,9 +198,30 @@ trait AppNotificationsHelperTrait
         ];
     }
 
+    /**
+     * Hide what the reader has muted.
+     *
+     * Applied to both the listing and the unread count, or the bell would show
+     * a number for notifications the list refuses to display.
+     */
+    protected function applyNotificationPreferences($query, ?User $user)
+    {
+        $preferences = $user?->notificationPreferences() ?? ['muted_scopes' => [], 'muted_types' => []];
+
+        if ($preferences['muted_scopes']) {
+            $query->whereNotIn('an.scope', $preferences['muted_scopes']);
+        }
+
+        if ($preferences['muted_types']) {
+            $query->whereNotIn('an.type', $preferences['muted_types']);
+        }
+
+        return $query;
+    }
+
     protected function countAllNotificationsForUser(string $userId): int
     {
-        return (int) AppNotification::query()
+        $query = AppNotification::query()
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->from('app_notifications as an')
             ->leftJoin('app_notification_reads as anr', function ($join) use ($userId) {
@@ -214,8 +238,9 @@ trait AppNotificationsHelperTrait
                         ->whereNull('an.user_id')
                         ->whereNull('anr.u_del_notif_at');
                 });
-            })
-            ->count();
+            });
+
+        return (int) $this->applyNotificationPreferences($query, User::find($userId))->count();
     }
 
     protected function setNotificationReadStateForUser(

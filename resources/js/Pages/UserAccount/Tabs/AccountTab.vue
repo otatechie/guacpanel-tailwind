@@ -35,7 +35,23 @@ const deleteAccount = () => {
 
 <template>
     <div class="max-w-2xl space-y-5">
-        <div v-if="deactivateEnabled">
+        <div>
+            <p class="text-foreground text-base font-medium">Download your data</p>
+            <p class="text-muted-foreground mt-1 text-sm">
+                A JSON file with your profile, roles and permissions, notification preferences,
+                sign-in history and the notifications addressed to you.
+            </p>
+            <Button
+                :as="'a'"
+                :href="route('user.export')"
+                variant="secondary"
+                size="sm"
+                class="mt-3">
+                Download
+            </Button>
+        </div>
+
+        <div v-if="deactivateEnabled" class="border-border border-t pt-5">
             <p class="text-foreground text-base font-medium">Deactivate account</p>
             <p class="text-muted-foreground mt-1 text-sm">
                 Signs you out and suspends access. An administrator has to reactivate it for you.

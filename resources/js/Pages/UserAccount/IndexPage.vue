@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
@@ -9,12 +9,13 @@ import PasswordTab from '@js/Pages/UserAccount/Tabs/PasswordTab.vue'
 import TwoFactorTab from '@js/Pages/UserAccount/Tabs/TwoFactorTab.vue'
 import DevicesTab from '@js/Pages/UserAccount/Tabs/DevicesTab.vue'
 import AccountTab from '@js/Pages/UserAccount/Tabs/AccountTab.vue'
+import NotificationsTab from '@js/Pages/UserAccount/Tabs/NotificationsTab.vue'
 
 defineOptions({
     layout: Default,
 })
 
-defineProps({
+const props = defineProps({
     user: { type: Object, required: true },
     qrCodeSvg: { type: String, default: null },
     recoveryCodes: { type: Array, default: () => [] },
@@ -24,10 +25,21 @@ defineProps({
     sessions: { type: Object },
     deactivateEnabled: { type: Boolean, default: false },
     deleteEnabled: { type: Boolean, default: false },
+    notificationsEnabled: { type: Boolean, default: false },
+    notificationPreferences: { type: Object, default: () => ({}) },
 })
 
 const activeTab = ref(0)
-const tabs = ['Profile', 'Security', 'Account']
+
+/* The Notifications tab only exists where the feature does, so the tab indices
+   below shift with it rather than being hard-coded. */
+const tabs = computed(() =>
+    props.notificationsEnabled
+        ? ['Profile', 'Security', 'Notifications', 'Account']
+        : ['Profile', 'Security', 'Account']
+)
+
+const tabIndex = name => tabs.value.indexOf(name)
 </script>
 
 <template>
@@ -67,8 +79,12 @@ const tabs = ['Profile', 'Security', 'Account']
                 </div>
 
                 <!-- Account: deactivate + delete -->
+                <NotificationsTab
+                    v-else-if="activeTab === tabIndex('Notifications')"
+                    :preferences="notificationPreferences" />
+
                 <AccountTab
-                    v-else-if="activeTab === 2"
+                    v-else-if="activeTab === tabIndex('Account')"
                     :deactivateEnabled="deactivateEnabled"
                     :deleteEnabled="deleteEnabled" />
             </div>

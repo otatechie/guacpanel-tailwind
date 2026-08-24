@@ -92,6 +92,16 @@ Set them in `.env` — no code changes:
 A flag is a permanent second code path. If you know you will never want the
 feature, delete it instead.
 
+## Failed jobs
+
+Delete `app/Http/Controllers/Admin/AdminFailedJobController.php`,
+`app/Models/FailedJob.php`, `resources/js/Pages/Admin/IndexFailedJobPage.vue` and
+`tests/Feature/AdminFailedJobControllerTest.php`.
+
+Edit: the `admin/failed-jobs` routes, the `navigation.js` entry, and the
+`view-failed-jobs` / `manage-failed-jobs` entries in `PermissionRoleSeeder.php`.
+Leave the `failed_jobs` table alone -- Laravel's queue writes it regardless.
+
 ## Charts
 
 Delete:
