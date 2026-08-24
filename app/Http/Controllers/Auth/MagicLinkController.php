@@ -43,7 +43,6 @@ class MagicLinkController extends Controller
             'email' => ['required', 'email', 'unique:users,email'],
         ]);
 
-        // Rate limiting for registration
         $key = 'magic_link_registration_' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
@@ -74,7 +73,6 @@ class MagicLinkController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // Rate limiting for login attempts
         $key = 'magic_link_login_' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
@@ -106,7 +104,6 @@ class MagicLinkController extends Controller
         $token = Str::random(64);
         $expiryMinutes = 10;
 
-        // Store token with user ID and expiry
         Cache::put(
             "magic_link:{$token}",
             [
@@ -140,16 +137,13 @@ class MagicLinkController extends Controller
                 ->with('error', 'This magic link has expired or is invalid. Please request a new one.');
         }
 
-        // Check if token is used within 10 minutes
         $createdAt = $tokenData['created_at'] ?? 0;
         if (now()->timestamp - $createdAt > 600) {
-            // 10 minutes in seconds
             Cache::forget($cacheKey);
 
             return redirect()->route('login')->with('error', 'This magic link has expired. Please request a new one.');
         }
 
-        // Invalidate token after use (one-time use)
         Cache::forget($cacheKey);
 
         $user = User::findOrFail($tokenData['user_id']);

@@ -95,11 +95,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                     'permission:edit-notifications|delete-notifications|manage-notifications',
                 );
 
-                // Expire (manage)
-                Route::post('/expire', [AppNotificationController::class, 'expire'])->middleware(
-                    'permission:manage-notifications',
-                );
-
                 // Delete (delete OR manage)
                 Route::delete('/{notification}', [AppNotificationController::class, 'destroy'])->middleware(
                     'permission:delete-notifications|manage-notifications',
@@ -201,7 +196,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
 
                             Route::controller(AdminUserController::class)->group(function () {
                                 Route::get('/', 'index')->name('index');
-                                Route::get('/create', 'create')->name('create');
                                 Route::post('/', 'store')->name('store');
                                 Route::get('/{id}', 'edit')->name('edit');
                                 Route::put('/{id}', 'update')->name('update');
@@ -261,9 +255,15 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                     Route::get('permissions/roles', [AdminPermissionRoleController::class, 'index'])->name(
                         'permission.role.index',
                     );
-                    Route::resource('roles', AdminRoleController::class)->except('show')->names('role');
+                    // only(), not except(): the resource default also generates
+                    // create and edit, and neither controller has those methods —
+                    // both roles and permissions are created and edited in a sheet
+                    // on the Access control screen. The routes 500 if reached.
+                    Route::resource('roles', AdminRoleController::class)
+                        ->only(['index', 'store', 'update', 'destroy'])
+                        ->names('role');
                     Route::resource('permissions', AdminPermissionController::class)
-                        ->except('show')
+                        ->only(['store', 'update', 'destroy'])
                         ->names('permission');
 
                     // Personalization Routes
@@ -310,11 +310,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                             Route::post('refresh', 'runHealthChecks')->name('refresh');
                         });
                 });
-        });
-
-        // Dashboard API endpoints
-        Route::prefix('api/dashboard')->group(function () {
-            Route::get('/financial-metrics', [DashboardController::class, 'refreshFinancialMetrics']);
         });
 
         // Typesense routes

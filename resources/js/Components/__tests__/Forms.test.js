@@ -89,6 +89,17 @@ describe('FormCheckbox contract', () => {
         })
         expect(errored.find('[role="alert"]').text()).toBe('Required')
     })
+
+    it('renders the mixed state via `indeterminate` but still emits a boolean', async () => {
+        const wrapper = mount(FormCheckbox, {
+            props: { label: 'Select all', modelValue: false, indeterminate: true },
+        })
+
+        expect(wrapper.find('[role="checkbox"]').attributes('aria-checked')).toBe('mixed')
+
+        await wrapper.find('button[role="checkbox"]').trigger('click')
+        expect(wrapper.emitted('update:modelValue').at(-1)).toEqual([true])
+    })
 })
 
 describe('Switch contract', () => {

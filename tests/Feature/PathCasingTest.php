@@ -34,7 +34,7 @@ test('configured inertia page paths exist with exact casing', function () {
 
     foreach ($paths as $path) {
         expect(resolvesWithExactCasing($path))->toBeTrue(
-            "Configured Inertia page path does not resolve case-sensitively: {$path}"
+            "Configured Inertia page path does not resolve case-sensitively: {$path}",
         );
     }
 });
@@ -43,7 +43,7 @@ test('every rendered inertia page component exists with exact casing', function 
     $pagePath = config('inertia.testing.page_paths')[0];
 
     $controllers = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator(app_path(), FilesystemIterator::SKIP_DOTS)
+        new RecursiveDirectoryIterator(app_path(), FilesystemIterator::SKIP_DOTS),
     );
 
     $missing = [];
@@ -53,11 +53,7 @@ test('every rendered inertia page component exists with exact casing', function 
             continue;
         }
 
-        preg_match_all(
-            "/Inertia::render\(\s*'([^']+)'/",
-            file_get_contents($file->getPathname()),
-            $matches
-        );
+        preg_match_all("/Inertia::render\(\s*'([^']+)'/", file_get_contents($file->getPathname()), $matches);
 
         foreach ($matches[1] as $component) {
             if (!resolvesWithExactCasing($pagePath . '/' . $component . '.vue')) {

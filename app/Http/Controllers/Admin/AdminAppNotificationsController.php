@@ -22,9 +22,7 @@ class AdminAppNotificationsController extends Controller implements HasMiddlewar
 
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:manage-notifications'),
-        ];
+        return [new Middleware('permission:manage-notifications')];
     }
 
     public function index(Request $request)

@@ -15,9 +15,7 @@ class AdminHealthStatusController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:view-health'),
-        ];
+        return [new Middleware('permission:view-health')];
     }
 
     public function index(ResultStore $resultStore)
@@ -28,6 +26,9 @@ class AdminHealthStatusController extends Controller implements HasMiddleware
             'healthChecks' => [
                 'lastRanAt' => $checkResults?->finishedAt
                     ? Carbon::parse($checkResults->finishedAt)->toIso8601String()
+                    : null,
+                'lastRanAtFormatted' => $checkResults?->finishedAt
+                    ? Carbon::parse($checkResults->finishedAt)->diffForHumans()
                     : null,
                 'results' =>
                     $checkResults?->storedCheckResults?->map(function ($result) {

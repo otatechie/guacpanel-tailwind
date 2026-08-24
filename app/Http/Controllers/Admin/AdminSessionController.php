@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
-use Inertia\Inertia;
-use Inertia\Response;
-use App\Models\Session;
-use Jenssegers\Agent\Agent;
-use Illuminate\Http\Request;
-use App\Services\DataTableService;
 use App\Http\Controllers\Controller;
+use App\Models\Session;
+use App\Services\DataTableService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
+use Inertia\Response;
+use Jenssegers\Agent\Agent;
 
 class AdminSessionController extends Controller implements HasMiddleware
 {
@@ -29,8 +29,9 @@ class AdminSessionController extends Controller implements HasMiddleware
     {
         if (config('session.driver') !== 'database') {
             return Inertia::render('Admin/IndexSessionPage', [
-                'sessions' => [],
+                'sessions' => ['data' => [], 'current_page' => 1, 'per_page' => 10, 'total' => 0],
                 'filters' => $this->dataTable->buildFilters($request),
+                'driverSupported' => false,
             ]);
         }
 
@@ -39,10 +40,11 @@ class AdminSessionController extends Controller implements HasMiddleware
         $result = $this->dataTable->process(
             query: Session::query()
                 ->with('user:id,name,email')
-                ->select(['id', 'user_id', 'user_agent', 'last_activity']),
+                ->select(['id', 'user_id', 'ip_address', 'user_agent', 'last_activity'])
+                ->orderByDesc('last_activity'),
             request: $request,
             config: [
-                'searchable' => ['user.name', 'user.email'],
+                'searchable' => ['user.name', 'user.email', 'ip_address'],
                 'sortable' => [
                     'last_activity' => ['type' => 'simple'],
                     'user.name' => ['type' => 'relationship', 'relation' => 'user', 'column' => 'name'],
@@ -56,20 +58,21 @@ class AdminSessionController extends Controller implements HasMiddleware
         return Inertia::render('Admin/IndexSessionPage', [
             'sessions' => $result['data'],
             'filters' => $result['filters'],
+            'driverSupported' => true,
         ]);
     }
 
     public function destroy($sessionId)
     {
         if ($sessionId === request()->session()->getId()) {
-            session()->flash('error', 'Cannot terminate current session');
+            session()->flash('error', 'You cannot sign out of the session you are using.');
 
             return redirect()->back();
         }
 
         Session::where('id', $sessionId)->delete();
 
-        session()->flash('success', 'Session terminated successfully.');
+        session()->flash('success', 'Signed out of that session.');
 
         return redirect()->back();
     }
@@ -102,7 +105,9 @@ class AdminSessionController extends Controller implements HasMiddleware
                 'platform' => $agent->platform() ?: 'Unknown',
                 'browser' => $agent->browser() ?: 'Unknown',
             ],
+            'ip_address' => $session->ip_address,
             'last_active_diff' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+            'last_active_exact' => Carbon::createFromTimestamp($session->last_activity)->toDayDateTimeString(),
             'is_current' => $session->id === $currentSessionId,
         ];
     }

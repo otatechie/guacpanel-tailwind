@@ -6,8 +6,11 @@ window.Pusher = Pusher
 const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
 
 const notificationsEnabled = import.meta.env.VITE_APP_NOTIFICATIONS_ENABLED
+const reverbAppKey = import.meta.env.VITE_REVERB_APP_KEY
 
-if (notificationsEnabled?.toLowerCase() === 'true') {
+// Real-time updates need a configured Reverb server; without a key,
+// notifications still work on page load, so skip the websocket entirely.
+if (notificationsEnabled?.toLowerCase() === 'true' && reverbAppKey) {
     window.Echo = new Echo({
         broadcaster: 'reverb',
         key: import.meta.env.VITE_REVERB_APP_KEY,

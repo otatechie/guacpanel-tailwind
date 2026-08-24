@@ -96,15 +96,22 @@ class DataTableService
         );
     }
 
-    public function buildFilters(Request $request): array
+    /* $extraKeys carries a table's own filter params back to the client. Without
+       them the next search/sort/page request rebuilds its query string from a set
+       that never had them, and the filter silently drops. */
+    public function buildFilters(Request $request, array $extraKeys = []): array
     {
-        return $request->only(['search', 'sort_by', 'sort_dir', 'per_page', 'page']);
+        return $request->only(array_merge(['search', 'sort_by', 'sort_dir', 'per_page', 'page'], $extraKeys));
     }
 
     public function process(Builder|QueryBuilder $query, Request $request, array $config): array
     {
         if (!empty($config['searchable'])) {
             $query = $this->applySearch($query, $request, $config['searchable']);
+        }
+
+        if (!empty($config['filterable'])) {
+            $query = $this->applyFilters($query, $request, $config['filterable']);
         }
 
         if (!empty($config['sortable'])) {
@@ -128,7 +135,7 @@ class DataTableService
 
         return [
             'data' => $paginator,
-            'filters' => $this->buildFilters($request),
+            'filters' => $this->buildFilters($request, array_keys($config['filterable'] ?? [])),
         ];
     }
 
@@ -221,9 +228,7 @@ class DataTableService
             $query->select($table . '.*');
         } else {
             $query->getQuery()->columns = array_map(
-                fn($column) => is_string($column) && !str_contains($column, '.')
-                    ? $table . '.' . $column
-                    : $column,
+                fn($column) => is_string($column) && !str_contains($column, '.') ? $table . '.' . $column : $column,
                 $columns,
             );
         }

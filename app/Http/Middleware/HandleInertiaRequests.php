@@ -75,7 +75,6 @@ class HandleInertiaRequests extends Middleware
                 'emailVerificationEnabled' => config('guacpanel.email_verification_enabled'),
                 'notificationEnabled' => config('guacpanel.notifications.enabled'),
                 'notificationInDemoMode' => config('guacpanel.notifications.in_demo'),
-                'authBrandingPanel' => config('guacpanel.auth_branding_panel'),
             ],
 
             'notifications' => fn() => $this->resolveNotifications($request, 1000, [
