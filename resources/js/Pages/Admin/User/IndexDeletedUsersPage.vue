@@ -5,12 +5,13 @@ import DataTable from '@js/Components/Common/Datatable.vue'
 import Default from '@js/Layouts/Default.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import { createColumnHelper } from '@tanstack/vue-table'
-import { h, ref, watch } from 'vue'
+import { computed, h, ref, watch } from 'vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import FormSelect from '@js/Components/Forms/FormSelect.vue'
 import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import RolesBadges from '@js/Components/Common/RolesBadges.vue'
+import { usePermissions } from '@js/composables/usePermissions'
 
 defineOptions({
     layout: Default,
@@ -37,6 +38,12 @@ const pagination = ref({
     total: props.users.total,
 })
 
+// Mirrors AdminDeletedUsersController: restore() checks edit-users, destroy()
+// and destroyAll() check delete-users.
+const { hasPermission } = usePermissions()
+const canRestore = hasPermission(['edit-users', 'manage-users'])
+const canPurge = hasPermission(['delete-users', 'manage-users'])
+
 const showDeleteModal = ref(false)
 const userToDelete = ref(null)
 const showDestroyAllUsersModal = ref(false)
@@ -60,12 +67,14 @@ const isSuperUser = user => {
 }
 
 const canDeleteUser = user => {
+    if (!canPurge) return false
     if (!user) return false
     if (isSuperUser(user)) return false
     return true
 }
 
 const handleRestore = user => {
+    if (!canRestore) return
     if (!user?.id) return
     router.post(route('admin.user.deleted.restore', { id: user.id }))
 }
@@ -90,6 +99,21 @@ const checkAutoDeleteStatus = user => {
     return val
 }
 
+// Flat rows the modal renders directly. Was a hand-built <dl> of hardcoded
+// gray-* pairs, which is why it drifted from every other dialog.
+const userDetails = computed(() => {
+    const u = userToDelete.value
+    if (!u) return []
+    return [
+        { label: 'Role', roles: u.roles },
+        { label: 'Verified', value: u.email_verified_at ? 'Yes' : 'No' },
+        { label: 'Disabled', value: u.disable_account ? 'Yes' : 'No' },
+        { label: 'Created', value: u.created_at_full },
+        { label: 'Deleted', value: u.deleted_at_full },
+        { label: 'Auto-delete', value: checkAutoDeleteStatus(u) },
+    ]
+})
+
 const destroyUser = () => {
     if (!userToDelete.value?.id) return
     if (!canDeleteUser(userToDelete.value)) return
@@ -108,12 +132,14 @@ const destroyUser = () => {
 }
 
 const openDestroyAllUsersModal = () => {
+    if (!canPurge) return
     form.errors = {}
     form.reset()
     showDestroyAllUsersModal.value = true
 }
 
 const destroyAllUsers = () => {
+    if (!canPurge) return
     if (!form.confirm_destroy_all) {
         form.errors.confirm_destroy_all = 'The confirm destroy all field must be accepted.'
         return
@@ -257,7 +283,7 @@ const columns = [
                 {
                     class: 'flex items-center gap-2 justify-end',
                 },
-                [editButton, canDeleteUser(user) && deleteButton].filter(Boolean)
+                [canRestore && editButton, canDeleteUser(user) && deleteButton].filter(Boolean)
             )
         },
     }),
@@ -285,193 +311,106 @@ watch(
 </script>
 
 <template>
-    <Head title="Deleted Users Management" />
-    <main class="mx-auto max-w-7xl" aria-labelledby="users-management">
+    <Head title="Deleted users" />
+    <main class="mx-auto max-w-4xl" aria-labelledby="deleted-users">
         <PageHeader
-            title="Deleted Users Management"
-            description="Manage system deleted users"
+            title="Deleted users"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'System Settings', href: route('admin.setting.index') },
-                { label: 'Users Management', href: route('admin.user.index') },
-                { label: 'Deleted Users' },
+                { label: 'System settings', href: route('admin.setting.index') },
+                { label: 'User management', href: route('admin.user.index') },
+                { label: 'Deleted users' },
             ]">
             <template #actions>
-                <Button variant="danger" size="sm" @click="openDestroyAllUsersModal">
+                <Button
+                    v-if="canPurge"
+                    variant="danger"
+                    size="sm"
+                    @click="openDestroyAllUsersModal">
                     Destroy all
-</Button>
+                </Button>
             </template>
         </PageHeader>
 
-        <div
-            class="card p-6">
-            <DataTable
-                :data="users.data"
-                :columns="columns"
-                :loading="loading"
-                :pagination="pagination"
-                empty-message="No deleted users found"
-                empty-description="Users will appear here once deleted"
-                export-file-name="deleted_users"
-                @update:pagination="pagination = $event" />
-        </div>
+        <!-- No card. The table already has its own border; wrapping it in a
+             second bordered box is decoration, not structure. -->
+        <DataTable
+            :data="users.data"
+            :columns="columns"
+            :loading="loading"
+            :pagination="pagination"
+            empty-message="No deleted users"
+            empty-description="Users appear here after they are deleted, until they are erased."
+            export-file-name="deleted_users"
+            @update:pagination="pagination = $event" />
     </main>
 
-    <Modal :show="showDeleteModal" @close="closeModal" size="md">
-        <template #title>
-            <div class="text-red-600 dark:text-red-400">Permanently destroy user</div>
-        </template>
+    <Modal
+        :show="showDeleteModal"
+        size="md"
+        description="This erases the account and everything attached to it. It cannot be undone."
+        @close="closeModal">
+        <template #title>Destroy user</template>
 
         <template #default>
-            <div class="space-y-4">
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Are you sure you want to permanently destroy this user?
-                </p>
-                <p class="text-sm text-red-400">This action cannot be undone.</p>
+            <p v-if="userToDelete" class="text-foreground text-sm font-medium">
+                {{ userToDelete.name }}
+                <span class="text-muted-foreground font-normal">· {{ userToDelete.email }}</span>
+            </p>
+
+            <dl v-if="userToDelete" class="divide-border border-border mt-4 divide-y border-t">
                 <div
-                    class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
-                    <div class="flex items-center gap-2">
-                        <svg
-                            class="h-10 w-10 flex-shrink-0 text-amber-600 dark:text-amber-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path
-                                fill-rule="evenodd"
-                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <p class="text-sm text-amber-700 dark:text-amber-300">
-                            This will permanently destroy the user's account and all associated
-                            data. This will erase the user from the app and is not recoverable.
-                        </p>
-                    </div>
+                    v-for="detail in userDetails"
+                    :key="detail.label"
+                    class="flex justify-between gap-4 py-2">
+                    <dt class="text-muted-foreground text-xs">{{ detail.label }}</dt>
+                    <dd class="text-foreground text-right text-xs">
+                        <RolesBadges v-if="detail.roles" :roles="detail.roles" />
+                        <template v-else>{{ detail.value }}</template>
+                    </dd>
                 </div>
-                <div
-                    v-if="userToDelete"
-                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <h4 class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                        User details:
-                    </h4>
-                    <dl class="space-y-1">
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Name:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.name }}
-                            </dd>
-                        </div>
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Email:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.email }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Verified:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.email_verified_at ? 'Yes' : 'No' }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Disabled:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.disable_account ? 'Yes' : 'No' }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Role:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                <RolesBadges :roles="userToDelete.roles" />
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Created At:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.created_at_full }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">Deleted At:</dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ userToDelete.deleted_at_full }}
-                            </dd>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <dt class="text-sm text-gray-500 dark:text-gray-400">
-                                Auto Delete On:
-                            </dt>
-                            <dd class="text-sm text-gray-900 dark:text-gray-100">
-                                {{ checkAutoDeleteStatus(userToDelete) }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
+            </dl>
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-8">
-                <button
-                    @click="closeModal"
-                    type="button"
-                    class="cursor-pointer px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
-                    Cancel
-                </button>
-                <Button variant="danger" size="sm" @click="destroyUser" :disabled="false">
-                    Confirm
-                </Button>
+            <div class="flex justify-end gap-3">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button variant="danger" size="sm" @click="destroyUser">Destroy user</Button>
             </div>
         </template>
     </Modal>
 
-    <Modal :show="showDestroyAllUsersModal" @close="closeModal" size="lg">
+    <Modal
+        :show="showDestroyAllUsersModal"
+        size="sm"
+        description="Every deleted user is erased permanently. This cannot be undone."
+        @close="closeModal">
         <template #title>Destroy all deleted users</template>
 
         <template #default>
-            <div class="w-full space-y-8">
-                <div class="mb-4 flex flex-col text-center">
-                    <div class="my-4 flex justify-center text-red-600">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="size-20">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                        </svg>
-                    </div>
-                    <h1 class="mb-4 text-red-200">Warning: This will destroy all deleted</h1>
-                    <h2 class="text-red-200">This action cannot be undone</h2>
-                </div>
-                <div class="mb-3 flex justify-center space-y-4">
-                    <FormCheckbox
-                        v-model="form.confirm_destroy_all"
-                        label="I understand this action cannot be undone"
-                        description="This will destroy all deleted users and this action cannot be undone."
-                        :error="form.errors.confirm_destroy_all" />
-                </div>
+            <!-- The count is the fact that decides this, and it was never shown.
+                 One statement of the consequence, in the description, is enough. -->
+            <p class="text-foreground text-sm font-medium">
+                {{ pagination.total }}
+                {{ pagination.total === 1 ? 'user' : 'users' }} will be erased
+            </p>
+            <div class="mt-4">
+                <FormCheckbox
+                    v-model="form.confirm_destroy_all"
+                    label="I understand this cannot be undone"
+                    :error="form.errors.confirm_destroy_all" />
             </div>
         </template>
 
         <template #footer>
-            <div class="flex justify-end gap-8">
-                <button
-                    @click="closeModal"
-                    type="button"
-                    class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400">
-                    Cancel
-                </button>
-                <Button variant="danger" size="sm" @click="destroyAllUsers" :disabled="form.processing">
-                    Confirm
+            <div class="flex justify-end gap-3">
+                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                <Button
+                    variant="danger"
+                    size="sm"
+                    :disabled="form.processing || !form.confirm_destroy_all"
+                    @click="destroyAllUsers">
+                    {{ form.processing ? 'Destroying...' : 'Destroy all' }}
                 </Button>
             </div>
         </template>

@@ -12,9 +12,7 @@ class AdminUsersVerificationController extends Controller implements HasMiddlewa
 {
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:edit-users|manage-users'),
-        ];
+        return [new Middleware('permission:edit-users|manage-users')];
     }
 
     public function toggle(Request $request, User $user)

@@ -23,25 +23,18 @@ beforeEach(function () {
 });
 
 test('it redirects unauthenticated users to login page', function () {
-    $this->get(route('admin.login.history.index'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.login.history.index'))->assertRedirect(route('login'));
 });
 
 test('it denies access to users without login history permission', function () {
-    $this->actingAs($this->regularUser)
-        ->get(route('admin.login.history.index'))
-        ->assertForbidden();
+    $this->actingAs($this->regularUser)->get(route('admin.login.history.index'))->assertForbidden();
 });
 
 test('it allows access to users with login history permission', function () {
     $this->actingAs($this->adminUser)
         ->get(route('admin.login.history.index'))
         ->assertStatus(200)
-        ->assertInertia(
-            fn (Assert $page) => $page
-            ->component('Admin/IndexLoginHistoryPage')
-            ->has('loginHistory')
-        );
+        ->assertInertia(fn(Assert $page) => $page->component('Admin/IndexLoginHistoryPage')->has('loginHistory'));
 });
 
 test('view permission cannot bulk-delete login history', function () {
@@ -51,7 +44,7 @@ test('view permission cannot bulk-delete login history', function () {
         ->withSession(['_token' => 'test-token'])
         ->post(route('admin.login.history.bulk-destroy'), [
             '_token' => 'test-token',
-            'ids'    => [$record->id],
+            'ids' => [$record->id],
         ])
         ->assertForbidden();
 
@@ -65,9 +58,9 @@ test('manage permission can bulk-delete login history', function () {
         ->withSession(['_token' => 'test-token'])
         ->post(route('admin.login.history.bulk-destroy'), [
             '_token' => 'test-token',
-            'ids'    => [$record->id],
+            'ids' => [$record->id],
         ])
-        ->assertStatus(200);
+        ->assertRedirect(route('admin.login.history.index'));
 
     $this->assertDatabaseMissing('login_history', ['id' => $record->id]);
 });

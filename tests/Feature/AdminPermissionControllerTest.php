@@ -20,37 +20,26 @@ beforeEach(function () {
 });
 
 test('it enforces permission middleware correctly', function () {
-    $this->get(route('admin.permission.index'))
-        ->assertRedirect(route('login'));
+    // Permissions are listed on the Access control page; AdminPermissionController
+    // has no index(), and the resource route that generated admin.permission.index
+    // pointed at a method that never existed.
+    $this->get(route('admin.permission.role.index'))->assertRedirect(route('login'));
+
+    $this->actingAs($this->userWithoutPermissions)->get(route('admin.permission.role.index'))->assertForbidden();
+
+    $this->actingAs($this->userWithFullPermissions)->get(route('admin.permission.role.index'))->assertOk();
 
     $this->actingAs($this->userWithoutPermissions)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.permission.store'), ['name' => 'new-permission', '_token' => $this->testToken])
         ->assertForbidden();
-
-    $indexResponse = $this->actingAs($this->userWithFullPermissions)
-        ->get(route('admin.permission.index'));
-
-    if ($indexResponse->status() >= 200 && $indexResponse->status() < 300) {
-        $this->actingAs($this->userWithoutPermissions)
-            ->get(route('admin.permission.index'))
-            ->assertStatus(200);
-    }
-
-    $this->actingAs($this->userWithoutPermissions)
-        ->withSession(['_token' => $this->testToken])
-        ->post(route('admin.permission.store'), ['name' => 'new-permission', '_token' => $this->testToken])
-        ->assertForbidden();
-
-    $this->actingAs($this->userWithFullPermissions)
-        ->get(route('admin.permission.index'));
 });
 
 test('it allows authorized users to perform crud operations', function () {
     $createData = [
-        'name'        => 'test-permission',
+        'name' => 'test-permission',
         'description' => 'Test description',
-        '_token'      => $this->testToken,
+        '_token' => $this->testToken,
     ];
 
     $this->actingAs($this->userWithFullPermissions)
@@ -58,16 +47,16 @@ test('it allows authorized users to perform crud operations', function () {
         ->post(route('admin.permission.store'), $createData);
 
     $this->assertDatabaseHas('permissions', [
-        'name'        => 'test-permission',
+        'name' => 'test-permission',
         'description' => 'Test description',
     ]);
 
     $permission = Permission::where('name', 'test-permission')->first();
 
     $updateData = [
-        'name'        => 'updated-permission',
+        'name' => 'updated-permission',
         'description' => 'Updated description',
-        '_token'      => $this->testToken,
+        '_token' => $this->testToken,
     ];
 
     $this->actingAs($this->userWithFullPermissions)
@@ -76,8 +65,8 @@ test('it allows authorized users to perform crud operations', function () {
         ->assertSessionHasNoErrors();
 
     $this->assertDatabaseHas('permissions', [
-        'id'          => $permission->id,
-        'name'        => 'updated-permission',
+        'id' => $permission->id,
+        'name' => 'updated-permission',
         'description' => 'Updated description',
     ]);
 
@@ -92,7 +81,7 @@ test('it allows authorized users to perform crud operations', function () {
 
 test('it validates permission data correctly', function () {
     $invalidNameData = [
-        'name'   => 'invalid permission name',
+        'name' => 'invalid permission name',
         '_token' => $this->testToken,
     ];
 
@@ -104,7 +93,7 @@ test('it validates permission data correctly', function () {
     Permission::create(['name' => 'existing-permission']);
 
     $duplicateData = [
-        'name'   => 'existing-permission',
+        'name' => 'existing-permission',
         '_token' => $this->testToken,
     ];
 

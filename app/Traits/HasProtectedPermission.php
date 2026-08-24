@@ -9,12 +9,11 @@ trait HasProtectedPermission
         return [
             'manage-users',
             'ban-users',
-            'access-dashboard',
             'manage-settings',
             'manage-security-settings',
             'view-audits',
             'manage-backups',
-            'manage-personalization',
+            'manage-personalisation',
             'manage-roles',
             'manage-permissions',
             'view-permissions-roles',

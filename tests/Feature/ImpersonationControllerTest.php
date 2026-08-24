@@ -68,8 +68,9 @@ test('stopping impersonation restores the original user', function () {
 
     $this->assertAuthenticatedAs($this->target);
 
-    $response = $this->withSession(['_token' => $this->testToken])
-        ->post(route('admin.user.impersonate.stop'), ['_token' => $this->testToken]);
+    $response = $this->withSession(['_token' => $this->testToken])->post(route('admin.user.impersonate.stop'), [
+        '_token' => $this->testToken,
+    ]);
 
     $response->assertRedirect(route('admin.user.index'));
     $this->assertAuthenticatedAs($this->admin);

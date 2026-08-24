@@ -18,7 +18,7 @@ class PermissionRoleSeeder extends Seeder
     private function createPermissions(): array
     {
         $permissionData = [
-            'dashboard-view' => 'View Dashboard',
+            'view-dashboard' => 'Open the admin dashboard and its metrics',
 
             // User Management
             'manage-users' => 'Manage user accounts',
@@ -30,22 +30,21 @@ class PermissionRoleSeeder extends Seeder
             'ban-users' => 'Ban/suspend user accounts',
 
             // System
-            'access-dashboard' => 'Access admin dashboard',
             'manage-settings' => 'Manage system settings',
             'manage-security-settings' => 'Manage system security settings',
-            'view-sessions' => 'View Sessions',
+            'view-sessions' => 'See active sessions across the system',
             'manage-sessions' => 'Terminate user sessions',
-            'view-health' => 'View Health',
+            'view-health' => 'See uptime, service checks and diagnostics',
 
             // Audit & Monitoring
             'view-audits' => 'View system audit logs',
 
             // Backup Management
             'manage-backups' => 'Create and manage system backups',
-            'view-backups' => 'View Backups',
+            'view-backups' => 'See existing backups and their details',
 
             // Personalisation
-            'manage-personalization' => 'Manage system appearance and branding',
+            'manage-personalisation' => 'Manage system appearance and branding',
             'view-personalisation' => 'View system appearance and branding',
             'update-personalisation' => 'Update system appearance and branding',
             'upload-personalisation-files' => 'Upload system appearance and branding files',
@@ -75,7 +74,11 @@ class PermissionRoleSeeder extends Seeder
         $permissions = [];
 
         foreach ($permissionData as $name => $description) {
-            $permissions[$name] = Permission::firstOrCreate(['name' => $name], ['description' => $description]);
+            /* updateOrCreate, not firstOrCreate: descriptions are copy, and a
+               reseed left every existing row on whatever text it was created
+               with. Grants live on permission ids, so rewriting the text here
+               does not touch who has what. */
+            $permissions[$name] = Permission::updateOrCreate(['name' => $name], ['description' => $description]);
         }
 
         return $permissions;
@@ -84,8 +87,10 @@ class PermissionRoleSeeder extends Seeder
     private function createRoles(): array
     {
         $roleData = [
-            'superuser' => 'Superuser with full system access',
-            'user' => 'Standard user with limited permissions',
+            // Shown beneath a heading that already names the role, so neither
+            // opens by repeating it.
+            'superuser' => 'Full access to every part of the system',
+            'user' => 'Limited access for standard accounts',
         ];
 
         $roles = [];
@@ -105,7 +110,7 @@ class PermissionRoleSeeder extends Seeder
         // Regular user permissions
         $roles['user']->syncPermissions([
             $permissions['edit-profile'],
-            $permissions['dashboard-view'],
+            $permissions['view-dashboard'],
             $permissions['view-notifications'],
             $permissions['edit-notifications'],
             $permissions['create-notifications'],

@@ -1,16 +1,23 @@
 <script setup>
 import Button from '@/Components/Button.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@js/Components/Notifications/Modal.vue'
+import Sheet from '@js/Components/Notifications/Sheet.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import FormTextarea from '@js/Components/Forms/FormTextarea.vue'
 import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
+import Badge from '@js/Components/Badge.vue'
+import RowActions from '@js/Components/Common/RowActions.vue'
+import { formatPermissionName, groupPermissions } from '@js/utils/permissions'
+import { SquarePenIcon, Trash2Icon, XIcon } from '@lucide/vue'
 
 const props = defineProps({
     roles: { type: Array, required: true, default: () => [] },
     permissions: { type: Array, required: true, default: () => [] },
+    /** Role to open and scroll to on arrival, from `?role=<id>` */
+    focusRoleId: { type: String, default: '' },
     protectedRoles: { type: Array, default: () => [] },
 })
 
@@ -21,16 +28,82 @@ const roleToDelete = ref(null)
 const expandedRoles = ref(new Set())
 const permissionSearch = ref('')
 
+const isFocused = id => Boolean(props.focusRoleId) && String(id) === String(props.focusRoleId)
+
+const COLLAPSED_CHIPS = 4
+
+const visiblePermissions = role =>
+    expandedRoles.value.has(role.id) ? role.permissions : role.permissions.slice(0, COLLAPSED_CHIPS)
+
+/* Empty for a protected role, and RowActions renders nothing when it is empty —
+   so a system role shows no controls at all rather than two that open a form the
+   server refuses. */
+const roleActions = role =>
+    role.is_protected
+        ? []
+        : [
+              { label: 'Edit role', icon: SquarePenIcon, onSelect: () => editRole(role) },
+              {
+                  label: 'Delete role',
+                  icon: Trash2Icon,
+                  variant: 'destructive',
+                  onSelect: () => confirmDeleteRole(role),
+              },
+          ]
+
+/* Arriving from a link that names a role: open its permissions and put it on
+   screen, so the answer to "what does this role grant" is the first thing seen
+   rather than a list to hunt through. */
+onMounted(() => {
+    // A payload of the wrong shape should cost the highlight, not the page: this
+    // threw and took the whole mount with it when `roles` arrived as a paginator.
+    if (!Array.isArray(props.roles)) return
+
+    const role = props.roles.find(r => isFocused(r.id))
+    if (!role) return
+
+    // Seed the set with the role's own id, so "Less" still collapses it.
+    expandedRoles.value.add(role.id)
+    document
+        .getElementById(`role-${role.id}`)
+        ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+})
+
 const form = useForm({ name: '', description: '', permissions: [] })
 
 const filteredPermissions = computed(() => {
     if (!permissionSearch.value) return props.permissions
     const q = permissionSearch.value.toLowerCase()
-    return props.permissions.filter(p => p.name?.toLowerCase().includes(q))
+    /* Name only. This used to match `description` too, which is never rendered
+       here — so "branding" returned rows whose visible labels contained no such
+       word, with nothing on screen to explain the result. */
+    return props.permissions.filter(p => formatPermissionName(p.name).toLowerCase().includes(q))
 })
 
-const allPermissionsSelected = computed(() =>
-    props.permissions?.length && form.permissions.length === props.permissions.length
+const permissionGroups = computed(() => groupPermissions(filteredPermissions.value))
+
+const permissionsCount = computed(() => props.permissions?.length ?? 0)
+
+/* Every control in the picker header reads the *filtered* set, never the whole
+   list. Scoped to the full list, "Select all" under an active filter granted
+   thirty permissions while showing five — including delete and impersonate. */
+const filteredIds = computed(() => filteredPermissions.value.map(p => p.id))
+
+const selectedInFilter = computed(
+    () => filteredIds.value.filter(id => form.permissions.includes(id)).length
+)
+
+const allFilteredSelected = computed(
+    () => filteredIds.value.length > 0 && selectedInFilter.value === filteredIds.value.length
+)
+
+const allPermissionsGranted = computed(
+    () => permissionsCount.value > 0 && form.permissions.length === permissionsCount.value
+)
+
+// 1 of 30 rendered identically to 0 of 30 without this.
+const someFilteredSelected = computed(
+    () => selectedInFilter.value > 0 && !allFilteredSelected.value
 )
 
 const closeModal = () => {
@@ -70,141 +143,292 @@ const deleteRole = () => {
 }
 
 const toggleAllPermissions = checked => {
-    form.permissions = checked ? props.permissions.map(p => p.id) : []
+    const ids = filteredIds.value
+    form.permissions = checked
+        ? [...new Set([...form.permissions, ...ids])]
+        : form.permissions.filter(id => !ids.includes(id))
 }
 
 const togglePermission = (id, checked) => {
-    if (checked) { if (!form.permissions.includes(id)) form.permissions.push(id) }
-    else { form.permissions = form.permissions.filter(i => i !== id) }
+    if (checked) {
+        if (!form.permissions.includes(id)) form.permissions.push(id)
+    } else {
+        form.permissions = form.permissions.filter(i => i !== id)
+    }
 }
 
 const toggleExpand = id => {
     if (expandedRoles.value.has(id)) expandedRoles.value.delete(id)
     else expandedRoles.value.add(id)
 }
-
-const formatPerm = name => {
-    const words = name.split('-').join(' ')
-    return words.charAt(0).toUpperCase() + words.slice(1)
-}
-
-const actionBtn = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
 </script>
 
 <template>
     <div class="space-y-4">
         <div class="flex items-center justify-between">
-            <p class="text-xs text-muted-foreground">{{ roles.length }} {{ roles.length === 1 ? 'role' : 'roles' }}</p>
+            <h2 class="text-muted-foreground text-xs font-medium">
+                {{ roles.length }} {{ roles.length === 1 ? 'role' : 'roles' }}
+            </h2>
             <Button variant="primary" size="sm" @click="showAddModal = true">Add role</Button>
         </div>
 
-        <!-- Roles list -->
-        <div v-if="roles.length" class="divide-y divide-border rounded-lg border border-border">
-            <div v-for="role in roles" :key="role.id" class="px-4 py-3">
+        <!-- Rules, no box: the rows already read as a list, and the tab strip
+             above draws its own line. A border around both is a second frame.
+             No `rounded-md` on the rows — divide-y draws its border along the
+             row's top edge, so rounding curved the ends of every divider. No
+             negative margin either: the rules end where the content ends, level
+             with the "N roles" heading above them. -->
+        <div v-if="roles.length" class="divide-border divide-y">
+            <div
+                v-for="role in roles"
+                :key="role.id"
+                :id="`role-${role.id}`"
+                class="py-4 transition-colors"
+                :class="isFocused(role.id) ? 'bg-muted/50' : ''">
                 <div class="flex items-start justify-between gap-4">
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
-                            <p class="text-sm font-medium capitalize text-foreground">{{ role.name }}</p>
-                            <span v-if="role.is_protected" class="text-[10px] text-muted-foreground">Protected</span>
+                            <p class="text-foreground text-sm font-medium capitalize">
+                                {{ role.name }}
+                            </p>
+                            <span v-if="role.is_protected" class="text-muted-foreground text-xs">
+                                Protected
+                            </span>
                         </div>
-                        <p v-if="role.description" class="mt-0.5 text-xs text-muted-foreground">{{ role.description }}</p>
+                        <p v-if="role.description" class="text-muted-foreground mt-1 text-sm">
+                            {{ role.description }}
+                        </p>
 
-                        <!-- Permissions -->
-                        <div v-if="role.permissions?.length" class="mt-2 flex flex-wrap gap-1">
-                            <template v-if="expandedRoles.has(role.id)">
-                                <span v-for="p in role.permissions" :key="p.id" class="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{{ p.name }}</span>
-                                <button type="button" @click="toggleExpand(role.id)" class="px-1 text-[10px] text-muted-foreground hover:text-foreground">Less</button>
-                            </template>
-                            <template v-else>
-                                <span v-for="p in role.permissions.slice(0, 4)" :key="p.id" class="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{{ p.name }}</span>
-                                <button v-if="role.permissions.length > 4" type="button" @click="toggleExpand(role.id)" class="px-1 text-[10px] text-muted-foreground hover:text-foreground">+{{ role.permissions.length - 4 }}</button>
-                            </template>
+                        <!-- Chips at text-xs: text-[10px] was below anything else
+                             in the app, and there can be thirty of them. -->
+                        <div
+                            v-if="role.permissions?.length"
+                            class="mt-2.5 flex flex-wrap items-center gap-1.5">
+                            <!-- Formatted, not the raw slug: the Permissions tab
+                                 and this role's own editor both show "View
+                                 dashboard", so listing `view-dashboard` here left
+                                 you unable to match what you ticked against what
+                                 the row reports. -->
+                            <Badge
+                                v-for="p in visiblePermissions(role)"
+                                :key="p.id"
+                                variant="neutral">
+                                {{ formatPermissionName(p.name) }}
+                            </Badge>
+                            <!-- One control, one shape. "+26" and "Less" sat in the
+                                 same spot doing opposite things, and "+26" read as
+                                 a count rather than a button. -->
+                            <button
+                                v-if="role.permissions.length > COLLAPSED_CHIPS"
+                                type="button"
+                                :aria-expanded="expandedRoles.has(role.id)"
+                                class="text-muted-foreground hover:text-foreground cursor-pointer px-1 text-xs underline underline-offset-2"
+                                @click="toggleExpand(role.id)">
+                                {{
+                                    expandedRoles.has(role.id)
+                                        ? 'Show fewer'
+                                        : `Show all ${role.permissions.length}`
+                                }}
+                            </button>
                         </div>
-                        <p v-else class="mt-1 text-[10px] text-muted-foreground">No permissions</p>
+                        <p v-else class="text-muted-foreground mt-1 text-xs">No permissions</p>
                     </div>
 
-                    <div v-if="!role.is_protected" class="flex shrink-0 gap-0.5">
-                        <button type="button" :class="actionBtn" title="Edit" @click="editRole(role)">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                            </svg>
-                        </button>
-                        <button type="button" :class="actionBtn + ' hover:text-red-600! dark:hover:text-red-400!'" title="Delete" @click="confirmDeleteRole(role)">
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                            </svg>
-                        </button>
-                    </div>
+                    <!-- Same two actions as the users list, so the same control:
+                         a menu with words rather than two unlabelled glyphs. -->
+                    <RowActions
+                        class="shrink-0"
+                        :actions="roleActions(role)"
+                        :label="`Actions for the ${role.name} role`" />
                 </div>
             </div>
         </div>
 
-        <p v-else class="py-6 text-center text-sm text-muted-foreground">
+        <p v-else class="text-muted-foreground py-6 text-center text-sm">
             No roles yet.
-            <button type="button" @click="showAddModal = true" class="text-primary hover:underline">Add one</button>
+            <button type="button" @click="showAddModal = true" class="text-primary hover:underline">
+                Add one
+            </button>
         </p>
 
+        <!-- Add/Edit modal -->
+        <!-- A sheet, not a dialog: this is a form with a thirty-item picker, and
+             the picker was living in a 192px scroll box inside a small box. The
+             panel gives it the height, and the role list stays on screen. -->
+        <Sheet
+            :show="showAddModal"
+            size="lg"
+            :close-on-click-outside="false"
+            description="A role is a named set of permissions you assign to users."
+            @close="closeModal">
+            <template #title>{{ editingRole ? 'Edit role' : 'Add role' }}</template>
+            <template #default>
+                <form id="role-form" class="space-y-4" @submit.prevent="submitRole">
+                    <FormInput
+                        label="Name"
+                        v-model="form.name"
+                        :error="form.errors.name"
+                        required />
+                    <FormTextarea
+                        label="Description"
+                        v-model="form.description"
+                        :error="form.errors.description"
+                        :rows="2" />
 
-    <!-- Add/Edit modal -->
-    <Modal :show="showAddModal" @close="closeModal">
-        <template #title>{{ editingRole ? 'Edit role' : 'Add role' }}</template>
-        <template #default>
-            <form @submit.prevent="submitRole" class="space-y-4">
-                <FormInput label="Name" v-model="form.name" :error="form.errors.name" required />
-                <FormTextarea label="Description" v-model="form.description" :error="form.errors.description" :rows="2" />
+                    <!-- A fieldset, not a <p> and thirty loose inputs: the
+                         group needs a name a screen reader can announce, the
+                         same way Name and Description above are labelled. -->
+                    <fieldset>
+                        <legend class="text-foreground mb-2 text-xs font-medium">
+                            Permissions
+                        </legend>
 
-                <div>
-                    <div class="mb-2 flex items-center justify-between">
-                        <p class="text-xs font-medium text-foreground">Permissions</p>
-                        <p class="text-xs tabular-nums text-muted-foreground">{{ form.permissions.length }}/{{ permissions.length }}</p>
-                    </div>
-                    <div class="rounded-lg border border-border">
-                        <div class="flex items-center gap-3 border-b border-border px-3 py-2">
-                            <FormCheckbox :model-value="Boolean(allPermissionsSelected)" @update:model-value="toggleAllPermissions" label="Select all" />
-                            <input v-model="permissionSearch" type="text" placeholder="Filter..." class="ml-auto w-32 rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none" />
-                        </div>
-                        <div class="max-h-48 overflow-y-auto p-2">
-                            <div v-if="filteredPermissions.length" class="grid gap-0.5 sm:grid-cols-2">
-                                <label v-for="p in filteredPermissions" :key="p.id" :for="`rp-${p.id}`"
-                                    class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-xs transition-colors hover:bg-muted"
-                                    :class="form.permissions.includes(p.id) ? 'text-foreground font-medium' : 'text-muted-foreground'">
-                                    <input :id="`rp-${p.id}`" type="checkbox" :checked="form.permissions.includes(p.id)" @change="togglePermission(p.id, $event.target.checked)" class="h-3 w-3 shrink-0 rounded border-border text-primary" />
-                                    {{ formatPerm(p.name) }}
-                                </label>
+                        <div class="border-border rounded-lg border">
+                            <!-- Sticky, because dropping the picker's 192px cage
+                                 made the list taller than the viewport, and the
+                                 count is the only feedback that anything is
+                                 selected at all. The sheet body is the scroll
+                                 container; no overflow-hidden on the box, which
+                                 would kill the stick. -->
+                            <div
+                                class="border-border bg-card sticky top-0 z-10 flex items-center gap-3 rounded-t-lg border-b px-3 py-2">
+                                <FormCheckbox
+                                    :model-value="allFilteredSelected"
+                                    :indeterminate="someFilteredSelected"
+                                    :label="
+                                        permissionSearch
+                                            ? `Select all ${filteredIds.length} shown`
+                                            : 'Select all'
+                                    "
+                                    @update:model-value="toggleAllPermissions" />
+
+                                <p
+                                    class="text-muted-foreground ml-auto shrink-0 text-xs tabular-nums">
+                                    {{ form.permissions.length }}/{{ permissions.length }}
+                                </p>
+
+                                <div class="relative w-36 shrink-0">
+                                    <label class="sr-only" for="permission-filter">
+                                        Filter permissions
+                                    </label>
+                                    <input
+                                        id="permission-filter"
+                                        v-model="permissionSearch"
+                                        type="text"
+                                        placeholder="Filter..."
+                                        class="form-input w-full pr-8 text-xs" />
+                                    <button
+                                        v-if="permissionSearch"
+                                        type="button"
+                                        class="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2"
+                                        aria-label="Clear filter"
+                                        @click="permissionSearch = ''">
+                                        <XIcon class="h-4 w-4" />
+                                    </button>
+                                </div>
                             </div>
-                            <p v-else class="py-3 text-center text-xs text-muted-foreground">No match</p>
-                        </div>
-                    </div>
-                    <p v-if="form.errors.permissions" class="mt-1 text-xs text-red-600">{{ form.errors.permissions }}</p>
-                </div>
-            </form>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-3">
-                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
-                <Button variant="primary" size="sm" :disabled="form.processing" @click="submitRole">
-                    {{ form.processing ? 'Saving...' : editingRole ? 'Save' : 'Add role' }}
-                </Button>
-            </div>
-        </template>
-    </Modal>
 
-    <!-- Delete modal -->
-    <Modal :show="showDeleteModal" @close="closeModal" size="sm">
-        <template #title>Delete role</template>
-        <template #default>
-            <p class="text-sm text-muted-foreground">
-                Delete <span class="font-medium text-foreground">{{ roleToDelete?.name }}</span>? This removes the role from all assigned users.
-            </p>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-3">
-                <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
-                <Button variant="danger" size="sm" :disabled="form.processing" @click="deleteRole">
-                    {{ form.processing ? 'Deleting...' : 'Delete' }}
-                </Button>
-            </div>
-        </template>
-    </Modal>
+                            <!-- No max-height: the sheet body scrolls, so the list
+                                 uses whatever room the viewport has. -->
+                            <div class="p-2">
+                                <template v-if="permissionGroups.length">
+                                    <!-- Grouped by what is governed. Flat, the
+                                         list came out in insertion order and read
+                                         across two columns, so "View dashboard"
+                                         sat eight positions from "Access
+                                         dashboard" and the user permissions were
+                                         scattered over four rows. -->
+                                    <div
+                                        v-for="group in permissionGroups"
+                                        :key="group.label"
+                                        class="mt-4 first:mt-0">
+                                        <p class="text-muted-foreground mb-1 px-1 text-xs">
+                                            {{ group.label }}
+                                        </p>
+                                        <div class="grid gap-x-4 sm:grid-cols-2">
+                                            <FormCheckbox
+                                                v-for="p in group.permissions"
+                                                :key="p.id"
+                                                :id="`rp-${p.id}`"
+                                                :model-value="form.permissions.includes(p.id)"
+                                                :label="formatPermissionName(p.name)"
+                                                class="hover:bg-muted rounded-md px-1 py-1.5"
+                                                @update:model-value="
+                                                    togglePermission(p.id, $event)
+                                                " />
+                                        </div>
+                                    </div>
+                                </template>
+                                <p v-else class="text-muted-foreground py-3 text-center text-xs">
+                                    {{
+                                        permissionSearch
+                                            ? `No permission matches "${permissionSearch}"`
+                                            : 'No permissions available'
+                                    }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <p
+                            v-if="allPermissionsGranted && !form.errors.permissions"
+                            class="text-muted-foreground mt-1.5 text-xs">
+                            This role grants everything, including deleting users and impersonation.
+                        </p>
+                        <p v-if="form.errors.permissions" class="mt-1 text-xs text-red-600">
+                            {{ form.errors.permissions }}
+                        </p>
+                    </fieldset>
+                </form>
+            </template>
+            <template #footer>
+                <div class="flex w-full justify-end gap-3">
+                    <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                    <!-- `form` reaches across the slot boundary, so Enter submits. -->
+                    <Button
+                        type="submit"
+                        form="role-form"
+                        variant="primary"
+                        size="sm"
+                        :disabled="form.processing">
+                        {{ form.processing ? 'Saving...' : editingRole ? 'Save role' : 'Add role' }}
+                    </Button>
+                </div>
+            </template>
+        </Sheet>
+
+        <!-- Delete modal -->
+        <Modal :show="showDeleteModal" size="sm" @close="closeModal">
+            <template #title>Delete role</template>
+            <template #default>
+                <!-- The record, then what happens to it. The consequence used to
+                     sit in the header as a subtitle, two sizes down from the name
+                     it applied to. -->
+                <p class="text-foreground text-sm font-medium capitalize">
+                    {{ roleToDelete?.name }}
+                    <span
+                        v-if="roleToDelete?.permissions?.length"
+                        class="text-muted-foreground font-normal normal-case">
+                        · {{ roleToDelete.permissions.length }}
+                        {{ roleToDelete.permissions.length === 1 ? 'permission' : 'permissions' }}
+                    </span>
+                </p>
+                <p class="text-muted-foreground mt-2 text-sm">
+                    Removed from every user assigned to it. They keep their accounts but lose
+                    whatever access this role granted, and this cannot be undone.
+                </p>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-3">
+                    <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
+                    <Button
+                        variant="danger"
+                        size="sm"
+                        :disabled="form.processing"
+                        @click="deleteRole">
+                        {{ form.processing ? 'Deleting...' : 'Delete' }}
+                    </Button>
+                </div>
+            </template>
+        </Modal>
     </div>
 </template>

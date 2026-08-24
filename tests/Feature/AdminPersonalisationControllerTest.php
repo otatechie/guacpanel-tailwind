@@ -10,10 +10,10 @@ use Spatie\Permission\Models\Permission;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Permission::firstOrCreate(['name' => 'manage-personalization']);
+    Permission::firstOrCreate(['name' => 'manage-personalisation']);
 
     $this->adminUser = User::factory()->create();
-    $this->adminUser->givePermissionTo('manage-personalization');
+    $this->adminUser->givePermissionTo('manage-personalisation');
 
     $this->regularUser = User::factory()->create();
 
@@ -21,27 +21,21 @@ beforeEach(function () {
 
     $this->testToken = 'test-token';
     $this->validData = [
-        '_token'         => $this->testToken,
-        'app_name'       => 'New App Name',
+        '_token' => $this->testToken,
+        'app_name' => 'New App Name',
         'copyright_text' => '© 2024',
     ];
 });
 
 test('it allows users with manage permission to access personalisation page', function () {
-    $response = $this->actingAs($this->adminUser)
-        ->get(route('admin.personalization.index'));
+    $response = $this->actingAs($this->adminUser)->get(route('admin.personalization.index'));
 
     $response->assertStatus(200);
-    $response->assertInertia(
-        fn ($page) => $page
-            ->component('Admin/Personalisation/IndexPage')
-            ->has('personalisation')
-    );
+    $response->assertInertia(fn($page) => $page->component('Admin/Personalisation/IndexPage')->has('personalisation'));
 });
 
 test('it denies access to users without manage permission', function () {
-    $response = $this->actingAs($this->regularUser)
-        ->get(route('admin.personalization.index'));
+    $response = $this->actingAs($this->regularUser)->get(route('admin.personalization.index'));
 
     $response->assertForbidden();
 });
@@ -53,7 +47,7 @@ test('it allows users with upload permission to upload app logo', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.personalization.upload'), [
-            '_token'   => $this->testToken,
+            '_token' => $this->testToken,
             'app_logo' => $file,
         ]);
 
@@ -72,7 +66,7 @@ test('it allows users with upload permission to upload favicon', function () {
     $response = $this->actingAs($this->adminUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.personalization.upload'), [
-            '_token'  => $this->testToken,
+            '_token' => $this->testToken,
             'favicon' => $file,
         ]);
 
@@ -90,7 +84,7 @@ test('it denies file upload to users without upload permission', function () {
     $response = $this->actingAs($this->regularUser)
         ->withSession(['_token' => $this->testToken])
         ->post(route('admin.personalization.upload'), [
-            '_token'   => $this->testToken,
+            '_token' => $this->testToken,
             'app_logo' => $file,
         ]);
 
@@ -100,7 +94,7 @@ test('it denies file upload to users without upload permission', function () {
 test('it allows users with delete permission to delete app logo', function () {
     Storage::fake('public');
     $file = UploadedFile::fake()->image('logo.jpg');
-    $path = 'personalisation/'.time().'_logo.jpg';
+    $path = 'personalisation/' . time() . '_logo.jpg';
     Storage::disk('public')->put($path, $file->getContent());
 
     $this->personalisation->update(['app_logo' => $path]);
@@ -109,7 +103,7 @@ test('it allows users with delete permission to delete app logo', function () {
         ->withSession(['_token' => $this->testToken])
         ->delete(route('admin.personalization.delete.file'), [
             '_token' => $this->testToken,
-            'field'  => 'app_logo',
+            'field' => 'app_logo',
         ]);
 
     $response->assertStatus(200);
@@ -123,7 +117,7 @@ test('it allows users with delete permission to delete app logo', function () {
 test('it allows users with delete permission to delete favicon', function () {
     Storage::fake('public');
     $file = UploadedFile::fake()->image('favicon.png', 32, 32);
-    $path = 'personalisation/'.time().'_favicon.png';
+    $path = 'personalisation/' . time() . '_favicon.png';
     Storage::disk('public')->put($path, $file->getContent());
 
     $this->personalisation->update(['favicon' => $path]);
@@ -132,7 +126,7 @@ test('it allows users with delete permission to delete favicon', function () {
         ->withSession(['_token' => $this->testToken])
         ->delete(route('admin.personalization.delete.file'), [
             '_token' => $this->testToken,
-            'field'  => 'favicon',
+            'field' => 'favicon',
         ]);
 
     $response->assertStatus(200);
@@ -148,7 +142,7 @@ test('it denies file deletion to users without delete permission', function () {
         ->withSession(['_token' => $this->testToken])
         ->delete(route('admin.personalization.delete.file'), [
             '_token' => $this->testToken,
-            'field'  => 'app_logo',
+            'field' => 'app_logo',
         ]);
 
     $response->assertForbidden();
