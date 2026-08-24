@@ -17,9 +17,7 @@ class AdminDeletedUsersController extends Controller implements HasMiddleware
 
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:view-users|manage-users'),
-        ];
+        return [new Middleware('permission:view-users|manage-users')];
     }
 
     public function index(Request $request)
@@ -126,11 +124,13 @@ class AdminDeletedUsersController extends Controller implements HasMiddleware
             'confirm_destroy_all' => ['accepted', 'boolean'],
         ]);
 
-        User::onlyDeleted()->get()->each(function ($user) {
-            if ($user->canBeDeleted()) {
-                $user->forceDelete();
-            }
-        });
+        User::onlyDeleted()
+            ->get()
+            ->each(function ($user) {
+                if ($user->canBeDeleted()) {
+                    $user->forceDelete();
+                }
+            });
 
         return redirect()
             ->route('admin.user.index')

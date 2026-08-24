@@ -5,6 +5,7 @@ import Badge from '@/Components/Badge.vue'
 import RoleBadge from '@/Components/Common/RoleBadge.vue'
 import NotificationTypeBadge from '@/Components/Common/NotificationTypeBadge.vue'
 import Modal from '@/Components/Notifications/Modal.vue'
+import Alert from '@/Components/Notifications/Alert.vue'
 
 describe('Badge contract', () => {
     it('renders slot content', () => {
@@ -44,7 +45,61 @@ describe('NotificationTypeBadge contract', () => {
     it('labels known types and defaults empty to Info', () => {
         expect(mount(NotificationTypeBadge, { props: { type: 'warning' } }).text()).toBe('Warning')
         expect(mount(NotificationTypeBadge, { props: { type: null } }).text()).toBe('Info')
-        expect(mount(NotificationTypeBadge, { props: { type: '  SUCCESS ' } }).text()).toBe('Success')
+        expect(mount(NotificationTypeBadge, { props: { type: '  SUCCESS ' } }).text()).toBe(
+            'Success'
+        )
+    })
+})
+
+describe('Alert contract', () => {
+    it('renders slot content and an optional title', () => {
+        const wrapper = mount(Alert, {
+            props: { title: 'Heads up' },
+            slots: { default: 'Something happened' },
+        })
+
+        expect(wrapper.text()).toContain('Heads up')
+        expect(wrapper.text()).toContain('Something happened')
+    })
+
+    it('treats danger as error', () => {
+        const danger = mount(Alert, { props: { type: 'danger' } }).attributes('class')
+        const error = mount(Alert, { props: { type: 'error' } }).attributes('class')
+
+        expect(danger).toBe(error)
+    })
+
+    it('restyles when the type changes', async () => {
+        // Regression: type was resolved once at setup, so a bound :type left the
+        // alert wearing whatever it first rendered with.
+        const wrapper = mount(Alert, { props: { type: 'info' } })
+        const before = wrapper.attributes('class')
+
+        await wrapper.setProps({ type: 'error' })
+
+        expect(wrapper.attributes('class')).not.toBe(before)
+    })
+
+    it('survives an unknown type instead of dereferencing undefined', () => {
+        expect(() => mount(Alert, { props: { type: 'nonsense' } })).not.toThrow()
+    })
+
+    it('only interrupts a screen reader for errors', () => {
+        // role="alert" is assertive; standing info/warning notes must not be.
+        expect(mount(Alert, { props: { type: 'error' } }).attributes('role')).toBe('alert')
+        expect(mount(Alert, { props: { type: 'danger' } }).attributes('role')).toBe('alert')
+        expect(mount(Alert, { props: { type: 'info' } }).attributes('role')).toBe('status')
+        expect(mount(Alert, { props: { type: 'warning' } }).attributes('role')).toBe('status')
+        expect(mount(Alert, { props: { type: 'success' } }).attributes('role')).toBe('status')
+    })
+
+    it('emits dismiss and hides when dismissed', async () => {
+        const wrapper = mount(Alert, { props: { dismissible: true } })
+
+        await wrapper.find('button[aria-label="Dismiss"]').trigger('click')
+
+        expect(wrapper.emitted('dismiss')).toHaveLength(1)
+        expect(wrapper.find('[role]').exists()).toBe(false)
     })
 })
 

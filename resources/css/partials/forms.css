@@ -1,15 +1,26 @@
 /* ─── Shared input base ─── */
+/* 2rem matches Button size="sm", which is what sits beside these controls
+   everywhere. Height is set explicitly rather than via padding so <select>
+   and <input> land on the same number. */
 .form-input {
     width: 100%;
+    height: 2rem;
     border-radius: 0.5rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    padding: 0.5rem 0.75rem;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    padding: 0 0.75rem;
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
     background-color: var(--card);
     color: var(--foreground);
     border: 1px solid var(--border);
     caret-color: var(--foreground);
+}
+
+/* Preflight leaves <select> as cursor: default, which reads as non-interactive. */
+select.form-input {
+    cursor: pointer;
 }
 
 .form-input::placeholder {
@@ -90,7 +101,9 @@ select {
 
 /* ─── Code blocks ─── */
 pre {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-family:
+        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+        monospace;
     overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-word;

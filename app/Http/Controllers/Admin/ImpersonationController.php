@@ -26,11 +26,9 @@ class ImpersonationController extends Controller
             return back()->with('error', 'You cannot impersonate a super admin.');
         }
 
-        // Store the original user ID in the session
         session()->put('impersonator_id', $impersonator->id);
         session()->put('impersonator_name', $impersonator->name);
 
-        // Log the impersonation
         Log::info('User impersonation started', [
             'impersonator_id' => $impersonator->id,
             'impersonator_name' => $impersonator->name,
@@ -39,7 +37,6 @@ class ImpersonationController extends Controller
             'ip' => $request->ip(),
         ]);
 
-        // Log in as the target user and regenerate session to prevent fixation
         Auth::login($user);
         $request->session()->regenerate();
 
@@ -61,22 +58,20 @@ class ImpersonationController extends Controller
         if (!$impersonator) {
             session()->forget(['impersonator_id', 'impersonator_name']);
             Auth::logout();
+
             return redirect()->route('login')->with('error', 'Original user not found.');
         }
 
         $impersonatedName = $request->user()->name;
 
-        // Log the end of impersonation
         Log::info('User impersonation ended', [
             'impersonator_id' => $impersonator->id,
             'impersonator_name' => $impersonator->name,
             'impersonated_name' => $impersonatedName,
         ]);
 
-        // Clear impersonation session data
         session()->forget(['impersonator_id', 'impersonator_name']);
 
-        // Log back in as the original user and regenerate session
         Auth::login($impersonator);
         $request->session()->regenerate();
 

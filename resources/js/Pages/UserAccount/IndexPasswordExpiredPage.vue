@@ -3,6 +3,7 @@ import Button from '@/Components/Button.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
+import { InfoIcon } from '@lucide/vue'
 
 defineOptions({
     layout: Auth,
@@ -23,7 +24,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Password Update Required" />
+    <Head title="Password update required" />
 
     <main class="mx-auto max-w-[384px] px-8" role="main">
         <h1 class="main-heading text-center dark:text-white">Password update required</h1>
@@ -32,15 +33,7 @@ const submit = () => {
             class="my-4 flex items-center rounded-lg bg-orange-100 p-4 text-orange-700">
             <div
                 class="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-500">
-                <svg
-                    class="h-5 w-5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
-                </svg>
+                <InfoIcon class="h-5 w-5" aria-hidden="true" />
                 <span class="sr-only">Warning icon</span>
             </div>
             <div class="ml-3 text-sm font-normal">
@@ -48,7 +41,7 @@ const submit = () => {
             </div>
         </div>
 
-        <form class="container-border mt-6 space-y-6 p-5" @submit.prevent="submit">
+        <form class="card mt-6 space-y-6 p-5" @submit.prevent="submit">
             <section
                 class="rounded-md bg-gray-50 p-4 dark:bg-gray-800"
                 aria-labelledby="password-requirements">
@@ -84,7 +77,12 @@ const submit = () => {
                 :disabled="form.processing"
                 :error="form.errors.password_confirmation" />
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" aria-busy="form.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="form.processing"
+                aria-busy="form.processing">
                 {{ form.processing ? 'Updating password...' : 'Update password' }}
             </Button>
         </form>

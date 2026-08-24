@@ -61,8 +61,9 @@ test('view permission cannot delete backups', function () {
 });
 
 test('view permission cannot download backups', function () {
-    $response = $this->actingAs($this->viewUser)
-        ->get(route('admin.backup.download', ['path' => base64_encode('GuacPanel/backup.zip')]));
+    $response = $this->actingAs($this->viewUser)->get(
+        route('admin.backup.download', ['path' => base64_encode('GuacPanel/backup.zip')]),
+    );
 
     $response->assertForbidden();
 });

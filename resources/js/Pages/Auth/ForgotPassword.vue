@@ -23,8 +23,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Reset password</h1>
-            <p class="mt-1.5 text-sm text-muted-foreground">
+            <h1 class="text-foreground text-xl font-semibold">Reset password</h1>
+            <p class="text-muted-foreground mt-1.5 text-sm">
                 Enter your email and we'll send a reset link
             </p>
         </header>
@@ -42,13 +42,18 @@ const submit = () => {
                 autocomplete="email"
                 :error="form.errors.email" />
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="form.processing"
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Sending...' : 'Send reset link' }}
             </Button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-muted-foreground">
-            <Link :href="route('login')" class="font-medium text-primary hover:underline">
+        <p class="text-muted-foreground mt-8 text-center text-sm">
+            <Link :href="route('login')" class="text-primary font-medium hover:underline">
                 Back to sign in
             </Link>
         </p>

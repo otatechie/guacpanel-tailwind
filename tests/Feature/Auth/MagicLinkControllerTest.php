@@ -19,7 +19,7 @@ test('user can view magic link registration page', function () {
     $response = $this->get(route('magic.create'));
 
     $response->assertStatus(200);
-    $response->assertInertia(fn ($page) => $page->component('Auth/RegisterMagicLink'));
+    $response->assertInertia(fn($page) => $page->component('Auth/RegisterMagicLink'));
 });
 
 test('new user can register with magic link', function () {
@@ -29,13 +29,13 @@ test('new user can register with magic link', function () {
     $email = $this->faker->safeEmail();
 
     $response = $this->post(route('magic.store'), [
-        'name'  => $name,
+        'name' => $name,
         'email' => $email,
     ]);
 
     $response->assertSessionHas('success');
     $this->assertDatabaseHas('users', [
-        'name'  => $name,
+        'name' => $name,
         'email' => $email,
     ]);
 
@@ -46,7 +46,7 @@ test('new user can register with magic link', function () {
 
 test('user cannot register with invalid data', function () {
     $response = $this->post(route('magic.store'), [
-        'name'  => '',
+        'name' => '',
         'email' => 'not-an-email',
     ]);
 
@@ -59,7 +59,7 @@ test('user cannot register with existing email', function () {
     User::factory()->create(['email' => $email]);
 
     $response = $this->post(route('magic.store'), [
-        'name'  => $this->faker->name(),
+        'name' => $this->faker->name(),
         'email' => $email,
     ]);
 
@@ -95,16 +95,16 @@ test('user can authenticate with valid magic link token', function () {
     $user = User::factory()->create();
     $token = Str::random(40);
 
-    Cache::put("magic_link:{$token}", [
-        'user_id'    => $user->id,
-        'created_at' => now()->timestamp,
-    ], now()->addMinutes(10));
-
-    $url = URL::temporarySignedRoute(
-        'magic.login.authenticate',
-        now()->addMinutes(5),
-        ['token' => $token]
+    Cache::put(
+        "magic_link:{$token}",
+        [
+            'user_id' => $user->id,
+            'created_at' => now()->timestamp,
+        ],
+        now()->addMinutes(10),
     );
+
+    $url = URL::temporarySignedRoute('magic.login.authenticate', now()->addMinutes(5), ['token' => $token]);
 
     $response = $this->get($url);
 
@@ -115,11 +115,7 @@ test('user can authenticate with valid magic link token', function () {
 test('user cannot authenticate with invalid token', function () {
     $invalidToken = $this->faker->sha1;
 
-    $url = URL::temporarySignedRoute(
-        'magic.login.authenticate',
-        now()->addMinutes(5),
-        ['token' => $invalidToken]
-    );
+    $url = URL::temporarySignedRoute('magic.login.authenticate', now()->addMinutes(5), ['token' => $invalidToken]);
 
     $response = $this->get($url);
 
@@ -134,11 +130,7 @@ test('user cannot authenticate with expired link signature', function () {
     Cache::put("magic_link:{$token}", $user->id, now()->addMinutes(10));
 
     // Create URL with expired signature (time in the past)
-    $url = URL::temporarySignedRoute(
-        'magic.login.authenticate',
-        now()->subMinutes(5),
-        ['token' => $token]
-    );
+    $url = URL::temporarySignedRoute('magic.login.authenticate', now()->subMinutes(5), ['token' => $token]);
 
     $response = $this->get($url);
 
@@ -154,7 +146,7 @@ test('passwordless login is disabled when setting is false', function () {
     $response->assertStatus(404);
 
     $response = $this->post(route('magic.store'), [
-        'name'  => $this->faker->name(),
+        'name' => $this->faker->name(),
         'email' => $this->faker->safeEmail(),
     ]);
     $response->assertStatus(404);

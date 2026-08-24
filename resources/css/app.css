@@ -12,13 +12,12 @@
 
 @import '@css/partials/theme.css';
 @import '@css/partials/base.css';
-@import '@css/partials/tables.css';
-@import '@css/partials/pagination.css';
 @import '@css/partials/forms.css';
 @import '@css/partials/nav.css';
 @import '@css/partials/badges.css';
 @import '@css/partials/typography.css';
 @import '@css/partials/cards.css';
+@import '@css/partials/charts.css';
 @import '@css/partials/notifications.css';
 @import '@css/partials/commandpalette.css';
 @import '~/nprogress/nprogress.css';

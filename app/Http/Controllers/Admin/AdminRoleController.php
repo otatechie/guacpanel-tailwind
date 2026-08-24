@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AdminRoleController extends Controller implements HasMiddleware
@@ -22,46 +20,12 @@ class AdminRoleController extends Controller implements HasMiddleware
 
     public static function middleware(): array
     {
-        return [
-            new Middleware(['auth', 'permission:manage-roles']),
-        ];
+        return [new Middleware(['auth', 'permission:manage-roles'])];
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $result = $this->dataTable->process(
-            query: Role::query()->with('permissions'),
-            request: $request,
-            config: [
-                'searchable' => ['name', 'description', 'permissions.name'],
-                'sortable' => [
-                    'name' => ['type' => 'simple'],
-                    'created_at' => ['type' => 'simple'],
-                ],
-                'resource' => 'roles',
-                'transform' => function ($role) {
-                    return [
-                        'id' => $role->id,
-                        'name' => $role->name,
-                        'description' => $role->description,
-                        'created_at' => $role->created_at?->diffForHumans(),
-                        'is_protected' => $this->isProtectedRole($role->name),
-                        'permissions' => $role->permissions->map(function ($permission) {
-                            return [
-                                'id' => $permission->id,
-                                'name' => $permission->name,
-                            ];
-                        }),
-                    ];
-                },
-            ],
-        );
-
-        return Inertia::render('Admin/PermissionRole/IndexPermissionRolePage', [
-            'roles' => $result['data'],
-            'permissions' => Permission::all(),
-            'filters' => $result['filters'],
-        ]);
+        return redirect()->route('admin.permission.role.index');
     }
 
     public function store(Request $request): RedirectResponse
@@ -90,14 +54,14 @@ class AdminRoleController extends Controller implements HasMiddleware
             $role->syncPermissions($request->permissions);
         }
 
-        return redirect()->route('admin.role.index')->with('success', 'Role created successfully.');
+        return redirect()->route('admin.permission.role.index')->with('success', 'Role created successfully.');
     }
 
     public function update(Request $request, Role $role): RedirectResponse
     {
         if ($this->isProtectedRole($role->name)) {
             return redirect()
-                ->route('admin.role.index')
+                ->route('admin.permission.role.index')
                 ->with('error', 'Cannot modify system role: ' . $role->name);
         }
 
@@ -125,7 +89,7 @@ class AdminRoleController extends Controller implements HasMiddleware
             $role->syncPermissions($request->permissions);
         }
 
-        return redirect()->route('admin.role.index')->with('success', 'Role updated successfully.');
+        return redirect()->route('admin.permission.role.index')->with('success', 'Role updated successfully.');
     }
 
     public function destroy(string $id): RedirectResponse
@@ -134,12 +98,12 @@ class AdminRoleController extends Controller implements HasMiddleware
 
         if ($this->isProtectedRole($role->name)) {
             return redirect()
-                ->route('admin.role.index')
+                ->route('admin.permission.role.index')
                 ->with('error', 'Cannot delete system role: ' . $role->name);
         }
 
         $role->delete();
 
-        return redirect()->route('admin.role.index')->with('success', 'Role deleted successfully.');
+        return redirect()->route('admin.permission.role.index')->with('success', 'Role deleted successfully.');
     }
 }

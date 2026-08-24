@@ -44,7 +44,12 @@ const currentAvatarUrl = computed(() =>
         <form class="space-y-4" @submit.prevent="submit">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormInput v-model="form.name" label="Name" :error="form.errors.name" required />
-                <FormInput v-model="form.email" label="Email" type="email" :error="form.errors.email" disabled />
+                <FormInput
+                    v-model="form.email"
+                    label="Email"
+                    type="email"
+                    :error="form.errors.email"
+                    disabled />
             </div>
 
             <FormInput v-model="form.location" label="Location" :error="form.errors.location" />
@@ -55,7 +60,11 @@ const currentAvatarUrl = computed(() =>
             </div>
 
             <div class="pt-2">
-                <Button variant="primary" size="sm" type="submit" :disabled="form.processing || !profileEnabled">
+                <Button
+                    variant="primary"
+                    size="sm"
+                    type="submit"
+                    :disabled="form.processing || !profileEnabled">
                     {{ form.processing ? 'Saving...' : 'Save' }}
                 </Button>
             </div>

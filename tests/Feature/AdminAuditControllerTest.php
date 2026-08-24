@@ -19,22 +19,16 @@ beforeEach(function () {
 });
 
 test('it redirects unauthenticated users to login page', function () {
-    $this->get(route('admin.audit.index'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.audit.index'))->assertRedirect(route('login'));
 });
 
 test('it denies access to users without audit permission', function () {
-    $this->actingAs($this->regularUser)
-        ->get(route('admin.audit.index'))
-        ->assertForbidden();
+    $this->actingAs($this->regularUser)->get(route('admin.audit.index'))->assertForbidden();
 });
 
 test('it allows access to users with audit permission', function () {
     $this->actingAs($this->adminUser)
         ->get(route('admin.audit.index'))
         ->assertStatus(200)
-        ->assertInertia(
-            fn (Assert $page) => $page
-            ->component('Admin/IndexAuditPage')
-        );
+        ->assertInertia(fn(Assert $page) => $page->component('Admin/IndexAuditPage'));
 });

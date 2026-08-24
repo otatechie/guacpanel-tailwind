@@ -1,24 +1,24 @@
 <script setup>
 import { computed } from 'vue'
 import {
-    HomeIcon,
-    ChartBarIcon,
     BellIcon,
-    Cog6ToothIcon,
-    ChartBarSquareIcon,
-    SwatchIcon,
-    UsersIcon,
-    CircleStackIcon,
-    ShieldCheckIcon,
+    ChartColumnBigIcon,
+    ChartColumnIcon,
     ClockIcon,
-    LockClosedIcon,
-    ComputerDesktopIcon,
+    DatabaseIcon,
     HeartIcon,
+    HouseIcon,
+    LockIcon,
+    LogOutIcon,
+    MonitorIcon,
     MoonIcon,
+    SearchIcon,
+    SettingsIcon,
+    ShieldCheckIcon,
+    SwatchBookIcon,
     UserIcon,
-    MagnifyingGlassIcon,
-} from '@heroicons/vue/24/outline'
-
+    UsersIcon,
+} from '@lucide/vue'
 const props = defineProps({
     item: {
         type: Object,
@@ -28,34 +28,39 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    /** Referenced by the input's aria-activedescendant. */
+    id: {
+        type: String,
+        required: true,
+    },
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'activate'])
 
 /**
- * Map icon names to Heroicon components
+ * Map icon names to Lucide components
  */
 const iconComponents = {
-    home: HomeIcon,
-    chart: ChartBarIcon,
+    home: HouseIcon,
+    chart: ChartColumnIcon,
     bell: BellIcon,
-    cog: Cog6ToothIcon,
-    activity: ChartBarSquareIcon,
-    palette: SwatchIcon,
+    cog: SettingsIcon,
+    activity: ChartColumnBigIcon,
+    palette: SwatchBookIcon,
     users: UsersIcon,
-    database: CircleStackIcon,
+    database: DatabaseIcon,
     shield: ShieldCheckIcon,
     history: ClockIcon,
-    lock: LockClosedIcon,
-    monitor: ComputerDesktopIcon,
+    lock: LockIcon,
+    monitor: MonitorIcon,
     heart: HeartIcon,
     moon: MoonIcon,
     user: UserIcon,
-    logout: ArrowRightOnRectangleIcon,
-    search: MagnifyingGlassIcon,
+    logout: LogOutIcon,
+    search: SearchIcon,
 }
 
-const IconComponent = computed(() => iconComponents[props.item.icon] || MagnifyingGlassIcon)
+const IconComponent = computed(() => iconComponents[props.item.icon] || SearchIcon)
 
 const handleClick = () => {
     emit('select', props.item)
@@ -63,15 +68,23 @@ const handleClick = () => {
 </script>
 
 <template>
-    <div class="command-item" :class="{ selected }" role="option" :aria-selected="selected" @click="handleClick">
+    <!-- Stays a non-tabbable `option`: in a combobox the input keeps focus and
+         the arrow keys drive the list, so making these buttons would put two
+         competing keyboard models in one widget. Hover drives the same
+         selection the arrows do, rather than painting a second highlight. -->
+    <div
+        :id="id"
+        class="command-item"
+        :class="{ selected }"
+        role="option"
+        :aria-selected="selected"
+        @mouseenter="emit('activate')"
+        @click="handleClick">
         <component :is="IconComponent" class="command-item-icon" aria-hidden="true" />
 
         <div class="command-item-content">
             <div class="command-item-label">{{ item.name }}</div>
             <div v-if="item.subtitle" class="command-item-subtitle">{{ item.subtitle }}</div>
         </div>
-
-        <span v-if="item.type === 'action'" class="command-item-badge">Action</span>
-        <span v-else-if="item.type === 'page'" class="command-item-badge">Page</span>
     </div>
 </template>

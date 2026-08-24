@@ -32,9 +32,13 @@ const submitRecovery = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Two-factor authentication</h1>
-            <p class="mt-1.5 text-sm text-muted-foreground">
-                {{ useRecovery ? 'Enter one of your emergency recovery codes' : 'Enter the 6-digit code from your authenticator app' }}
+            <h1 class="text-foreground text-xl font-semibold">Two-factor authentication</h1>
+            <p class="text-muted-foreground mt-1.5 text-sm">
+                {{
+                    useRecovery
+                        ? 'Enter one of your emergency recovery codes'
+                        : 'Enter the 6-digit code from your authenticator app'
+                }}
             </p>
         </header>
 
@@ -55,7 +59,12 @@ const submitRecovery = () => {
                 maxlength="6"
                 autocomplete="one-time-code" />
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="codeForm.processing" :aria-busy="codeForm.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="codeForm.processing"
+                :aria-busy="codeForm.processing">
                 {{ codeForm.processing ? 'Verifying...' : 'Verify' }}
             </Button>
         </form>
@@ -74,15 +83,20 @@ const submitRecovery = () => {
                 :error="recoveryForm.errors.recovery_code"
                 autocomplete="off" />
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="recoveryForm.processing" :aria-busy="recoveryForm.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="recoveryForm.processing"
+                :aria-busy="recoveryForm.processing">
                 {{ recoveryForm.processing ? 'Verifying...' : 'Verify' }}
             </Button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-muted-foreground">
+        <p class="text-muted-foreground mt-6 text-center text-sm">
             <button
                 type="button"
-                class="font-medium text-primary hover:underline"
+                class="text-primary font-medium hover:underline"
                 @click="useRecovery = !useRecovery">
                 {{ useRecovery ? 'Use authenticator code instead' : 'Use a recovery code instead' }}
             </button>

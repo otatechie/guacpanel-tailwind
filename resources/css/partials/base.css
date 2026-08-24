@@ -11,35 +11,8 @@ input:focus {
 
 /* Utility Classes */
 .main-heading,
-.sub-heading {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 700;
-    color: var(--foreground);
-}
 
 /* Dark heading colors inherit from variables; no override needed */
-
-.container-border {
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: var(--card-shadow);
-}
-
-.main-container {
-    @apply rounded-(--main-container-radius);
-    .container-border {
-        @apply rounded-(--main-container-radius);
-        > div:last-child {
-            @apply rounded-b-(--main-container-radius);
-        }
-    }
-    > div,
-    > div > nav {
-        @apply rounded-t-(--main-container-radius);
-    }
-}
 
 /* Tailwind's preflight sets `cursor: default` on buttons. */
 @layer base {

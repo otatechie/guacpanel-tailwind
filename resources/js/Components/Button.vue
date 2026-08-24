@@ -52,9 +52,12 @@ const SIZE_OVERRIDE = {
 const uiVariant = computed(() => UI_VARIANT[props.variant] ?? 'default')
 const uiSize = computed(() => UI_SIZE[props.size] ?? 'default')
 const isNativeButton = computed(() => props.as === 'button')
+// Tailwind v4's preflight dropped the browser default `cursor: pointer` on
+// <button>, so every button reads as non-interactive unless it says otherwise.
+// Set here once rather than at each call site.
 const classes = computed(() =>
     cn(
-        'rounded-lg',
+        'cursor-pointer rounded-lg',
         SIZE_OVERRIDE[props.size],
         VARIANT_OVERRIDE[props.variant],
         props.class

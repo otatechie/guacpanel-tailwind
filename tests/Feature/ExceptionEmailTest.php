@@ -38,9 +38,9 @@ test('exception emails redact passwords and secrets from the request body', func
         $property = (new ReflectionClass($mail))->getProperty('content');
         $content = $property->getValue($mail);
 
-        return $content['body']['password'] === '[REDACTED]'
-            && $content['body']['password_confirmation'] === '[REDACTED]'
-            && $content['body']['two_factor_code'] === '[REDACTED]'
-            && $content['body']['email'] === 'victim@example.com';
+        return $content['body']['password'] === '[REDACTED]' &&
+            $content['body']['password_confirmation'] === '[REDACTED]' &&
+            $content['body']['two_factor_code'] === '[REDACTED]' &&
+            $content['body']['email'] === 'victim@example.com';
     });
 });

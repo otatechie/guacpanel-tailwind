@@ -29,19 +29,15 @@ test('it allows access to users with force password change required', function (
     $response = $this->actingAs($this->user)->get(route('user.password.change'));
 
     $response->assertStatus(200);
-    $response->assertInertia(
-        fn ($page) => $page
-            ->component('Auth/ChangePassword')
-            ->has('user')
-    );
+    $response->assertInertia(fn($page) => $page->component('Auth/ChangePassword')->has('user'));
 });
 
 test('it allows users to update password with valid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'NewPassword123!',
+            '_token' => 'test-token',
+            'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 
@@ -57,8 +53,8 @@ test('it prevents password update with invalid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'password123!',
+            '_token' => 'test-token',
+            'password' => 'password123!',
             'password_confirmation' => 'password123!',
         ]);
     $response->assertSessionHasErrors('password');
@@ -66,8 +62,8 @@ test('it prevents password update with invalid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'Password!',
+            '_token' => 'test-token',
+            'password' => 'Password!',
             'password_confirmation' => 'Password!',
         ]);
     $response->assertSessionHasErrors('password');
@@ -75,8 +71,8 @@ test('it prevents password update with invalid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'Password123',
+            '_token' => 'test-token',
+            'password' => 'Password123',
             'password_confirmation' => 'Password123',
         ]);
     $response->assertSessionHasErrors('password');
@@ -84,8 +80,8 @@ test('it prevents password update with invalid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'Pass1!',
+            '_token' => 'test-token',
+            'password' => 'Pass1!',
             'password_confirmation' => 'Pass1!',
         ]);
     $response->assertSessionHasErrors('password');
@@ -93,22 +89,22 @@ test('it prevents password update with invalid data', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'Password123!',
+            '_token' => 'test-token',
+            'password' => 'Password123!',
             'password_confirmation' => 'DifferentPassword123!',
         ]);
     $response->assertSessionHasErrors('password');
 });
 
 test('it enforces rate limiting for password update attempts', function () {
-    $key = 'user.password.change.update:'.$this->user->id;
+    $key = 'user.password.change.update:' . $this->user->id;
 
     for ($i = 0; $i < 3; $i++) {
         $response = $this->actingAs($this->user)
             ->withSession(['_token' => 'test-token'])
             ->post(route('user.password.change.update'), [
-                '_token'                => 'test-token',
-                'password'              => 'short',
+                '_token' => 'test-token',
+                'password' => 'short',
                 'password_confirmation' => 'short',
             ]);
     }
@@ -116,8 +112,8 @@ test('it enforces rate limiting for password update attempts', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'NewPassword123!',
+            '_token' => 'test-token',
+            'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 
@@ -128,8 +124,8 @@ test('it enforces rate limiting for password update attempts', function () {
     $response = $this->actingAs($this->user)
         ->withSession(['_token' => 'test-token'])
         ->post(route('user.password.change.update'), [
-            '_token'                => 'test-token',
-            'password'              => 'NewPassword123!',
+            '_token' => 'test-token',
+            'password' => 'NewPassword123!',
             'password_confirmation' => 'NewPassword123!',
         ]);
 

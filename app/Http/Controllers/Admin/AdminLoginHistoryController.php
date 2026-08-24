@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\LoginHistory;
 use App\Services\DataTableService;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
 
 class AdminLoginHistoryController extends Controller implements HasMiddleware
@@ -17,26 +17,18 @@ class AdminLoginHistoryController extends Controller implements HasMiddleware
 
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:view-login-history|manage-login-history'),
-            new Middleware('permission:manage-login-history', only: ['bulkDestroy']),
-        ];
+        return [new Middleware('permission:view-login-history|manage-login-history')];
     }
 
     public function index(Request $request)
     {
         $result = $this->dataTable->process(
-            query: LoginHistory::with('user')->select([
-                'id',
-                'user_id',
-                'user_type',
-                'user_agent',
-                'login_at',
-                'login_successful',
-            ]),
+            query: LoginHistory::with('user')
+                ->select(['id', 'user_id', 'user_type', 'ip_address', 'user_agent', 'login_at', 'login_successful'])
+                ->orderByDesc('login_at'),
             request: $request,
             config: [
-                'searchable' => ['user.name', 'user_agent'],
+                'searchable' => ['user.name', 'ip_address', 'user_agent'],
                 'sortable' => [
                     'login_at' => ['type' => 'simple'],
                 ],
@@ -46,6 +38,7 @@ class AdminLoginHistoryController extends Controller implements HasMiddleware
                     $agent->setUserAgent($item->user_agent);
 
                     $item->login_at_diff = $item->login_at?->diffForHumans();
+                    $item->login_at_exact = $item->login_at?->toDayDateTimeString();
                     $item->device_info = [
                         'device' => $agent->device() ?: 'Unknown',
                         'platform' => $agent->platform() ?: 'Unknown',
@@ -53,7 +46,7 @@ class AdminLoginHistoryController extends Controller implements HasMiddleware
                     ];
 
                     $item->status = [
-                        'success' => $item->login_successful ?? true,
+                        'success' => (bool) $item->login_successful,
                     ];
 
                     $item->username = $item->user?->name ?? 'Unknown User';
@@ -66,18 +59,23 @@ class AdminLoginHistoryController extends Controller implements HasMiddleware
         return Inertia::render('Admin/IndexLoginHistoryPage', [
             'loginHistory' => $result['data'],
             'filters' => $result['filters'],
+            'canManage' => $request->user()->can('manage-login-history'),
         ]);
     }
 
     public function bulkDestroy(Request $request)
     {
-        $request->validate([
-            'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'integer', 'exists:login_history,id'],
+        abort_unless($request->user()->can('manage-login-history'), 403);
+
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer'],
         ]);
 
-        LoginHistory::whereIn('id', $request->ids)->delete();
+        LoginHistory::whereIn('id', array_values(array_filter($data['ids'])))->delete();
 
-        return response()->json(['message' => 'Selected records have been deleted']);
+        return redirect()
+            ->route('admin.login.history.index')
+            ->with('success', __('notifications.admin.login_history_deleted'));
     }
 }

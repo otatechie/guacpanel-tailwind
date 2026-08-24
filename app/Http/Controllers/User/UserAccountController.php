@@ -167,11 +167,6 @@ class UserAccountController extends Controller
         return redirect()->route('home')->with('success', 'Account has been deactivated successfully.');
     }
 
-    public function reactivateAccount()
-    {
-        // TODO :: HERE
-    }
-
     public function deleteAccount()
     {
         if (!config('guacpanel.user.account.delete_enabled')) {

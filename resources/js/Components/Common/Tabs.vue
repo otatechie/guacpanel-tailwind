@@ -15,7 +15,12 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const activeTab = ref(props.modelValue)
 
-watch(() => props.modelValue, v => { activeTab.value = v })
+watch(
+    () => props.modelValue,
+    v => {
+        activeTab.value = v
+    }
+)
 
 const switchTab = index => {
     activeTab.value = index
@@ -34,7 +39,7 @@ const switchTab = index => {
                 :class="[
                     activeTab === index
                         ? 'border-primary text-foreground'
-                        : 'border-transparent text-muted-foreground hover:text-foreground',
+                        : 'text-muted-foreground hover:text-foreground border-transparent',
                 ]"
                 :aria-current="activeTab === index ? 'page' : undefined"
                 @click="switchTab(index)">

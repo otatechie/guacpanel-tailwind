@@ -6,6 +6,16 @@ export function useServerPagination(options) {
     const sorting = ref([])
     const globalFilter = ref('')
 
+    /* `options.filters` was read once at setup. Inertia hands the page a new
+       filters object on every visit while this composable lives on, so each
+       request was built from the filters as they were on first render — which is
+       why sorting dropped the search and searching dropped the sort. Resolve it
+       per request instead; a getter keeps it current. */
+    const currentFilters = () =>
+        (typeof options.filters === 'function' ? options.filters() : options.filters) ?? {}
+
+    const perPage = () => currentFilters().per_page || options.pagination.per_page
+
     // Store watchers and timers for cleanup
     let globalSearchTimer = null
     const watchers = []
@@ -26,10 +36,10 @@ export function useServerPagination(options) {
                 })
 
                 const queryParams = {
-                    ...options.filters,
+                    ...currentFilters(),
                     ...filterParams,
                     page: 1,
-                    per_page: options.filters?.per_page || options.pagination.per_page,
+                    per_page: perPage(),
                 }
 
                 router.get(options.routeUrl, queryParams, {
@@ -50,11 +60,11 @@ export function useServerPagination(options) {
 
                 const sort = newSorting[0]
                 const queryParams = {
-                    ...options.filters,
+                    ...currentFilters(),
                     sort_by: sort.id,
                     sort_dir: sort.desc ? 'desc' : 'asc',
                     page: 1,
-                    per_page: options.filters?.per_page || options.pagination.per_page,
+                    per_page: perPage(),
                 }
 
                 router.get(options.routeUrl, queryParams, {
@@ -80,10 +90,10 @@ export function useServerPagination(options) {
 
                 globalSearchTimer = setTimeout(() => {
                     const queryParams = {
-                        ...options.filters,
+                        ...currentFilters(),
                         search: newSearch,
                         page: 1,
-                        per_page: options.filters?.per_page || options.pagination.per_page,
+                        per_page: perPage(),
                     }
 
                     router.get(options.routeUrl, queryParams, {
@@ -110,6 +120,19 @@ export function useServerPagination(options) {
     }
 
     const init = () => {
+        /* Seed from the server's filters first, so the toolbar shows the query
+           and sort that produced the rows on screen. Assigning before the
+           watchers exist keeps it from firing a request back at the server. */
+        const filters = currentFilters()
+
+        if (filters.search) {
+            globalFilter.value = filters.search
+        }
+
+        if (filters.sort_by) {
+            sorting.value = [{ id: filters.sort_by, desc: filters.sort_dir === 'desc' }]
+        }
+
         watchColumnFilters()
         watchSorting()
         watchGlobalSearch()

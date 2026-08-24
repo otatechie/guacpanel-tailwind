@@ -6,12 +6,13 @@ import Default from '@js/Layouts/Default.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
+import { CircleCheckIcon, CopyIcon, KeyIcon, QrCodeIcon, TriangleAlertIcon } from '@lucide/vue'
 
 defineOptions({
     layout: Default,
 })
 
-const props = defineProps({
+defineProps({
     user: {
         type: Object,
         required: true,
@@ -71,23 +72,22 @@ const benefits = [
 </script>
 
 <template>
-    <Head title="Multi-Factor Authentication" />
+    <Head title="Two-factor authentication" />
 
     <main class="mx-auto max-w-7xl" aria-labelledby="2fa-settings">
         <PageHeader
-            title="Multi-Factor Authentication"
+            title="Two-factor authentication"
             description="Add an extra layer of security to your account"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'Account Settings', href: route('user.index') },
-                { label: 'MFA' },
+                { label: 'Account settings', href: route('user.index') },
+                { label: 'Two-factor authentication' },
             ]" />
 
-        <div
-            class="card p-4 sm:p-6">
+        <div class="card p-4 sm:p-6">
             <Alert v-if="!twoFactorEnabled" type="info">
-                For demo purposes, two-factor authentication operations have been disabled
-                in the Fortify configuration.
+                For demo purposes, two-factor authentication operations have been disabled in the
+                Fortify configuration.
             </Alert>
 
             <section
@@ -108,18 +108,9 @@ const benefits = [
                             v-for="(benefit, index) in benefits"
                             :key="index"
                             class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 sm:gap-3 sm:px-4 sm:py-3 dark:bg-gray-900">
-                            <svg
+                            <CircleCheckIcon
                                 class="h-4 w-4 flex-shrink-0 text-green-500 sm:h-5 sm:w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                aria-hidden="true">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                                aria-hidden="true" />
                             <span class="text-sm text-gray-600 dark:text-gray-300">
                                 {{ benefit }}
                             </span>
@@ -128,7 +119,13 @@ const benefits = [
                 </div>
 
                 <div class="flex justify-end">
-                    <Button variant="primary" size="sm" class="w-full sm:w-auto" @click="enableTwoFactor" :disabled="enableForm.processing || !twoFactorEnabled" :aria-busy="enableForm.processing">
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        class="w-full sm:w-auto"
+                        @click="enableTwoFactor"
+                        :disabled="enableForm.processing || !twoFactorEnabled"
+                        :aria-busy="enableForm.processing">
                         {{ enableForm.processing ? 'Enabling...' : 'Enable 2FA' }}
                     </Button>
                 </div>
@@ -140,18 +137,9 @@ const benefits = [
                     aria-labelledby="setup-instructions">
                     <header class="flex items-center gap-2 sm:gap-3">
                         <span class="rounded-lg bg-purple-50 p-2 dark:bg-purple-900/30">
-                            <svg
+                            <QrCodeIcon
                                 class="h-4 w-4 text-purple-600 sm:h-5 sm:w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                aria-hidden="true">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                            </svg>
+                                aria-hidden="true" />
                         </span>
                         <h2
                             id="setup-instructions"
@@ -175,9 +163,8 @@ const benefits = [
                                 </div>
                                 <div class="ml-7 space-y-2 sm:ml-11">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">
-                                        Download an authenticator app from your app store
-                                        (we recommend Ente). Use the link for your mobile
-                                        device below.
+                                        Download an authenticator app from your app store (we
+                                        recommend Ente). Use the link for your mobile device below.
                                     </p>
                                     <div class="flex flex-col gap-2 sm:flex-row sm:gap-2">
                                         <a
@@ -233,8 +220,8 @@ const benefits = [
                                 </div>
                                 <div class="ml-7 space-y-3 sm:ml-11">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">
-                                        Open your app, tap "+" then "Scan QR Code", and
-                                        point your camera at the code below.
+                                        Open your app, tap "+" then "Scan QR Code", and point your
+                                        camera at the code below.
                                     </p>
                                 </div>
                             </div>
@@ -252,8 +239,8 @@ const benefits = [
                                 </div>
                                 <div class="ml-7 space-y-3 sm:ml-11">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">
-                                        Copy the 6-digit code from your app and paste it in
-                                        the field below.
+                                        Copy the 6-digit code from your app and paste it in the
+                                        field below.
                                     </p>
                                 </div>
                             </div>
@@ -275,31 +262,19 @@ const benefits = [
                     </div>
                 </section>
 
-                <div
-                    class="my-6 border-t border-gray-200 sm:my-8 dark:border-gray-700"></div>
+                <div class="my-6 border-t border-gray-200 sm:my-8 dark:border-gray-700"></div>
 
                 <section
                     class="space-y-6 pt-4 sm:space-y-8 sm:pt-6"
                     aria-labelledby="recovery-codes">
-                    <div
-                        class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <header
-                            class="flex min-w-0 flex-1 items-start gap-3 sm:items-center">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <header class="flex min-w-0 flex-1 items-start gap-3 sm:items-center">
                             <span
                                 class="flex-shrink-0 rounded-lg bg-amber-50/50 p-2 dark:bg-amber-900/10"
                                 aria-hidden="true">
-                                <svg
+                                <KeyIcon
                                     class="h-5 w-5 text-amber-500 dark:text-amber-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    aria-hidden="true">
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                                </svg>
+                                    aria-hidden="true" />
                             </span>
                             <div class="min-w-0 flex-1">
                                 <h2
@@ -308,12 +283,19 @@ const benefits = [
                                     Recovery Codes
                                 </h2>
                                 <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    Save these codes in a secure location. You'll need them
-                                    if you lose access to your authenticator app.
+                                    Save these codes in a secure location. You'll need them if you
+                                    lose access to your authenticator app.
                                 </p>
                             </div>
                         </header>
-                        <Button variant="secondary" size="sm" class="inline-flex min-h-[44px] w-full items-center justify-center gap-2 sm:min-h-0 sm:w-auto" @click="regenerateCodes" :disabled="regenerateForm.processing" :aria-busy="regenerateForm.processing" aria-label="Regenerate recovery codes">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            class="inline-flex min-h-[44px] w-full items-center justify-center gap-2 sm:min-h-0 sm:w-auto"
+                            @click="regenerateCodes"
+                            :disabled="regenerateForm.processing"
+                            :aria-busy="regenerateForm.processing"
+                            aria-label="Regenerate recovery codes">
                             <svg
                                 v-if="regenerateForm.processing"
                                 class="h-4 w-4 animate-spin"
@@ -333,11 +315,7 @@ const benefits = [
                                     fill="currentColor"
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
-                            {{
-                                regenerateForm.processing
-                                    ? 'Generating...'
-                                    : 'Regenerate Codes'
-                            }}
+                            {{ regenerateForm.processing ? 'Generating...' : 'Regenerate Codes' }}
                         </Button>
                     </div>
 
@@ -363,24 +341,16 @@ const benefits = [
                                 </code>
                                 <div
                                     class="absolute top-2 right-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                    <svg
+                                    <CopyIcon
                                         class="h-4 w-4 text-amber-500/70 dark:text-amber-400/60"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
+                                        aria-hidden="true" />
                                 </div>
                             </div>
                         </div>
 
                         <Alert type="warning" title="Keep these codes safe!" class="mt-6">
-                            Store them securely and don't share them with anyone. Each code
-                            can only be used once.
+                            Store them securely and don't share them with anyone. Each code can only
+                            be used once.
                         </Alert>
                     </div>
                 </section>
@@ -388,8 +358,7 @@ const benefits = [
                 <section
                     class="space-y-4 pt-8 sm:space-y-6 sm:pt-12 lg:pt-16"
                     aria-labelledby="danger-zone">
-                    <div
-                        class="rounded-lg border border-red-200 p-4 sm:p-6 dark:border-red-800">
+                    <div class="rounded-lg border border-red-200 p-4 sm:p-6 dark:border-red-800">
                         <h3
                             class="mb-4 text-base font-semibold text-red-600 sm:mb-6 sm:text-lg dark:text-red-400">
                             Danger Zone
@@ -402,11 +371,15 @@ const benefits = [
                             </h4>
                             <p
                                 class="mb-4 text-xs leading-relaxed text-gray-600 sm:text-sm dark:text-gray-400">
-                                Disabling multi-factor authentication will significantly
-                                reduce your account security. This action will immediately
-                                remove all 2FA protections for your account.
+                                Disabling multi-factor authentication will significantly reduce your
+                                account security. This action will immediately remove all 2FA
+                                protections for your account.
                             </p>
-                            <Button variant="danger" size="sm" class="inline-flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto" @click="showDisableModal = true">
+                            <Button
+                                variant="danger"
+                                size="sm"
+                                class="inline-flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto"
+                                @click="showDisableModal = true">
                                 <span class="hidden sm:inline">
                                     Disable Multi-Factor Authentication
                                 </span>
@@ -435,15 +408,9 @@ const benefits = [
                 <div
                     class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
                     <div class="flex gap-2">
-                        <svg
+                        <TriangleAlertIcon
                             class="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path
-                                fill-rule="evenodd"
-                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                clip-rule="evenodd" />
-                        </svg>
+                            aria-hidden="true" />
                         <p class="text-sm text-amber-700 dark:text-amber-300">
                             This action will immediately disable all 2FA protections for your
                             account.
@@ -462,7 +429,11 @@ const benefits = [
                     :disabled="disableForm.processing">
                     Cancel
                 </button>
-                <Button variant="danger" size="sm" @click="disableTwoFactor" :disabled="disableForm.processing">
+                <Button
+                    variant="danger"
+                    size="sm"
+                    @click="disableTwoFactor"
+                    :disabled="disableForm.processing">
                     {{ disableForm.processing ? 'Disabling...' : 'Yes, Disable 2FA' }}
                 </Button>
             </div>

@@ -37,12 +37,12 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Email Verification" />
+    <Head title="Email verification" />
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Verify your email</h1>
-            <p class="mt-1.5 text-sm text-muted-foreground">
+            <h1 class="text-foreground text-xl font-semibold">Verify your email</h1>
+            <p class="text-muted-foreground mt-1.5 text-sm">
                 We need to verify your email address before you can continue
             </p>
         </header>
@@ -59,12 +59,21 @@ const submit = () => {
                 v-if="status !== 'verification-link-sent'"
                 @submit.prevent="submit"
                 v-slot="{ processing }">
-                <Button variant="primary" class="w-full" type="submit" :aria-busy="form.processing" :disabled="form.processing">
+                <Button
+                    variant="primary"
+                    class="w-full"
+                    type="submit"
+                    :aria-busy="form.processing"
+                    :disabled="form.processing">
                     {{ form.processing ? 'Sending...' : 'Resend verification email' }}
                 </Button>
             </Form>
 
-            <Button variant="secondary" class="w-full" @click="returnToLogin" :disabled="form.processing">
+            <Button
+                variant="secondary"
+                class="w-full"
+                @click="returnToLogin"
+                :disabled="form.processing">
                 Sign out
             </Button>
         </div>

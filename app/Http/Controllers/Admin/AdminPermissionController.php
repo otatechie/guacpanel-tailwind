@@ -16,9 +16,7 @@ class AdminPermissionController extends Controller implements HasMiddleware
 
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:manage-permissions'),
-        ];
+        return [new Middleware('permission:manage-permissions')];
     }
 
     public function store(Request $request)
@@ -79,7 +77,6 @@ class AdminPermissionController extends Controller implements HasMiddleware
     {
         $permission = Permission::findOrFail($id);
 
-        // Prevent deleting protected system permissions
         if ($this->isProtectedPermission($permission->name)) {
             return redirect()
                 ->back()

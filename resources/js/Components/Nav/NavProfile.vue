@@ -1,113 +1,168 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { usePage, Link } from '@inertiajs/vue3'
+import { usePage, Link, router } from '@inertiajs/vue3'
+import { setTheme, getCurrentThemePreference } from '@js/utils/darkMode'
+import { colors, applyThemeColor, DEFAULT_THEME_COLOR } from '@js/utils/themeInit'
+import Popover from '@js/Components/Popover.vue'
 import {
-    UserCircleIcon,
-    Cog6ToothIcon,
-    ArrowLeftStartOnRectangleIcon,
-} from '@heroicons/vue/24/outline'
-
+    CheckIcon,
+    ChevronDownIcon,
+    ChevronRightIcon,
+    CircleUserIcon,
+    LogOutIcon,
+    MonitorIcon,
+    MoonIcon,
+    SunIcon,
+} from '@lucide/vue'
 const page = usePage()
 const user = computed(() => page.props.auth.user)
 const avatarUrl = computed(() => user.value?.avatar)
 const userName = computed(() => user.value?.name || '')
-const primaryRole = computed(() => user.value?.roles?.[0] || '')
+const userEmail = computed(() => user.value?.email || '')
+
+/* All three options are shown rather than a button cycling to the next one.
+   A cycling control names only where you are going, so the mode you are in now
+   has to be recalled instead of read. */
+const THEME_OPTIONS = [
+    { value: 'light', label: 'Light', icon: SunIcon },
+    { value: 'dark', label: 'Dark', icon: MoonIcon },
+    { value: 'system', label: 'System', icon: MonitorIcon },
+]
 
 const menuOpen = ref(false)
-const menuWrapper = ref(null)
-
-const hasPermission = perm => user.value?.permissions?.includes(perm) ?? false
-
-const toggleMenu = () => (menuOpen.value = !menuOpen.value)
-const closeMenu = () => (menuOpen.value = false)
-
-const handleClickOutside = e => {
-    if (menuWrapper.value && !menuWrapper.value.contains(e.target)) closeMenu()
-}
-const handleEscape = e => {
-    if (e.key === 'Escape') closeMenu()
+const signOut = () => {
+    menuOpen.value = false
+    router.post(route('logout'))
 }
 
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
-    document.addEventListener('keydown', handleEscape)
-})
-onBeforeUnmount(() => {
-    document.removeEventListener('click', handleClickOutside)
-    document.removeEventListener('keydown', handleEscape)
-})
+const themePreference = ref(getCurrentThemePreference())
+const selectTheme = preference => {
+    setTheme(preference)
+    themePreference.value = preference
+}
+
+/* Read only — `initializeTheme()` already applied the saved accent at boot, so
+   this just reflects it. The default has to match that one or the check marks a
+   swatch the app is not actually using. */
+const selectedColor = ref(localStorage.getItem('theme-color') || DEFAULT_THEME_COLOR)
+const updateThemeColor = color => {
+    selectedColor.value = color
+    localStorage.setItem('theme-color', color)
+    applyThemeColor(color)
+}
+
+/* The OS can flip the effective theme under 'system' without us touching it. */
+const syncThemePreference = () => {
+    themePreference.value = getCurrentThemePreference()
+}
+
+onMounted(() => window.addEventListener('themeChanged', syncThemePreference))
+onBeforeUnmount(() => window.removeEventListener('themeChanged', syncThemePreference))
 </script>
 
 <template>
-    <nav ref="menuWrapper" class="relative">
-        <button
-            type="button"
-            class="flex cursor-pointer items-center gap-1 rounded-lg p-1 transition-colors hover:bg-muted"
-            :aria-expanded="menuOpen"
-            @click="toggleMenu">
-            <img
-                :src="avatarUrl"
-                :alt="userName"
-                class="size-6 rounded-full" />
-            <svg class="hidden h-3 w-3 text-muted-foreground lg:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
-        </button>
+    <Popover v-model:open="menuOpen" align="end" width="w-60">
+        <template #trigger>
+            <button
+                type="button"
+                class="hover:bg-muted focus-visible:ring-ring flex h-9 cursor-pointer items-center gap-1.5 rounded-md px-1.5 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                aria-label="Account menu">
+                <img :src="avatarUrl" :alt="userName" class="size-6 shrink-0 rounded-full" />
+                <ChevronDownIcon
+                    class="text-muted-foreground hidden size-3.5 opacity-60 lg:block"
+                    aria-hidden="true" />
+            </button>
+        </template>
 
-        <Transition
-            enter-active-class="transition duration-100 ease-out"
-            enter-from-class="opacity-0 scale-95"
-            enter-to-class="opacity-100 scale-100"
-            leave-active-class="transition duration-75 ease-in"
-            leave-from-class="opacity-100 scale-100"
-            leave-to-class="opacity-0 scale-95">
+        <!-- Identity. The chevron marks this as somewhere you go. -->
+        <div class="p-1">
+            <Link
+                :href="route('user.index')"
+                class="hover:bg-muted focus-visible:ring-ring flex w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                @click="menuOpen = false">
+                <CircleUserIcon class="text-muted-foreground size-4 shrink-0" />
+                <span class="min-w-0 flex-1 text-left">
+                    <span class="text-foreground block truncate font-medium capitalize">
+                        {{ userName }}
+                    </span>
+                    <span v-if="userEmail" class="text-muted-foreground block truncate text-xs">
+                        {{ userEmail }}
+                    </span>
+                </span>
+                <ChevronRightIcon
+                    class="text-muted-foreground size-4 shrink-0"
+                    aria-hidden="true" />
+            </Link>
+        </div>
+
+        <div class="border-border border-t"></div>
+
+        <div class="space-y-2 px-3 py-2.5">
             <div
-                v-if="menuOpen"
-                class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-lg border border-border bg-card py-1 shadow-lg"
-                role="menu">
-
-                <!-- User info -->
-                <div class="border-b border-border px-3 py-2.5">
-                    <p class="text-sm font-medium capitalize text-foreground">{{ userName }}</p>
-                    <p v-if="primaryRole" class="mt-0.5 font-mono text-[11px] capitalize text-muted-foreground">{{ primaryRole }}</p>
-                </div>
-
-                <!-- Links -->
-                <div class="py-1">
-                    <Link
-                        :href="route('user.index')"
-                        class="flex items-center gap-2.5 px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted"
-                        role="menuitem"
-                        @click="closeMenu">
-                        <UserCircleIcon class="h-4 w-4 text-muted-foreground" />
-                        Account
-                    </Link>
-
-                    <Link
-                        v-if="hasPermission('manage-settings')"
-                        :href="route('admin.setting.index')"
-                        class="flex items-center gap-2.5 px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted"
-                        role="menuitem"
-                        @click="closeMenu">
-                        <Cog6ToothIcon class="h-4 w-4 text-muted-foreground" />
-                        Settings
-                    </Link>
-                </div>
-
-                <!-- Sign out -->
-                <div class="border-t border-border py-1">
-                    <Link
-                        :href="route('logout')"
-                        method="post"
-                        as="button"
-                        class="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
-                        role="menuitem"
-                        @click="closeMenu">
-                        <ArrowLeftStartOnRectangleIcon class="h-4 w-4" />
-                        Sign out
-                    </Link>
-                </div>
+                class="bg-muted flex gap-0.5 rounded-md p-0.5"
+                role="radiogroup"
+                aria-label="Theme">
+                <button
+                    v-for="option in THEME_OPTIONS"
+                    :key="option.value"
+                    type="button"
+                    role="radio"
+                    :aria-checked="themePreference === option.value"
+                    class="focus-visible:ring-ring flex flex-1 cursor-pointer items-center justify-center gap-1 rounded px-1 py-0.5 text-[11px] transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    :class="
+                        themePreference === option.value
+                            ? 'bg-card text-foreground font-medium shadow-sm'
+                            : 'text-muted-foreground hover:text-foreground'
+                    "
+                    @click="selectTheme(option.value)">
+                    <component :is="option.icon" class="size-3" aria-hidden="true" />
+                    {{ option.label }}
+                </button>
             </div>
-        </Transition>
-    </nav>
+
+            <div class="flex items-center justify-between gap-2">
+                <span id="accent-heading" class="text-muted-foreground text-xs">Accent</span>
+                <span
+                    class="flex items-center gap-1.5"
+                    role="radiogroup"
+                    aria-labelledby="accent-heading">
+                    <button
+                        v-for="color in colors"
+                        :key="color.value"
+                        type="button"
+                        role="radio"
+                        :aria-checked="selectedColor === color.value"
+                        :aria-label="color.name"
+                        class="focus-visible:ring-ring flex size-4 cursor-pointer items-center justify-center rounded-full transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                        :style="{
+                            background: `linear-gradient(135deg, ${color.gradientFrom}, ${color.gradientTo})`,
+                        }"
+                        @click="updateThemeColor(color.value)">
+                        <!-- The only selection cue, so it also has to be the
+                             non-colour one. A ring as well read as a bullseye and
+                             made this swatch sit larger than the rest of the row. -->
+                        <CheckIcon
+                            v-if="selectedColor === color.value"
+                            class="size-2.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
+                            :stroke-width="3"
+                            aria-hidden="true" />
+                    </button>
+                </span>
+            </div>
+        </div>
+
+        <div class="border-border border-t"></div>
+
+        <!-- Sign out. Not red: it is routine and reversible, and red kept for
+             genuinely destructive actions keeps its meaning. -->
+        <div class="p-1">
+            <button
+                type="button"
+                class="text-foreground hover:bg-muted focus-visible:ring-ring flex w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                @click="signOut">
+                <LogOutIcon class="text-muted-foreground size-4" />
+                Sign out
+            </button>
+        </div>
+    </Popover>
 </template>

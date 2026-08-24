@@ -10,7 +10,6 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AdminUserController extends Controller implements HasMiddleware
@@ -19,18 +18,34 @@ class AdminUserController extends Controller implements HasMiddleware
 
     public static function middleware(): array
     {
-        return [
-            new Middleware('permission:view-users|manage-users'),
-        ];
+        return [new Middleware('permission:view-users|manage-users')];
     }
 
     public function index(Request $request)
     {
         $result = $this->dataTable->process(
-            query: User::query()->with(['roles:id,name', 'permissions:id,name']),
+            query: User::query()->with(['roles:id,name']),
             request: $request,
             config: [
                 'searchable' => ['name', 'email', 'roles.name'],
+                'filterable' => [
+                    'status' => [
+                        'type' => 'composite',
+                        'callback' => fn($query, $value) => match ($value) {
+                            'disabled' => $query->where('disable_account', true),
+                            'locked' => $query->where('disable_account', false)->where('account_locked', true),
+                            'unverified' => $query
+                                ->where('disable_account', false)
+                                ->where('account_locked', false)
+                                ->whereNull('email_verified_at'),
+                            'active' => $query
+                                ->where('disable_account', false)
+                                ->where('account_locked', false)
+                                ->whereNotNull('email_verified_at'),
+                            default => $query,
+                        },
+                    ],
+                ],
                 'sortable' => [
                     'name' => ['type' => 'simple'],
                     'email' => ['type' => 'simple'],
@@ -43,28 +58,10 @@ class AdminUserController extends Controller implements HasMiddleware
                         'name' => $user->name,
                         'email' => $user->email,
                         'email_verified_at' => $user->email_verified_at,
-                        'email_verified_at_formatted' => $user->email_verified_at_formatted,
-                        'email_verified_at_full' => $user->email_verified_at_full,
-                        'password_expiry_at' => $user->password_expiry_at,
-                        'password_changed_at' => $user->password_changed_at,
                         'disable_account' => $user->disable_account,
-                        'force_password_change' => $user->force_password_change,
-                        'created_at_full' => $user->created_at_full,
-                        'created_at' => $user->created_at,
-                        'updated_at' => $user->updated_at,
-                        'deleted_at' => $user->deleted_at,
+                        'account_locked' => $user->account_locked,
                         'created_at_formatted' => $user->created_at_formatted,
-                        'deleted_at_formatted' => $user->deleted_at_formatted,
-                        'deleted_at_full' => $user->deleted_at_full,
-                        'auto_destroy' => $user->auto_destroy,
-                        'auto_destroy_date' => $user->auto_destroy_date,
-                        'auto_destroy_date_formatted' => $user->auto_destroy_date_formatted,
-                        'auto_destroy_date_full' => $user->auto_destroy_date_full,
-                        'restore_date' => $user->restore_date,
-                        'restore_date_formatted' => $user->restore_date_formatted,
-                        'restore_date_full' => $user->restore_date_full,
                         'roles' => $user->roles,
-                        'permissions' => $user->permissions,
                         'is_superuser' => $user->isSuperUser(),
                     ];
                 },
@@ -118,36 +115,21 @@ class AdminUserController extends Controller implements HasMiddleware
                 'email_verified_at' => $user->email_verified_at,
                 'email_verified_at_formatted' => $user->email_verified_at_formatted,
                 'email_verified_at_full' => $user->email_verified_at_full,
-                'password_expiry_at' => $user->password_expiry_at,
-                'password_changed_at' => $user->password_changed_at,
                 'disable_account' => $user->disable_account,
                 'force_password_change' => $user->force_password_change,
-                'created_at_full' => $user->created_at_full,
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-                'deleted_at' => $user->deleted_at,
-                'created_at_formatted' => $user->created_at_formatted,
-                'deleted_at_formatted' => $user->deleted_at_formatted,
-                'deleted_at_full' => $user->deleted_at_full,
                 'auto_destroy' => $user->auto_destroy,
-                'auto_destroy_date' => $user->auto_destroy_date,
-                'auto_destroy_date_formatted' => $user->auto_destroy_date_formatted,
-                'auto_destroy_date_full' => $user->auto_destroy_date_full,
-                'restore_date' => $user->restore_date,
-                'restore_date_formatted' => $user->restore_date_formatted,
                 'restore_date_full' => $user->restore_date_full,
                 'roles' => $user->roles,
                 'permissions' => $user->permissions->map(
                     fn($permission) => [
                         'id' => $permission->id,
                         'name' => $permission->name,
+                        'description' => $permission->description,
                     ],
                 ),
                 'is_superuser' => $user->isSuperUser(),
             ],
-            'permissions' => [
-                'data' => Permission::select(['id', 'name'])->get(),
-            ],
+            'rolePermissionCount' => $user->getPermissionsViaRoles()->count(),
             'roles' => [
                 'data' => Role::select(['id', 'name'])->get(),
             ],
@@ -162,7 +144,7 @@ class AdminUserController extends Controller implements HasMiddleware
 
         if ($user->isSuperUser()) {
             $currentRoleId = $user->roles->first()?->id;
-            $isRoleBeingChanged = $request->role != $currentRoleId;
+            $isRoleBeingChanged = $request->has('role') && $request->role != $currentRoleId;
 
             if ($request->disable_account || $request->force_password_change || $isRoleBeingChanged) {
                 return redirect()->back()->with('error', __('notifications.errors.su_status_cannot_be_modified'));
@@ -186,16 +168,21 @@ class AdminUserController extends Controller implements HasMiddleware
             ]);
         }
 
-        $user->update([
+        $attributes = [
             'name' => $request->name,
             'email' => $request->email,
-            'force_password_change' => $request->boolean('force_password_change'),
-            'disable_account' => $request->boolean('disable_account'),
-            'auto_destroy' => $request->boolean('auto_destroy'),
-        ]);
+        ];
 
-        if ($request->filled('role')) {
-            $user->syncRoles([$request->role]);
+        foreach (['force_password_change', 'disable_account', 'auto_destroy'] as $flag) {
+            if ($request->has($flag)) {
+                $attributes[$flag] = $request->boolean($flag);
+            }
+        }
+
+        $user->update($attributes);
+
+        if ($request->has('role')) {
+            $user->syncRoles(array_filter([$request->role]));
         }
 
         if ($request->has('permissions')) {
@@ -217,8 +204,11 @@ class AdminUserController extends Controller implements HasMiddleware
 
         $user->delete();
 
+        $previous = url()->previous();
+        $cameFromThisUsersEditPage = str_starts_with($previous, route('admin.user.edit', $id));
+
         return redirect()
-            ->route('admin.user.deleted.index')
+            ->to($cameFromThisUsersEditPage ? route('admin.user.index') : $previous)
             ->with('success', __('notifications.admin.user_deleted_successully'));
     }
 }

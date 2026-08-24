@@ -9,8 +9,7 @@ import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import Socialite from '@js/Components/Auth/Socialite.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
-import { EnvelopeIcon } from '@heroicons/vue/24/outline'
-
+import { MailIcon } from '@lucide/vue'
 defineOptions({
     layout: Auth,
 })
@@ -103,7 +102,7 @@ const sendMagicLink = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Sign in</h1>
+            <h1 class="text-foreground text-xl font-semibold">Sign in</h1>
         </header>
 
         <Alert v-if="status" type="info" class="mt-4">
@@ -144,22 +143,27 @@ const sendMagicLink = () => {
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="text-sm font-medium text-primary hover:underline"
+                    class="text-primary text-sm font-medium hover:underline"
                     aria-label="Reset forgotten password">
                     Forgot password?
                 </Link>
             </div>
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="form.processing"
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Signing in...' : 'Sign in' }}
             </Button>
         </form>
 
         <template v-if="smLogin || passwordlessLogin">
             <div role="separator" class="relative my-6">
-                <hr class="border-t border-border" />
+                <hr class="border-border border-t" />
                 <span
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">
+                    class="bg-card text-muted-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 text-xs">
                     or continue with
                 </span>
             </div>
@@ -172,17 +176,15 @@ const sendMagicLink = () => {
                     variant="secondary"
                     class="w-full"
                     @click="showMagicLinkModal = true">
-                    <EnvelopeIcon class="h-4 w-4" aria-hidden="true" />
+                    <MailIcon class="h-4 w-4" aria-hidden="true" />
                     Sign in with magic link
                 </Button>
             </div>
         </template>
 
-        <p v-if="canRegister" class="mt-8 text-center text-sm text-muted-foreground">
+        <p v-if="canRegister" class="text-muted-foreground mt-8 text-center text-sm">
             Don't have an account?
-            <Link
-                :href="route('register')"
-                class="font-medium text-primary hover:underline">
+            <Link :href="route('register')" class="text-primary font-medium hover:underline">
                 Create one
             </Link>
         </p>
@@ -192,6 +194,7 @@ const sendMagicLink = () => {
         v-if="passwordlessLogin"
         :show="showMagicLinkModal"
         size="sm"
+        description="We will email you a link that signs you in without a password."
         aria-labelledby="modal-title"
         @close="showMagicLinkModal = false">
         <template #title>
@@ -200,7 +203,7 @@ const sendMagicLink = () => {
 
         <template #default>
             <form class="space-y-4" @submit.prevent="sendMagicLink">
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                     Enter your email and we'll send a secure sign-in link.
                 </p>
                 <FormInput
@@ -222,7 +225,12 @@ const sendMagicLink = () => {
                 <Button variant="secondary" size="sm" @click="showMagicLinkModal = false">
                     Cancel
                 </Button>
-                <Button variant="primary" size="sm" :disabled="magicLinkForm.processing" :aria-busy="magicLinkForm.processing" @click="sendMagicLink">
+                <Button
+                    variant="primary"
+                    size="sm"
+                    :disabled="magicLinkForm.processing"
+                    :aria-busy="magicLinkForm.processing"
+                    @click="sendMagicLink">
                     {{ magicLinkForm.processing ? 'Sending...' : 'Send link' }}
                 </Button>
             </div>

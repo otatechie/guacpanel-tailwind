@@ -14,7 +14,7 @@ const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
     FilePondPluginFileValidateSize,
-    FilePondPluginPdfPreview,
+    FilePondPluginPdfPreview
 )
 
 defineProps({
@@ -25,10 +25,6 @@ defineProps({
     label: {
         type: String,
         required: true,
-    },
-    labelIdle: {
-        type: String,
-        default: 'Drop files here...',
     },
     acceptedFileTypes: {
         type: Array,
@@ -50,13 +46,20 @@ defineProps({
         type: Object,
         required: true,
     },
-    required: {
-        type: Boolean,
-        default: false,
-    },
     files: {
         type: Array,
         default: () => [],
+    },
+    /** No upload permission: the drop zone is inert rather than absent, so the
+        current logo is still visible. */
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+    /** Deleting a stored file is its own permission, separate from uploading. */
+    allowRemove: {
+        type: Boolean,
+        default: true,
     },
 })
 
@@ -65,9 +68,9 @@ defineEmits(['processfile', 'removefile'])
 
 <template>
     <div>
-        <p class="mb-1.5 text-xs font-medium text-foreground">
+        <p class="text-foreground mb-1.5 text-xs font-medium">
             {{ label }}
-            <span class="ml-1 font-normal text-muted-foreground">
+            <span class="text-muted-foreground ml-1 font-normal">
                 {{ acceptedFileTypes.map(t => t.split('/')[1].toUpperCase()).join(', ') }}
             </span>
         </p>
@@ -80,6 +83,9 @@ defineEmits(['processfile', 'removefile'])
             :max-file-size="maxFileSize"
             :server="server"
             :files="files"
+            :disabled="disabled"
+            :allow-remove="allowRemove"
+            :allow-revert="allowRemove"
             :credits="null"
             :allow-pdf-preview="true"
             :label-idle="`Drop file here or <span class='filepond--label-action'>Browse</span>`"

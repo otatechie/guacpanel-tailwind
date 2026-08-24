@@ -10,7 +10,9 @@ const props = defineProps({
         type: Array,
         required: true,
         validator: value =>
-            value.every(option => typeof option === 'object' && 'label' in option && 'value' in option),
+            value.every(
+                option => typeof option === 'object' && 'label' in option && 'value' in option
+            ),
     },
     label: {
         type: String,
@@ -39,13 +41,16 @@ const groupName = computed(
 
 <template>
     <div class="space-y-3">
-        <label v-if="label" class="mb-2 block text-sm font-medium text-foreground">
+        <label v-if="label" class="text-foreground mb-2 block text-sm font-medium">
             {{ label }}
             <span v-if="required" class="text-red-500">*</span>
         </label>
 
         <div class="flex flex-wrap gap-4">
-            <div v-for="option in options" :key="option.value" class="relative flex items-start gap-3">
+            <div
+                v-for="option in options"
+                :key="option.value"
+                class="relative flex items-start gap-3">
                 <div class="flex h-5 items-center">
                     <input
                         :id="`${groupName}-${option.value}`"
@@ -53,14 +58,14 @@ const groupName = computed(
                         :name="groupName"
                         :value="option.value"
                         :checked="modelValue === option.value"
-                        class="h-4 w-4 cursor-pointer border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-0"
+                        class="border-border text-primary focus:ring-primary h-4 w-4 cursor-pointer focus:ring-2 focus:ring-offset-0"
                         :class="{ 'border-red-500': error }"
                         @change="$emit('update:modelValue', option.value)" />
                 </div>
                 <div class="text-sm">
                     <label
                         :for="`${groupName}-${option.value}`"
-                        class="cursor-pointer font-medium text-foreground">
+                        class="text-foreground cursor-pointer font-medium">
                         {{ option.label }}
                     </label>
                     <p v-if="option.description" class="text-muted-foreground">

@@ -1,14 +1,18 @@
 <script setup>
 import Button from '@/Components/Button.vue'
-import { Head, useForm, usePage } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import Default from '@js/Layouts/Default.vue'
+import { usePermissions } from '@js/composables/usePermissions'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import FormSelect from '@js/Components/Forms/FormSelect.vue'
 import FormCheckbox from '@js/Components/Forms/FormCheckbox.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
+import Badge from '@js/Components/Badge.vue'
+import { formatPermissionName } from '@js/utils/permissions'
 import Alert from '@js/Components/Notifications/Alert.vue'
+import { XIcon } from '@lucide/vue'
 
 defineOptions({
     layout: Default,
@@ -17,8 +21,7 @@ defineOptions({
 const props = defineProps({
     user: Object,
     roles: Object,
-    permissions: Object,
-    categoryMap: Object,
+    rolePermissionCount: { type: Number, default: 0 },
 })
 
 const page = usePage()
@@ -36,54 +39,49 @@ const form = useForm({
     auto_destroy: Boolean(props.user.auto_destroy) || false,
 })
 
+// Reaching this page needs edit-users; deleting needs delete-users. Without
+// this the button is offered to anyone who can edit, and 403s on click.
+const { hasPermission } = usePermissions()
+const canDelete = hasPermission(['delete-users', 'manage-users'])
+
 const showDeleteModal = ref(false)
 const showToggleVerifyModal = ref(false)
 const showSendVerificationModal = ref(false)
 const verificationEmailSent = ref(false)
-const searchQuery = ref('')
+const deleting = ref(false)
 
-// Permissions
-const allPermissions = computed(() => props.permissions?.data || [])
-const selectedCount = computed(() => form.permissions.length)
-const totalCount = computed(() => allPermissions.value.length)
-const expandedGroups = ref(new Set())
+/* Save sits below the form, so it is easy to wander off with edits pending.
+   Guards both the in-app links and the browser's own navigation. */
+const warnIfDirty = event => {
+    if (form.isDirty) event.preventDefault()
+}
 
-// Auto-group by suffix: view-users, manage-users, delete-users → "Users"
-const groupedPermissions = computed(() => {
-    const groups = {}
-    const perms = allPermissions.value.filter(p => {
-        if (!searchQuery.value) return true
-        return p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    })
-    perms.forEach(p => {
-        const parts = p.name.split('-')
-        const group = parts.length > 1 ? parts.slice(1).join(' ') : 'general'
-        const label = group.charAt(0).toUpperCase() + group.slice(1)
-        if (!groups[label]) groups[label] = []
-        groups[label].push(p)
-    })
-    // Sort groups alphabetically
-    return Object.fromEntries(Object.entries(groups).sort(([a], [b]) => a.localeCompare(b)))
+const stopDirtyGuard = router.on('before', event => {
+    if (!form.isDirty || deleting.value) return
+    if (!window.confirm('You have unsaved changes. Leave without saving?')) {
+        event.preventDefault()
+    }
 })
 
-const toggleGroup = name => {
-    if (expandedGroups.value.has(name)) expandedGroups.value.delete(name)
-    else expandedGroups.value.add(name)
-}
+window.addEventListener('beforeunload', warnIfDirty)
 
-const groupSelectedCount = perms => perms.filter(p => form.permissions.includes(p.id)).length
+onBeforeUnmount(() => {
+    stopDirtyGuard()
+    window.removeEventListener('beforeunload', warnIfDirty)
+})
 
-const isSelected = id => form.permissions.includes(id)
-const togglePermission = id => {
+/* The 30-checkbox tree is gone: capability belongs to roles, and per-user grants
+   are how an RBAC model rots — a year on, nobody can say why someone can do
+   something. What stays is a read-only record of grants made directly in the
+   past, because enforcement still honours them and hiding them would be worse
+   than showing them. Assigning happens on the roles screen. */
+const directPermissions = computed(() =>
+    (props.user.permissions || []).filter(p => form.permissions.includes(p.id))
+)
+
+const removeDirectPermission = id => {
     const i = form.permissions.indexOf(id)
     if (i > -1) form.permissions.splice(i, 1)
-    else form.permissions.push(id)
-}
-
-// "manage-security-settings" → "Manage"
-const formatAction = name => {
-    const action = name.split('-')[0]
-    return action.charAt(0).toUpperCase() + action.slice(1)
 }
 
 const closeModal = () => {
@@ -96,21 +94,34 @@ const submit = () => {
     form.put(route('admin.user.update', props.user.id), { preserveScroll: true })
 }
 
+/* Its own request, not the edit form's: form.delete() shared `processing`, so
+   the Save button read "Saving..." during a deletion and the DELETE carried the
+   whole edit payload as its body. */
 const deleteUser = () => {
-    form.delete(route('admin.user.destroy', props.user.id), {
-        onSuccess: () => { showDeleteModal.value = false },
+    deleting.value = true
+    router.delete(route('admin.user.destroy', props.user.id), {
+        onFinish: () => {
+            deleting.value = false
+            showDeleteModal.value = false
+        },
     })
 }
 
 const toggleVerified = () => {
     form.post(route('admin.user.verification.toggle', { user: props.user.id }), {
-        onSuccess: () => { showToggleVerifyModal.value = false; verificationEmailSent.value = true },
+        onSuccess: () => {
+            showToggleVerifyModal.value = false
+            verificationEmailSent.value = false
+        },
     })
 }
 
 const sendVerificationEmail = () => {
     form.post(route('admin.user.verification.send', { user: props.user.id }), {
-        onSuccess: () => { showSendVerificationModal.value = false; verificationEmailSent.value = true },
+        onSuccess: () => {
+            showSendVerificationModal.value = false
+            verificationEmailSent.value = true
+        },
     })
 }
 </script>
@@ -118,8 +129,9 @@ const sendVerificationEmail = () => {
 <template>
     <Head :title="`${props.user.name}`" />
 
-    <main class="mx-auto max-w-7xl" aria-labelledby="edit-user">
+    <main class="mx-auto max-w-4xl" aria-labelledby="edit-user">
         <PageHeader
+            id="edit-user"
             :title="props.user.name"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
@@ -127,142 +139,251 @@ const sendVerificationEmail = () => {
                 { label: props.user.name },
             ]" />
 
-        <form @submit.prevent="submit" class="max-w-3xl space-y-5">
-
-            <!-- Profile -->
-            <div class="card px-5 py-4">
-                <h2 class="text-base font-medium text-foreground">Profile</h2>
-                <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <FormInput v-model="form.name" label="Name" :error="form.errors.name" name="name" />
-                    <FormInput v-model="form.email" label="Email" type="email" :error="form.errors.email" name="email" />
+        <form @submit.prevent="submit" class="space-y-6">
+            <!-- Sections, not cards: every other admin page (users list, settings,
+                 backups) groups with a muted heading and a rule. This page was the
+                 only one boxing its groups, so arriving from the users list
+                 changed visual language mid-flow. -->
+            <section>
+                <h2 class="text-muted-foreground mb-3 text-xs font-medium">Profile</h2>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                    <!-- Both are `required` in the update() rules. -->
+                    <FormInput
+                        v-model="form.name"
+                        label="Name"
+                        name="name"
+                        required
+                        :error="form.errors.name" />
+                    <FormInput
+                        v-model="form.email"
+                        label="Email"
+                        type="email"
+                        name="email"
+                        required
+                        :error="form.errors.email" />
+                    <!-- Was a <p> with a border and input padding: non-interactive
+                         content dressed as a form control invites clicks that do
+                         nothing. The users list already shows roles as badges. -->
                     <div v-if="props.user.is_superuser">
-                        <p class="mb-1.5 text-xs font-medium text-muted-foreground">Role</p>
-                        <p class="rounded-md border border-border bg-muted px-3 py-2 text-sm capitalize text-foreground">
-                            {{ props.user.roles?.[0]?.name || 'No role' }}
-                        </p>
-                        <p class="mt-1 text-xs text-muted-foreground">Protected</p>
-                    </div>
-                    <FormSelect v-else v-model="form.role" :options="roles.data" option-label="name" option-value="id" name="role" label="Role" :error="form.errors.role" />
-                </div>
-
-                <!-- Email verification -->
-                <div v-if="emailVerificationEnabled" class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4">
-                    <span v-if="props.user.email_verified_at_full" class="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400">
-                        <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                        Verified {{ props.user.email_verified_at_formatted }}
-                    </span>
-                    <span v-else class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
-                        <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-                        Not verified
-                    </span>
-                    <span v-if="verificationEmailSent" class="text-xs text-green-600 dark:text-green-400">Verification sent</span>
-                    <div class="flex gap-2">
-                        <button type="button" class="text-xs text-muted-foreground hover:text-foreground" :disabled="isCurrentUser" @click="showToggleVerifyModal = true">
-                            {{ props.user.email_verified_at ? 'Unverify' : 'Mark verified' }}
-                        </button>
-                        <button v-if="!props.user.email_verified_at" type="button" class="text-xs text-muted-foreground hover:text-foreground" :disabled="verificationEmailSent" @click="showSendVerificationModal = true">
-                            Send verification
-                        </button>
-                    </div>
-                    <p v-if="isCurrentUser" class="w-full text-xs text-muted-foreground">Cannot modify your own verification</p>
-                </div>
-            </div>
-
-            <!-- Account controls -->
-            <div class="card px-5 py-4">
-                <h2 class="text-base font-medium text-foreground">Account</h2>
-                <div class="mt-4 space-y-3">
-                    <FormCheckbox v-model="form.disable_account" :disabled="props.user.is_superuser" label="Disable account" :help="props.user.is_superuser ? 'Protected' : 'Blocks all access'" :error="form.errors.disable_account" />
-                    <FormCheckbox v-model="form.force_password_change" :disabled="props.user.is_superuser" label="Force password reset" :help="props.user.is_superuser ? 'Protected' : 'Required on next login'" :error="form.errors.force_password_change" />
-                    <FormCheckbox v-model="form.auto_destroy" label="Auto-delete after soft delete" help="Permanently removes after retention period" :error="form.errors.auto_destroy" />
-                </div>
-                <div v-if="props.user.restore_date_full" class="mt-4 border-t border-border pt-3">
-                    <p class="text-xs text-muted-foreground">Previously restored on {{ props.user.restore_date_full }}</p>
-                </div>
-            </div>
-
-            <!-- Permissions -->
-            <div class="card px-5 py-4">
-                <div class="flex flex-wrap items-center gap-3">
-                    <h2 class="text-base font-medium text-foreground">Permissions</h2>
-                    <span class="text-xs tabular-nums text-muted-foreground">{{ selectedCount }}/{{ totalCount }}</span>
-                    <input
-                        v-model="searchQuery"
-                        type="text"
-                        placeholder="Filter..."
-                        class="ml-auto w-36 rounded-md border border-border bg-card px-2.5 py-1 text-xs text-foreground placeholder-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none" />
-                </div>
-
-                <Alert v-if="!props.user.is_superuser" type="info" class="mt-3">
-                    Direct permissions override role-based permissions.
-                </Alert>
-
-                <div class="mt-3 divide-y divide-border rounded-lg border border-border">
-                    <div v-for="(perms, group) in groupedPermissions" :key="group">
-                        <button
-                            type="button"
-                            class="flex w-full items-center justify-between px-3 py-2 text-left transition-colors hover:bg-muted"
-                            @click="toggleGroup(group)">
-                            <div class="flex items-center gap-2">
-                                <svg
-                                    :class="['h-3 w-3 text-muted-foreground transition-transform duration-150', expandedGroups.has(group) ? 'rotate-90' : '']"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                </svg>
-                                <span class="text-sm font-medium text-foreground">{{ group }}</span>
-                            </div>
-                            <span class="text-xs tabular-nums text-muted-foreground">
-                                {{ groupSelectedCount(perms) }}/{{ perms.length }}
-                            </span>
-                        </button>
-                        <div v-if="expandedGroups.has(group)" class="grid grid-cols-2 gap-x-2 border-t border-border px-3 py-2 sm:grid-cols-3">
-                            <label
-                                v-for="perm in perms"
-                                :key="perm.id"
-                                :for="`perm-${perm.id}`"
-                                class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 transition-colors hover:bg-muted"
-                                :class="isSelected(perm.id) ? 'text-foreground' : 'text-muted-foreground'">
-                                <input
-                                    :id="`perm-${perm.id}`"
-                                    type="checkbox"
-                                    :checked="isSelected(perm.id)"
-                                    @change="togglePermission(perm.id)"
-                                    class="h-3.5 w-3.5 shrink-0 rounded border-border text-primary focus:ring-primary/20" />
-                                <span class="text-sm" :class="isSelected(perm.id) ? 'font-medium' : ''">{{ formatAction(perm.name) }}</span>
-                            </label>
+                        <p class="text-muted-foreground mb-1.5 text-xs font-medium">Role</p>
+                        <div class="flex h-8 items-center gap-2">
+                            <!-- Neutral rather than RoleBadge's danger variant:
+                                 red in a form-field slot reads as an error. -->
+                            <Badge
+                                v-if="props.user.roles?.[0]"
+                                variant="neutral"
+                                class="capitalize">
+                                {{ props.user.roles[0].name }}
+                            </Badge>
+                            <span v-else class="text-muted-foreground text-sm">No role</span>
+                            <span class="text-muted-foreground text-xs">Cannot be changed</span>
                         </div>
                     </div>
+                    <FormSelect
+                        v-else
+                        v-model="form.role"
+                        :options="roles.data"
+                        option-label="name"
+                        option-value="id"
+                        name="role"
+                        label="Role"
+                        :error="form.errors.role" />
                 </div>
 
-                <p v-if="Object.keys(groupedPermissions).length === 0 && searchQuery" class="py-4 text-center text-xs text-muted-foreground">No match</p>
-                <p v-if="form.errors.permissions" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ form.errors.permissions }}</p>
-            </div>
+                <!-- This was a card of its own holding one sentence. It is a
+                     footnote on the Role field, so it lives under it. -->
+                <p class="text-muted-foreground mt-2 text-sm">
+                    Access comes from the role.
+                    <template v-if="props.user.roles?.[0]">
+                        <span class="text-foreground capitalize">
+                            {{ props.user.roles[0].name }}
+                        </span>
+                        grants {{ rolePermissionCount }}
+                        {{ rolePermissionCount === 1 ? 'permission' : 'permissions' }}.
+                    </template>
+                    <template v-else>This account has no role, so it grants nothing.</template>
+                    <Link
+                        :href="
+                            route('admin.permission.role.index', {
+                                role: props.user.roles?.[0]?.id,
+                            })
+                        "
+                        class="text-primary underline-offset-2 hover:underline">
+                        Manage role permissions
+                    </Link>
+                </p>
 
-            <!-- Save -->
-            <div class="flex items-center justify-between">
-                <Button variant="primary" size="sm" type="submit" :disabled="form.processing" :aria-busy="form.processing">
+                <!-- Email verification -->
+                <!-- Spacing, not a rule: the section separators are the only rules
+                     on the page, so a sub-divider at the same weight flattened the
+                     hierarchy. -->
+                <div
+                    v-if="emailVerificationEnabled"
+                    class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <Badge v-if="props.user.email_verified_at_full" dot variant="success">
+                        Verified {{ props.user.email_verified_at_formatted }}
+                    </Badge>
+                    <Badge v-else dot variant="warning">Not verified</Badge>
+                    <span
+                        v-if="verificationEmailSent"
+                        class="text-xs text-green-600 dark:text-green-400">
+                        Verification sent
+                    </span>
+                    <!-- These were styled exactly like the status text beside them
+                         and only separated on hover, though one of them sends a
+                         real email. -->
+                    <div class="flex gap-2">
+                        <Button
+                            variant="ghost"
+                            size="xs"
+                            :disabled="isCurrentUser"
+                            @click="showToggleVerifyModal = true">
+                            {{ props.user.email_verified_at ? 'Unverify' : 'Mark verified' }}
+                        </Button>
+                        <Button
+                            v-if="!props.user.email_verified_at"
+                            variant="ghost"
+                            size="xs"
+                            :disabled="verificationEmailSent"
+                            @click="showSendVerificationModal = true">
+                            Send verification
+                        </Button>
+                    </div>
+                    <p v-if="isCurrentUser" class="text-muted-foreground w-full text-xs">
+                        Cannot modify your own verification
+                    </p>
+                </div>
+            </section>
+
+            <!-- Account controls -->
+            <section class="border-border border-t pt-5">
+                <h2 class="text-muted-foreground mb-3 text-xs font-medium">Account</h2>
+                <div class="space-y-3">
+                    <FormCheckbox
+                        v-model="form.disable_account"
+                        :disabled="props.user.is_superuser"
+                        label="Disable account"
+                        :help="props.user.is_superuser ? 'Protected' : 'Blocks all access'"
+                        :error="form.errors.disable_account" />
+                    <FormCheckbox
+                        v-model="form.force_password_change"
+                        :disabled="props.user.is_superuser"
+                        label="Force password reset"
+                        :help="props.user.is_superuser ? 'Protected' : 'Required on next login'"
+                        :error="form.errors.force_password_change" />
+                    <FormCheckbox
+                        v-model="form.auto_destroy"
+                        label="Auto-delete after soft delete"
+                        help="Permanently removes after retention period"
+                        :error="form.errors.auto_destroy" />
+                </div>
+                <p v-if="props.user.restore_date_full" class="text-muted-foreground mt-4 text-xs">
+                    Previously restored on {{ props.user.restore_date_full }}
+                </p>
+            </section>
+
+            <!-- Only when the account actually has direct grants. The ordinary
+                 case is covered by the line under Role, so an empty section here
+                 would be a heading explaining a thing nobody has done. -->
+            <section v-if="directPermissions.length" class="border-border border-t pt-5">
+                <h2 class="text-muted-foreground mb-3 text-xs font-medium">Direct permissions</h2>
+
+                <Alert type="warning">
+                    {{ directPermissions.length }}
+                    {{ directPermissions.length === 1 ? 'permission was' : 'permissions were' }}
+                    granted directly to this account, outside its role. They still take effect.
+                    Prefer changing the role.
+                </Alert>
+
+                <ul class="divide-border mt-3 divide-y">
+                    <li
+                        v-for="perm in directPermissions"
+                        :key="perm.id"
+                        class="flex items-center justify-between gap-4 py-2.5">
+                        <div class="min-w-0">
+                            <p class="text-foreground text-sm font-medium">
+                                {{ formatPermissionName(perm.name) }}
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            class="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-ring shrink-0 cursor-pointer rounded-md p-1.5 transition-colors focus-visible:outline-2"
+                            :aria-label="`Remove ${formatPermissionName(perm.name)}`"
+                            :title="`Remove ${formatPermissionName(perm.name)}`"
+                            @click="removeDirectPermission(perm.id)">
+                            <XIcon class="h-3.5 w-3.5" aria-hidden="true" />
+                        </button>
+                    </li>
+                </ul>
+                <p class="text-muted-foreground mt-2 text-xs">Removals apply when you save.</p>
+
+                <p
+                    v-if="form.errors.permissions"
+                    class="mt-2 text-xs text-red-600 dark:text-red-400">
+                    {{ form.errors.permissions }}
+                </p>
+            </section>
+
+            <!-- Sticks only while there is something to save, so the button and
+                 the "unsaved" marker stay reachable from wherever the edit was
+                 made instead of sitting off-screen at the bottom. -->
+            <div
+                class="sticky bottom-0 flex items-center justify-between gap-3 py-3"
+                :class="
+                    form.isDirty
+                        ? 'bg-background/95 border-border -mx-3 border-t px-3 backdrop-blur'
+                        : ''
+                ">
+                <Button
+                    variant="primary"
+                    size="sm"
+                    type="submit"
+                    :disabled="form.processing"
+                    :aria-busy="form.processing">
                     {{ form.processing ? 'Saving...' : 'Save' }}
                 </Button>
-                <button v-if="!props.user.is_superuser" type="button" class="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300" @click="showDeleteModal = true">
-                    Delete account
-                </button>
+                <span v-if="form.isDirty" class="text-muted-foreground text-xs">
+                    Unsaved changes
+                </span>
             </div>
         </form>
+
+        <!-- Out of the form and away from Save: a destructive action does not
+             belong on the same row as the primary one. -->
+        <section
+            v-if="canDelete && !props.user.is_superuser"
+            class="border-border mt-8 border-t pt-5">
+            <h2 class="text-muted-foreground mb-3 text-xs font-medium">Delete account</h2>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <p class="text-muted-foreground max-w-lg text-sm">
+                    Removes {{ props.user.name }}'s access immediately. Recoverable from the deleted
+                    users list until its auto-delete date.
+                </p>
+                <Button variant="danger" size="sm" @click="showDeleteModal = true">
+                    Delete account
+                </Button>
+            </div>
+        </section>
     </main>
 
     <!-- Delete modal -->
     <Modal :show="showDeleteModal" @close="closeModal" size="sm">
         <template #title>Delete account</template>
         <template #default>
-            <p class="text-sm text-muted-foreground">
-                Permanently delete <span class="font-medium text-foreground">{{ props.user.name }}</span> and all associated data. Recoverable until auto-delete date if set.
+            <p class="text-foreground text-sm font-medium">
+                {{ props.user.name }}
+                <span class="text-muted-foreground font-normal">· {{ props.user.email }}</span>
+            </p>
+            <p class="text-muted-foreground mt-2 text-sm">
+                They lose access immediately. Recoverable from the deleted users list until its
+                auto-delete date.
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
                 <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
-                <Button variant="danger" size="sm" :disabled="form.processing" @click="deleteUser">
-                    {{ form.processing ? 'Deleting...' : 'Delete' }}
+                <Button variant="danger" size="sm" :disabled="deleting" @click="deleteUser">
+                    {{ deleting ? 'Deleting...' : 'Delete' }}
                 </Button>
             </div>
         </template>
@@ -272,15 +393,21 @@ const sendVerificationEmail = () => {
     <Modal :show="showToggleVerifyModal" @close="closeModal" size="sm">
         <template #title>{{ props.user.email_verified_at ? 'Unverify' : 'Verify' }} email</template>
         <template #default>
-            <p class="text-sm text-muted-foreground">
-                {{ props.user.email_verified_at ? 'Remove verification from' : 'Mark as verified:' }}
-                <span class="font-medium text-foreground">{{ props.user.email }}</span>
+            <p class="text-muted-foreground text-sm">
+                {{
+                    props.user.email_verified_at ? 'Remove verification from' : 'Mark as verified:'
+                }}
+                <span class="text-foreground font-medium">{{ props.user.email }}</span>
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
                 <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
-                <Button variant="primary" size="sm" :disabled="form.processing" @click="toggleVerified">
+                <Button
+                    variant="primary"
+                    size="sm"
+                    :disabled="form.processing"
+                    @click="toggleVerified">
                     {{ form.processing ? 'Confirming...' : 'Confirm' }}
                 </Button>
             </div>
@@ -291,14 +418,19 @@ const sendVerificationEmail = () => {
     <Modal :show="showSendVerificationModal" @close="closeModal" size="sm">
         <template #title>Send verification email</template>
         <template #default>
-            <p class="text-sm text-muted-foreground">
-                Send verification email to <span class="font-medium text-foreground">{{ props.user.email }}</span>
+            <p class="text-muted-foreground text-sm">
+                Send verification email to
+                <span class="text-foreground font-medium">{{ props.user.email }}</span>
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
                 <Button variant="secondary" size="sm" @click="closeModal">Cancel</Button>
-                <Button variant="primary" size="sm" :disabled="form.processing" @click="sendVerificationEmail">
+                <Button
+                    variant="primary"
+                    size="sm"
+                    :disabled="form.processing"
+                    @click="sendVerificationEmail">
                     {{ form.processing ? 'Sending...' : 'Send' }}
                 </Button>
             </div>

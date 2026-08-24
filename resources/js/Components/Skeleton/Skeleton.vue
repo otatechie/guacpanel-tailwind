@@ -44,9 +44,7 @@ defineProps({
         :class="`rounded-${rounded}`"
         :style="{ width, height }" />
 
-    <div
-        v-else-if="variant === 'card'"
-        class="card p-4">
+    <div v-else-if="variant === 'card'" class="card p-4">
         <div class="flex gap-3">
             <div class="skeleton shrink-0 rounded-full" :style="{ width: size, height: size }" />
             <div class="flex-1">
@@ -62,9 +60,7 @@ defineProps({
         </div>
     </div>
 
-    <div
-        v-else-if="variant === 'table'"
-        class="overflow-hidden rounded-lg border border-border">
+    <div v-else-if="variant === 'table'" class="border-border overflow-hidden rounded-lg border">
         <table class="w-full">
             <thead class="bg-muted">
                 <tr>
@@ -73,7 +69,7 @@ defineProps({
                     </th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-border">
+            <tbody class="divide-border divide-y">
                 <tr v-for="row in rows" :key="row" class="bg-card">
                     <td v-for="col in columns" :key="col" class="px-4 py-3">
                         <div
@@ -88,12 +84,7 @@ defineProps({
 
 <style scoped>
 .skeleton {
-    background: linear-gradient(
-        90deg,
-        var(--muted) 25%,
-        var(--border) 50%,
-        var(--muted) 75%
-    );
+    background: linear-gradient(90deg, var(--muted) 25%, var(--border) 50%, var(--muted) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
 }

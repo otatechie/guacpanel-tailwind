@@ -11,7 +11,7 @@ defineOptions({
     layout: Default,
 })
 
-const props = defineProps({
+defineProps({
     roles: { type: Array, required: true, default: () => [] },
     permissions: { type: Object, required: true },
     permissionsList: { type: Array, required: true, default: () => [] },
@@ -21,36 +21,42 @@ const props = defineProps({
 })
 
 const tabs = ['Roles', 'Permissions']
+
+/* `?role=<id>` deep-links here from anywhere that names a role — the user edit
+   screen sends admins here to answer "which permissions does this role grant?"
+   and used to drop them on the index with no idea which row to look at. */
+const focusRoleId = new URLSearchParams(window.location.search).get('role') || ''
 const activeTab = ref(0)
 </script>
 
 <template>
-    <Head title="Access Control" />
+    <Head title="Access control" />
 
-    <main class="mx-auto max-w-7xl" aria-labelledby="permissions-roles-title">
+    <main class="mx-auto max-w-4xl" aria-labelledby="permissions-roles-title">
         <PageHeader
             title="Access control"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'System Settings', href: route('admin.setting.index') },
+                { label: 'System settings', href: route('admin.setting.index') },
                 { label: 'Access control' },
             ]" />
 
-        <div class="card overflow-hidden">
-            <div class="border-b border-border bg-muted px-4 sm:px-6">
-                <Tabs v-model="activeTab" :tabs="tabs" />
-            </div>
-            <div class="px-4 py-5 sm:px-6">
-                <RolesTab
-                    v-if="activeTab === 0"
-                    :roles="roles"
-                    :permissions="permissionsList" />
-                <PermissionsTab
-                    v-else
-                    :permissions="permissions"
-                    :protectedPermissions="protectedPermissions"
-                    :filters="filters" />
-            </div>
+        <!-- No card. The tab rule already separates the strip from the panel;
+             a box around both is decoration, not structure. -->
+        <div class="border-border border-b">
+            <Tabs v-model="activeTab" :tabs="tabs" />
+        </div>
+        <div class="pt-6">
+            <RolesTab
+                v-if="activeTab === 0"
+                :roles="roles"
+                :permissions="permissionsList"
+                :focus-role-id="focusRoleId" />
+            <PermissionsTab
+                v-else
+                :permissions="permissions"
+                :protectedPermissions="protectedPermissions"
+                :filters="filters" />
         </div>
     </main>
 </template>

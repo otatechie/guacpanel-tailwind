@@ -40,6 +40,7 @@ return [
         'user_account_updated_successfully' => 'User account updated successfully',
         'user_deleted_successully'          => 'User deleted successfull',
         'new_user_created_successfully'     => 'New user account created successfully.',
+        'login_history_deleted'             => 'Login history records deleted.',
     ],
 
     'verify' => [

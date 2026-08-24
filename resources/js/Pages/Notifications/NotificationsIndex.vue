@@ -1,4 +1,5 @@
 <script setup>
+import { useToast } from '@js/composables/useToast'
 import Button from '@/Components/Button.vue'
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
@@ -7,6 +8,23 @@ import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
 import Alert from '@js/Components/Notifications/Alert.vue'
+import {
+    CheckIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    CircleCheckIcon,
+    ClockIcon,
+    CpuIcon,
+    InboxIcon,
+    MailIcon,
+    MailOpenIcon,
+    RefreshCwIcon,
+    ReplyIcon,
+    RewindIcon,
+    Trash2Icon,
+    UserIcon,
+    XIcon,
+} from '@lucide/vue'
 
 defineOptions({
     layout: Default,
@@ -172,31 +190,11 @@ const totalAllCount = computed(() => {
     return typeof total === 'number' ? total : null
 })
 
-const pageHeaderTitle = computed(() => {
-    const total = totalAllCount.value
-    if (typeof total === 'number')
-        return `All Notifications <span class="text-success text-xs float-right mt-2">(${total} Total)</span>`
-    return 'All Notifications'
-})
-
-const totalCount = computed(() => {
-    const total = meta.value?.total
-    return typeof total === 'number' ? total : null
-})
-
 const showingLabel = computed(() => {
     const shown = showingCount.value
     const total = totalAllCount.value
     if (typeof total === 'number') return `Showing ${shown} of ${total}`
     return `${shown}`
-})
-
-const pageHeaderTitleTotalLabel = computed(() => {
-    const total = totalAllCount.value
-    const label = showingLabel.value
-    if (typeof total === 'number')
-        return `All Notifications <span class="text-success text-xs max-xs:block max-xs:mb-0.5 xs:float-right mt-0.5 xs:mt-2">${label}</span>`
-    return 'All Notifications'
 })
 
 const toggleSelectAll = () => {
@@ -275,11 +273,8 @@ const resetFilters = () => {
     applyFilters({ immediate: true })
 }
 
-const showToast = (title, message, type = 'success') => {
-    if (typeof window !== 'undefined' && typeof window.$showAlert === 'function') {
-        window.$showAlert(title, message, type)
-    }
-}
+const toast = useToast()
+const showToast = (title, message, type = 'success') => toast.show(message || title, type)
 
 const post = async (url, body = {}) => {
     isWorking.value = true
@@ -456,7 +451,6 @@ const scopeTooltip = scope => {
 const dismissedTooltip = isDismissed => (isDismissed ? 'Dismissed' : 'Undismissed')
 const readTooltip = isRead => (isRead ? 'Read' : 'Unread')
 
-const dismissedIconName = isDismissed => (isDismissed ? 'x' : 'check')
 const readIconName = isRead => (isRead ? 'check' : 'dot')
 
 const tooltipStyle = {
@@ -695,27 +689,26 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Head title="Notifications" />
+    <Head title="All notifications" />
 
     <main class="mx-auto max-w-7xl" aria-labelledby="notifications">
         <PageHeader
-            :title="pageHeaderTitleTotalLabel"
-            description="Filter, mark read/unread, dismiss/undismiss, or delete notifications"
+            title="All notifications"
+            :description="showingLabel"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'All Notifications' },
+                { label: 'All notifications' },
             ]" />
 
-        <div
-            class="mb-4 rounded-xl border border-border bg-card p-4 shadow-sm">
+        <div class="border-border bg-card mb-4 rounded-xl border p-4 shadow-sm">
             <div class="flex flex-col gap-4">
                 <div
                     class="xs:grid-cols-2 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
                     <div>
-                        <label class="text-xs text-muted-foreground">Scope</label>
+                        <label class="text-muted-foreground text-xs">Scope</label>
                         <select
                             v-model="filters.scope"
-                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
+                            class="border-border mt-1 w-full rounded-md border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="user">User</option>
                             <option value="system">System</option>
@@ -724,10 +717,10 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-muted-foreground">Read</label>
+                        <label class="text-muted-foreground text-xs">Read</label>
                         <select
                             v-model="filters.read"
-                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
+                            class="border-border mt-1 w-full rounded-md border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="unread">Unread</option>
                             <option value="read">Read</option>
@@ -735,12 +728,10 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-muted-foreground">
-                            Dismissed
-                        </label>
+                        <label class="text-muted-foreground text-xs">Dismissed</label>
                         <select
                             v-model="filters.dismissed"
-                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
+                            class="border-border mt-1 w-full rounded-md border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="dismissed">Dismissed</option>
                             <option value="undismissed">Undismissed</option>
@@ -748,10 +739,10 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-muted-foreground">Type</label>
+                        <label class="text-muted-foreground text-xs">Type</label>
                         <select
                             v-model="filters.type"
-                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
+                            class="border-border mt-1 w-full rounded-md border bg-transparent p-2 text-sm">
                             <option value="all">All</option>
                             <option value="info">Info</option>
                             <option value="success">Success</option>
@@ -761,22 +752,20 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <label class="text-xs text-muted-foreground">Sort</label>
+                        <label class="text-muted-foreground text-xs">Sort</label>
                         <select
                             v-model="filters.sort"
-                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
+                            class="border-border mt-1 w-full rounded-md border bg-transparent p-2 text-sm">
                             <option value="newest">Newest</option>
                             <option value="oldest">Oldest</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="text-xs text-muted-foreground">
-                            Per page
-                        </label>
+                        <label class="text-muted-foreground text-xs">Per page</label>
                         <select
                             v-model="filters.per_page"
-                            class="mt-1 w-full rounded-md border border-border bg-transparent p-2 text-sm">
+                            class="border-border mt-1 w-full rounded-md border bg-transparent p-2 text-sm">
                             <option :value="10">10</option>
                             <option :value="25">25</option>
                             <option :value="50">50</option>
@@ -792,70 +781,49 @@ onUnmounted(() => {
                         <input
                             v-model="filters.search"
                             type="text"
-                            class="w-full rounded-md border border-border bg-transparent p-2 pr-10 text-sm"
+                            class="border-border w-full rounded-md border bg-transparent p-2 pr-10 text-sm"
                             placeholder="Search title or message..." />
                         <button
                             v-if="filters.search"
                             type="button"
-                            class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                            class="text-muted-foreground hover:bg-muted hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1"
                             @click="clearSearch">
-                            <svg
-                                class="size-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                aria-hidden="true">
-                                <path d="M18 6 6 18" />
-                                <path d="M6 6 18 18" />
-                            </svg>
+                            <XIcon class="size-4" aria-hidden="true" />
                         </button>
                     </div>
-                    <Button variant="secondary" size="lg" class="mt-2 gap-2 sm:mt-0" :disabled="isFiltering || isWorking" @click="resetFilters">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
+                    <Button
+                        variant="secondary"
+                        size="lg"
+                        class="mt-2 gap-2 sm:mt-0"
+                        :disabled="isFiltering || isWorking"
+                        @click="resetFilters">
+                        <RefreshCwIcon
                             class="mt-0.25 size-4 sm:size-8 md:size-7.5 lg:size-7 xl:size-6.5"
-                            :class="isFiltering || isWorking ? 'animate-spin' : ''">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
+                            :class="isFiltering || isWorking ? 'animate-spin' : ''"
+                            aria-hidden="true" />
                         Reset
                     </Button>
                 </div>
             </div>
         </div>
 
-        <div
-            class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                    <Button variant="secondary" size="sm" :disabled="!hasRows || isWorking" @click="toggleSelectAll">
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        :disabled="!hasRows || isWorking"
+                        @click="toggleSelectAll">
                         Select all
                     </Button>
                     <div v-if="selectedCount > 0" class="flex items-center gap-6">
                         <span
                             role="status"
-                            class="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="h-4 w-4 text-green-600 dark:text-green-500">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
-                            </svg>
+                            class="text-foreground flex items-center gap-1.5 text-xs font-medium">
+                            <CircleCheckIcon
+                                class="h-4 w-4 text-green-600 dark:text-green-500"
+                                aria-hidden="true" />
                             {{ selectedCount }} selected
                         </span>
                     </div>
@@ -864,118 +832,74 @@ onUnmounted(() => {
 
             <div class="w-full sm:w-auto">
                 <div
-                    class="xs:gap-0 grid w-full grid-cols-2 gap-1 overflow-visible rounded-lg border border-border bg-background sm:inline-grid sm:grid-cols-5">
-                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('read')">
-                        <svg
-                            class="size-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M20 6 9 17l-5-5" />
-                        </svg>
+                    class="xs:gap-0 border-border bg-background grid w-full grid-cols-2 gap-1 overflow-visible rounded-lg border sm:inline-grid sm:grid-cols-5">
+                    <Button
+                        variant="secondary"
+                        size="xs"
+                        class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none rounded-l-lg border-0 sm:text-xs"
+                        :disabled="selectedCount === 0 || isWorking"
+                        @click="bulk('read')">
+                        <CheckIcon class="size-4" aria-hidden="true" />
                         <span :class="bulkButtonClasses">Mark read</span>
 
-                        <span
-                            :class="tooltipClass"
-                            :style="tooltipStyle"
-                            class="max-sm:hidden">
+                        <span :class="tooltipClass" :style="tooltipStyle" class="max-sm:hidden">
                             Mark selected notifications as read
                         </span>
                     </Button>
 
-                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('unread')">
-                        <svg
-                            class="size-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M9 15 3 9m0 0 6-6M3 9h9a6 6 0 1 1 0 12h-3" />
-                        </svg>
+                    <Button
+                        variant="secondary"
+                        size="xs"
+                        class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-r-lg sm:text-xs"
+                        :disabled="selectedCount === 0 || isWorking"
+                        @click="bulk('unread')">
+                        <ReplyIcon class="size-4" aria-hidden="true" />
                         <span :class="bulkButtonClasses">Mark unread</span>
 
-                        <span
-                            :class="tooltipClass"
-                            :style="tooltipStyle"
-                            class="max-sm:hidden">
+                        <span :class="tooltipClass" :style="tooltipStyle" class="max-sm:hidden">
                             Mark selected notifications as unread
                         </span>
                     </Button>
 
-                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('dismiss')">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="size-4">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M6 18 18 6M6 6l12 12" />
-                        </svg>
+                    <Button
+                        variant="secondary"
+                        size="xs"
+                        class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
+                        :disabled="selectedCount === 0 || isWorking"
+                        @click="bulk('dismiss')">
+                        <XIcon class="size-4" aria-hidden="true" />
 
                         <span :class="bulkButtonClasses">Dismiss</span>
 
-                        <span
-                            :class="tooltipClass"
-                            :style="tooltipStyle"
-                            class="max-sm:hidden">
+                        <span :class="tooltipClass" :style="tooltipStyle" class="max-sm:hidden">
                             Dismiss selected notifications
                         </span>
                     </Button>
 
-                    <Button variant="secondary" size="xs" class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('undismiss')">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="size-4.5">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M21 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061A1.125 1.125 0 0 1 21 8.689v8.122ZM11.25 16.811c0 .864-.933 1.406-1.683.977l-7.108-4.061a1.125 1.125 0 0 1 0-1.954l7.108-4.061A1.125 1.125 0 0 1 11.25 8.689v8.122Z" />
-                        </svg>
+                    <Button
+                        variant="secondary"
+                        size="xs"
+                        class="text-xxs group relative inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 sm:text-xs"
+                        :disabled="selectedCount === 0 || isWorking"
+                        @click="bulk('undismiss')">
+                        <RewindIcon class="size-4.5" aria-hidden="true" />
 
                         <span :class="bulkButtonClasses">Undismiss</span>
-                        <span
-                            :class="tooltipClass"
-                            :style="tooltipStyle"
-                            class="max-sm:hidden">
+                        <span :class="tooltipClass" :style="tooltipStyle" class="max-sm:hidden">
                             Undo dismissal for selected notifications
                         </span>
                     </Button>
 
-                    <Button variant="secondary" size="xs" class="text-xxs group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs" :disabled="selectedCount === 0 || isWorking" @click="bulk('delete')">
-                        <svg
-                            class="size-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path
-                                d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
-                            <path d="M4 7h16" />
-                        </svg>
+                    <Button
+                        variant="secondary"
+                        size="xs"
+                        class="text-xxs group relative col-span-2 inline-flex items-center justify-center gap-2 overflow-visible rounded-none border-0 max-sm:rounded-b sm:col-span-1 sm:rounded-r-lg sm:text-xs"
+                        :disabled="selectedCount === 0 || isWorking"
+                        @click="bulk('delete')">
+                        <Trash2Icon class="size-4" aria-hidden="true" />
                         <span :class="bulkButtonClasses">Delete</span>
 
-                        <span
-                            :class="tooltipClass"
-                            :style="tooltipStyle"
-                            class="max-sm:hidden">
+                        <span :class="tooltipClass" :style="tooltipStyle" class="max-sm:hidden">
                             Delete selected notifications
                         </span>
                     </Button>
@@ -983,15 +907,14 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <div
-            class="overflow-hidden rounded-xl border border-border bg-card">
-            <div v-if="!hasRows" class="p-6 text-sm text-muted-foreground">
+        <div class="border-border bg-card overflow-hidden rounded-xl border">
+            <div v-if="!hasRows" class="text-muted-foreground p-6 text-sm">
                 No notifications match your filters.
             </div>
 
             <template v-else>
                 <div class="sm:hidden">
-                    <div class="divide-y divide-border">
+                    <div class="divide-border divide-y">
                         <div
                             v-for="row in displayedRows"
                             :key="row.id"
@@ -1003,8 +926,7 @@ onUnmounted(() => {
                                 'bg-gray-50/50 font-light opacity-70 dark:bg-gray-900/90':
                                     row.is_dismissed,
                                 'bg-red-500/10 dark:bg-red-500/30':
-                                    (row.priority === 'critical' ||
-                                        row.type === 'danger') &&
+                                    (row.priority === 'critical' || row.type === 'danger') &&
                                     !row.is_read &&
                                     !row.is_dismissed,
                                 'border-red-500': row.priority === 'critical',
@@ -1027,7 +949,7 @@ onUnmounted(() => {
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="min-w-0">
                                             <div
-                                                class="flex items-center justify-start gap-1 font-medium text-foreground">
+                                                class="text-foreground flex items-center justify-start gap-1 font-medium">
                                                 <div
                                                     v-if="!row.is_read && !row.is_dismissed"
                                                     class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
@@ -1038,7 +960,7 @@ onUnmounted(() => {
                                                 {{ row.title || 'Notification' }}
                                             </div>
                                             <div
-                                                class="mt-1 text-sm break-words text-muted-foreground">
+                                                class="text-muted-foreground mt-1 text-sm break-words">
                                                 {{ row.message }}
                                             </div>
                                         </div>
@@ -1053,47 +975,25 @@ onUnmounted(() => {
                                     </div>
 
                                     <div
-                                        class="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                        class="text-muted-foreground mt-2 flex flex-wrap items-center gap-2 text-xs">
                                         <span
-                                            class="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1">
-                                            <svg
+                                            class="border-border bg-background inline-flex items-center gap-1 rounded-full border px-2 py-1">
+                                            <UserIcon
                                                 v-if="scopeIconName(row.scope) === 'user'"
                                                 class="size-3.5"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path
-                                                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                                                <path d="M4.5 20.25a7.5 7.5 0 0115 0" />
-                                            </svg>
-                                            <svg
-                                                v-else-if="
-                                                    scopeIconName(row.scope) === 'cpu'
-                                                "
+                                                aria-hidden="true" />
+                                            <CpuIcon
+                                                v-else-if="scopeIconName(row.scope) === 'cpu'"
                                                 class="size-3.5"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-                                            </svg>
+                                                aria-hidden="true" />
 
                                             <svg
-                                                v-else-if="
-                                                    scopeIconName(row.scope) === 'release'
-                                                "
+                                                v-else-if="scopeIconName(row.scope) === 'release'"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 288 288"
                                                 fill="none"
                                                 aria-hidden="true"
-                                                class="size-3.5 text-muted-foreground">
+                                                class="text-muted-foreground size-3.5">
                                                 <path
                                                     d="M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z"
                                                     fill="currentColor"
@@ -1241,32 +1141,20 @@ onUnmounted(() => {
                                                 </defs>
                                             </svg>
 
-                                            <svg
-                                                v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-3.5">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
-                                            </svg>
+                                            <InboxIcon v-else class="size-3.5" aria-hidden="true" />
                                             <span class="text-xxs font-medium uppercase">
                                                 {{ row.scope || 'notification' }}
                                             </span>
                                         </span>
 
                                         <span
-                                            class="text-xxs inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1 uppercase">
+                                            class="text-xxs border-border bg-background inline-flex items-center gap-1 rounded-full border px-2 py-1 uppercase">
                                             <span class="font-medium">Read:</span>
                                             <span>{{ row.is_read ? 'Yes' : 'No' }}</span>
                                         </span>
 
                                         <span
-                                            class="text-xxs inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1 uppercase">
+                                            class="text-xxs border-border bg-background inline-flex items-center gap-1 rounded-full border px-2 py-1 uppercase">
                                             <span class="font-medium">Dismissed:</span>
                                             <span>
                                                 {{ row.is_dismissed ? 'Yes' : 'No' }}
@@ -1274,50 +1162,31 @@ onUnmounted(() => {
                                         </span>
 
                                         <span
-                                            class="flex w-full items-center gap-1.5 text-muted-foreground">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="mt-0.25 size-3">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
+                                            class="text-muted-foreground flex w-full items-center gap-1.5">
+                                            <ClockIcon class="mt-0.25 size-3" aria-hidden="true" />
                                             {{ createdDisplay(row.created_at) }}
                                         </span>
                                     </div>
 
                                     <div class="mt-3">
                                         <div
-                                            class="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-border bg-background">
-                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click=" row.is_read ? markUnread(row) : markRead(row) ">
-                                                <svg
+                                            class="border-border bg-background grid w-full grid-cols-3 overflow-hidden rounded-lg border">
+                                            <Button
+                                                variant="secondary"
+                                                size="xs"
+                                                class="inline-flex items-center justify-center gap-2 rounded-none border-0"
+                                                :disabled="isWorking"
+                                                @click="
+                                                    row.is_read ? markUnread(row) : markRead(row)
+                                                ">
+                                                <ReplyIcon
                                                     v-if="row.is_read"
                                                     class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path
-                                                        d="M9 15 3 9m0 0 6-6M3 9h9a6 6 0 1 1 0 12h-3" />
-                                                </svg>
-                                                <svg
+                                                    aria-hidden="true" />
+                                                <CheckIcon
                                                     v-else
                                                     class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M20 6 9 17l-5-5" />
-                                                </svg>
+                                                    aria-hidden="true" />
                                                 <span class="xs:inline hidden">
                                                     {{ row.is_read ? 'Unread' : 'Read' }}
                                                 </span>
@@ -1326,65 +1195,34 @@ onUnmounted(() => {
                                                 </span>
                                             </Button>
 
-                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click=" row.is_dismissed ? undismiss(row) : dismiss(row) ">
-                                                <svg
+                                            <Button
+                                                variant="secondary"
+                                                size="xs"
+                                                class="inline-flex items-center justify-center gap-2 rounded-none border-0"
+                                                :disabled="isWorking"
+                                                @click="
+                                                    row.is_dismissed ? undismiss(row) : dismiss(row)
+                                                ">
+                                                <CircleCheckIcon
                                                     v-if="row.is_dismissed"
                                                     class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M9 12l2 2 4-4" />
-                                                    <path
-                                                        d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" />
-                                                </svg>
-                                                <svg
-                                                    v-else
-                                                    class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M18 6 6 18" />
-                                                    <path d="M6 6 18 18" />
-                                                </svg>
+                                                    aria-hidden="true" />
+                                                <XIcon v-else class="size-4" aria-hidden="true" />
                                                 <span class="xs:inline hidden">
-                                                    {{
-                                                        row.is_dismissed
-                                                            ? 'Undismiss'
-                                                            : 'Dismiss'
-                                                    }}
+                                                    {{ row.is_dismissed ? 'Undismiss' : 'Dismiss' }}
                                                 </span>
                                                 <span class="xs:hidden">
-                                                    {{
-                                                        row.is_dismissed
-                                                            ? 'Undo'
-                                                            : 'Dismiss'
-                                                    }}
+                                                    {{ row.is_dismissed ? 'Undo' : 'Dismiss' }}
                                                 </span>
                                             </Button>
 
-                                            <Button variant="secondary" size="xs" class="inline-flex items-center justify-center gap-2 rounded-none border-0" :disabled="isWorking" @click="confirmDelete(row)">
-                                                <svg
-                                                    class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path
-                                                        d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7" />
-                                                    <path d="M10 11v6" />
-                                                    <path d="M14 11v6" />
-                                                    <path
-                                                        d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
-                                                    <path d="M4 7h16" />
-                                                </svg>
+                                            <Button
+                                                variant="secondary"
+                                                size="xs"
+                                                class="inline-flex items-center justify-center gap-2 rounded-none border-0"
+                                                :disabled="isWorking"
+                                                @click="confirmDelete(row)">
+                                                <Trash2Icon class="size-4" aria-hidden="true" />
                                                 <span>Delete</span>
                                             </Button>
                                         </div>
@@ -1398,54 +1236,33 @@ onUnmounted(() => {
                 <div class="hidden w-full overflow-x-auto sm:flex">
                     <table
                         class="hidden w-full min-w-max table-auto border-collapse text-left text-sm sm:table">
-                        <thead
-                            class="border-b border-border text-muted-foreground">
+                        <thead class="border-border text-muted-foreground border-b">
                             <tr>
                                 <th class="w-10 p-3">
                                     <input
                                         type="checkbox"
-                                        :checked="
-                                            selectedCount === rows.length && rows.length > 0
-                                        "
+                                        :checked="selectedCount === rows.length && rows.length > 0"
                                         @change="toggleSelectAll" />
                                 </th>
 
                                 <th class="p-3">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center gap-1 hover:text-foreground"
+                                        class="hover:text-foreground inline-flex items-center gap-1"
                                         @click="toggleTableSort('title')">
                                         <span>Notification</span>
 
                                         <span
                                             v-if="isTableSortedBy('title')"
                                             class="text-muted-foreground">
-                                            <svg
+                                            <ChevronUpIcon
                                                 v-if="tableSortDir === 'asc'"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                            <svg
+                                                class="size-4"
+                                                aria-hidden="true" />
+                                            <ChevronDownIcon
                                                 v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
+                                                class="size-4"
+                                                aria-hidden="true" />
                                         </span>
                                     </button>
                                 </th>
@@ -1453,39 +1270,21 @@ onUnmounted(() => {
                                 <th class="w-20 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
+                                        class="hover:text-foreground inline-flex items-center justify-center gap-1"
                                         @click="toggleTableSort('scope')">
                                         <span>Scope</span>
 
                                         <span
                                             v-if="isTableSortedBy('scope')"
                                             class="text-muted-foreground">
-                                            <svg
+                                            <ChevronUpIcon
                                                 v-if="tableSortDir === 'asc'"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                            <svg
+                                                class="size-4"
+                                                aria-hidden="true" />
+                                            <ChevronDownIcon
                                                 v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
+                                                class="size-4"
+                                                aria-hidden="true" />
                                         </span>
                                     </button>
                                 </th>
@@ -1493,39 +1292,21 @@ onUnmounted(() => {
                                 <th class="w-24 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
+                                        class="hover:text-foreground inline-flex items-center justify-center gap-1"
                                         @click="toggleTableSort('type')">
                                         <span>Type</span>
 
                                         <span
                                             v-if="isTableSortedBy('type')"
                                             class="text-muted-foreground">
-                                            <svg
+                                            <ChevronUpIcon
                                                 v-if="tableSortDir === 'asc'"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                            <svg
+                                                class="size-4"
+                                                aria-hidden="true" />
+                                            <ChevronDownIcon
                                                 v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
+                                                class="size-4"
+                                                aria-hidden="true" />
                                         </span>
                                     </button>
                                 </th>
@@ -1533,39 +1314,21 @@ onUnmounted(() => {
                                 <th class="w-20 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
+                                        class="hover:text-foreground inline-flex items-center justify-center gap-1"
                                         @click="toggleTableSort('read')">
                                         <span>Read</span>
 
                                         <span
                                             v-if="isTableSortedBy('read')"
                                             class="text-muted-foreground">
-                                            <svg
+                                            <ChevronUpIcon
                                                 v-if="tableSortDir === 'asc'"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                            <svg
+                                                class="size-4"
+                                                aria-hidden="true" />
+                                            <ChevronDownIcon
                                                 v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
+                                                class="size-4"
+                                                aria-hidden="true" />
                                         </span>
                                     </button>
                                 </th>
@@ -1573,39 +1336,21 @@ onUnmounted(() => {
                                 <th class="w-28 p-3 text-center">
                                     <button
                                         type="button"
-                                        class="inline-flex items-center justify-center gap-1 hover:text-foreground"
+                                        class="hover:text-foreground inline-flex items-center justify-center gap-1"
                                         @click="toggleTableSort('dismissed')">
                                         <span>Dismissed</span>
 
                                         <span
                                             v-if="isTableSortedBy('dismissed')"
                                             class="text-muted-foreground">
-                                            <svg
+                                            <ChevronUpIcon
                                                 v-if="tableSortDir === 'asc'"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                            <svg
+                                                class="size-4"
+                                                aria-hidden="true" />
+                                            <ChevronDownIcon
                                                 v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
+                                                class="size-4"
+                                                aria-hidden="true" />
                                         </span>
                                     </button>
                                 </th>
@@ -1614,11 +1359,11 @@ onUnmounted(() => {
                             </tr>
                         </thead>
 
-                        <tbody class="divide-y divide-border">
+                        <tbody class="divide-border divide-y">
                             <tr
                                 v-for="row in displayedRows"
                                 :key="row.id"
-                                class="transition-colors hover:bg-muted"
+                                class="hover:bg-muted transition-colors"
                                 :class="{
                                     'border-l-4': true,
                                     'bg-blue-50/50 dark:bg-blue-900/20':
@@ -1626,8 +1371,7 @@ onUnmounted(() => {
                                     'bg-gray-50/50 font-light opacity-70 dark:bg-gray-900/90':
                                         row.is_dismissed,
                                     'bg-red-500/10 dark:bg-red-500/30':
-                                        (row.priority === 'critical' ||
-                                            row.type === 'danger') &&
+                                        (row.priority === 'critical' || row.type === 'danger') &&
                                         !row.is_read &&
                                         !row.is_dismissed,
                                     'border-red-500': row.priority === 'critical',
@@ -1649,7 +1393,7 @@ onUnmounted(() => {
                                     <div class="flex items-start gap-3">
                                         <div class="min-w-0">
                                             <div
-                                                class="flex items-center justify-start gap-1 font-medium text-foreground">
+                                                class="text-foreground flex items-center justify-start gap-1 font-medium">
                                                 <div
                                                     v-if="!row.is_read && !row.is_dismissed"
                                                     class="mt-0 -mr-0.5 -ml-1 flex h-6 w-6 items-center justify-center rounded not-hover:animate-pulse">
@@ -1659,24 +1403,14 @@ onUnmounted(() => {
                                                 </div>
                                                 {{ row.title || 'Notification' }}
                                             </div>
-                                            <div
-                                                class="mt-1 truncate text-muted-foreground">
+                                            <div class="text-muted-foreground mt-1 truncate">
                                                 {{ row.message }}
                                             </div>
                                             <div
-                                                class="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke-width="1.5"
-                                                    stroke="currentColor"
-                                                    class="mt-0.25 size-3">
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                </svg>
+                                                class="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
+                                                <ClockIcon
+                                                    class="mt-0.25 size-3"
+                                                    aria-hidden="true" />
                                                 {{ createdDisplay(row.created_at) }}
                                             </div>
                                         </div>
@@ -1684,45 +1418,24 @@ onUnmounted(() => {
                                 </td>
 
                                 <td class="p-3 text-center align-middle">
-                                    <span
-                                        class="group relative flex flex-col items-center gap-1">
-                                        <svg
+                                    <span class="group relative flex flex-col items-center gap-1">
+                                        <UserIcon
                                             v-if="scopeIconName(row.scope) === 'user'"
-                                            class="size-5 text-muted-foreground"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path
-                                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                                            <path d="M4.5 20.25a7.5 7.5 0 0115 0" />
-                                        </svg>
+                                            class="text-muted-foreground size-5"
+                                            aria-hidden="true" />
 
-                                        <svg
+                                        <CpuIcon
                                             v-else-if="scopeIconName(row.scope) === 'cpu'"
-                                            class="size-5 text-muted-foreground"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor">
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-                                        </svg>
+                                            class="text-muted-foreground size-5"
+                                            aria-hidden="true" />
 
                                         <svg
-                                            v-else-if="
-                                                scopeIconName(row.scope) === 'release'
-                                            "
+                                            v-else-if="scopeIconName(row.scope) === 'release'"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 288 288"
                                             fill="none"
                                             aria-hidden="true"
-                                            class="size-5.5 text-muted-foreground">
+                                            class="text-muted-foreground size-5.5">
                                             <path
                                                 d="M232.213 29.661a6.75 6.75 0 0 1 8.659 4.019 293.104 293.104 0 0 1 4.671 13.82 293.554 293.554 0 0 1 12.249 63.562c6.142 6.107 9.958 14.579 9.958 23.938 0 9.359-3.816 17.831-9.958 23.938a293.551 293.551 0 0 1-12.249 63.562 293.143 293.143 0 0 1-4.671 13.82 6.75 6.75 0 0 1-12.678-4.64c.937-2.56 1.838-5.137 2.702-7.731a279.258 279.258 0 0 0-88.553-26.124 207.662 207.662 0 0 0 8.709 22.888c4.285 9.53 1.151 21.268-8.338 26.747l-7.875 4.547c-9.831 5.675-22.847 2.225-27.825-8.542a256.906 256.906 0 0 1-16.74-48.337C60.857 190.897 38.25 165.588 38.25 135c0-33.551 27.199-60.75 60.75-60.75h9c8.258 0 16.431-.356 24.505-1.052 35.031-3.023 68.22-12.466 98.391-27.147a278.666 278.666 0 0 0-2.702-7.73 6.75 6.75 0 0 1 4.019-8.66Zm2.681 29.45a292.862 292.862 0 0 1-96.423 27.083c-3.74 15.652-5.721 31.994-5.721 48.806 0 16.812 1.981 33.154 5.721 48.806a292.884 292.884 0 0 1 96.423 27.083 280.39 280.39 0 0 0 9.636-55.608c.477-6.697.72-13.46.72-20.281 0-6.821-.243-13.584-.72-20.281a280.396 280.396 0 0 0-9.636-55.608ZM124.37 182.697A223.556 223.556 0 0 1 119.25 135c0-16.365 1.766-32.325 5.12-47.697a299.37 299.37 0 0 1-16.37.447h-9c-26.096 0-47.25 21.155-47.25 47.25S72.904 182.25 99 182.25h9c5.492 0 10.95.15 16.37.447Zm-20.039 13.053a243.387 243.387 0 0 0 14.937 42.049c1.434 3.103 5.418 4.481 8.821 2.516l7.875-4.547c3.054-1.763 4.429-5.84 2.775-9.519a221.156 221.156 0 0 1-10.907-29.811A285.523 285.523 0 0 0 108 195.75h-3.669Z"
                                                 fill="currentColor"
@@ -1765,9 +1478,7 @@ onUnmounted(() => {
                                                         offset=".258"
                                                         stop-color="#0F172A"
                                                         stop-opacity=".6"></stop>
-                                                    <stop
-                                                        offset=".521"
-                                                        stop-color="#0F172A"></stop>
+                                                    <stop offset=".521" stop-color="#0F172A"></stop>
                                                     <stop
                                                         offset=".784"
                                                         stop-color="#0F172A"
@@ -1791,9 +1502,7 @@ onUnmounted(() => {
                                                         offset=".258"
                                                         stop-color="#0F172A"
                                                         stop-opacity=".6"></stop>
-                                                    <stop
-                                                        offset=".521"
-                                                        stop-color="#0F172A"></stop>
+                                                    <stop offset=".521" stop-color="#0F172A"></stop>
                                                     <stop
                                                         offset=".784"
                                                         stop-color="#0F172A"
@@ -1817,9 +1526,7 @@ onUnmounted(() => {
                                                         offset=".258"
                                                         stop-color="#0F172A"
                                                         stop-opacity=".6"></stop>
-                                                    <stop
-                                                        offset=".521"
-                                                        stop-color="#0F172A"></stop>
+                                                    <stop offset=".521" stop-color="#0F172A"></stop>
                                                     <stop
                                                         offset=".784"
                                                         stop-color="#0F172A"
@@ -1843,9 +1550,7 @@ onUnmounted(() => {
                                                         offset=".258"
                                                         stop-color="#0F172A"
                                                         stop-opacity=".6"></stop>
-                                                    <stop
-                                                        offset=".521"
-                                                        stop-color="#0F172A"></stop>
+                                                    <stop offset=".521" stop-color="#0F172A"></stop>
                                                     <stop
                                                         offset=".784"
                                                         stop-color="#0F172A"
@@ -1870,20 +1575,10 @@ onUnmounted(() => {
                                             </defs>
                                         </svg>
 
-                                        <svg
+                                        <InboxIcon
                                             v-else
-                                            class="size-4.5 text-muted-foreground"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
-                                        </svg>
+                                            class="text-muted-foreground size-4.5"
+                                            aria-hidden="true" />
 
                                         <span class="text-xxxs block font-bold uppercase">
                                             {{ row.scope }}
@@ -1910,51 +1605,24 @@ onUnmounted(() => {
                                         class="group relative inline-flex items-center justify-center">
                                         <button
                                             type="button"
-                                            class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                            class="text-muted-foreground hover:bg-muted hover:text-foreground flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2"
                                             :disabled="isWorking"
-                                            @click="
-                                                row.is_read
-                                                    ? markUnread(row)
-                                                    : markRead(row)
-                                            ">
-                                            <svg
+                                            @click="row.is_read ? markUnread(row) : markRead(row)">
+                                            <MailOpenIcon
                                                 v-if="readIconName(row.is_read) === 'check'"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4.5 text-muted-foreground">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M21.75 9v.906a2.25 2.25 0 0 1-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 0 0 1.183 1.981l6.478 3.488m8.839 2.51-4.66-2.51m0 0-1.023-.55a2.25 2.25 0 0 0-2.134 0l-1.022.55m0 0-4.661 2.51m16.5 1.615a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V8.844a2.25 2.25 0 0 1 1.183-1.981l7.5-4.039a2.25 2.25 0 0 1 2.134 0l7.5 4.039a2.25 2.25 0 0 1 1.183 1.98V19.5Z" />
-                                            </svg>
-                                            <svg
+                                                class="text-muted-foreground size-4.5"
+                                                aria-hidden="true" />
+                                            <MailIcon
                                                 v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="size-4.5 text-muted-foreground">
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                                            </svg>
-                                            <span
-                                                class="text-xxxs block font-bold uppercase">
+                                                class="text-muted-foreground size-4.5"
+                                                aria-hidden="true" />
+                                            <span class="text-xxxs block font-bold uppercase">
                                                 {{ readTooltip(row.is_read) }}
                                             </span>
                                             <span
                                                 :class="inlineActionTooltipClass"
                                                 :style="tooltipStyle">
-                                                {{
-                                                    row.is_read
-                                                        ? 'Mark unread'
-                                                        : 'Mark read'
-                                                }}
+                                                {{ row.is_read ? 'Mark unread' : 'Mark read' }}
                                             </span>
                                         </button>
                                     </span>
@@ -1965,52 +1633,23 @@ onUnmounted(() => {
                                         class="group relative inline-flex items-center justify-center">
                                         <button
                                             type="button"
-                                            class="flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                            class="text-muted-foreground hover:bg-muted hover:text-foreground flex cursor-pointer flex-col items-center gap-0.75 rounded-lg px-2 py-2"
                                             :disabled="isWorking"
                                             @click="
-                                                row.is_dismissed
-                                                    ? undismiss(row)
-                                                    : dismiss(row)
+                                                row.is_dismissed ? undismiss(row) : dismiss(row)
                                             ">
-                                            <svg
+                                            <CircleCheckIcon
                                                 v-if="row.is_dismissed"
-                                                xmlns="http://www.w3.org/2000/svg"
                                                 class="size-4"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M9 12l2 2 4-4" />
-                                                <path
-                                                    d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" />
-                                            </svg>
-                                            <svg
-                                                v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                class="size-4"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M18 6 6 18" />
-                                                <path d="M6 6 18 18" />
-                                            </svg>
-                                            <span
-                                                class="text-xxxs block font-bold uppercase">
+                                                aria-hidden="true" />
+                                            <XIcon v-else class="size-4" aria-hidden="true" />
+                                            <span class="text-xxxs block font-bold uppercase">
                                                 {{ dismissedTooltip(row.is_dismissed) }}
                                             </span>
                                             <span
                                                 :class="inlineActionTooltipClass"
                                                 :style="tooltipStyle">
-                                                {{
-                                                    row.is_dismissed
-                                                        ? 'Undismiss'
-                                                        : 'Dismiss'
-                                                }}
+                                                {{ row.is_dismissed ? 'Undismiss' : 'Dismiss' }}
                                             </span>
                                         </button>
                                     </span>
@@ -2019,124 +1658,60 @@ onUnmounted(() => {
                                 <td class="overflow-visible p-3 align-middle">
                                     <div class="flex justify-end overflow-visible">
                                         <div
-                                            class="inline-flex overflow-visible rounded-lg border border-border bg-background">
+                                            class="border-border bg-background inline-flex overflow-visible rounded-lg border">
                                             <button
                                                 type="button"
-                                                class="group relative cursor-pointer rounded-l-lg px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                                class="group text-muted-foreground hover:bg-muted hover:text-foreground relative cursor-pointer rounded-l-lg px-2 py-2"
                                                 :disabled="isWorking"
                                                 @click="
-                                                    row.is_read
-                                                        ? markUnread(row)
-                                                        : markRead(row)
+                                                    row.is_read ? markUnread(row) : markRead(row)
                                                 ">
-                                                <svg
+                                                <ReplyIcon
                                                     v-if="row.is_read"
                                                     class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path
-                                                        d="M9 15 3 9m0 0 6-6M3 9h9a6 6 0 1 1 0 12h-3" />
-                                                </svg>
-                                                <svg
+                                                    aria-hidden="true" />
+                                                <CheckIcon
                                                     v-else
                                                     class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M20 6 9 17l-5-5" />
-                                                </svg>
+                                                    aria-hidden="true" />
 
                                                 <span
                                                     :class="actionTooltipClass"
                                                     :style="tooltipStyle">
-                                                    {{
-                                                        row.is_read
-                                                            ? 'Mark unread'
-                                                            : 'Mark read'
-                                                    }}
+                                                    {{ row.is_read ? 'Mark unread' : 'Mark read' }}
                                                 </span>
                                             </button>
 
-                                            <div
-                                                class="w-px bg-border"></div>
+                                            <div class="bg-border w-px"></div>
 
                                             <button
                                                 type="button"
-                                                class="group relative cursor-pointer px-2 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                                class="group text-muted-foreground hover:bg-muted hover:text-foreground relative cursor-pointer px-2 py-2"
                                                 :disabled="isWorking"
                                                 @click="
-                                                    row.is_dismissed
-                                                        ? undismiss(row)
-                                                        : dismiss(row)
+                                                    row.is_dismissed ? undismiss(row) : dismiss(row)
                                                 ">
-                                                <svg
+                                                <CircleCheckIcon
                                                     v-if="row.is_dismissed"
                                                     class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M9 12l2 2 4-4" />
-                                                    <path
-                                                        d="M12 22a10 10 0 1 0-10-10 10 10 0 0 0 10 10Z" />
-                                                </svg>
-                                                <svg
-                                                    v-else
-                                                    class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M18 6 6 18" />
-                                                    <path d="M6 6 18 18" />
-                                                </svg>
+                                                    aria-hidden="true" />
+                                                <XIcon v-else class="size-4" aria-hidden="true" />
 
                                                 <span
                                                     :class="actionTooltipClass"
                                                     :style="tooltipStyle">
-                                                    {{
-                                                        row.is_dismissed
-                                                            ? 'Undismiss'
-                                                            : 'Dismiss'
-                                                    }}
+                                                    {{ row.is_dismissed ? 'Undismiss' : 'Dismiss' }}
                                                 </span>
                                             </button>
 
-                                            <div
-                                                class="w-px bg-border"></div>
+                                            <div class="bg-border w-px"></div>
 
                                             <button
                                                 type="button"
                                                 class="group relative cursor-pointer px-2 py-2 text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                                                 :disabled="isWorking"
                                                 @click="confirmDelete(row)">
-                                                <svg
-                                                    class="size-4"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="1.5"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path
-                                                        d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7" />
-                                                    <path d="M10 11v6" />
-                                                    <path d="M14 11v6" />
-                                                    <path
-                                                        d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
-                                                    <path d="M4 7h16" />
-                                                </svg>
+                                                <Trash2Icon class="size-4" aria-hidden="true" />
 
                                                 <span
                                                     :class="actionTooltipClass"
@@ -2155,18 +1730,36 @@ onUnmounted(() => {
         </div>
 
         <div v-if="links?.length" class="mt-4 flex flex-wrap gap-2">
-            <Button v-for="l in links" :key="l.label" :variant="l.active ? 'primary' : 'secondary'" size="sm" :disabled="!l.url || isWorking" v-html="l.label" @click=" l.url && router.visit(l.url, { preserveScroll: true, preserveState: true, only: ['notifications', 'filters'], }) " />
+            <Button
+                v-for="l in links"
+                :key="l.label"
+                :variant="l.active ? 'primary' : 'secondary'"
+                size="sm"
+                :disabled="!l.url || isWorking"
+                v-html="l.label"
+                @click="
+                    l.url &&
+                    router.visit(l.url, {
+                        preserveScroll: true,
+                        preserveState: true,
+                        only: ['notifications', 'filters'],
+                    })
+                " />
         </div>
     </main>
 
-    <Modal :show="showDeleteModal" size="md" @close="closeDeleteModal">
+    <Modal
+        :show="showDeleteModal"
+        size="md"
+        :description="'This cannot be undone.'"
+        @close="closeDeleteModal">
         <template #title>
             <div class="flex items-center text-red-600">Delete notification</div>
         </template>
 
         <template #default>
             <div class="space-y-4">
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                     Are you sure you want to delete this notification? This action cannot be undone.
                 </p>
                 <Alert type="warning" title="Notification">
@@ -2191,14 +1784,18 @@ onUnmounted(() => {
         </template>
     </Modal>
 
-    <Modal :show="showBulkDeleteModal" size="md" @close="closeBulkDeleteModal">
+    <Modal
+        :show="showBulkDeleteModal"
+        size="md"
+        :description="'This cannot be undone.'"
+        @close="closeBulkDeleteModal">
         <template #title>
             <div class="flex items-center text-red-600">Delete notifications</div>
         </template>
 
         <template #default>
             <div class="space-y-4">
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                     Delete
                     <span class="font-medium">{{ selectedCount }}</span>
                     selected notifications? This action cannot be undone.

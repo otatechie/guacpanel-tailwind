@@ -23,11 +23,11 @@ function createAuthSession($user)
     $sessionId = Session::getId();
 
     DB::table('sessions')->insert([
-        'id'            => $sessionId,
-        'user_id'       => $user->id,
-        'ip_address'    => '127.0.0.1',
-        'user_agent'    => 'PHPUnit Test',
-        'payload'       => base64_encode(serialize(['_token' => 'test-token'])),
+        'id' => $sessionId,
+        'user_id' => $user->id,
+        'ip_address' => '127.0.0.1',
+        'user_agent' => 'PHPUnit Test',
+        'payload' => base64_encode(serialize(['_token' => 'test-token'])),
         'last_activity' => now()->timestamp,
     ]);
 
@@ -36,24 +36,24 @@ function createAuthSession($user)
 
 function createTestSession($user, $id = null, $timestamp = null)
 {
-    $sessionId = $id ?? 'test-session-'.rand(1000, 9999);
+    $sessionId = $id ?? 'test-session-' . rand(1000, 9999);
     $time = $timestamp ?? now()->timestamp;
 
     DB::table('sessions')->insert([
-        'id'            => $sessionId,
-        'user_id'       => $user->id,
-        'ip_address'    => '127.0.0.1',
-        'user_agent'    => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'id' => $sessionId,
+        'user_id' => $user->id,
+        'ip_address' => '127.0.0.1',
+        'user_agent' =>
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'last_activity' => $time,
-        'payload'       => base64_encode(serialize(['_token' => 'test-token'])),
+        'payload' => base64_encode(serialize(['_token' => 'test-token'])),
     ]);
 
     return $sessionId;
 }
 
 test('it redirects unauthenticated users to login page', function () {
-    $this->get(route('user.session.index'))
-        ->assertRedirect(route('login'));
+    $this->get(route('user.session.index'))->assertRedirect(route('login'));
 });
 
 test('it allows authenticated users to view browser sessions page', function () {
@@ -62,10 +62,7 @@ test('it allows authenticated users to view browser sessions page', function () 
     $this->get(route('user.session.index'))
         ->assertStatus(200)
         ->assertInertia(
-            fn (Assert $page) => $page
-                ->component('UserAccount/IndexSessionPage')
-                ->has('user')
-                ->has('sessions')
+            fn(Assert $page) => $page->component('UserAccount/IndexSessionPage')->has('user')->has('sessions'),
         );
 });
 
@@ -77,7 +74,10 @@ test('it displays current session data correctly', function () {
     $response->assertStatus(200);
 
     $this->assertGreaterThanOrEqual(1, DB::table('sessions')->where('user_id', $this->user->id)->count());
-    $this->assertNotNull(DB::table('sessions')->where('id', $this->authSessionId)->first(), 'Auth session not found in database');
+    $this->assertNotNull(
+        DB::table('sessions')->where('id', $this->authSessionId)->first(),
+        'Auth session not found in database',
+    );
 });
 
 test('it requires password for logging out other devices', function () {
@@ -93,7 +93,7 @@ test('it prevents logout of other devices with incorrect password', function () 
     $this->actingAs($this->user)
         ->withSession(['_token' => $this->csrfToken])
         ->post(route('user.session.logout'), [
-            '_token'   => $this->csrfToken,
+            '_token' => $this->csrfToken,
             'password' => 'wrong-password',
         ])
         ->assertSessionHasErrors('password');
@@ -110,7 +110,7 @@ test('it successfully logs out other devices with valid password', function () {
 
     $this->withSession(['_token' => $this->csrfToken])
         ->post(route('user.session.logout'), [
-            '_token'   => $this->csrfToken,
+            '_token' => $this->csrfToken,
             'password' => 'password',
         ])
         ->assertRedirect();

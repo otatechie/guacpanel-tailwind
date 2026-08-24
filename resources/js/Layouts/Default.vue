@@ -8,33 +8,77 @@ import DemoNotifications from '@js/Components/Notifications/DemoNotifications.vu
 import FlashMessage from '@js/Components/Notifications/FlashMessage.vue'
 import SystemNotificationBanner from '@js/Components/Notifications/SystemNotificationBanner.vue'
 import Logo from '@js/Components/Common/Logo.vue'
-import Search from '@js/Components/Typesense/Search.vue'
-import ColorThemeSwitcher from '@js/Components/Nav/ColorThemeSwitcher.vue'
 import MobileNotification from '@js/Components/Notifications/MobileNotification.vue'
-import NavDarkModeToggle from '@js/Components/Nav/NavDarkModeToggle.vue'
 import CommandPalette from '@js/Components/CommandPalette/CommandPalette.vue'
+import CommandPaletteTrigger from '@js/Components/CommandPalette/CommandPaletteTrigger.vue'
+import { useCommandPalette } from '@js/composables/useCommandPalette'
+import { usePermissions } from '@js/composables/usePermissions'
 import ImpersonationBanner from '@js/Components/Admin/ImpersonationBanner.vue'
-import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
-
+import { PanelLeftCloseIcon, PanelLeftOpenIcon, SearchIcon, Settings2Icon } from '@lucide/vue'
 const page = usePage()
-const user = computed(() => page.props.auth?.user)
+// The mobile icon opens the same palette the desktop trigger and Cmd+K do.
+const { open: openCommandPalette } = useCommandPalette()
+const { user, hasPermission } = usePermissions()
 const isSidebarOpen = ref(false)
-const isMobileSearchOpen = ref(false)
 const isLayoutReady = ref(false)
 const notificationEnabled = computed(() => page.props.settings?.notificationEnabled)
 const notificationInDemoMode = computed(() => page.props.settings?.notificationInDemoMode)
 const bannerHeight = ref(0)
 
-const headerTop = computed(() => `${bannerHeight.value}px`)
-const sidebarTop = computed(() => `${bannerHeight.value + 70}px`)
-const sidebarHeight = computed(() => `calc(100vh - ${bannerHeight.value + 70}px)`)
-const mainPadding = computed(() => {
-    const base = 70
-    return `${bannerHeight.value + base}px`
-})
+/* 36px controls in a 70px bar left 17px of dead space above and below them. */
+const HEADER_HEIGHT = 56
 
-const isMobile = () => window.innerWidth < 768
-const searchPlaceholder = 'Search...'
+const headerTop = computed(() => `${bannerHeight.value}px`)
+const headerHeight = `${HEADER_HEIGHT}px`
+const sidebarTop = computed(() => `${bannerHeight.value + HEADER_HEIGHT}px`)
+const sidebarHeight = computed(() => `calc(100vh - ${bannerHeight.value + HEADER_HEIGHT}px)`)
+const mainPadding = computed(() => `${bannerHeight.value + HEADER_HEIGHT}px`)
+
+/* Reactive, not a bare `window.innerWidth` read: the divider between sidebar
+   and content is only drawn on desktop, so a resize has to repaint it. */
+const isMobile = ref(false)
+const updateIsMobile = () => {
+    isMobile.value = window.innerWidth < 768
+    if (isMobile.value) isSidebarOpen.value = false
+}
+
+/* The sidebar and content share one divider on desktop: the header paints over
+   the content's border-left for its own height, so it draws the same hairline. */
+const showSidebarDivider = computed(() => isSidebarOpen.value && !isMobile.value)
+
+/* The pages the gear leads to. Listed rather than matched on `admin.*` so that
+   adding an admin route does not silently light the gear up on a page the
+   settings index does not actually link to. */
+const ADMIN_ROUTES = [
+    'admin.setting.*',
+    'admin.user.*',
+    'admin.audit.*',
+    'admin.personalization.*',
+    'admin.backup.*',
+    'admin.permission.*',
+    'admin.login.history.*',
+    'admin.sessions.*',
+    'admin.health.*',
+    'admin.notifications.*',
+]
+
+const isAdminActive = computed(() =>
+    ADMIN_ROUTES.some(name => {
+        try {
+            return route().current(name)
+        } catch {
+            return false
+        }
+    })
+)
+
+/* PanelLeft rather than a hamburger: this control collapses a side panel, it
+   doesn't open a menu. The open/close pair states what the click will do
+   instead of leaving it to be recalled. */
+const toggleLabel = computed(() => {
+    if (isMobile.value) return isSidebarOpen.value ? 'Close menu' : 'Open menu'
+    return isSidebarOpen.value ? 'Collapse sidebar' : 'Expand sidebar'
+})
 
 const toggleSidebar = () => {
     isSidebarOpen.value = !isSidebarOpen.value
@@ -44,14 +88,6 @@ const toggleSidebar = () => {
 const closeSidebar = () => {
     isSidebarOpen.value = false
     localStorage.setItem('sidebarOpen', 'false')
-}
-
-const toggleMobileSearch = () => {
-    isMobileSearchOpen.value = !isMobileSearchOpen.value
-}
-
-const closeMobileSearch = () => {
-    isMobileSearchOpen.value = false
 }
 
 const handlers = {
@@ -66,54 +102,38 @@ const handlers = {
             return
         }
 
-        if (isMobile()) {
+        if (isMobile.value) {
             closeSidebar()
-        }
-    },
-
-    search: event => {
-        const elements = {
-            overlay: document.querySelector('[data-search-overlay]'),
-            panel: document.querySelector('[data-search-panel]'),
-            button: document.querySelector('[data-search-button]'),
-        }
-
-        if (
-            elements.overlay?.contains(event.target) &&
-            !elements.panel?.contains(event.target) &&
-            !elements.button?.contains(event.target)
-        ) {
-            closeMobileSearch()
         }
     },
 }
 
 const handleClickAway = event => {
     handlers.sidebar(event)
-    handlers.search(event)
 }
 
 const handleKeyDown = event => {
     if (event.key === 'Escape') {
-        if (isSidebarOpen.value && isMobile()) {
+        if (isSidebarOpen.value && isMobile.value) {
             closeSidebar()
-        }
-        if (isMobileSearchOpen.value) {
-            closeMobileSearch()
         }
     }
 }
 
 const removeNavigateListener = router.on('navigate', () => {
-    if (isMobile()) closeSidebar()
+    if (isMobile.value) closeSidebar()
 })
 
 onMounted(() => {
     document.addEventListener('click', handleClickAway)
     document.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('resize', updateIsMobile)
 
+    isMobile.value = window.innerWidth < 768
     const savedState = localStorage.getItem('sidebarOpen')
-    isSidebarOpen.value = savedState ? savedState === 'true' : !isMobile()
+    /* The saved preference is a desktop one. Restoring it on a phone opens the
+       overlay over the page on first paint, so mobile always starts closed. */
+    isSidebarOpen.value = isMobile.value ? false : savedState !== 'false'
 
     setTimeout(() => {
         isLayoutReady.value = true
@@ -123,13 +143,14 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', handleClickAway)
     document.removeEventListener('keydown', handleKeyDown)
+    window.removeEventListener('resize', updateIsMobile)
     removeNavigateListener()
 })
 </script>
 
 <template>
     <div
-        class="min-h-screen bg-background"
+        class="bg-background min-h-screen"
         role="document"
         :class="{ 'opacity-0': !isLayoutReady }">
         <!-- System Notification Banner - Fixed at very top -->
@@ -145,8 +166,8 @@ onUnmounted(() => {
         <ImpersonationBanner />
 
         <div
-            v-if="isSidebarOpen && isMobile()"
-            class="fixed inset-0 z-30 bg-black/30"
+            v-if="isSidebarOpen && isMobile"
+            class="fixed inset-0 z-20 bg-black/30"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
@@ -159,7 +180,7 @@ onUnmounted(() => {
             aria-label="Main sidebar"
             :aria-expanded="isSidebarOpen"
             :aria-hidden="!isSidebarOpen"
-            class="fixed left-0 z-50 w-64 transition-transform duration-200"
+            class="fixed left-0 z-30 w-64 transition-transform duration-200"
             :class="[isSidebarOpen ? 'translate-x-0' : '-translate-x-64']"
             :style="{ top: sidebarTop, height: sidebarHeight }"
             @close="closeSidebar" />
@@ -167,80 +188,100 @@ onUnmounted(() => {
         <div class="flex min-h-screen flex-col">
             <header
                 role="banner"
-                class="fixed right-0 left-0 z-55 h-[70px] w-full border-b border-border bg-card"
-                :style="{ top: headerTop }">
+                class="bg-card fixed right-0 left-0 z-40 w-full"
+                :style="{ top: headerTop, height: headerHeight }">
+                <!-- Continues the sidebar divider across the header, which paints
+                     over the content's border-left for its own height. -->
+                <span
+                    v-if="showSidebarDivider"
+                    aria-hidden="true"
+                    class="bg-border absolute top-0 bottom-0 left-64 w-px"></span>
+
                 <nav
-                    class="flex h-full items-center gap-2 px-3 sm:gap-4 sm:px-4"
+                    class="flex h-full items-center"
                     role="navigation"
                     aria-label="Primary navigation">
+                    <!-- Brand zone. Held to the sidebar's width while it is open so
+                         the divider lands on its edge instead of through the search. -->
                     <section
-                        class="flex shrink-0 items-center transition-[width] duration-200"
-                        :class="[isSidebarOpen ? 'md:w-52' : 'md:w-auto']">
-                        <Link href="/dashboard" class="flex items-center">
-                            <Logo size="4.5rem" />
-                        </Link>
-                    </section>
-
-                    <section class="shrink-0">
+                        class="flex shrink-0 items-center gap-2 px-3 sm:px-4"
+                        :class="[isSidebarOpen ? 'md:w-64' : 'md:w-auto']">
                         <button
                             type="button"
                             data-menu-button
                             class="nav-bar-btn"
-                            aria-label="Toggle navigation menu"
+                            :aria-label="toggleLabel"
                             :aria-expanded="isSidebarOpen"
                             @click="toggleSidebar">
-                            <Bars3Icon class="nav-bar-icon" />
-                            <span class="nav-bar-tooltip">Menu</span>
+                            <PanelLeftCloseIcon v-if="isSidebarOpen" class="nav-bar-icon" />
+                            <PanelLeftOpenIcon v-else class="nav-bar-icon" />
+                            <span class="nav-bar-tooltip nav-bar-tooltip-start">
+                                {{ toggleLabel }}
+                            </span>
                         </button>
-                    </section>
 
-                    <section class="hidden shrink-0 lg:block">
-                        <div class="w-72">
-                            <Search :is-mobile="false" :placeholder="searchPlaceholder" />
-                        </div>
-                    </section>
+                        <span class="bg-border h-6 w-px shrink-0" aria-hidden="true"></span>
 
-                    <section class="shrink-0 lg:hidden">
-                        <button
-                            type="button"
-                            data-search-button
-                            class="nav-bar-btn"
-                            aria-label="Open search"
-                            :aria-expanded="isMobileSearchOpen"
-                            @click="toggleMobileSearch">
-                            <MagnifyingGlassIcon class="nav-bar-icon" />
-                            <span class="nav-bar-tooltip">Search</span>
-                        </button>
-                    </section>
-
-                    <div class="flex-1"></div>
-
-                    <section class="flex shrink-0 items-center gap-1">
-                        <ColorThemeSwitcher />
-                        <Notification
-                            v-if="user && notificationEnabled && !notificationInDemoMode"
-                            :user="user" />
-                        <DemoNotifications
-                            v-else-if="user && notificationEnabled && notificationInDemoMode"
-                            :user="user" />
-                        <NavDarkModeToggle />
-                        <NavProfile v-if="user" :user="user" />
                         <Link
-                            v-else
-                            href="/login"
-                            class="text-sm font-medium text-muted-foreground hover:text-foreground">
-                            Sign in
+                            href="/dashboard"
+                            class="flex items-center"
+                            aria-label="Go to dashboard">
+                            <Logo size="2.5rem" />
                         </Link>
                     </section>
+
+                    <div class="flex h-full flex-1 items-center gap-2 px-3 sm:px-4">
+                        <section class="hidden shrink-0 lg:block">
+                            <div class="w-72">
+                                <CommandPaletteTrigger />
+                            </div>
+                        </section>
+
+                        <section class="shrink-0 lg:hidden">
+                            <button
+                                type="button"
+                                class="nav-bar-btn"
+                                aria-label="Open search"
+                                @click="openCommandPalette">
+                                <SearchIcon class="nav-bar-icon" />
+                                <span class="nav-bar-tooltip">Search</span>
+                            </button>
+                        </section>
+
+                        <div class="flex-1"></div>
+
+                        <section class="flex shrink-0 items-center gap-2">
+                            <!-- Replaces the System settings sidebar item and its submenu.
+                             Same gate the nav item carried, so who can see it is unchanged.
+                             Being current shows in the ink alone — a fill would read as
+                             hover rather than as location. -->
+                            <Link
+                                v-if="hasPermission('manage-settings')"
+                                :href="route('admin.setting.index')"
+                                class="nav-bar-btn"
+                                :class="{ 'text-primary': isAdminActive }"
+                                aria-label="Administration"
+                                :aria-current="isAdminActive ? 'page' : undefined">
+                                <Settings2Icon class="nav-bar-icon" />
+                                <span class="nav-bar-tooltip">Administration</span>
+                            </Link>
+                            <Notification
+                                v-if="user && notificationEnabled && !notificationInDemoMode"
+                                :user="user" />
+                            <DemoNotifications
+                                v-else-if="user && notificationEnabled && notificationInDemoMode"
+                                :user="user" />
+                            <NavProfile v-if="user" :user="user" />
+                            <Link
+                                v-else
+                                href="/login"
+                                class="text-muted-foreground hover:text-foreground text-sm font-medium">
+                                Sign in
+                            </Link>
+                        </section>
+                    </div>
                 </nav>
             </header>
-
-            <Search
-                :is-open="isMobileSearchOpen"
-                :is-mobile="true"
-                :placeholder="searchPlaceholder"
-                data-search-overlay
-                @close="isMobileSearchOpen = false" />
 
             <main
                 class="flex-1"
@@ -249,10 +290,13 @@ onUnmounted(() => {
                     'transition-[margin] duration-200',
                     'px-3 sm:px-4 lg:px-8',
                     isSidebarOpen ? 'md:ml-64' : 'md:ml-0',
+                    /* Divider lives on the scrolling content, not the fixed sidebar,
+                       so it spans the full document height rather than one viewport. */
+                    showSidebarDivider ? 'border-border border-l' : '',
                 ]"
                 :style="{ paddingTop: mainPadding }">
                 <FlashMessage />
-                <article class="py-4 sm:py-6 lg:py-8">
+                <article class="mx-auto max-w-6xl py-4 sm:py-6 lg:py-8">
                     <slot />
                 </article>
             </main>

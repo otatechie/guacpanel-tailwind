@@ -23,9 +23,12 @@ test('it paginates with the default page size', function () {
         'resource' => 'users',
     ]);
 
-    expect($result['data']->perPage())->toBe(DataTableService::DEFAULT_PAGE_SIZE)
-        ->and($result['data']->total())->toBe(15)
-        ->and($result['data']->items())->toHaveCount(10);
+    expect($result['data']->perPage())
+        ->toBe(DataTableService::DEFAULT_PAGE_SIZE)
+        ->and($result['data']->total())
+        ->toBe(15)
+        ->and($result['data']->items())
+        ->toHaveCount(10);
 });
 
 test('it accepts allowed per_page values and rejects others', function () {
@@ -54,8 +57,10 @@ test('per_page=all returns every filtered row up to the cap', function () {
         'resource' => 'users',
     ]);
 
-    expect($result['data']->perPage())->toBe(12)
-        ->and($result['data']->items())->toHaveCount(12);
+    expect($result['data']->perPage())
+        ->toBe(12)
+        ->and($result['data']->items())
+        ->toHaveCount(12);
 });
 
 test('it searches across the configured searchable columns', function () {
@@ -66,15 +71,19 @@ test('it searches across the configured searchable columns', function () {
         'searchable' => ['name', 'email'],
         'resource' => 'users',
     ]);
-    expect($byName['data']->total())->toBe(1)
-        ->and($byName['data']->items()[0]->name)->toBe('Alice Wonders');
+    expect($byName['data']->total())
+        ->toBe(1)
+        ->and($byName['data']->items()[0]->name)
+        ->toBe('Alice Wonders');
 
     $byEmail = $this->service->process(User::query(), dataTableRequest(['search' => 'bob@example']), [
         'searchable' => ['name', 'email'],
         'resource' => 'users',
     ]);
-    expect($byEmail['data']->total())->toBe(1)
-        ->and($byEmail['data']->items()[0]->name)->toBe('Bob Builder');
+    expect($byEmail['data']->total())
+        ->toBe(1)
+        ->and($byEmail['data']->items()[0]->name)
+        ->toBe('Bob Builder');
 });
 
 test('it searches relationship columns with dot notation', function () {
@@ -84,13 +93,19 @@ test('it searches relationship columns with dot notation', function () {
     $user->loginHistory()->create(['login_at' => now(), 'user_agent' => 'TestAgent']);
     $other->loginHistory()->create(['login_at' => now(), 'user_agent' => 'OtherAgent']);
 
-    $result = $this->service->process(\App\Models\LoginHistory::query(), dataTableRequest(['search' => 'History Owner']), [
-        'searchable' => ['user.name', 'user_agent'],
-        'resource' => 'login_history',
-    ]);
+    $result = $this->service->process(
+        \App\Models\LoginHistory::query(),
+        dataTableRequest(['search' => 'History Owner']),
+        [
+            'searchable' => ['user.name', 'user_agent'],
+            'resource' => 'login_history',
+        ],
+    );
 
-    expect($result['data']->total())->toBe(1)
-        ->and($result['data']->items()[0]->user_agent)->toBe('TestAgent');
+    expect($result['data']->total())
+        ->toBe(1)
+        ->and($result['data']->items()[0]->user_agent)
+        ->toBe('TestAgent');
 });
 
 test('it sorts by allowlisted columns in both directions', function () {
@@ -113,14 +128,10 @@ test('it sorts by allowlisted columns in both directions', function () {
 test('it ignores sort columns that are not allowlisted', function () {
     User::factory()->count(3)->create();
 
-    $result = $this->service->process(
-        User::query(),
-        dataTableRequest(['sort_by' => 'password', 'sort_dir' => 'asc']),
-        [
-            'sortable' => ['name' => ['type' => 'simple']],
-            'resource' => 'users',
-        ],
-    );
+    $result = $this->service->process(User::query(), dataTableRequest(['sort_by' => 'password', 'sort_dir' => 'asc']), [
+        'sortable' => ['name' => ['type' => 'simple']],
+        'resource' => 'users',
+    ]);
 
     expect($result['data']->total())->toBe(3);
 });
@@ -140,8 +151,10 @@ test('it does not execute SQL injection attempts via sort parameters', function 
         ],
     );
 
-    expect($result['data']->total())->toBe(2)
-        ->and(User::count())->toBe(2);
+    expect($result['data']->total())
+        ->toBe(2)
+        ->and(User::count())
+        ->toBe(2);
 });
 
 test('it falls back to the default direction for invalid sort_dir', function () {
@@ -170,8 +183,10 @@ test('LIKE wildcards in search input are matched literally', function () {
         'searchable' => ['name'],
         'resource' => 'users',
     ]);
-    expect($percent['data']->total())->toBe(1)
-        ->and($percent['data']->items()[0]->name)->toBe('100% Legit');
+    expect($percent['data']->total())
+        ->toBe(1)
+        ->and($percent['data']->items()[0]->name)
+        ->toBe('100% Legit');
 
     // '%' alone must not match every row
     $bare = $this->service->process(User::query(), dataTableRequest(['search' => '%%%%']), [
@@ -205,9 +220,12 @@ test('buildFilters only echoes datatable keys back to the page', function () {
         ['resource' => 'users'],
     );
 
-    expect($result['filters'])->toHaveKeys(['search', 'per_page'])
-        ->and($result['filters'])->not->toHaveKey('utm_source')
-        ->and($result['filters'])->not->toHaveKey('foo');
+    expect($result['filters'])
+        ->toHaveKeys(['search', 'per_page'])
+        ->and($result['filters'])
+        ->not->toHaveKey('utm_source')
+        ->and($result['filters'])
+        ->not->toHaveKey('foo');
 });
 
 test('relationship sort preserves the controller select', function () {
@@ -242,12 +260,14 @@ test('relationship sort preserves the controller select', function () {
 
     $first = $result['data']->items()[0];
 
-    expect($first->user_id)->toBe($userA->id)
-        ->and($first->getAttributes())->not->toHaveKey('payload');
+    expect($first->user_id)->toBe($userA->id)->and($first->getAttributes())->not->toHaveKey('payload');
 });
 
 test('it resolves sane page numbers from garbage input', function () {
-    expect($this->service->resolvePage(dataTableRequest(['page' => -5])))->toBe(1)
-        ->and($this->service->resolvePage(dataTableRequest(['page' => 'abc'])))->toBe(1)
-        ->and($this->service->resolvePage(dataTableRequest(['page' => 3])))->toBe(3);
+    expect($this->service->resolvePage(dataTableRequest(['page' => -5])))
+        ->toBe(1)
+        ->and($this->service->resolvePage(dataTableRequest(['page' => 'abc'])))
+        ->toBe(1)
+        ->and($this->service->resolvePage(dataTableRequest(['page' => 3])))
+        ->toBe(3);
 });

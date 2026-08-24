@@ -11,17 +11,18 @@ defineOptions({
 
 const breadcrumbs = computed(() => [
     { label: 'Dashboard', href: route('dashboard') },
-    { label: 'Admin Notifications', href: route('admin.notifications.index') },
-    { label: 'Deleted' },
+    { label: 'System settings', href: route('admin.setting.index') },
+    { label: 'Notifications', href: route('admin.notifications.index') },
+    { label: 'Deleted notifications' },
 ])
 </script>
 
 <template>
-    <Head title="Deleted Notifications" />
+    <Head title="Deleted notifications" />
 
     <main class="mx-auto max-w-7xl" aria-labelledby="admin-notifications-deleted">
         <PageHeader
-            title="Deleted Notifications"
+            title="Deleted notifications"
             description="Manage soft-deleted notifications (coming soon)"
             :breadcrumbs="breadcrumbs">
             <template #actions>
@@ -31,11 +32,10 @@ const breadcrumbs = computed(() => [
             </template>
         </PageHeader>
 
-        <div
-            class="rounded-xl border border-border bg-card p-6 shadow-sm">
-            <p class="text-sm text-muted-foreground">
-                This page will be implemented next for managing soft deleted notifications.
-                We may not need it since we have a job to clean them up.
+        <div class="border-border bg-card rounded-xl border p-6 shadow-sm">
+            <p class="text-muted-foreground text-sm">
+                This page will be implemented next for managing soft deleted notifications. We may
+                not need it since we have a job to clean them up.
             </p>
         </div>
     </main>

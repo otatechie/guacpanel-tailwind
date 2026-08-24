@@ -1,22 +1,42 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
+import { BellIcon } from '@lucide/vue'
+import DropdownMenu from '@js/Components/DropdownMenu.vue'
 
 defineProps({
     user: { type: Object, required: true },
 })
 
 const notificationsOpen = ref(false)
-const rootEl = ref(null)
 
 const notifications = ref([
-    { id: 1, title: 'New update available', description: 'A new software update is ready to install', time: '5 min ago', read: false, priority: 'high' },
-    { id: 2, title: 'Welcome to the platform', description: 'Take a quick tour of the features', time: '1 hour ago', read: false, priority: 'normal' },
-    { id: 3, title: 'System maintenance', description: 'Scheduled maintenance in 2 hours', time: '2 hours ago', read: true, priority: 'low' },
+    {
+        id: 1,
+        title: 'New update available',
+        description: 'A new software update is ready to install',
+        time: '5 min ago',
+        read: false,
+        priority: 'high',
+    },
+    {
+        id: 2,
+        title: 'Welcome to the platform',
+        description: 'Take a quick tour of the features',
+        time: '1 hour ago',
+        read: false,
+        priority: 'normal',
+    },
+    {
+        id: 3,
+        title: 'System maintenance',
+        description: 'Scheduled maintenance in 2 hours',
+        time: '2 hours ago',
+        read: true,
+        priority: 'low',
+    },
 ])
 
 const unreadCount = ref(notifications.value.filter(n => !n.read).length)
-
-const toggleNotifications = () => { notificationsOpen.value = !notificationsOpen.value }
 
 const markAsRead = id => {
     const n = notifications.value.find(x => x.id === id)
@@ -32,70 +52,61 @@ const priorityDot = p => {
     if (p === 'normal') return 'bg-blue-500'
     return 'bg-border'
 }
-
-const handleClickAway = e => {
-    if (rootEl.value && !rootEl.value.contains(e.target)) notificationsOpen.value = false
-}
-const handleEscape = e => { if (e.key === 'Escape') notificationsOpen.value = false }
-
-onMounted(() => {
-    document.addEventListener('click', handleClickAway)
-    document.addEventListener('keydown', handleEscape)
-})
-onUnmounted(() => {
-    document.removeEventListener('click', handleClickAway)
-    document.removeEventListener('keydown', handleEscape)
-})
 </script>
 
 <template>
-    <div ref="rootEl" class="relative">
-        <button
-            type="button"
-            data-notification-button
-            class="nav-bar-btn relative"
-            aria-label="Notifications"
-            :aria-expanded="notificationsOpen"
-            @click="toggleNotifications">
-            <svg class="nav-bar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-            </svg>
-            <span v-if="unreadCount > 0" class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold text-white">
-                {{ unreadCount }}
-            </span>
-            <span class="nav-bar-tooltip">Notifications</span>
-        </button>
+    <DropdownMenu v-model:open="notificationsOpen" align="end" width="w-80" class="overflow-hidden">
+        <template #trigger>
+            <button type="button" class="nav-bar-btn relative" aria-label="Notifications">
+                <BellIcon class="nav-bar-icon" aria-hidden="true" />
+                <span
+                    v-if="unreadCount > 0"
+                    class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold text-white">
+                    {{ unreadCount }}
+                </span>
+                <span class="nav-bar-tooltip">Notifications</span>
+            </button>
+        </template>
 
-        <div
-            v-show="notificationsOpen"
-            data-notification-dropdown
-            class="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-lg"
-            @click.stop>
-
-            <div class="flex items-center justify-between border-b border-border px-4 py-2.5">
-                <h3 class="text-sm font-semibold text-foreground">Notifications</h3>
-                <span class="text-[10px] text-muted-foreground">Demo</span>
+        <div>
+            <div class="border-border flex items-center justify-between border-b px-4 py-2.5">
+                <h3 class="text-foreground text-sm font-semibold">Notifications</h3>
+                <span class="text-muted-foreground text-[10px]">Demo</span>
             </div>
 
             <div class="max-h-96 overflow-y-auto">
-                <div v-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-muted-foreground">No notifications</div>
+                <div
+                    v-if="notifications.length === 0"
+                    class="text-muted-foreground px-4 py-8 text-center text-xs">
+                    No notifications
+                </div>
 
-                <div v-else class="divide-y divide-border">
+                <div v-else class="divide-border divide-y">
                     <div
                         v-for="n in notifications"
                         :key="n.id"
-                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-muted"
+                        class="hover:bg-muted flex gap-3 px-4 py-3 transition-colors"
                         :class="!n.read ? 'cursor-pointer' : ''"
                         @click="markAsRead(n.id)">
-                        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" :class="priorityDot(n.priority)" />
+                        <span
+                            class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                            :class="priorityDot(n.priority)" />
                         <div class="min-w-0 flex-1">
-                            <h4 class="truncate text-sm text-foreground" :class="!n.read ? 'font-medium' : ''">{{ n.title }}</h4>
-                            <p class="mt-0.5 truncate text-xs text-muted-foreground">{{ n.description }}</p>
-                            <time class="mt-1 block text-[10px] text-muted-foreground">{{ n.time }}</time>
+                            <h4
+                                class="text-foreground truncate text-sm"
+                                :class="!n.read ? 'font-medium' : ''">
+                                {{ n.title }}
+                            </h4>
+                            <p class="text-muted-foreground mt-0.5 truncate text-xs">
+                                {{ n.description }}
+                            </p>
+                            <time class="text-muted-foreground mt-1 block text-[10px]">
+                                {{ n.time }}
+                            </time>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </DropdownMenu>
 </template>

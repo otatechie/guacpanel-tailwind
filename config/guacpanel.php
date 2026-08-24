@@ -69,7 +69,6 @@ return [
     'auto_login_after_register' => env('APP_AUTO_LOGIN_AFTER_REGISTER', false),
     'email_verification_enabled' => env('APP_EMAIL_VERIFICATION_ENABLED', false),
     'auth_required_to_verify_email' => env('APP_AUTH_REQUIRED_TO_VERIFY_EMAIL', false),
-    'auth_branding_panel' => env('APP_AUTH_BRANDING_PANEL', true),
 
     /*
     |--------------------------------------------------------------------------

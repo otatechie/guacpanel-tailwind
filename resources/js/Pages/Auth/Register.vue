@@ -5,8 +5,7 @@ import { useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
 import Socialite from '@js/Components/Auth/Socialite.vue'
-import { EnvelopeIcon } from '@heroicons/vue/24/outline'
-
+import { MailIcon } from '@lucide/vue'
 defineOptions({
     layout: Auth,
 })
@@ -45,7 +44,7 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Create account</h1>
+            <h1 class="text-foreground text-xl font-semibold">Create account</h1>
         </header>
 
         <form class="mt-6 space-y-4" @submit.prevent="submit">
@@ -93,23 +92,29 @@ const submit = () => {
                 :error="form.errors.password_confirmation"
                 autocomplete="new-password" />
 
-            <p class="text-xs leading-relaxed text-muted-foreground">
+            <p class="text-muted-foreground text-xs leading-relaxed">
                 By creating an account, you agree to our
                 <a href="#" class="font-medium underline">Terms</a>
                 and
-                <a href="#" class="font-medium underline">Privacy Policy</a>.
+                <a href="#" class="font-medium underline">Privacy Policy</a>
+                .
             </p>
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="form.processing"
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Creating account...' : 'Create account' }}
             </Button>
         </form>
 
         <template v-if="smLogin || passwordlessLogin">
             <div role="separator" class="relative my-6">
-                <hr class="border-t border-border" />
+                <hr class="border-border border-t" />
                 <span
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">
+                    class="bg-card text-muted-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 text-xs">
                     or continue with
                 </span>
             </div>
@@ -123,15 +128,15 @@ const submit = () => {
                     variant="secondary"
                     class="w-full"
                     :href="route('magic.create')">
-                    <EnvelopeIcon class="h-4 w-4" aria-hidden="true" />
+                    <MailIcon class="h-4 w-4" aria-hidden="true" />
                     Sign up with magic link
                 </Button>
             </div>
         </template>
 
-        <p class="mt-8 text-center text-sm text-muted-foreground">
+        <p class="text-muted-foreground mt-8 text-center text-sm">
             Already have an account?
-            <Link :href="route('login')" class="font-medium text-primary hover:underline">
+            <Link :href="route('login')" class="text-primary font-medium hover:underline">
                 Sign in
             </Link>
         </p>

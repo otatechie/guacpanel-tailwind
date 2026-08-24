@@ -45,6 +45,14 @@
         @endif
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
 
+        {{-- app.js sets this too, but not until the bundle parses — long enough to
+             flash light on a hard refresh. Mirrors getEffectiveTheme() in darkMode.js. --}}
+        <script>
+            document.documentElement.classList.toggle('dark',
+                localStorage.theme === 'dark' ||
+                (localStorage.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches))
+        </script>
+
         <!-- Scripts and Styles -->
         @vite([
             'resources/js/app.js',
@@ -58,7 +66,9 @@
             rel="stylesheet" />
     </head>
 
-    <body @class(['antialiased', 'h-full', 'bg-gray-50', 'dark:bg-gray-900', 'text-gray-900', 'dark:text-gray-100'])>
+    {{-- Colours come from `body { @apply bg-background text-foreground }` in app.css.
+         Utilities here would shadow it — that is how dark:bg-gray-900 painted blue. --}}
+    <body @class(['antialiased', 'h-full'])>
         @routes
         @inertia
     </body>

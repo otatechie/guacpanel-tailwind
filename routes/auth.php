@@ -40,7 +40,6 @@ Route::controller(UserAccountController::class)
     ->name('uac.')
     ->group(function () {
         if (config('guacpanel.user.account.deactivate_enabled')) {
-            // Route::get('reactivate/{token}', 'reactivateAccount')->name('reactivate'); // TODO :: HERE
         }
 
         if (config('guacpanel.user.account.restore_enabled')) {

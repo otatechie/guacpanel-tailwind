@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Artisan;
@@ -53,19 +54,34 @@ class AdminBackupController extends Controller implements HasMiddleware
 
     public function fetchBackupInfo()
     {
-        $disk = $this->getDisk();
+        $diskName = config('backup.backup.destination.disks')[0] ?? 'local';
         $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
 
-        $files = collect($disk->allFiles($backupName))->filter(fn($file) => str_ends_with($file, '.zip'));
+        try {
+            $files = collect($this->getDisk()->allFiles($backupName))->filter(
+                fn($file) => str_ends_with($file, '.zip'),
+            );
+        } catch (\Throwable $e) {
+            return [
+                [
+                    'name' => $backupName,
+                    'disk' => $diskName,
+                    'reachable' => false,
+                    'count' => 0,
+                    'storageSpace' => $this->formatBytes(0),
+                    'backups' => [],
+                ],
+            ];
+        }
+
+        $disk = $this->getDisk();
 
         if ($files->isEmpty()) {
             return [
                 [
                     'name' => $backupName,
-                    'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
-                    'storageType' => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
+                    'disk' => $diskName,
                     'reachable' => true,
-                    'healthy' => true,
                     'count' => 0,
                     'storageSpace' => $this->formatBytes(0),
                     'backups' => [],
@@ -81,11 +97,13 @@ class AdminBackupController extends Controller implements HasMiddleware
                 return [
                     'path' => $file,
                     'date' => date('M d, Y g:i A', $lastModified),
+                    'age' => Carbon::createFromTimestamp($lastModified)->diffForHumans(),
                     'size' => $this->formatBytes($size),
                     'raw_size' => $size,
+                    'timestamp' => $lastModified,
                 ];
             })
-            ->sortByDesc(fn($backup) => strtotime($backup['date']))
+            ->sortByDesc(fn($backup) => $backup['timestamp'])
             ->values()
             ->toArray();
 
@@ -94,14 +112,12 @@ class AdminBackupController extends Controller implements HasMiddleware
         return [
             [
                 'name' => $backupName,
-                'disk' => config('backup.backup.destination.disks')[0] ?? 'local',
-                'storageType' => config('filesystems.disks.local.driver') === 'local' ? 'local' : 'other',
+                'disk' => $diskName,
                 'reachable' => true,
-                'healthy' => true,
                 'count' => count($backups),
                 'storageSpace' => $this->formatBytes($totalSize),
                 'backups' => array_map(function ($backup) {
-                    unset($backup['raw_size']);
+                    unset($backup['raw_size'], $backup['timestamp']);
 
                     return $backup;
                 }, $backups),
@@ -112,13 +128,12 @@ class AdminBackupController extends Controller implements HasMiddleware
     private function validateBackupExists(string $path, bool $isBase64 = false): ?string
     {
         $disk = $this->getDisk();
-        $decodedPath = $isBase64 ? base64_decode($path, true) : urldecode($path);
+        $decodedPath = $isBase64 ? base64_decode(strtr($path, '-_', '+/'), true) : urldecode($path);
 
         if ($decodedPath === false) {
             return null;
         }
 
-        // Prevent path traversal: ensure the path stays within the backup directory
         $backupName = config('backup.backup.name') ?? env('APP_NAME', 'laravel-backup');
         $normalizedPath = str_replace('\\', '/', $decodedPath);
         $normalizedPath = preg_replace('#/+#', '/', $normalizedPath);
@@ -144,15 +159,7 @@ class AdminBackupController extends Controller implements HasMiddleware
             return redirect()->back();
         }
 
-        $filePath = storage_path('app/' . $decodedPath);
-
-        if (!file_exists($filePath)) {
-            session()->flash('error', 'Backup file not found on disk.');
-
-            return redirect()->back();
-        }
-
-        return response()->download($filePath, basename($decodedPath));
+        return $this->getDisk()->download($decodedPath, basename($decodedPath));
     }
 
     public function destroy(string $path)

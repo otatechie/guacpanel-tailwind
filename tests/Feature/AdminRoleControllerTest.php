@@ -27,29 +27,28 @@ test('it redirects unauthenticated users to login page', function () {
 });
 
 test('it denies access to users without role management permission', function () {
-    $response = $this->actingAs($this->regularUser)
-        ->get(route('admin.permission.role.index'));
+    $response = $this->actingAs($this->regularUser)->get(route('admin.permission.role.index'));
     $response->assertForbidden();
 });
 
 test('it allows users with role management permission to view the page', function () {
-    $response = $this->actingAs($this->adminUser)
-        ->get(route('admin.permission.role.index'));
+    $response = $this->actingAs($this->adminUser)->get(route('admin.permission.role.index'));
 
     $response->assertInertia(
-        fn ($assert) => $assert
-        ->component('Admin/PermissionRole/IndexPermissionRolePage')
-        ->has('permissions')
-        ->has('roles')
-        ->has('users')
+        fn($assert) => $assert
+            ->component('Admin/PermissionRole/IndexPermissionRolePage')
+            ->has('permissions')
+            ->has('roles')
+            // `users` was User::all() sent to a page that never declared the prop.
+            ->missing('users'),
     );
 });
 
 test('it allows users with role management permission to create roles', function () {
     $roleData = [
-        'name'        => 'test-role',
+        'name' => 'test-role',
         'permissions' => [],
-        '_token'      => 'test-token',
+        '_token' => 'test-token',
     ];
 
     $response = $this->actingAs($this->adminUser)
@@ -63,9 +62,9 @@ test('it allows users with role management permission to create roles', function
 test('it allows users with role management permission to update roles', function () {
     $role = Role::create(['name' => 'test-role']);
     $updateData = [
-        'name'        => 'updated-role',
+        'name' => 'updated-role',
         'permissions' => [],
-        '_token'      => 'test-token',
+        '_token' => 'test-token',
     ];
 
     $response = $this->actingAs($this->adminUser)
@@ -89,9 +88,9 @@ test('it allows users with role management permission to delete roles', function
 
 test('it denies role creation to users without role management permission', function () {
     $roleData = [
-        'name'        => 'test-role',
+        'name' => 'test-role',
         'permissions' => [],
-        '_token'      => 'test-token',
+        '_token' => 'test-token',
     ];
 
     $response = $this->actingAs($this->regularUser)
@@ -104,9 +103,9 @@ test('it denies role creation to users without role management permission', func
 test('it denies role update to users without role management permission', function () {
     $role = Role::create(['name' => 'test-role']);
     $updateData = [
-        'name'        => 'updated-role',
+        'name' => 'updated-role',
         'permissions' => [],
-        '_token'      => 'test-token',
+        '_token' => 'test-token',
     ];
 
     $response = $this->actingAs($this->regularUser)
@@ -124,4 +123,30 @@ test('it denies role deletion to users without role management permission', func
         ->delete(route('admin.role.destroy', $role), ['_token' => 'test-token']);
 
     $response->assertForbidden();
+});
+
+test('role mutations return to the page that can render them', function () {
+    // AdminRoleController used to render IndexPermissionRolePage itself, with
+    // `roles` as a paginator and no permissionsList — so every redirect here
+    // handed the page a payload it could not read, and RolesTab threw on mount.
+    $this->actingAs($this->adminUser)
+        ->get(route('admin.role.index'))
+        ->assertRedirect(route('admin.permission.role.index'));
+
+    $this->actingAs($this->adminUser)
+        ->post(route('admin.role.store'), [
+            'name' => 'auditor',
+            'description' => 'Reads the audit trail',
+            'permissions' => [],
+        ])
+        ->assertRedirect(route('admin.permission.role.index'));
+});
+
+test('the roles payload is a plain list the tab can iterate', function () {
+    $response = $this->actingAs($this->adminUser)->get(route('admin.permission.role.index'));
+
+    // A paginator would put the rows at roles.data.*, which RolesTab cannot read.
+    $response->assertInertia(
+        fn($page) => $page->has('roles.0.name')->has('roles.0.is_protected')->has('permissionsList'),
+    );
 });

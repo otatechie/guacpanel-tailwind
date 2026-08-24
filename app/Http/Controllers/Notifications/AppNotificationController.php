@@ -20,15 +20,10 @@ class AppNotificationController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('permission:view-notifications', only: ['index']),
-            new Middleware('permission:edit-notifications', only: [
-                'markRead',
-                'markUnread',
-                'markAllRead',
-                'dismiss',
-                'undismiss',
-                'dismissAll',
-                'bulk',
-            ]),
+            new Middleware(
+                'permission:edit-notifications',
+                only: ['markRead', 'markUnread', 'markAllRead', 'dismiss', 'undismiss', 'dismissAll', 'bulk'],
+            ),
             new Middleware('permission:delete-notifications|manage-notifications', only: ['destroy']),
         ];
     }

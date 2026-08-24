@@ -142,8 +142,13 @@ function applyThemeColor(color) {
     }
 }
 
+/* Must be a `value` in `colors` above — `applyThemeColor` silently no-ops on an
+   unknown name, leaving the accent on app.css's bare fallback while the UI shows
+   it as selected. */
+const DEFAULT_THEME_COLOR = 'cyan'
+
 export function initializeTheme() {
-    const savedColor = localStorage.getItem('theme-color') || 'cyan'
+    const savedColor = localStorage.getItem('theme-color') || DEFAULT_THEME_COLOR
     const savedPreset = localStorage.getItem('theme-preset')
     const savedIntensity = parseFloat(localStorage.getItem('theme-intensity') || '1')
 
@@ -158,4 +163,11 @@ export function initializeTheme() {
     }
 }
 
-export { colors, presets, applyThemePreset, adjustThemeIntensity, applyThemeColor }
+export {
+    colors,
+    presets,
+    applyThemePreset,
+    adjustThemeIntensity,
+    applyThemeColor,
+    DEFAULT_THEME_COLOR,
+}
