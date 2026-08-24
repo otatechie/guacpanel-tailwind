@@ -1,0 +1,29 @@
+/*
+  Unovis styles its charts through its own custom properties. Point them at our
+  design tokens so charts pick up the light/dark switch with everything else.
+*/
+.unovis-xy-container,
+.unovis-single-container,
+.vis-tooltip {
+    --vis-axis-tick-color: var(--border);
+    --vis-axis-tick-label-color: var(--muted-foreground);
+    --vis-axis-grid-color: var(--border);
+    --vis-axis-domain-color: var(--border);
+    --vis-axis-label-color: var(--muted-foreground);
+    --vis-axis-tick-label-font-size: 12px;
+    --vis-axis-font-family: var(--font-sans);
+
+    --vis-crosshair-line-stroke-color: var(--border);
+    --vis-crosshair-circle-stroke-color: var(--card);
+
+    --vis-tooltip-background-color: var(--popover);
+    --vis-tooltip-text-color: var(--popover-foreground);
+    --vis-tooltip-border-color: var(--border);
+    --vis-tooltip-padding: 0.5rem 0.75rem;
+
+    --vis-donut-central-label-text-color: var(--foreground);
+    --vis-donut-central-sub-label-text-color: var(--muted-foreground);
+    --vis-donut-central-label-font-size: 1.125rem;
+    --vis-donut-central-sub-label-font-size: 0.75rem;
+    --vis-donut-segment-stroke-color: var(--card);
+}
