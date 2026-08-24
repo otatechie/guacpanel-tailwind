@@ -38,8 +38,6 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     use TwoFactorAuthenticatable;
     use UserAccountRestoreTrait;
 
-    protected $guarded = ['id'];
-
     protected $hidden = [
         'password',
         'remember_token',
@@ -62,6 +60,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'restore_token',
         'auto_destroy',
         'restore_date',
+        'notification_preferences',
     ];
 
     protected $casts = [
@@ -79,9 +78,38 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
         'restore_date' => 'datetime',
+        'notification_preferences' => 'array',
     ];
 
     protected $appends = ['created_at_formatted'];
+
+    /** Announcement scopes and severities a user can mute. */
+    public const MUTABLE_SCOPES = ['system', 'release'];
+
+    public const MUTABLE_TYPES = ['info', 'success', 'warning', 'error'];
+
+    /**
+     * Notification preferences, with everything on by default.
+     *
+     * Muting is by what reaches the reader, not by delivery channel: these
+     * notifications are in-app and broadcast over Reverb, and there is no email
+     * channel to switch off.
+     *
+     * `user` scope is deliberately not mutable -- those are addressed to you
+     * personally, and letting someone silence them means an account they cannot
+     * be told about.
+     */
+    public function notificationPreferences(): array
+    {
+        $stored = $this->notification_preferences ?? [];
+
+        return [
+            'muted_scopes' => array_values(
+                array_intersect((array) ($stored['muted_scopes'] ?? []), self::MUTABLE_SCOPES),
+            ),
+            'muted_types' => array_values(array_intersect((array) ($stored['muted_types'] ?? []), self::MUTABLE_TYPES)),
+        ];
+    }
 
     public function scopeWithDeleted(Builder $query): Builder
     {

@@ -117,6 +117,13 @@ export const adminNav = [
         keywords: ['status', 'monitoring'],
     },
     {
+        name: 'Failed jobs',
+        route: 'admin.failed-jobs.index',
+        icon: 'activity',
+        permission: ['view-failed-jobs', 'manage-failed-jobs'],
+        keywords: ['queue', 'errors', 'retry', 'jobs'],
+    },
+    {
         name: 'Manage notifications',
         route: 'admin.notifications.index',
         icon: 'bell',

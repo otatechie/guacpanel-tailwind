@@ -38,6 +38,8 @@ class PermissionRoleSeeder extends Seeder
 
             // Audit & Monitoring
             'view-audits' => 'View system audit logs',
+            'view-failed-jobs' => 'See jobs that failed on the queue',
+            'manage-failed-jobs' => 'Retry and delete failed queue jobs',
 
             // Backup Management
             'manage-backups' => 'Create and manage system backups',

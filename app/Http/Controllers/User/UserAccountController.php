@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Events\UserDeleted;
 use App\Events\UserRestored;
+use App\Models\AppNotification;
 use App\Models\User;
 use App\Traits\UserAccountRestoreTrait;
 use Carbon\Carbon;
@@ -12,6 +13,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
@@ -39,9 +41,97 @@ class UserAccountController extends Controller
             'sessions' => $this->getUserSessionsData($user, $request->session()->getId()),
             'deactivateEnabled' => config('guacpanel.user.account.deactivate_enabled'),
             'deleteEnabled' => config('guacpanel.user.account.delete_enabled'),
+            'notificationsEnabled' => config('guacpanel.notifications.enabled'),
+            'notificationPreferences' => $user->notificationPreferences(),
         ];
 
         return Inertia::render('UserAccount/IndexPage', $data);
+    }
+
+    public function updateNotificationPreferences(Request $request)
+    {
+        $validated = $request->validate([
+            'muted_scopes' => ['array'],
+            'muted_scopes.*' => ['string', Rule::in(User::MUTABLE_SCOPES)],
+            'muted_types' => ['array'],
+            'muted_types.*' => ['string', Rule::in(User::MUTABLE_TYPES)],
+        ]);
+
+        $user = $request->user();
+
+        $user->update([
+            'notification_preferences' => [
+                'muted_scopes' => array_values(array_unique($validated['muted_scopes'] ?? [])),
+                'muted_types' => array_values(array_unique($validated['muted_types'] ?? [])),
+            ],
+        ]);
+
+        return redirect()->back()->with('success', __('notifications.account.preferences_updated'));
+    }
+
+    /**
+     * Everything this application holds about the signed-in user, as JSON.
+     *
+     * Deliberately assembled field by field rather than dumping models: a
+     * $guarded model would otherwise export the password hash, the two-factor
+     * secret and the recovery codes.
+     */
+    public function exportData(Request $request)
+    {
+        $user = $request->user();
+
+        $export = [
+            'exported_at' => now()->toIso8601String(),
+            'account' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => optional($user->email_verified_at)->toIso8601String(),
+                'location' => $user->location,
+                'locale' => $user->locale,
+                'created_at' => optional($user->created_at)->toIso8601String(),
+                'last_login_at' => optional($user->last_login_at)->toIso8601String(),
+                'password_changed_at' => optional($user->password_changed_at)->toIso8601String(),
+                'two_factor_enabled' => (bool) $user->two_factor_secret,
+            ],
+            'roles' => $user->roles->pluck('name')->all(),
+            'permissions' => $user->getAllPermissions()->pluck('name')->unique()->values()->all(),
+            'notification_preferences' => $user->notificationPreferences(),
+            'login_history' => $user
+                ->loginHistory()
+                ->orderByDesc('login_at')
+                ->get()
+                ->map(
+                    fn($entry) => [
+                        'login_at' => optional($entry->login_at)->toIso8601String(),
+                        'ip_address' => $entry->ip_address,
+                        'user_agent' => $entry->user_agent,
+                        'successful' => (bool) $entry->login_successful,
+                    ],
+                )
+                ->all(),
+            'notifications' => AppNotification::query()
+                ->where('user_id', $user->id)
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(
+                    fn($notification) => [
+                        'title' => $notification->title,
+                        'message' => $notification->message,
+                        'type' => $notification->type,
+                        'created_at' => optional($notification->created_at)->toIso8601String(),
+                    ],
+                )
+                ->all(),
+        ];
+
+        $filename = 'account-data-' . $user->id . '-' . now()->format('Y-m-d') . '.json';
+
+        return response()->streamDownload(
+            fn() => print json_encode($export, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+            $filename,
+            ['Content-Type' => 'application/json'],
+        );
     }
 
     public function indexTwoFactorAuthentication()

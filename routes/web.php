@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAppNotificationsController;
 use App\Http\Controllers\Admin\AdminAuditController;
 use App\Http\Controllers\Admin\AdminBackupController;
 use App\Http\Controllers\Admin\AdminDeletedUsersController;
+use App\Http\Controllers\Admin\AdminFailedJobController;
 use App\Http\Controllers\Admin\AdminHealthStatusController;
 use App\Http\Controllers\Admin\AdminLoginHistoryController;
 use App\Http\Controllers\Admin\AdminPermissionController;
@@ -139,6 +140,10 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                         Route::get('/', 'index')->name('index');
                         Route::post('deactivate', 'deactivateAccount')->name('deactivate');
                         Route::post('delete', 'deleteAccount')->name('delete');
+                        Route::get('export', 'exportData')->name('export');
+                        Route::post('notification-preferences', 'updateNotificationPreferences')->name(
+                            'notification.preferences',
+                        );
                     });
 
                     // Browser Session Routes
@@ -212,6 +217,18 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                                         ->name('start')
                                         ->middleware('permission:impersonate-users');
                                 });
+                        });
+
+                    // Failed Jobs Routes
+                    Route::prefix('failed-jobs')
+                        ->name('failed-jobs.')
+                        ->controller(AdminFailedJobController::class)
+                        ->group(function () {
+                            Route::get('/', 'index')->name('index');
+                            Route::post('retry-all', 'retryAll')->name('retry-all');
+                            Route::get('{uuid}', 'show')->name('show');
+                            Route::post('{uuid}/retry', 'retry')->name('retry');
+                            Route::delete('{uuid}', 'destroy')->name('destroy');
                         });
 
                     // Audit & History Routes
