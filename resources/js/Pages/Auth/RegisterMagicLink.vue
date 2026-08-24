@@ -15,7 +15,7 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.post(route('magic.register'), {
+    form.post(route('magic.store'), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset()

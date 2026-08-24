@@ -50,7 +50,7 @@ const logoutSession = () => {
 }
 
 const logoutAllSessions = () => {
-    passwordForm.delete(route('user.sessions.destroy'), {
+    passwordForm.post(route('user.session.logout'), {
         preserveScroll: true,
         onSuccess: () => {
             logoutAllModal.value = false

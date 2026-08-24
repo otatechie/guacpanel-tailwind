@@ -7,6 +7,7 @@ import axios from 'axios'
 import { SearchIcon } from '@lucide/vue'
 import { useCommandPalette } from '@js/composables/useCommandPalette'
 import { usePermissions } from '@js/composables/usePermissions'
+import { workspaceNav, accountNav, adminNav } from '@js/navigation'
 
 const page = usePage()
 // Shared with the header trigger, which is now the only other way in.
@@ -25,132 +26,20 @@ const isDark = ref(false)
 
 const { user, hasPermission } = usePermissions()
 
-const pagesConfig = [
-    { name: 'Dashboard', route: 'dashboard', icon: 'home', keywords: ['home', 'main'] },
-    {
-        name: 'Charts',
-        route: 'chart.index',
-        icon: 'chart',
-        keywords: ['analytics', 'graphs', 'data'],
-    },
-]
-
-const conditionalPages = [
-    {
-        name: 'Notifications',
-        route: 'admin.notifications.index',
-        icon: 'bell',
-        permission: 'manage-notifications',
-        keywords: ['alerts', 'messages'],
-        condition: () => page.props.settings?.notificationEnabled,
-    },
-]
-
-const settingsPages = [
-    {
-        name: 'System settings',
-        route: 'admin.setting.index',
-        icon: 'cog',
-        keywords: ['config', 'preferences'],
-    },
-    {
-        name: 'System activity',
-        route: 'admin.audit.index',
-        icon: 'activity',
-        keywords: ['logs', 'audit'],
-    },
-    {
-        name: 'Theme settings',
-        route: 'admin.personalization.index',
-        icon: 'palette',
-        keywords: ['colors', 'appearance'],
-    },
-    {
-        name: 'User management',
-        route: 'admin.user.index',
-        icon: 'users',
-        keywords: ['accounts', 'members'],
-    },
-    {
-        name: 'Data backup',
-        route: 'admin.backup.index',
-        icon: 'database',
-        keywords: ['restore', 'export'],
-    },
-    {
-        name: 'Access control',
-        route: 'admin.permission.role.index',
-        icon: 'shield',
-        keywords: ['roles', 'permissions'],
-    },
-    {
-        name: 'Login history',
-        route: 'admin.login.history.index',
-        icon: 'history',
-        keywords: ['access', 'logins'],
-    },
-    {
-        name: 'Security settings',
-        route: 'admin.setting.show',
-        icon: 'lock',
-        keywords: ['password', 'auth'],
-    },
-    {
-        name: 'All sessions',
-        route: 'admin.sessions.index',
-        icon: 'monitor',
-        keywords: ['devices', 'active', 'session management'],
-    },
-    {
-        name: 'Health status',
-        route: 'admin.health.index',
-        icon: 'heart',
-        keywords: ['status', 'monitoring'],
-    },
-]
-
-/* These three lived in `actionsConfig` and were badged ACTION, but every one of
-   them carries a `route:` — they navigate. Only the theme toggle and Logout do
-   anything in place. */
-const accountPages = [
-    {
-        name: 'My profile',
-        route: 'user.account.index',
-        icon: 'user',
-        keywords: ['account', 'settings'],
-    },
-    {
-        name: 'Two-factor authentication',
-        route: 'user.two.factor.authentication.index',
-        icon: 'shield',
-        keywords: ['2fa', 'security', 'totp'],
-    },
-    {
-        name: 'My active sessions',
-        route: 'user.session.index',
-        icon: 'monitor',
-        keywords: ['devices', 'logged in'],
-    },
-]
+/* One manifest, shared with the sidebar. Removing a feature means deleting its
+   entry in resources/js/navigation.js, not editing this file and the sidebar. */
+const isAvailable = item =>
+    (!item.feature || Boolean(page.props.settings?.[item.feature])) &&
+    hasPermission(item.permission)
 
 const allPages = computed(() => {
-    const pages = [...pagesConfig]
-
-    conditionalPages.forEach(p => {
-        if (p.condition?.() !== false) {
-            pages.push(p)
-        }
-    })
-
-    if (user.value) {
-        pages.push(...accountPages)
-    }
+    const pages = [...workspaceNav, ...(user.value ? accountNav : [])]
 
     if (hasPermission('manage-settings')) {
-        pages.push(...settingsPages)
+        pages.push(...adminNav)
     }
 
-    return pages.filter(p => !p.permission || hasPermission(p.permission))
+    return pages.filter(isAvailable)
 })
 
 const allActions = computed(() => {

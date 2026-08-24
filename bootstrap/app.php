@@ -108,10 +108,15 @@ return Application::configure(basePath: dirname(__DIR__))
         });
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->job(new CleanupDeletedAppNotificationsJob())->daily()->withoutOverlapping()->onOneServer();
         $schedule->job(new DestroySoftDeletedUsersJob())->daily()->withoutOverlapping()->onOneServer();
-        $schedule->job(new SendScheduledAppNotificationsJob())->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
-        $schedule->job(new SoftDeleteExpiredAppNotificationsJob())->daily()->withoutOverlapping()->onOneServer();
+
+        // Routes, nav and the command palette all honour this flag; the
+        // scheduler did not, so cron kept working a feature nobody could reach.
+        if (config('guacpanel.notifications.enabled')) {
+            $schedule->job(new CleanupDeletedAppNotificationsJob())->daily()->withoutOverlapping()->onOneServer();
+            $schedule->job(new SendScheduledAppNotificationsJob())->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+            $schedule->job(new SoftDeleteExpiredAppNotificationsJob())->daily()->withoutOverlapping()->onOneServer();
+        }
     })
     ->withEvents(false) // turn off folder auto scanning, manually define events outide of Laravel's default.
     ->create();

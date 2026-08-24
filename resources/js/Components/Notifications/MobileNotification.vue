@@ -94,10 +94,3 @@ onUnmounted(() => {
         </div>
     </Transition>
 </template>
-
-<style scoped>
-/* Ensure the notification appears above other content */
-.fixed {
-    z-index: 9999;
-}
-</style>
