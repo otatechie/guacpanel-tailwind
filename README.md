@@ -153,6 +153,8 @@ Seeding creates two accounts (configurable via the `SEED_*` variables in `.env`)
 
 **🔗 External Resources**
 
+- [Removing features](REMOVING.md) — what to delete, and the shared files to edit
+- [UI component contract](docs/ui-contract.md) — the wrapper layer and its rules
 - [GuacPanel Documentation](https://guacpanel.com)
 - [Laravel Documentation](https://laravel.com/docs)
 - [Fortify Documentation](https://laravel.com/docs/fortify)

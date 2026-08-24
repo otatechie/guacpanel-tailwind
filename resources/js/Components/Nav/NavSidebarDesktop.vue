@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/vue3'
 import { computed, markRaw } from 'vue'
 import { BellIcon, ChartColumnBigIcon, HouseIcon } from '@lucide/vue'
 import { usePermissions } from '@js/composables/usePermissions'
+import { workspaceNav } from '@js/navigation'
 
 const page = usePage()
 
@@ -21,35 +22,33 @@ const isCurrentRoute = routeName => {
 const isActive = item => isCurrentRoute(item.activeRoutes) || isCurrentRoute(item.route)
 
 /* Flat, one level deep. Administration lives behind the header's gear, so the
-   sidebar only carries the places people work day to day. */
-const navigationSections = computed(() => [
-    {
-        items: [{ name: 'Dashboard', route: 'dashboard', icon: markRaw(HouseIcon) }],
-    },
-    {
-        label: 'Workspace',
-        items: [
-            { name: 'Charts', route: 'chart.index', icon: markRaw(ChartColumnBigIcon) },
-            /* The reader's own notifications, not the admin authoring tool —
-               that lives behind the header's gear with the rest of system
-               configuration. This page otherwise had no nav entry at all,
-               reachable only from the bell popover's footer. */
-            ...(page.props.settings?.notificationEnabled
-                ? [
-                      {
-                          name: 'Notifications',
-                          route: 'notifications.index',
-                          activeRoutes: ['notifications.index'],
-                          permission: ['view-notifications', 'manage-notifications'],
-                          icon: markRaw(BellIcon),
-                      },
-                  ]
-                : []),
-        ],
-    },
-])
+   sidebar only carries the places people work day to day -- it renders
+   workspaceNav from resources/js/navigation.js, which the command palette reads
+   too, so a removed feature disappears from both at once. */
+const ICONS = {
+    home: markRaw(HouseIcon),
+    chart: markRaw(ChartColumnBigIcon),
+    bell: markRaw(BellIcon),
+}
 
-const visibleItems = section => section.items.filter(item => hasPermission(item.permission))
+const isAvailable = item =>
+    (!item.feature || Boolean(page.props.settings?.[item.feature])) &&
+    hasPermission(item.permission)
+
+const navigationSections = computed(() => {
+    const items = workspaceNav.filter(isAvailable).map(item => ({
+        ...item,
+        icon: ICONS[item.icon],
+        activeRoutes: item.activeRoutes ?? [item.route],
+    }))
+
+    return [
+        { items: items.filter(i => i.route === 'dashboard') },
+        { label: 'Workspace', items: items.filter(i => i.route !== 'dashboard') },
+    ].filter(section => section.items.length)
+})
+
+const visibleItems = section => section.items
 </script>
 
 <template>
