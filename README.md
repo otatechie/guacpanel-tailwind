@@ -9,7 +9,24 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4.x-06B6D4?style=flat&logo=tailwind-css)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/license/MIT)
 
-An opinionated Laravel starter kit built with Vue.js, Inertia.js, and Tailwind CSS including authentication, admin dashboard, and essential features for building modern web applications.
+An opinionated Laravel admin starter kit built with Vue.js, Inertia.js and Tailwind CSS.
+
+Most starter kits give you authentication and a dashboard. This one gives you the
+things an admin panel needs on day 90: an audit trail of who changed what, login
+history, live sessions you can terminate, guarded and logged impersonation,
+scheduled backups, health checks, and a `Cmd/Ctrl+K` palette that searches your
+pages, actions and data.
+
+Two things make it different from the alternatives:
+
+- **You own the frontend.** These are Vue files you edit, not PHP that renders
+  someone else's components. The shadcn-vue layer sits behind wrappers with a
+  documented contract ([docs/ui-contract.md](docs/ui-contract.md)), so the
+  component library is replaceable without touching a single page.
+- **It is built to be cut down.** A starter kit is forked and stripped. Features
+  come out along documented seams ([REMOVING.md](REMOVING.md)), and a test
+  cross-checks every route the frontend calls against the ones that exist, so a
+  removal that breaks something fails your build instead of a user's request.
 
 <table>
   <tr>
