@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { ChevronDownIcon, MagnifyingGlassIcon, XMarkIcon, CheckIcon } from '@heroicons/vue/24/outline'
-
+import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from '@lucide/vue'
 const props = defineProps({
     modelValue: {
         type: [String, Number],
@@ -147,7 +146,10 @@ function handleKeydown(e) {
             break
         case 'Enter':
             e.preventDefault()
-            if (highlightedIndex.value >= 0 && highlightedIndex.value < filteredOptions.value.length) {
+            if (
+                highlightedIndex.value >= 0 &&
+                highlightedIndex.value < filteredOptions.value.length
+            ) {
                 selectOption(filteredOptions.value[highlightedIndex.value])
             }
             break
@@ -184,7 +186,8 @@ onBeforeUnmount(() => {
 <template>
     <fieldset ref="selectRef" class="relative">
         <label :for="inputId" class="form-label" @click.stop="toggleDropdown">
-            {{ label }}<span v-if="required" class="text-red-500"> *</span>
+            {{ label }}
+            <span v-if="required" class="text-red-500">*</span>
         </label>
 
         <div class="relative">
@@ -196,7 +199,7 @@ onBeforeUnmount(() => {
                 role="combobox"
                 :aria-expanded="isOpen"
                 :aria-controls="`${inputId}-listbox`"
-                class="form-input cursor-pointer capitalize pr-8"
+                class="form-input cursor-pointer pr-8 capitalize"
                 :class="{
                     'form-input-error': error,
                     'form-input-disabled': disabled,
@@ -209,15 +212,15 @@ onBeforeUnmount(() => {
             <button
                 v-if="modelValue && !disabled"
                 type="button"
-                class="absolute top-1/2 right-7 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground"
+                class="bg-muted text-muted-foreground hover:text-foreground absolute top-1/2 right-7 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full transition-colors"
                 :aria-label="'Clear ' + label"
                 @click.stop="clearSelection">
-                <XMarkIcon class="h-2.5 w-2.5" />
+                <XIcon class="h-2.5 w-2.5" />
             </button>
 
             <!-- Chevron -->
             <ChevronDownIcon
-                class="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-transform duration-150"
+                class="text-muted-foreground pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 transition-transform duration-150"
                 :class="{ 'rotate-180': isOpen }"
                 aria-hidden="true" />
 
@@ -226,16 +229,17 @@ onBeforeUnmount(() => {
                 v-show="isOpen"
                 :id="`${inputId}-listbox`"
                 role="listbox"
-                class="absolute z-50 flex max-h-[180px] w-full flex-col overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:max-h-[250px]"
+                class="border-border bg-card absolute z-50 flex max-h-[180px] w-full flex-col overflow-hidden rounded-lg border shadow-lg sm:max-h-[250px]"
                 :class="dropdownPosition === 'top' ? 'bottom-full mb-1.5' : 'top-full mt-1.5'">
-                <div class="relative shrink-0 border-b border-border">
-                    <MagnifyingGlassIcon class="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <div class="border-border relative shrink-0 border-b">
+                    <SearchIcon
+                        class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2" />
                     <input
                         v-model="searchQuery"
                         type="search"
                         :aria-label="'Search ' + label"
                         placeholder="Search..."
-                        class="w-full border-0 bg-transparent py-2.5 pl-8 pr-3 text-sm text-foreground shadow-none placeholder:text-muted-foreground focus:border-0 focus:shadow-none focus:outline-none focus:ring-0"
+                        class="text-foreground placeholder:text-muted-foreground w-full border-0 bg-transparent py-2.5 pr-3 pl-8 text-sm shadow-none focus:border-0 focus:shadow-none focus:ring-0 focus:outline-none"
                         @click.stop />
                 </div>
 
@@ -243,7 +247,7 @@ onBeforeUnmount(() => {
                     <li
                         v-if="loading"
                         role="status"
-                        class="px-4 py-6 text-center text-sm text-muted-foreground">
+                        class="text-muted-foreground px-4 py-6 text-center text-sm">
                         Loading...
                     </li>
                     <li
@@ -253,23 +257,24 @@ onBeforeUnmount(() => {
                         :key="option[optionValue]"
                         role="option"
                         :aria-selected="isOptionSelected(option)"
-                        class="flex cursor-pointer items-center justify-between px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                        class="text-foreground hover:bg-muted flex cursor-pointer items-center justify-between px-3 py-2 text-sm transition-colors"
                         :class="{
                             'bg-muted': isOptionSelected(option) || highlightedIndex === index,
                         }"
                         @mouseenter="highlightedIndex = index"
                         @click="selectOption(option)">
                         <span class="capitalize">{{ option[optionLabel] }}</span>
-                        <CheckIcon v-if="isOptionSelected(option)" class="h-4 w-4 shrink-0 text-primary" />
+                        <CheckIcon
+                            v-if="isOptionSelected(option)"
+                            class="text-primary h-4 w-4 shrink-0" />
                     </li>
                     <li
                         v-if="!loading && filteredOptions.length === 0"
-                        class="px-4 py-6 text-center text-sm text-muted-foreground">
+                        class="text-muted-foreground px-4 py-6 text-center text-sm">
                         No matches found
                     </li>
                 </ul>
             </section>
-
         </div>
 
         <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-red-600">

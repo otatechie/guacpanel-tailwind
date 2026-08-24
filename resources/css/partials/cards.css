@@ -1,31 +1,23 @@
 /*
  * .card — Stripe-inspired base card token.
  *
- * Shadow: two-layer — tight ambient (1px) + soft directional (6px).
- * Border: cool-tinted #e3e8ee / dark #2a2f45 — slightly bluer than gray-200
- *         to read as "crisp" rather than "warm paper".
+ * Shadow: none, in either theme. The border alone defines the card; a shadow
+ *         on this many cards reads as clutter rather than depth.
+ * Border: its own token, a step lighter than the global --border so a page of
+ *         cards reads as grouping rather than as a stack of outlined boxes.
  * Radius: 8px across the board — consistent, never larger.
  * Background: pure surface, no tint.
  */
 .card {
     background-color: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
-    box-shadow: var(--card-shadow);
 }
 
 :root {
-    --card-shadow:
-        0px 1px 1px rgba(0, 0, 0, 0.03),
-        0px 3px 6px rgba(18, 42, 66, 0.04);
+    --card-border: #edeff2;
 }
 
 .dark {
-    --card-shadow:
-        0px 1px 1px rgba(0, 0, 0, 0.12),
-        0px 3px 6px rgba(0, 0, 0, 0.18);
-}
-
-.danger-card {
-    @apply mb-4 rounded-lg border border-red-200 p-4 sm:p-6 dark:border-red-800;
+    --card-border: #262a31;
 }

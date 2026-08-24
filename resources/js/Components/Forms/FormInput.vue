@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, EyeOffIcon } from '@lucide/vue'
 import { Input } from '@/Components/ui/input'
 import { Label } from '@/Components/ui/label'
 
@@ -64,7 +64,8 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
 <template>
     <div>
         <Label :for="inputId" class="form-label">
-            {{ label }}<span v-if="required && showRequiredMarker" class="text-destructive"> *</span>
+            {{ label }}
+            <span v-if="required && showRequiredMarker" class="text-destructive">*</span>
         </Label>
 
         <div class="relative">
@@ -76,26 +77,35 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
                 :disabled="disabled"
                 :placeholder="inputPlaceholder"
                 :aria-invalid="!!error"
-                :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
-                :class="type === 'password' ? 'pr-11' : undefined"
+                :aria-describedby="
+                    error ? `${inputId}-error` : help ? `${inputId}-help` : undefined
+                "
+                :class="['h-8', type === 'password' ? 'pr-11' : '']"
                 @update:model-value="emit('update:modelValue', $event)" />
 
             <button
                 v-if="type === 'password'"
                 type="button"
-                class="absolute inset-y-0 right-0 flex min-w-[44px] cursor-pointer items-center justify-center px-3 text-muted-foreground transition-colors hover:text-foreground"
+                class="text-muted-foreground hover:text-foreground absolute inset-y-0 right-0 flex min-w-[44px] cursor-pointer items-center justify-center px-3 transition-colors"
                 :aria-label="showPassword ? 'Hide password' : 'Show password'"
                 :aria-pressed="showPassword"
                 @click="showPassword = !showPassword">
-                <EyeSlashIcon v-if="showPassword" class="h-4 w-4" aria-hidden="true" />
+                <EyeOffIcon v-if="showPassword" class="h-4 w-4" aria-hidden="true" />
                 <EyeIcon v-else class="h-4 w-4" aria-hidden="true" />
             </button>
         </div>
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-destructive">
+        <p
+            v-if="error"
+            :id="`${inputId}-error`"
+            role="alert"
+            class="text-destructive mt-1.5 text-xs">
             {{ error }}
         </p>
-        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-muted-foreground">
+        <p
+            v-if="help && !error"
+            :id="`${inputId}-help`"
+            class="text-muted-foreground mt-1.5 text-xs">
             {{ help }}
         </p>
     </div>

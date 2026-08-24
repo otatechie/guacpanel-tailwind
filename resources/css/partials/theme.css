@@ -10,8 +10,6 @@
     --primary-hover: #0f766e;
     --primary-color-rgb: 13, 148, 136;
 
-    --selection-color: #3b82f6;
-    --selection-color-hover: #2563eb;
     --selection-color-light: rgba(59, 130, 246, 0.1);
     --selection-color-dark: rgba(37, 99, 235, 0.2);
 
@@ -71,10 +69,4 @@
 /* Overlay stacking scale — every teleported/fixed layer must use one of these.
    Banners < dropdowns/popovers < command palette < dialogs < toasts < nprogress. */
 :root {
-    --z-banner: 30;
-    --z-dropdown: 40;
-    --z-command: 50;
-    --z-dialog: 60;
-    --z-toast: 70;
-    --z-progress: 80;
 }

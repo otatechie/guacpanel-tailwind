@@ -51,7 +51,8 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
 <template>
     <div>
         <Label :for="inputId" class="form-label">
-            {{ label }}<span v-if="required" class="text-destructive"> *</span>
+            {{ label }}
+            <span v-if="required" class="text-destructive">*</span>
         </Label>
 
         <Textarea
@@ -66,10 +67,17 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
             :aria-describedby="error ? `${inputId}-error` : help ? `${inputId}-help` : undefined"
             @update:model-value="emit('update:modelValue', $event)" />
 
-        <p v-if="error" :id="`${inputId}-error`" role="alert" class="mt-1.5 text-xs text-destructive">
+        <p
+            v-if="error"
+            :id="`${inputId}-error`"
+            role="alert"
+            class="text-destructive mt-1.5 text-xs">
             {{ error }}
         </p>
-        <p v-if="help && !error" :id="`${inputId}-help`" class="mt-1.5 text-xs text-muted-foreground">
+        <p
+            v-if="help && !error"
+            :id="`${inputId}-help`"
+            class="text-muted-foreground mt-1.5 text-xs">
             {{ help }}
         </p>
     </div>

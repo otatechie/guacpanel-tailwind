@@ -1,7 +1,9 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import { BellIcon, XIcon } from '@lucide/vue'
 import apiFetch from '@js/utils/apiFetch'
+import DropdownMenu from '@js/Components/DropdownMenu.vue'
 
 const props = defineProps({
     user: {
@@ -11,8 +13,6 @@ const props = defineProps({
 })
 
 const page = usePage()
-
-const rootEl = ref(null)
 
 const notificationsOpen = ref(false)
 const notifications = ref([])
@@ -101,16 +101,11 @@ const fetchNotifications = async ({ silent = false } = {}) => {
     }
 }
 
-const toggleNotifications = async event => {
-    event?.preventDefault()
-    event?.stopPropagation()
-
-    notificationsOpen.value = !notificationsOpen.value
-
-    if (notificationsOpen.value) {
-        await fetchNotifications({ silent: true })
-    }
-}
+/* The menu owns the open state, so the refresh-on-open hangs off the state
+   changing rather than off the click that changed it. */
+watch(notificationsOpen, async open => {
+    if (open) await fetchNotifications({ silent: true })
+})
 
 const markAsRead = async (notification, event) => {
     event?.stopPropagation()
@@ -126,25 +121,6 @@ const markAsRead = async (notification, event) => {
 
     if (!res.ok) {
         notification.is_read = false
-    }
-}
-
-const undoMarkAsRead = async (notification, event) => {
-    event?.preventDefault()
-    event?.stopPropagation()
-
-    if (!notification || !notification.is_read) return
-
-    const original = notification.is_read
-    notification.is_read = false
-
-    const res = await apiFetch(`/notifications/${notification.id}/unread`, {
-        method: 'POST',
-        body: JSON.stringify({}),
-    })
-
-    if (!res.ok) {
-        notification.is_read = original
     }
 }
 
@@ -278,20 +254,6 @@ const closeDropdown = () => {
     notificationsOpen.value = false
 }
 
-const handleClickAway = event => {
-    const el = rootEl.value
-    if (!el) return
-    if (!el.contains(event.target)) {
-        closeDropdown()
-    }
-}
-
-const handleEscapeKey = event => {
-    if (event.key === 'Escape') {
-        closeDropdown()
-    }
-}
-
 const subscribeRealtime = () => {
     if (!window.Echo || !props.user?.id) return
 
@@ -342,8 +304,6 @@ const handleAppRefresh = () => {
 }
 
 onMounted(async () => {
-    document.addEventListener('click', handleClickAway)
-    document.addEventListener('keydown', handleEscapeKey)
     window.addEventListener('app-notifications:refresh', handleAppRefresh)
 
     hydrateFromPageProps()
@@ -356,8 +316,6 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-    document.removeEventListener('click', handleClickAway)
-    document.removeEventListener('keydown', handleEscapeKey)
     window.removeEventListener('app-notifications:refresh', handleAppRefresh)
 
     stopReconcile()
@@ -366,85 +324,113 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div ref="rootEl" class="relative">
-        <!-- Bell button -->
-        <button
-            type="button"
-            data-notification-button
-            class="nav-bar-btn relative"
-            aria-label="Notifications"
-            :aria-expanded="notificationsOpen"
-            @click="toggleNotifications">
-            <svg class="nav-bar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-            </svg>
-            <span v-if="unreadCount > 0" class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold text-white">
-                {{ unreadCount > 99 ? '99+' : unreadCount }}
-            </span>
-            <span class="nav-bar-tooltip">Notifications</span>
-        </button>
+    <!-- Near-full-bleed on a phone, a fixed panel on larger screens. Expressed as
+         a width so the menu's own collision handling keeps it on screen,
+         rather than as a `fixed` override fighting its positioning. -->
+    <DropdownMenu
+        v-model:open="notificationsOpen"
+        align="end"
+        width="w-[calc(100vw-1.5rem)] sm:w-80"
+        class="overflow-hidden">
+        <template #trigger>
+            <button type="button" class="nav-bar-btn relative" aria-label="Notifications">
+                <BellIcon class="nav-bar-icon" aria-hidden="true" />
+                <span
+                    v-if="unreadCount > 0"
+                    class="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold text-white">
+                    {{ unreadCount > 99 ? '99+' : unreadCount }}
+                </span>
+                <span class="nav-bar-tooltip">Notifications</span>
+            </button>
+        </template>
 
-        <!-- Dropdown -->
-        <div
-            v-show="notificationsOpen"
-            data-notification-dropdown
-            class="fixed inset-x-3 top-[80px] z-50 overflow-hidden rounded-lg border border-border bg-card shadow-lg sm:absolute sm:inset-auto sm:top-auto sm:right-0 sm:mt-2 sm:w-80"
-            @click.stop>
-
+        <div>
             <!-- Header -->
-            <div class="flex items-center justify-between border-b border-border px-4 py-2.5">
-                <h3 class="text-sm font-semibold text-foreground">Notifications</h3>
+            <div class="border-border flex items-center justify-between border-b px-4 py-2.5">
+                <h3 class="text-foreground text-sm font-semibold">Notifications</h3>
                 <div class="flex items-center gap-3">
-                    <button v-if="hasUnreadNotifications" type="button" class="cursor-pointer text-xs text-muted-foreground hover:text-foreground" @click="markAllRead">Read all</button>
-                    <button v-if="hasAnyNotifications" type="button" class="cursor-pointer text-xs text-muted-foreground hover:text-foreground" @click="dismissAll">Clear</button>
+                    <button
+                        v-if="hasUnreadNotifications"
+                        type="button"
+                        class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                        @click="markAllRead">
+                        Read all
+                    </button>
+                    <button
+                        v-if="hasAnyNotifications"
+                        type="button"
+                        class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                        @click="dismissAll">
+                        Clear
+                    </button>
                 </div>
             </div>
 
             <!-- List -->
             <div class="max-h-96 overflow-y-auto">
-                <div v-if="isLoading" class="px-4 py-6 text-center text-xs text-muted-foreground">Loading...</div>
+                <div v-if="isLoading" class="text-muted-foreground px-4 py-6 text-center text-xs">
+                    Loading...
+                </div>
 
-                <div v-else-if="notifications.length === 0" class="px-4 py-8 text-center text-xs text-muted-foreground">No notifications</div>
+                <div
+                    v-else-if="notifications.length === 0"
+                    class="text-muted-foreground px-4 py-8 text-center text-xs">
+                    No notifications
+                </div>
 
-                <div v-else class="divide-y divide-border">
+                <div v-else class="divide-border divide-y">
                     <div
                         v-for="n in notifications"
                         :key="n.id"
-                        class="flex gap-3 px-4 py-3 transition-colors hover:bg-muted"
+                        class="hover:bg-muted flex gap-3 px-4 py-3 transition-colors"
                         :class="!n.is_read ? 'cursor-pointer' : ''"
                         @click="markAsRead(n, $event)">
-
                         <!-- Priority dot -->
-                        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full" :class="priorityIconClass(n.priority)?.replace('text-', 'bg-') || 'bg-border'" />
+                        <span
+                            class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                            :class="
+                                priorityIconClass(n.priority)?.replace('text-', 'bg-') ||
+                                'bg-border'
+                            " />
 
                         <!-- Content -->
                         <div class="min-w-0 flex-1">
                             <div class="flex items-start justify-between gap-2">
-                                <h4 class="truncate text-sm text-foreground" :class="!n.is_read ? 'font-medium' : ''">{{ n.title }}</h4>
+                                <h4
+                                    class="text-foreground truncate text-sm"
+                                    :class="!n.is_read ? 'font-medium' : ''">
+                                    {{ n.title }}
+                                </h4>
                                 <button
                                     type="button"
-                                    class="shrink-0 cursor-pointer rounded p-0.5 text-muted-foreground hover:text-foreground"
+                                    class="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer rounded p-0.5"
                                     aria-label="Dismiss"
                                     @click.stop="dismissNotification(n, $event)">
-                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    <XIcon class="h-3 w-3" :stroke-width="2" />
                                 </button>
                             </div>
-                            <p v-if="n.description" class="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{{ n.description }}</p>
-                            <time class="mt-1 block text-xs text-muted-foreground">{{ n.time }}</time>
+                            <p
+                                v-if="n.description"
+                                class="text-muted-foreground mt-0.5 line-clamp-2 text-xs">
+                                {{ n.description }}
+                            </p>
+                            <time class="text-muted-foreground mt-1 block text-xs">
+                                {{ n.time }}
+                            </time>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div v-if="canViewAll" class="border-t border-border">
+            <div v-if="canViewAll" class="border-border border-t">
                 <Link
                     href="/notifications/all"
-                    class="block px-4 py-2.5 text-center text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    class="text-muted-foreground hover:bg-muted hover:text-foreground block px-4 py-2.5 text-center text-xs transition-colors"
                     @click="closeDropdown">
                     View all
                 </Link>
             </div>
         </div>
-    </div>
+    </DropdownMenu>
 </template>

@@ -19,14 +19,12 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Confirm password" />
+    <Head title="Confirm access" />
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Confirm access</h1>
-            <p class="mt-1.5 text-sm text-muted-foreground">
-                Re-enter your password to continue
-            </p>
+            <h1 class="text-foreground text-xl font-semibold">Confirm access</h1>
+            <p class="text-muted-foreground mt-1.5 text-sm">Re-enter your password to continue</p>
         </header>
 
         <form class="mt-6 space-y-4" @submit.prevent="submit">
@@ -43,13 +41,18 @@ const submit = () => {
                 :disabled="form.processing"
                 :error="form.errors.password" />
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="form.processing"
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Confirming...' : 'Confirm' }}
             </Button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-muted-foreground">
-            <Link :href="route('home')" class="font-medium text-primary hover:underline">
+        <p class="text-muted-foreground mt-8 text-center text-sm">
+            <Link :href="route('home')" class="text-primary font-medium hover:underline">
                 Back to dashboard
             </Link>
         </p>

@@ -1,6 +1,6 @@
 <script setup>
 import Button from '@/Components/Button.vue'
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, useSlots } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import {
@@ -10,22 +10,29 @@ import {
     getSortedRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
-    getFacetedRowModel,
-    getFacetedUniqueValues,
-    getFacetedMinMaxValues,
 } from '@tanstack/vue-table'
 import {
     ChevronLeftIcon,
     ChevronRightIcon,
-    ChevronDoubleLeftIcon,
-    ChevronDoubleRightIcon,
-    XMarkIcon,
-    ArrowDownTrayIcon,
-    TrashIcon,
-    CheckCircleIcon,
-} from '@heroicons/vue/24/outline'
+    ChevronsLeftIcon,
+    ChevronsRightIcon,
+    CircleCheckIcon,
+    DownloadIcon,
+    Trash2Icon,
+    XIcon,
+} from '@lucide/vue'
 import Modal from '@/Components/Notifications/Modal.vue'
-import Filter from '@/Components/Filter.vue'
+// shadcn's Table is markup-only: it contributes semantics and data-slot hooks,
+// not styling. Its p-2 / whitespace-nowrap / border-b defaults are overridden
+// below via cn(), which is why the rendered result is unchanged.
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/Components/ui/table'
 import { useServerPagination } from '@/composables/useServerPagination'
 
 const props = defineProps({
@@ -33,10 +40,6 @@ const props = defineProps({
         type: Array,
         required: true,
         default: () => [],
-    },
-    filtersEnabled: {
-        type: Boolean,
-        default: true,
     },
     columns: {
         type: Array,
@@ -51,10 +54,6 @@ const props = defineProps({
         default: true,
     },
     enableExport: {
-        type: Boolean,
-        default: true,
-    },
-    enableFiltering: {
         type: Boolean,
         default: true,
     },
@@ -102,6 +101,17 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    /* Whole-row activation. The row becomes a real keyboard target rather than
+       a div with a click handler, so Enter/Space reach it too. */
+    rowClickable: {
+        type: Boolean,
+        default: false,
+    },
+    /** row original -> accessible name for the row, e.g. `Edit ${user.name}` */
+    rowLabel: {
+        type: Function,
+        default: null,
+    },
     formatExportData: {
         type: Function,
         default: null,
@@ -120,7 +130,8 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['update:pagination', 'bulk-delete'])
+const emit = defineEmits(['update:pagination', 'bulk-delete', 'row-click'])
+const slots = useSlots()
 const rowSelection = ref({})
 const expandedRows = ref([])
 const pagination = ref({
@@ -140,7 +151,8 @@ const getNavigationUrl = () => {
 const serverPagination = useServerPagination({
     routeUrl: getNavigationUrl(),
     pagination: props.pagination,
-    filters: props.filters,
+    // Getter, not a snapshot — props.filters is a new object after every visit.
+    filters: () => props.filters,
 })
 
 const { columnFilters, sorting, globalFilter } = serverPagination
@@ -162,6 +174,16 @@ const toggleRow = index => {
 
 const handleSelectAll = () => {
     table.toggleAllRowsSelected()
+}
+
+const activateRow = (event, row) => {
+    if (!props.rowClickable) return
+    // Anything interactive inside the row owns its own click.
+    if (event.target.closest('button, a, input, label, [role="switch"]')) return
+    // Dragging across an email to copy it is a selection, not a click.
+    if (window.getSelection()?.toString()) return
+
+    emit('row-click', row.original)
 }
 
 const filteredData = computed(() => props.data)
@@ -212,6 +234,25 @@ const paginationInfo = computed(() => {
     return { currentPage, pageSize, total, start, end, pageCount }
 })
 
+const hasRows = computed(() => table.getRowModel().rows.length > 0)
+
+// An empty table is empty for one of two reasons, and the advice differs:
+// "nothing here yet" wants the next step, "nothing matched" wants the filter
+// cleared. Showing the first message to someone mid-search is just wrong.
+const isFiltered = computed(() => Boolean(globalFilter.value))
+
+// An auto-layout table hands every column an equal share of the leftover width,
+// so "2 days ago" ends up centred in a 169px column, 100px from the label it
+// belongs to. Columns marked narrow shrink to their content instead and the
+// descriptive column absorbs the slack. Opt in per column with
+// `meta: { narrow: true }`; the actions column is always narrow.
+const isNarrow = column => column.columnDef.meta?.narrow === true || column.id === 'actions'
+
+// Selection only earns its column when something can act on a selection.
+// Without a bulk action the checkboxes tick and nothing can ever happen, which
+// is a control that lies about what it does.
+const selectable = computed(() => Boolean(props.bulkDeleteRoute || slots['bulk-actions']))
+
 const selectedRows = computed(() => table.getSelectedRowModel().rows)
 const hasSelection = computed(() => selectedRows.value.length > 0)
 const selectionCount = computed(() => selectedRows.value.length)
@@ -254,10 +295,6 @@ const updatePagination = updates => {
         preserveState: true,
         preserveScroll: true,
     })
-}
-
-const handlePageChange = e => {
-    goToPage(Number(e.target.value))
 }
 
 const handlePageSizeChange = e => {
@@ -416,10 +453,13 @@ const table = useVueTable({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
     getPaginationRowModel: isServerPagination.value ? undefined : getPaginationRowModel(),
+    /* In server mode the rows already are the filtered, sorted result. Without
+       these, tanstack filtered them a second time against the visible cell text,
+       which dropped rows the server matched on a related column (a user found by
+       role name has that name nowhere in the row). */
+    manualFiltering: isServerPagination.value,
+    manualSorting: isServerPagination.value,
     enableRowSelection: true,
     enableMultiRowSelection: true,
     getRowId: row => row.id || row.ID || JSON.stringify(row),
@@ -446,7 +486,7 @@ watch(
         <div
             v-if="loading"
             role="status"
-            class="absolute inset-0 z-10 flex items-center justify-center bg-card/50">
+            class="bg-card/50 absolute inset-0 z-10 flex items-center justify-center">
             <span
                 class="h-8 w-8 animate-spin rounded-full border-b-2"
                 :style="{ borderColor: 'var(--primary)' }"></span>
@@ -457,9 +497,9 @@ watch(
             <div
                 class="flex w-full flex-col items-start gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <div class="flex items-center gap-2">
-                    <label class="whitespace-nowrap text-sm text-muted-foreground">Show</label>
+                    <label class="text-muted-foreground text-sm whitespace-nowrap">Show</label>
                     <select
-                        class="form-input w-auto py-1.5 pr-7 text-sm"
+                        class="form-input w-auto pr-7 text-sm"
                         :value="
                             isServerPagination
                                 ? isAllSelected
@@ -480,11 +520,15 @@ watch(
                 <div v-if="hasSelection" class="flex items-center gap-6">
                     <span
                         role="status"
-                        class="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                        <CheckCircleIcon class="h-4 w-4 text-green-600 dark:text-green-500" />
+                        class="text-foreground flex items-center gap-1.5 text-xs font-medium">
+                        <CircleCheckIcon class="h-4 w-4 text-green-600 dark:text-green-500" />
                         {{ selectionCount }} selected
                     </span>
-                    <Button variant="danger" size="xs" v-if="bulkDeleteRoute" @click="showDeleteModal = true">
+                    <Button
+                        variant="danger"
+                        size="xs"
+                        v-if="bulkDeleteRoute"
+                        @click="showDeleteModal = true">
                         Bulk delete
                     </Button>
                     <slot name="bulk-actions" :selected-rows="selectedRows" />
@@ -504,34 +548,43 @@ watch(
                     <button
                         v-if="globalFilter"
                         @click="globalFilter = ''"
-                        class="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        class="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2"
                         aria-label="Clear search">
-                        <XMarkIcon class="h-4 w-4" />
+                        <XIcon class="h-4 w-4" />
                     </button>
                 </div>
 
-                <Button variant="secondary" size="sm" class="cursor-pointer" v-if="enableExport" @click="exportToCSV">
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    v-if="enableExport"
+                    :disabled="!hasRows"
+                    @click="exportToCSV">
                     Export CSV
                 </Button>
             </nav>
         </header>
 
-        <div class="overflow-x-auto rounded-lg border border-border">
-            <div class="block space-y-3 p-3 md:hidden">
+        <!-- No frame. The header rule and row dividers already bound the table;
+             a box around them is the last piece of decoration left. -->
+        <div>
+            <div class="block space-y-3 md:hidden">
                 <div
-                    class="flex items-center justify-between rounded-lg border border-border bg-muted p-2">
+                    v-if="hasRows && selectable"
+                    class="border-border bg-muted flex items-center justify-between rounded-lg border p-2">
                     <label class="inline-flex items-center">
                         <input
                             type="checkbox"
-                            class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
+                            class="h-4 w-4 cursor-pointer rounded-sm"
+                            style="accent-color: var(--primary)"
                             :checked="table.getIsAllRowsSelected()"
                             :indeterminate="table.getIsSomeRowsSelected()"
                             @change="handleSelectAll" />
-                        <span class="ml-2 text-xs font-medium text-foreground">
+                        <span class="text-foreground ml-2 text-xs font-medium">
                             {{ table.getIsAllRowsSelected() ? 'Deselect all' : 'Select all' }}
                         </span>
                     </label>
-                    <div class="text-xs font-medium text-muted-foreground">
+                    <div class="text-muted-foreground text-xs font-medium">
                         {{ table.getFilteredSelectedRowModel().rows.length }} of
                         {{ table.getFilteredRowModel().rows.length }} selected
                     </div>
@@ -540,22 +593,26 @@ watch(
                 <div
                     v-for="(row, index) in table.getRowModel().rows"
                     :key="row.id"
-                    class="card shadow-sm transition-all duration-200 hover:shadow-md">
+                    class="border-border rounded-lg border">
                     <div class="p-2">
                         <div class="mb-1.5 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
-                                <label class="inline-flex items-center">
+                                <label v-if="selectable" class="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
+                                        class="h-4 w-4 cursor-pointer rounded-sm"
+                                        style="accent-color: var(--primary)"
                                         :checked="row.getIsSelected()"
                                         @change="row.toggleSelected()" />
-                                    <span
-                                        class="ml-1.5 text-xs font-medium text-foreground">
+                                    <span class="text-foreground ml-1.5 text-xs font-medium">
                                         Select
                                     </span>
                                 </label>
-                                <Button variant="ghost" size="xs" class="text-xs font-medium text-muted-foreground" @click="toggleRow(index)">
+                                <Button
+                                    variant="ghost"
+                                    size="xs"
+                                    class="text-muted-foreground text-xs font-medium"
+                                    @click="toggleRow(index)">
                                     {{ expandedRows.includes(index) ? 'Less' : 'More' }}
                                 </Button>
                             </div>
@@ -564,7 +621,7 @@ watch(
                             </div>
                         </div>
 
-                        <div class="mb-1.5 border-b border-border"></div>
+                        <div class="border-border mb-1.5 border-b"></div>
 
                         <div class="grid grid-cols-1 gap-1.5">
                             <div
@@ -572,10 +629,10 @@ watch(
                                 :key="cell.id"
                                 class="flex flex-col space-y-0">
                                 <dt
-                                    class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                    class="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                                     {{ getColumnHeader(cell.column.columnDef) }}
                                 </dt>
-                                <dd class="text-xs font-medium text-foreground">
+                                <dd class="text-foreground text-xs font-medium">
                                     <FlexRender
                                         :render="cell.column.columnDef.cell"
                                         :props="cell.getContext()" />
@@ -586,7 +643,7 @@ watch(
 
                     <div
                         v-if="expandedRows.includes(index)"
-                        class="border-t border-border bg-muted">
+                        class="border-border bg-muted border-t">
                         <div class="space-y-2 p-2">
                             <div class="grid grid-cols-1 gap-2">
                                 <div
@@ -594,11 +651,10 @@ watch(
                                     :key="cell.id"
                                     class="flex flex-col space-y-0">
                                     <dt
-                                        class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                        class="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                                         {{ getColumnHeader(cell.column.columnDef) }}
                                     </dt>
-                                    <dd
-                                        class="text-xs font-medium text-foreground">
+                                    <dd class="text-foreground text-xs font-medium">
                                         <FlexRender
                                             :render="cell.column.columnDef.cell"
                                             :props="cell.getContext()" />
@@ -610,161 +666,221 @@ watch(
                 </div>
             </div>
 
-            <table
-                class="hidden min-w-full divide-y divide-border md:table"
-                role="grid">
-                <thead class="bg-muted">
-                    <tr>
-                        <th class="w-10 px-6 py-3">
-                            <div class="flex items-center">
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
-                                        :checked="table.getIsAllRowsSelected()"
-                                        :indeterminate="table.getIsSomeRowsSelected()"
-                                        @change="handleSelectAll" />
-                                </label>
-                            </div>
-                        </th>
+            <!-- The edge cells used to drop their padding so the table sat flush
+                 with the page. That put the row-hover fill flush against the
+                 first glyph, which reads as a clipped background once the whole
+                 row is a target. Keeping the padding and pulling the table out by
+                 the same 8px leaves the text where it was and lets the fill
+                 bleed past it. -->
+            <div class="-mx-2 hidden md:block">
+                <Table class="min-w-full" role="grid">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead v-if="selectable" class="w-10">
+                                <!-- Nothing to select when there are no rows. -->
+                                <div v-if="hasRows" class="flex items-center">
+                                    <label class="inline-flex items-center">
+                                        <span class="sr-only">Select all rows</span>
+                                        <input
+                                            type="checkbox"
+                                            class="h-4 w-4 cursor-pointer rounded-sm"
+                                            style="accent-color: var(--primary)"
+                                            :checked="table.getIsAllRowsSelected()"
+                                            :indeterminate="table.getIsSomeRowsSelected()"
+                                            @change="handleSelectAll" />
+                                    </label>
+                                </div>
+                            </TableHead>
 
-                        <th
-                            v-for="header in table.getHeaderGroups()[0].headers"
-                            :key="header.id"
+                            <TableHead
+                                v-for="header in table.getHeaderGroups()[0].headers"
+                                :key="header.id"
+                                :class="[
+                                    header.column.getCanSort()
+                                        ? 'hover:bg-muted cursor-pointer'
+                                        : '',
+                                    isNarrow(header.column)
+                                        ? 'w-px whitespace-nowrap'
+                                        : 'whitespace-normal',
+                                ]"
+                                @click="header.column.getToggleSortingHandler()?.($event)">
+                                <div class="flex items-center gap-2">
+                                    <span>
+                                        {{ header.column.columnDef.header }}
+                                    </span>
+                                    <span
+                                        v-if="header.column.getIsSorted()"
+                                        :style="{ color: 'var(--primary)' }"
+                                        class="text-foreground">
+                                        {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
+                                    </span>
+                                </div>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+
+                    <TableBody>
+                        <!-- No hover state: this row is not a record, and highlighting
+                         it suggests there is something here to click. -->
+                        <TableRow v-if="!hasRows" class="hover:bg-transparent">
+                            <TableCell
+                                :colspan="columns.length + (selectable ? 1 : 0)"
+                                class="px-6 py-8 text-center whitespace-normal">
+                                <template v-if="isFiltered">
+                                    <p class="text-foreground text-sm">
+                                        No results for "{{ globalFilter }}"
+                                    </p>
+                                    <button
+                                        type="button"
+                                        class="text-muted-foreground hover:text-foreground mt-1 cursor-pointer text-sm underline underline-offset-2"
+                                        @click="globalFilter = ''">
+                                        Clear search
+                                    </button>
+                                </template>
+                                <template v-else>
+                                    <p class="text-muted-foreground text-sm">{{ emptyMessage }}</p>
+                                    <p class="text-muted-foreground mt-1 text-sm">
+                                        {{ emptyDescription }}
+                                    </p>
+                                    <div v-if="$slots['empty-action']" class="mt-3">
+                                        <slot name="empty-action" />
+                                    </div>
+                                </template>
+                            </TableCell>
+                        </TableRow>
+
+                        <!-- No zebra striping: the dividers already separate rows, and
+                         a third cue competes with the selected-row highlight, which
+                         is the one that has to stand out. -->
+                        <TableRow
+                            v-for="row in table.getRowModel().rows"
+                            :key="row.id"
                             :class="[
-                                'px-3 py-3 sm:px-6 text-xs font-medium uppercase tracking-wide text-muted-foreground text-left',
-                                header.column.getCanSort() ? 'cursor-pointer hover:bg-muted' : '',
+                                row.getIsSelected()
+                                    ? 'bg-(--selection-color-light) dark:bg-(--selection-color-dark)'
+                                    : '',
+                                rowClickable ? 'cursor-pointer' : '',
                             ]"
-                            @click="header.column.getToggleSortingHandler()?.($event)">
-                            <div class="flex items-center gap-2">
-                                <span class="text-muted-foreground">
-                                    {{ header.column.columnDef.header }}
-                                </span>
-                                <span
-                                    v-if="header.column.getIsSorted()"
-                                    :style="{ color: 'var(--primary)' }"
-                                    class="text-foreground">
-                                    {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
-                                </span>
-                            </div>
-                        </th>
-                    </tr>
+                            :role="rowClickable ? 'button' : undefined"
+                            :tabindex="rowClickable ? 0 : undefined"
+                            :aria-label="
+                                rowClickable && rowLabel ? rowLabel(row.original) : undefined
+                            "
+                            @click="activateRow($event, row)"
+                            @keydown.enter.prevent="rowClickable && emit('row-click', row.original)"
+                            @keydown.space.prevent="
+                                rowClickable && emit('row-click', row.original)
+                            ">
+                            <TableCell v-if="selectable">
+                                <div class="flex items-center">
+                                    <label class="inline-flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            class="h-4 w-4 cursor-pointer rounded-sm"
+                                            style="accent-color: var(--primary)"
+                                            :checked="row.getIsSelected()"
+                                            @change="row.toggleSelected()" />
+                                    </label>
+                                </div>
+                            </TableCell>
 
-                    <tr
-                        v-if="
-                            filtersEnabled &&
-                            enableFiltering &&
-                            table.getHeaderGroups()[0].headers.some(h => h.column.getCanFilter())
-                        ">
-                        <th class="px-6 py-2"></th>
-                        <th
-                            v-for="header in table.getHeaderGroups()[0].headers"
-                            :key="`filter-${header.id}`"
-                            class="px-6 py-2">
-                            <Filter
-                                v-if="header.column.getCanFilter()"
-                                :column="header.column"
-                                :table="table" />
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody
-                    class="divide-y divide-border bg-card">
-                    <tr v-if="!table.getRowModel().rows.length" class="hover:bg-muted transition-colors">
-                        <td :colspan="columns.length + 1" class="px-6 py-8 text-center">
-                            <p class="text-sm text-muted-foreground">
-                                {{ emptyMessage }}
-                            </p>
-                            <p class="mt-1 text-sm text-muted-foreground">
-                                {{ emptyDescription }}
-                            </p>
-                        </td>
-                    </tr>
-
-                    <tr
-                        v-for="(row, index) in table.getRowModel().rows"
-                        :key="row.id"
-                        :class="[
-                            'hover:bg-muted transition-colors',
-                            row.getIsSelected()
-                                ? 'bg-(--selection-color-light) dark:bg-(--selection-color-dark)'
-                                : index % 2 === 1
-                                  ? 'bg-muted'
-                                  : '',
-                        ]">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center">
-                                <label class="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        class="h-4 w-4 cursor-pointer rounded-sm" style="accent-color: var(--primary)"
-                                        :checked="row.getIsSelected()"
-                                        @change="row.toggleSelected()" />
-                                </label>
-                            </div>
-                        </td>
-
-                        <td
-                            v-for="cell in row.getVisibleCells()"
-                            :key="cell.id"
-                            class="px-3 py-3 sm:px-6 text-sm text-foreground text-left">
-                            <FlexRender
-                                :render="cell.column.columnDef.cell"
-                                :props="cell.getContext()" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <TableCell
+                                v-for="cell in row.getVisibleCells()"
+                                :key="cell.id"
+                                :class="[
+                                    isNarrow(cell.column)
+                                        ? 'w-px whitespace-nowrap'
+                                        : 'whitespace-normal',
+                                ]">
+                                <FlexRender
+                                    :render="cell.column.columnDef.cell"
+                                    :props="cell.getContext()" />
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
         </div>
 
+        <!-- Zero rows produced "1–0 of 0" and "1 / 0" next to five dead buttons.
+             A pager for no pages is not information. Keyed on visible rows, not
+             total: server pagination otherwise reports "1–10 of 10" underneath
+             a table that is showing "No results". The empty state carries the
+             way back out. -->
         <footer
+            v-if="hasRows"
             class="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p class="text-sm text-muted-foreground">
+            <p class="text-muted-foreground text-sm">
                 {{ paginationInfo.start }}–{{ paginationInfo.end }} of {{ paginationInfo.total }}
             </p>
 
             <nav class="flex items-center gap-2" aria-label="Pagination">
                 <template v-if="isServerPagination">
                     <Button variant="ghost" size="xs" :disabled="isFirstPage" @click="goToPage(1)">
-                        <ChevronDoubleLeftIcon class="h-4 w-4" />
+                        <ChevronsLeftIcon class="h-4 w-4" />
                     </Button>
 
-                    <Button variant="ghost" size="xs" :disabled="isFirstPage" @click="goToPage(paginationInfo.currentPage - 1)">
+                    <Button
+                        variant="ghost"
+                        size="xs"
+                        :disabled="isFirstPage"
+                        @click="goToPage(paginationInfo.currentPage - 1)">
                         <ChevronLeftIcon class="h-4 w-4" />
                     </Button>
 
-                    <span class="text-sm text-muted-foreground">
-                        {{ paginationInfo.currentPage }} / {{ paginationInfo.pageCount }}
+                    <span class="text-muted-foreground text-sm">
+                        Page {{ paginationInfo.currentPage }} of {{ paginationInfo.pageCount }}
                     </span>
 
-                    <Button variant="ghost" size="xs" :disabled="isLastPage" @click="goToPage(paginationInfo.currentPage + 1)">
+                    <Button
+                        variant="ghost"
+                        size="xs"
+                        :disabled="isLastPage"
+                        @click="goToPage(paginationInfo.currentPage + 1)">
                         <ChevronRightIcon class="h-4 w-4" />
                     </Button>
 
-                    <Button variant="ghost" size="xs" :disabled="isLastPage" @click="goToPage(paginationInfo.pageCount)">
-                        <ChevronDoubleRightIcon class="h-4 w-4" />
+                    <Button
+                        variant="ghost"
+                        size="xs"
+                        :disabled="isLastPage"
+                        @click="goToPage(paginationInfo.pageCount)">
+                        <ChevronsRightIcon class="h-4 w-4" />
                     </Button>
                 </template>
 
                 <template v-else>
-                    <Button variant="ghost" size="xs" class="disabled:cursor-not-allowed disabled:opacity-50" :disabled="!table.getCanPreviousPage()" @click="table.previousPage()">
+                    <Button
+                        variant="ghost"
+                        size="xs"
+                        class="disabled:cursor-not-allowed disabled:opacity-50"
+                        :disabled="!table.getCanPreviousPage()"
+                        @click="table.previousPage()">
                         <ChevronLeftIcon class="h-4 w-4" />
                     </Button>
 
-                    <span class="text-sm text-foreground">
+                    <span class="text-foreground text-sm">
                         Page {{ table.getState().pagination.pageIndex + 1 }} of
                         {{ table.getPageCount() }}
                     </span>
 
-                    <Button variant="ghost" size="xs" class="disabled:cursor-not-allowed disabled:opacity-50" :disabled="!table.getCanNextPage()" @click="table.nextPage()">
+                    <Button
+                        variant="ghost"
+                        size="xs"
+                        class="disabled:cursor-not-allowed disabled:opacity-50"
+                        :disabled="!table.getCanNextPage()"
+                        @click="table.nextPage()">
                         <ChevronRightIcon class="h-4 w-4" />
                     </Button>
                 </template>
             </nav>
         </footer>
 
-        <Modal :show="showDeleteModal" @close="showDeleteModal = false" size="sm">
+        <Modal
+            :show="showDeleteModal"
+            size="sm"
+            :description="`${selectionCount} selected ${selectionCount === 1 ? 'row' : 'rows'} will be deleted. This cannot be undone.`"
+            @close="showDeleteModal = false">
             <template #title>
                 <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
                     Confirm Deletion
@@ -773,7 +889,7 @@ watch(
 
             <div class="sm:flex sm:items-start">
                 <div class="text-center sm:text-left">
-                    <p class="text-sm text-muted-foreground">
+                    <p class="text-muted-foreground text-sm">
                         Are you sure you want to delete {{ selectionCount }} selected records? This
                         action cannot be undone.
                     </p>
@@ -785,7 +901,11 @@ watch(
                     <Button variant="secondary" size="sm" @click="showDeleteModal = false">
                         Cancel
                     </Button>
-                    <Button variant="danger" size="sm" :disabled="loading" @click="handleBulkDelete">
+                    <Button
+                        variant="danger"
+                        size="sm"
+                        :disabled="loading"
+                        @click="handleBulkDelete">
                         <template v-if="loading">
                             <svg
                                 class="mr-2 -ml-1 h-4 w-4 animate-spin"

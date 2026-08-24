@@ -9,8 +9,8 @@ const props = defineProps<{
 
 <template>
   <div
-    data-slot="card-title"
-    :class="cn('text-base leading-normal font-medium group-data-[size=sm]/card:text-sm cn-font-heading', props.class)"
+    data-slot="popover-title"
+    :class="cn('font-medium cn-font-heading', props.class)"
   >
     <slot />
   </div>

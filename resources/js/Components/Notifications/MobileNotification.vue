@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { MonitorIcon, XIcon } from '@lucide/vue'
 
 const isVisible = ref(false)
 const isDismissed = ref(false)
@@ -62,25 +63,14 @@ onUnmounted(() => {
         leave-to-class="transform -translate-y-full opacity-0">
         <div
             v-if="isVisible"
-            class="fixed top-0 right-0 left-0 z-50 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg"
+            class="fixed top-0 right-0 left-0 z-30 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg"
             role="banner"
             aria-live="polite">
             <div class="flex items-center justify-between px-4 py-3">
                 <div class="flex items-center space-x-3">
                     <!-- Desktop Icon -->
                     <div class="flex-shrink-0 rounded-lg bg-blue-500/20 p-1.5">
-                        <svg
-                            class="h-5 w-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            aria-hidden="true">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
-                        </svg>
+                        <MonitorIcon class="h-5 w-5" aria-hidden="true" />
                     </div>
 
                     <!-- Message -->
@@ -98,18 +88,7 @@ onUnmounted(() => {
                     class="ml-3 flex-shrink-0 rounded-lg p-1.5 transition-colors hover:bg-blue-500/20 focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-blue-600 focus:outline-none"
                     aria-label="Dismiss notification"
                     @click="dismissNotification">
-                    <svg
-                        class="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <XIcon class="h-4 w-4" aria-hidden="true" />
                 </button>
             </div>
         </div>

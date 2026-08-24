@@ -29,8 +29,8 @@ const submit = () => {
 
     <div class="w-full" role="main">
         <header>
-            <h1 class="text-xl font-semibold text-foreground">Create account</h1>
-            <p class="mt-1.5 text-sm text-muted-foreground">
+            <h1 class="text-foreground text-xl font-semibold">Create account</h1>
+            <p class="text-muted-foreground mt-1.5 text-sm">
                 No password needed. We'll email you a secure sign-in link.
             </p>
         </header>
@@ -60,21 +60,27 @@ const submit = () => {
                 autocomplete="email"
                 :error="form.errors.email" />
 
-            <p class="text-xs leading-relaxed text-muted-foreground">
+            <p class="text-muted-foreground text-xs leading-relaxed">
                 By creating an account, you agree to our
                 <a href="#" class="font-medium underline">Terms</a>
                 and
-                <a href="#" class="font-medium underline">Privacy Policy</a>.
+                <a href="#" class="font-medium underline">Privacy Policy</a>
+                .
             </p>
 
-            <Button variant="primary" class="w-full" type="submit" :disabled="form.processing" :aria-busy="form.processing">
+            <Button
+                variant="primary"
+                class="w-full"
+                type="submit"
+                :disabled="form.processing"
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Sending...' : 'Send magic link' }}
             </Button>
         </form>
 
-        <p class="mt-8 text-center text-sm text-muted-foreground">
+        <p class="text-muted-foreground mt-8 text-center text-sm">
             Prefer a password?
-            <Link :href="route('register')" class="font-medium text-primary hover:underline">
+            <Link :href="route('register')" class="text-primary font-medium hover:underline">
                 Sign up with password
             </Link>
         </p>

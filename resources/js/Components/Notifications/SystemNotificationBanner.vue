@@ -46,7 +46,7 @@ onMounted(() => {
     <div
         ref="bannerRef"
         v-if="visibleNotifications.length > 0"
-        class="fixed top-0 right-0 left-0 z-70 w-full">
+        class="fixed top-0 right-0 left-0 z-45 w-full">
         <Alert
             v-for="notification in visibleNotifications"
             :key="notification.id"

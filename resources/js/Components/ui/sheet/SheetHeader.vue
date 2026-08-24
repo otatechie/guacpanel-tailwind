@@ -2,15 +2,13 @@
 import type { HTMLAttributes } from 'vue'
 import { cn } from '@/lib/utils'
 
-const props = defineProps<{
-  class?: HTMLAttributes['class']
-}>()
+const props = defineProps<{ class?: HTMLAttributes['class'] }>()
 </script>
 
 <template>
   <div
-    data-slot="card-content"
-    :class="cn('px-6 group-data-[size=sm]/card:px-4', props.class)"
+    data-slot="sheet-header"
+    :class="cn('gap-1.5 p-4 flex flex-col', props.class)"
   >
     <slot />
   </div>

@@ -13,19 +13,20 @@ const appName = computed(
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col bg-background">
-        <FlashMessage />
+    <div class="bg-background flex min-h-screen flex-col">
+        <FlashMessage offset="16px" />
 
         <main class="flex flex-1 flex-col items-center justify-center px-4 py-10">
             <Logo size="5rem" max-size="6rem" class="mb-6" />
 
-            <div class="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
+            <div
+                class="border-border bg-card w-full max-w-sm rounded-xl border p-6 shadow-sm sm:p-8">
                 <slot />
             </div>
         </main>
 
         <footer class="px-6 py-4">
-            <p class="text-center text-xs text-muted-foreground">
+            <p class="text-muted-foreground text-center text-xs">
                 © {{ new Date().getFullYear() }} {{ appName }} ·
                 <Link :href="route('terms')" class="hover:text-foreground">Terms</Link>
             </p>
