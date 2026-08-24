@@ -1,25 +1,29 @@
 <script setup>
-import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, onUnmounted, useId } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import CommandPaletteItem from './CommandPaletteItem.vue'
 import FederatedSearch from '@js/Components/Typesense/FederatedSearch.vue'
 import axios from 'axios'
+import { SearchIcon } from '@lucide/vue'
+import { useCommandPalette } from '@js/composables/useCommandPalette'
+import { usePermissions } from '@js/composables/usePermissions'
 
 const page = usePage()
-const isOpen = ref(false)
+// Shared with the header trigger, which is now the only other way in.
+const { isOpen, open, close } = useCommandPalette()
 const query = ref('')
 const selectedIndex = ref(0)
 const inputRef = ref(null)
+const listboxId = useId()
+const restoreFocusTo = ref(null)
 
 const typesenseApiKey = ref(null)
 const hasValidApiKey = ref(false)
 const typesenseResults = ref([])
 const isTypesenseSearching = ref(false)
+const isDark = ref(false)
 
-const user = computed(() => page.props.auth?.user)
-
-const hasPermission = permissionName =>
-    !permissionName || (user.value?.permissions?.includes(permissionName) ?? false)
+const { user, hasPermission } = usePermissions()
 
 const pagesConfig = [
     { name: 'Dashboard', route: 'dashboard', icon: 'home', keywords: ['home', 'main'] },
@@ -33,7 +37,7 @@ const pagesConfig = [
 
 const conditionalPages = [
     {
-        name: 'Admin Notifications',
+        name: 'Notifications',
         route: 'admin.notifications.index',
         icon: 'bell',
         permission: 'manage-notifications',
@@ -44,88 +48,85 @@ const conditionalPages = [
 
 const settingsPages = [
     {
-        name: 'System Settings',
+        name: 'System settings',
         route: 'admin.setting.index',
         icon: 'cog',
         keywords: ['config', 'preferences'],
     },
     {
-        name: 'System Activity',
+        name: 'System activity',
         route: 'admin.audit.index',
         icon: 'activity',
         keywords: ['logs', 'audit'],
     },
     {
-        name: 'Theme Settings',
+        name: 'Theme settings',
         route: 'admin.personalization.index',
         icon: 'palette',
         keywords: ['colors', 'appearance'],
     },
     {
-        name: 'User Management',
+        name: 'User management',
         route: 'admin.user.index',
         icon: 'users',
         keywords: ['accounts', 'members'],
     },
     {
-        name: 'Data Backup',
+        name: 'Data backup',
         route: 'admin.backup.index',
         icon: 'database',
         keywords: ['restore', 'export'],
     },
     {
-        name: 'Access Control',
+        name: 'Access control',
         route: 'admin.permission.role.index',
         icon: 'shield',
         keywords: ['roles', 'permissions'],
     },
     {
-        name: 'Login History',
+        name: 'Login history',
         route: 'admin.login.history.index',
         icon: 'history',
         keywords: ['access', 'logins'],
     },
     {
-        name: 'Security Settings',
+        name: 'Security settings',
         route: 'admin.setting.show',
         icon: 'lock',
         keywords: ['password', 'auth'],
     },
     {
-        name: 'Session Management',
+        name: 'All sessions',
         route: 'admin.sessions.index',
         icon: 'monitor',
-        keywords: ['devices', 'active'],
+        keywords: ['devices', 'active', 'session management'],
     },
     {
-        name: 'Health Status',
+        name: 'Health status',
         route: 'admin.health.index',
         icon: 'heart',
         keywords: ['status', 'monitoring'],
     },
 ]
 
-const actionsConfig = [
+/* These three lived in `actionsConfig` and were badged ACTION, but every one of
+   them carries a `route:` — they navigate. Only the theme toggle and Logout do
+   anything in place. */
+const accountPages = [
     {
-        name: 'Toggle Dark Mode',
-        action: 'toggleDarkMode',
-        icon: 'moon',
-        keywords: ['theme', 'light', 'dark', 'night'],
-    },
-    {
-        name: 'View My Profile',
+        name: 'My profile',
         route: 'user.account.index',
         icon: 'user',
         keywords: ['account', 'settings'],
     },
     {
-        name: 'Two-Factor Authentication',
+        name: 'Two-factor authentication',
         route: 'user.two.factor.authentication.index',
         icon: 'shield',
         keywords: ['2fa', 'security', 'totp'],
     },
     {
-        name: 'Active Sessions',
+        name: 'My active sessions',
         route: 'user.session.index',
         icon: 'monitor',
         keywords: ['devices', 'logged in'],
@@ -141,6 +142,10 @@ const allPages = computed(() => {
         }
     })
 
+    if (user.value) {
+        pages.push(...accountPages)
+    }
+
     if (hasPermission('manage-settings')) {
         pages.push(...settingsPages)
     }
@@ -149,7 +154,15 @@ const allPages = computed(() => {
 })
 
 const allActions = computed(() => {
-    const actions = [...actionsConfig]
+    const actions = [
+        {
+            // "Toggle Dark Mode" never said which way it was about to go.
+            name: isDark.value ? 'Switch to light mode' : 'Switch to dark mode',
+            action: 'toggleDarkMode',
+            icon: 'moon',
+            keywords: ['theme', 'light', 'dark', 'night', 'toggle'],
+        },
+    ]
 
     if (user.value) {
         actions.push({
@@ -193,12 +206,12 @@ const filteredActions = computed(() => filterByQuery(allActions.value, query.val
 const allFilteredItems = computed(() => {
     const items = []
 
-    filteredActions.value.forEach(action => {
-        items.push({ ...action, type: 'action' })
+    filteredPages.value.forEach(p => {
+        items.push({ ...p })
     })
 
-    filteredPages.value.forEach(p => {
-        items.push({ ...p, type: 'page' })
+    filteredActions.value.forEach(action => {
+        items.push({ ...action })
     })
 
     typesenseResults.value.forEach(result => {
@@ -207,7 +220,6 @@ const allFilteredItems = computed(() => {
             subtitle: result.displaySubtitle,
             url: result.url,
             icon: result.collection_name === 'users' ? 'user' : 'database',
-            type: 'data',
         })
     })
 
@@ -218,8 +230,8 @@ const hasResults = computed(() => allFilteredItems.value.length > 0)
 
 const actionHandlers = {
     toggleDarkMode: () => {
-        document.documentElement.classList.toggle('dark')
-        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))
+        isDark.value = document.documentElement.classList.toggle('dark')
+        localStorage.setItem('darkMode', isDark.value)
     },
     logout: () => {
         router.post(route('logout'))
@@ -236,10 +248,6 @@ const executeItem = item => {
     } else if (item.route) {
         router.visit(route(item.route))
     }
-}
-
-const close = () => {
-    isOpen.value = false
 }
 
 const handleKeyDown = e => {
@@ -275,7 +283,17 @@ const handleKeyDown = e => {
 const handleGlobalKeyDown = e => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
-        isOpen.value = !isOpen.value
+        open()
+        return
+    }
+
+    /* aria-modal="true" was a claim nothing enforced — Tab walked straight out
+       into the page behind. The input is the only tabbable thing in here by
+       design (options are driven by aria-activedescendant, not by Tab), so the
+       whole trap is: Tab goes nowhere. */
+    if (e.key === 'Tab' && isOpen.value) {
+        e.preventDefault()
+        inputRef.value?.focus()
     }
 }
 
@@ -307,23 +325,49 @@ watch(allFilteredItems, () => {
     selectedIndex.value = 0
 })
 
-watch(isOpen, async open => {
-    if (open) {
+const optionId = index => `${listboxId}-option-${index}`
+
+// The results pane scrolls; without this the highlight walks off the bottom and
+// the arrow keys appear to stop working.
+watch(selectedIndex, async index => {
+    await nextTick()
+    document.getElementById(optionId(index))?.scrollIntoView({ block: 'nearest' })
+})
+
+/* Teleported to body, so the app root sits outside the palette and can be taken
+   out of the accessibility tree wholesale. The Tab trap stops keyboard focus
+   escaping; this stops a screen reader's virtual cursor wandering the page
+   behind an overlay that calls itself modal. */
+const setBackgroundInert = inert => document.getElementById('app')?.toggleAttribute('inert', inert)
+
+watch(isOpen, async opened => {
+    setBackgroundInert(opened)
+
+    if (opened) {
+        // Whatever had focus gets it back on close — otherwise dismissing the
+        // palette dumps keyboard users at the top of the document.
+        restoreFocusTo.value = document.activeElement
         query.value = ''
         selectedIndex.value = 0
         typesenseResults.value = []
         await nextTick()
         inputRef.value?.focus()
+        return
     }
+
+    restoreFocusTo.value?.focus?.()
+    restoreFocusTo.value = null
 })
 
 onMounted(() => {
+    isDark.value = document.documentElement.classList.contains('dark')
     document.addEventListener('keydown', handleGlobalKeyDown)
     fetchTypesenseApiKey()
 })
 
 onUnmounted(() => {
     document.removeEventListener('keydown', handleGlobalKeyDown)
+    setBackgroundInert(false)
 })
 </script>
 
@@ -339,20 +383,11 @@ onUnmounted(() => {
                 @click="handleOverlayClick">
                 <div class="command-palette-modal" @click.stop>
                     <div class="command-palette-header">
-                        <svg
-                            class="command-palette-search-icon"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            aria-hidden="true">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                        </svg>
+                        <SearchIcon class="command-palette-search-icon" aria-hidden="true" />
 
+                        <!-- A listbox with `role="option"` rows needs the input
+                             to say which one is active; without it a screen
+                             reader hears nothing as the arrows move. -->
                         <input
                             ref="inputRef"
                             v-model="query"
@@ -360,12 +395,16 @@ onUnmounted(() => {
                             class="command-palette-input"
                             placeholder="Search pages, actions, or data..."
                             autocomplete="off"
+                            role="combobox"
+                            aria-expanded="true"
+                            :aria-controls="listboxId"
+                            :aria-activedescendant="
+                                hasResults ? optionId(selectedIndex) : undefined
+                            "
                             @keydown="handleKeyDown" />
-
-                        <kbd class="command-palette-kbd">ESC</kbd>
                     </div>
 
-                    <div class="command-palette-results" role="listbox">
+                    <div :id="listboxId" class="command-palette-results" role="listbox">
                         <div
                             v-if="isTypesenseSearching && query.length > 0"
                             class="command-palette-loading">
@@ -379,31 +418,49 @@ onUnmounted(() => {
                         </div>
 
                         <template v-else>
-                            <div v-if="filteredActions.length > 0" class="command-group">
-                                <div class="command-group-label">Quick Actions</div>
-                                <CommandPaletteItem
-                                    v-for="(action, i) in filteredActions"
-                                    :key="`action-${i}`"
-                                    :item="{ ...action, type: 'action' }"
-                                    :selected="selectedIndex === i"
-                                    @select="executeItem" />
-                            </div>
-
+                            <!-- Pages first: it puts navigation under the
+                                 default selection instead of Logout, and it is
+                                 what the palette is reached for most. -->
                             <div v-if="filteredPages.length > 0" class="command-group">
                                 <div class="command-group-label">Pages</div>
                                 <CommandPaletteItem
                                     v-for="(p, i) in filteredPages"
                                     :key="`page-${i}`"
-                                    :item="{ ...p, type: 'page' }"
-                                    :selected="selectedIndex === filteredActions.length + i"
+                                    :id="optionId(i)"
+                                    :item="p"
+                                    :selected="selectedIndex === i"
+                                    @activate="selectedIndex = i"
                                     @select="executeItem" />
                             </div>
 
+                            <div v-if="filteredActions.length > 0" class="command-group">
+                                <div class="command-group-label">Actions</div>
+                                <CommandPaletteItem
+                                    v-for="(action, i) in filteredActions"
+                                    :key="`action-${i}`"
+                                    :id="optionId(filteredPages.length + i)"
+                                    :item="action"
+                                    :selected="selectedIndex === filteredPages.length + i"
+                                    @activate="selectedIndex = filteredPages.length + i"
+                                    @select="executeItem" />
+                            </div>
+
+                            <!-- Silence read as "no matches" when the search
+                                 backend was simply unreachable. -->
+                            <div
+                                v-if="!hasValidApiKey && query.length >= 2"
+                                class="command-palette-notice">
+                                Data search is unavailable — showing pages and actions only.
+                            </div>
+
                             <div v-if="typesenseResults.length > 0" class="command-group">
-                                <div class="command-group-label">Search Results</div>
+                                <div class="command-group-label">Results</div>
                                 <CommandPaletteItem
                                     v-for="(result, i) in typesenseResults"
                                     :key="`data-${i}`"
+                                    :id="
+                                        optionId(filteredPages.length + filteredActions.length + i)
+                                    "
                                     :item="{
                                         name: result.displayTitle,
                                         subtitle: result.displaySubtitle,
@@ -412,15 +469,36 @@ onUnmounted(() => {
                                             result.collection_name === 'users'
                                                 ? 'user'
                                                 : 'database',
-                                        type: 'data',
                                     }"
                                     :selected="
                                         selectedIndex ===
-                                        filteredActions.length + filteredPages.length + i
+                                        filteredPages.length + filteredActions.length + i
+                                    "
+                                    @activate="
+                                        selectedIndex =
+                                            filteredPages.length + filteredActions.length + i
                                     "
                                     @select="executeItem" />
                             </div>
                         </template>
+                    </div>
+
+                    <!-- ESC was the only shortcut on show, and it is the one
+                         everybody already knows. -->
+                    <div class="command-palette-footer">
+                        <span>
+                            <kbd class="command-palette-kbd">↑</kbd>
+                            <kbd class="command-palette-kbd">↓</kbd>
+                            navigate
+                        </span>
+                        <span>
+                            <kbd class="command-palette-kbd">↵</kbd>
+                            open
+                        </span>
+                        <span>
+                            <kbd class="command-palette-kbd">esc</kbd>
+                            close
+                        </span>
                     </div>
                 </div>
             </div>
