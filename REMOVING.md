@@ -6,6 +6,46 @@ Most features come out cleanly, but a few are threaded through shared files.
 This lists what to delete and — more importantly — the shared registries you
 have to edit rather than delete, because those are what break silently.
 
+## The short way
+
+```bash
+php artisan guacpanel:remove                    # what can be removed
+php artisan guacpanel:remove charts --dry-run   # what it would change
+php artisan guacpanel:remove charts             # do it
+```
+
+The command deletes the feature's own files and its tests, strips its route
+statements out of `routes/` (dropping any group they leave empty), removes its
+entries from `navigation.js` and the settings page, deletes its permissions from
+the seeder and the protected list, drops its npm packages and css imports, and
+forgets the feature so it is no longer offered. It then prints what it deliberately did not touch -- route groups,
+seeders, and pages you are keeping that merely reference the feature -- because
+a half-correct automatic edit to a file you are keeping is worse than a clear
+instruction.
+
+Route statements are removed in the same pass as the controller, deliberately:
+`Route::controller()` autoloads the class during route registration, so a
+deleted controller with its route left behind takes the whole application down
+-- every request, and `php artisan test` with it -- rather than just the feature.
+
+Whether the build still passes afterwards depends on the feature. Charts, for
+instance, is rendered inline by the dashboard, so that page needs editing before
+it compiles again. Those leftovers are loud rather than silent, which is the
+point.
+
+It refuses to run with uncommitted changes, because its undo is git: with a
+clean tree, `git checkout .` puts everything back. Because of that same check
+everything left uncommitted afterwards is the command's own work, so it offers
+to commit for you -- which is also how you remove several features in a row
+without stopping to commit between each one. When it finishes it prints
+the exact command to restore what it deleted, so changing your mind later is a
+copy and paste rather than an excavation. There is no `guacpanel:restore` on
+purpose -- git already does this correctly, and a second copy of your files
+would only rot.
+
+The rest of this file is the same information in prose, and covers features the
+command does not know about.
+
 ## Before you start
 
 ```bash
