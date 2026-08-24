@@ -14,7 +14,7 @@ defineOptions({
     layout: Default,
 })
 
-const props = defineProps({
+defineProps({
     user: { type: Object, required: true },
     qrCodeSvg: { type: String, default: null },
     recoveryCodes: { type: Array, default: () => [] },
@@ -42,11 +42,10 @@ const tabs = ['Profile', 'Security', 'Account']
             ]" />
 
         <div class="card overflow-hidden">
-            <div class="border-b border-border bg-muted px-4 sm:px-6">
+            <div class="border-border bg-muted border-b px-4 sm:px-6">
                 <Tabs v-model="activeTab" :tabs="tabs" />
             </div>
             <div class="px-4 py-5 sm:px-6">
-
                 <!-- Profile -->
                 <ProfileTab v-if="activeTab === 0" :user="user" :profileEnabled="profileEnabled" />
 
@@ -54,17 +53,24 @@ const tabs = ['Profile', 'Security', 'Account']
                 <div v-else-if="activeTab === 1" class="space-y-8">
                     <PasswordTab :passwordEnabled="passwordEnabled" />
 
-                    <div class="border-t border-border pt-8">
-                        <TwoFactorTab :user="user" :qrCodeSvg="qrCodeSvg" :recoveryCodes="recoveryCodes" :twoFactorEnabled="twoFactorEnabled" />
+                    <div class="border-border border-t pt-8">
+                        <TwoFactorTab
+                            :user="user"
+                            :qrCodeSvg="qrCodeSvg"
+                            :recoveryCodes="recoveryCodes"
+                            :twoFactorEnabled="twoFactorEnabled" />
                     </div>
 
-                    <div class="border-t border-border pt-8">
+                    <div class="border-border border-t pt-8">
                         <DevicesTab :user="user" :sessions="sessions" />
                     </div>
                 </div>
 
                 <!-- Account: deactivate + delete -->
-                <AccountTab v-else-if="activeTab === 2" :deactivateEnabled="deactivateEnabled" :deleteEnabled="deleteEnabled" />
+                <AccountTab
+                    v-else-if="activeTab === 2"
+                    :deactivateEnabled="deactivateEnabled"
+                    :deleteEnabled="deleteEnabled" />
             </div>
         </div>
     </main>

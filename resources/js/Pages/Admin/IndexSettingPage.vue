@@ -1,20 +1,20 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
-import { markRaw } from 'vue'
+import { Head, Link, usePage } from '@inertiajs/vue3'
+import { computed, markRaw } from 'vue'
 import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import {
-    PaintBrushIcon,
+    ActivityIcon,
+    BellIcon,
+    DatabaseBackupIcon,
+    HistoryIcon,
+    KeyRoundIcon,
+    LockIcon,
+    MonitorSmartphoneIcon,
+    PaletteIcon,
+    ScrollTextIcon,
     UsersIcon,
-    CloudArrowUpIcon,
-    KeyIcon,
-    ClockIcon,
-    ShieldCheckIcon,
-    ComputerDesktopIcon,
-    HeartIcon,
-    DocumentMagnifyingGlassIcon,
-} from '@heroicons/vue/24/outline'
-
+} from '@lucide/vue'
 defineOptions({
     layout: Default,
 })
@@ -23,57 +23,133 @@ const groups = [
     {
         label: 'General',
         items: [
-            { label: 'Theme Settings', desc: 'Branding, logos, and appearance', icon: markRaw(PaintBrushIcon), route: 'admin.personalization.index' },
-            { label: 'System Health', desc: 'Uptime, services, and diagnostics', icon: markRaw(HeartIcon), route: 'admin.health.index' },
-            { label: 'Data Backup', desc: 'Scheduled and manual backups', icon: markRaw(CloudArrowUpIcon), route: 'admin.backup.index' },
+            {
+                label: 'Personalization',
+                desc: 'App name, logos, and favicon',
+                icon: markRaw(PaletteIcon),
+                route: 'admin.personalization.index',
+            },
+            {
+                label: 'System health',
+                desc: 'Uptime, services, and diagnostics',
+                icon: markRaw(ActivityIcon),
+                route: 'admin.health.index',
+            },
+            {
+                label: 'Data backup',
+                desc: 'Create, download, and delete backups',
+                icon: markRaw(DatabaseBackupIcon),
+                route: 'admin.backup.index',
+            },
+        ],
+    },
+    {
+        label: 'Content',
+        items: [
+            {
+                label: 'Notifications',
+                desc: 'Compose and manage system notices',
+                icon: markRaw(BellIcon),
+                route: 'admin.notifications.index',
+                permission: 'manage-notifications',
+            },
         ],
     },
     {
         label: 'Users & Access',
         items: [
-            { label: 'User Management', desc: 'Accounts, roles, and profiles', icon: markRaw(UsersIcon), route: 'admin.user.index' },
-            { label: 'Access Control', desc: 'Roles and permissions', icon: markRaw(KeyIcon), route: 'admin.permission.role.index' },
-            { label: 'Session Management', desc: 'Active sessions across the system', icon: markRaw(ComputerDesktopIcon), route: 'admin.sessions.index' },
+            {
+                label: 'User management',
+                desc: 'Accounts, roles, and profiles',
+                icon: markRaw(UsersIcon),
+                route: 'admin.user.index',
+            },
+            {
+                label: 'Access control',
+                desc: 'Roles and permissions',
+                icon: markRaw(KeyRoundIcon),
+                route: 'admin.permission.role.index',
+            },
+            {
+                label: 'Sessions',
+                desc: 'Active sessions across the system',
+                icon: markRaw(MonitorSmartphoneIcon),
+                route: 'admin.sessions.index',
+            },
         ],
     },
     {
         label: 'Security & Audit',
         items: [
-            { label: 'Security Settings', desc: 'Passwords, 2FA, and lockout policies', icon: markRaw(ShieldCheckIcon), route: 'admin.setting.show' },
-            { label: 'Login History', desc: 'Authentication attempts and activity', icon: markRaw(ClockIcon), route: 'admin.login.history.index' },
-            { label: 'System Activity', desc: 'Audit log of all admin actions', icon: markRaw(DocumentMagnifyingGlassIcon), route: 'admin.audit.index' },
+            {
+                label: 'Security settings',
+                desc: 'Password expiry, 2FA, and sign-in methods',
+                icon: markRaw(LockIcon),
+                route: 'admin.setting.show',
+            },
+            {
+                label: 'Login history',
+                desc: 'Authentication attempts and activity',
+                icon: markRaw(HistoryIcon),
+                route: 'admin.login.history.index',
+            },
+            {
+                label: 'Activity log',
+                desc: 'Every admin action, with who and when',
+                icon: markRaw(ScrollTextIcon),
+                route: 'admin.audit.index',
+            },
         ],
     },
 ]
+
+/* The gear itself only checks manage-settings, so an item needing more than that
+   is filtered here — showing a link the route then blocks is worse than hiding it. */
+const page = usePage()
+const permissions = computed(() => page.props.auth?.user?.permissions ?? [])
+const visibleGroups = computed(() =>
+    groups
+        .map(group => ({
+            ...group,
+            items: group.items.filter(
+                item => !item.permission || permissions.value.includes(item.permission)
+            ),
+        }))
+        .filter(group => group.items.length > 0)
+)
 </script>
 
 <template>
-    <Head title="Settings" />
+    <Head title="System settings" />
 
-    <main class="mx-auto max-w-7xl" aria-labelledby="settings">
+    <main class="mx-auto max-w-4xl" aria-labelledby="settings">
         <PageHeader
-            title="System Settings"
+            id="settings"
+            title="System settings"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'System Settings' },
+                { label: 'System settings' },
             ]" />
 
-        <div class="space-y-6">
-            <section v-for="group in groups" :key="group.label">
-                <h2 class="mb-2.5 text-xs font-medium text-muted-foreground">{{ group.label }}</h2>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <div class="space-y-8">
+            <section v-for="group in visibleGroups" :key="group.label">
+                <h2 class="text-muted-foreground mb-2 text-xs font-medium">{{ group.label }}</h2>
+                <div class="grid grid-cols-1 gap-1 sm:grid-cols-2">
                     <Link
                         v-for="item in group.items"
                         :key="item.route"
                         :href="route(item.route)"
-                        class="card group flex items-start gap-3.5 px-4 py-3.5 transition-shadow hover:shadow-[0px_2px_4px_rgba(0,0,0,0.06),0px_6px_12px_rgba(18,42,66,0.07)]">
+                        class="group focus-visible:outline-ring -mx-3 flex items-center gap-3.5 rounded-md px-3 py-3 focus-visible:outline-2 focus-visible:-outline-offset-2">
                         <component
                             :is="item.icon"
-                            class="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
+                            class="text-muted-foreground group-hover:text-primary h-4 w-4 shrink-0 transition-colors"
                             aria-hidden="true" />
                         <div class="min-w-0">
-                            <p class="text-sm font-medium text-foreground">{{ item.label }}</p>
-                            <p class="mt-0.5 text-xs text-muted-foreground">{{ item.desc }}</p>
+                            <p
+                                class="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
+                                {{ item.label }}
+                            </p>
+                            <p class="text-muted-foreground mt-0.5 text-xs">{{ item.desc }}</p>
                         </div>
                     </Link>
                 </div>

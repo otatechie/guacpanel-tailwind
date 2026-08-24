@@ -8,6 +8,7 @@ import PageHeader from '@js/Components/Common/PageHeader.vue'
 import NotificationTypeBadge from '@js/Components/Common/NotificationTypeBadge.vue'
 import Datatable from '@js/Components/Common/Datatable.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
+import { SquarePenIcon, Trash2Icon } from '@lucide/vue'
 
 defineOptions({
     layout: Default,
@@ -122,9 +123,9 @@ const dash = v => {
 
 const columnHelper = createColumnHelper()
 
-const btnClass = 'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+const btnClass =
+    'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
 const iconClass = 'h-3.5 w-3.5'
-const svgAttrs = { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24', 'stroke-width': '1.5', 'aria-hidden': 'true' }
 
 const columns = [
     columnHelper.accessor('title', {
@@ -144,11 +145,13 @@ const columns = [
     columnHelper.accessor(row => dash(row.created_by_name), {
         id: 'created_by',
         header: 'Author',
+        meta: { narrow: true },
         cell: info => h('span', { class: 'text-sm text-foreground' }, info.getValue()),
     }),
     columnHelper.accessor(row => dash(row.created_at_diff), {
         id: 'created_at',
         header: 'Created',
+        meta: { narrow: true },
         cell: info => h('span', { class: 'text-xs text-muted-foreground' }, info.getValue()),
     }),
     columnHelper.display({
@@ -158,37 +161,43 @@ const columns = [
             const row = info.row.original
             if (!row?.id) return null
 
-            const editBtn = h(Link, {
-                href: route('admin.notifications.edit', row.id),
-                class: btnClass,
-                title: 'Edit',
-            }, {
-                default: () => [
-                    h('svg', { class: iconClass, ...svgAttrs }, [
-                        h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'm16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10' }),
-                    ]),
-                ],
-            })
+            // "Edit" / "Delete" alone do not say what. Screen-reader users get a
+            // column of identical buttons otherwise.
+            const label = dash(row.title)
 
-            const deleteBtn = h('button', {
-                type: 'button',
-                class: btnClass + ' hover:text-red-600! dark:hover:text-red-400!',
-                title: 'Delete',
-                onClick: () => openDeleteModal(row),
-            }, [
-                h('svg', { class: iconClass, ...svgAttrs }, [
-                    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', d: 'm14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0' }),
-                ]),
-            ])
+            const editBtn = h(
+                Link,
+                {
+                    href: route('admin.notifications.edit', row.id),
+                    class: btnClass,
+                    'aria-label': `Edit ${label}`,
+                    title: `Edit ${label}`,
+                },
+                { default: () => [h(SquarePenIcon, { class: iconClass, 'aria-hidden': 'true' })] }
+            )
 
-            return h('div', { class: 'flex items-center justify-end gap-0.5' }, [editBtn, deleteBtn])
+            const deleteBtn = h(
+                'button',
+                {
+                    type: 'button',
+                    class: btnClass + ' hover:text-red-600! dark:hover:text-red-400!',
+                    'aria-label': `Delete ${label}`,
+                    title: `Delete ${label}`,
+                    onClick: () => openDeleteModal(row),
+                },
+                [h(Trash2Icon, { class: iconClass, 'aria-hidden': 'true' })]
+            )
+
+            return h('div', { class: 'flex items-center justify-end gap-2' }, [editBtn, deleteBtn])
         },
     }),
 ]
 
+// Matches how the settings index and every other subpage crumb this section.
 const breadcrumbs = computed(() => [
     { label: 'Dashboard', href: route('dashboard') },
-    { label: 'Admin Notifications' },
+    { label: 'System settings', href: route('admin.setting.index') },
+    { label: 'Notifications' },
 ])
 
 const onNavigate = payload => {
@@ -219,52 +228,76 @@ const formatExportData = row => ({
 </script>
 
 <template>
-    <Head title="Admin Notifications" />
+    <Head title="Notifications" />
 
-    <main class="mx-auto max-w-7xl" aria-labelledby="admin-notifications">
-        <PageHeader
-            title="Admin Notifications"
-            description="Create and manage app notifications"
-            :breadcrumbs="breadcrumbs">
+    <main class="mx-auto max-w-4xl" aria-labelledby="admin-notifications">
+        <!-- Named "Notifications" in the nav, so the page says the same. The
+             description only restated the title and the button beside it. -->
+        <PageHeader title="Notifications" :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Button :as="Link" variant="primary" size="sm" :href="route('admin.notifications.create')">
+                <Button
+                    :as="Link"
+                    variant="primary"
+                    size="sm"
+                    :href="route('admin.notifications.create')">
                     Create notification
                 </Button>
             </template>
         </PageHeader>
 
-        <div class="notifications-data-table card p-6">
+        <!-- No card. The table already has its own border; wrapping it in a
+             second bordered box is decoration, not structure. -->
+        <div>
             <Datatable
-                        class="datatable-admin-notifications"
-                        :data="notifications.data"
-                        :columns="columns"
-                        :loading="loading"
-                        :pagination="pagination"
-                        :filters-enabled="false"
-                        :page-size-options="pageSizeOptions"
-                        :default-page-size="Number(pagination.per_page) || 25"
-                        empty-message="No notifications found"
-                        empty-description="Notifications you create will appear here"
-                        export-file-name="admin_notifications"
-                        route-name="admin.notifications.index"
-                        :bulk-delete-route="route('admin.notifications.bulk-destroy')"
-                        :format-export-data="formatExportData"
-                        @bulk-delete="handleBulkDelete"
-                        @navigate="onNavigate"
-                        @update:pagination="pagination = $event" />
+                :data="notifications.data"
+                :columns="columns"
+                :loading="loading"
+                :pagination="pagination"
+                :page-size-options="pageSizeOptions"
+                :default-page-size="Number(pagination.per_page) || 25"
+                empty-message="No notifications yet"
+                empty-description="Notifications you create appear here and go out to your users."
+                export-file-name="admin_notifications"
+                route-name="admin.notifications.index"
+                :bulk-delete-route="route('admin.notifications.bulk-destroy')"
+                :format-export-data="formatExportData"
+                @bulk-delete="handleBulkDelete"
+                @navigate="onNavigate"
+                @update:pagination="pagination = $event">
+                <!-- The next step, where the reader is looking, rather than only
+                     in the header 700px away. -->
+                <template #empty-action>
+                    <Button
+                        :as="Link"
+                        variant="secondary"
+                        size="sm"
+                        :href="route('admin.notifications.create')">
+                        Create notification
+                    </Button>
+                </template>
+            </Datatable>
         </div>
     </main>
 
-    <Modal :show="showDeleteModal" size="sm" @close="closeDeleteModal">
+    <Modal
+        :show="showDeleteModal"
+        size="sm"
+        description="This cannot be undone."
+        @close="closeDeleteModal">
         <template #title>Delete notification</template>
         <template #default>
-            <p class="text-sm text-muted-foreground">
-                Delete <span class="font-medium text-foreground">{{ deleteTarget?.title || 'this notification' }}</span>? This cannot be undone.
+            <!-- Lead with the record, not a sentence wrapped around it. Prettier
+                 wraps an inline <span> and Vue then renders the trailing "?"
+                 with a leading space. -->
+            <p class="text-foreground text-sm font-medium">
+                {{ deleteTarget?.title || 'This notification' }}
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <Button variant="secondary" size="sm" :disabled="loading" @click="closeDeleteModal">Cancel</Button>
+                <Button variant="secondary" size="sm" :disabled="loading" @click="closeDeleteModal">
+                    Cancel
+                </Button>
                 <Button variant="danger" size="sm" :disabled="loading" @click="destroyRow">
                     {{ loading ? 'Deleting...' : 'Delete' }}
                 </Button>
@@ -272,16 +305,27 @@ const formatExportData = row => ({
         </template>
     </Modal>
 
-    <Modal :show="showBulkDeleteModal" size="sm" @close="closeBulkDeleteModal">
+    <Modal
+        :show="showBulkDeleteModal"
+        size="sm"
+        description="This cannot be undone."
+        @close="closeBulkDeleteModal">
         <template #title>Delete notifications</template>
         <template #default>
-            <p class="text-sm text-muted-foreground">
-                Delete <span class="font-medium text-foreground">{{ selectedCount }}</span> selected notifications? This cannot be undone.
+            <p class="text-foreground text-sm font-medium">
+                {{ selectedCount }} selected
+                {{ selectedCount === 1 ? 'notification' : 'notifications' }}
             </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <Button variant="secondary" size="sm" :disabled="loading" @click="closeBulkDeleteModal">Cancel</Button>
+                <Button
+                    variant="secondary"
+                    size="sm"
+                    :disabled="loading"
+                    @click="closeBulkDeleteModal">
+                    Cancel
+                </Button>
                 <Button variant="danger" size="sm" :disabled="loading" @click="runBulkDelete">
                     {{ loading ? 'Deleting...' : 'Delete' }}
                 </Button>

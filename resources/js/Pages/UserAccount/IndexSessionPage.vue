@@ -4,8 +4,10 @@ import { Head, useForm } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Default from '@js/Layouts/Default.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
+import Badge from '@js/Components/Badge.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
+import { LaptopIcon, MonitorIcon, SmartphoneIcon, TriangleAlertIcon } from '@lucide/vue'
 
 defineOptions({
     layout: Default,
@@ -66,11 +68,9 @@ const logoutAllSessions = () => {
 }
 
 const deviceIcons = {
-    default:
-        'M20 18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z',
-    mobile: 'M10 16.667c.92 0 1.667-.747 1.667-1.667H8.333c0 .92.746 1.667 1.667 1.667zm5-5V7.917c0-2.559-1.364-4.7-3.75-5.267v-.567c0-.691-.56-1.25-1.25-1.25s-1.25.559-1.25 1.25v.567c-2.386.567-3.75 2.708-3.75 5.267V11.667l-1.667 1.666v.834h13.334v-.834L15 11.667z',
-    desktop:
-        'M17 2H3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V5c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v9z',
+    default: MonitorIcon,
+    mobile: SmartphoneIcon,
+    desktop: LaptopIcon,
 }
 
 const getDeviceIcon = device => {
@@ -91,20 +91,19 @@ const getDeviceIcon = device => {
 </script>
 
 <template>
-    <Head title="Device Management" />
+    <Head title="Devices" />
 
     <main class="mx-auto max-w-7xl" aria-labelledby="sessions-management">
         <PageHeader
-            title="Device Management"
+            title="Devices"
             description="View and manage your active sessions"
             :breadcrumbs="[
                 { label: 'Dashboard', href: route('dashboard') },
-                { label: 'Account Settings', href: route('user.index') },
+                { label: 'Account settings', href: route('user.index') },
                 { label: 'Devices' },
             ]" />
 
-        <div
-            class="card p-3 sm:p-6">
+        <div class="card p-3 sm:p-6">
             <div class="space-y-4 sm:space-y-6">
                 <h2
                     id="active-sessions"
@@ -116,18 +115,12 @@ const getDeviceIcon = device => {
                     class="rounded-lg border border-amber-200 bg-amber-50 p-3 sm:p-4 dark:border-amber-700 dark:bg-amber-900/20">
                     <p
                         class="flex items-start gap-2 text-xs font-medium text-amber-700 sm:text-sm dark:text-amber-400">
-                        <svg
+                        <TriangleAlertIcon
                             class="mt-0.5 h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path
-                                fill-rule="evenodd"
-                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                clip-rule="evenodd" />
-                        </svg>
+                            aria-hidden="true" />
                         <span>
-                            If you notice any suspicious activity, immediately sign out of
-                            all other browser sessions and update your password.
+                            If you notice any suspicious activity, immediately sign out of all other
+                            browser sessions and update your password.
                         </span>
                     </p>
                 </div>
@@ -135,8 +128,7 @@ const getDeviceIcon = device => {
                 <div v-if="formattedSessions.length > 0" class="space-y-3 sm:space-y-0">
                     <div
                         class="hidden overflow-hidden rounded-lg border border-gray-200 sm:block dark:border-gray-700">
-                        <table
-                            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-800">
                                 <tr>
                                     <th
@@ -163,32 +155,26 @@ const getDeviceIcon = device => {
                                         <div class="flex items-center">
                                             <div
                                                 class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                                                <svg
+                                                <component
+                                                    :is="getDeviceIcon(session.device)"
                                                     class="h-4 w-4 text-gray-600 dark:text-gray-400"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path
-                                                        :d="
-                                                            getDeviceIcon(session.device)
-                                                        " />
-                                                </svg>
+                                                    aria-hidden="true" />
                                             </div>
                                             <div class="ml-4">
                                                 <div
                                                     class="flex flex-wrap items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-100">
                                                     {{ session.device }}
-                                                    <span
+                                                    <Badge
                                                         v-if="session.isCurrent"
-                                                        class="inline-flex items-center rounded-full bg-green-100 px-2 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                        dot
+                                                        variant="success">
                                                         Current
-                                                    </span>
+                                                    </Badge>
                                                 </div>
                                                 <div
                                                     class="text-xs text-gray-500 dark:text-gray-400">
                                                     {{ session.browser }}
-                                                    <span
-                                                        v-if="session.platform"
-                                                        class="ml-1">
+                                                    <span v-if="session.platform" class="ml-1">
                                                         ({{ session.platform }})
                                                     </span>
                                                 </div>
@@ -208,9 +194,7 @@ const getDeviceIcon = device => {
                                             aria-label="Sign out from this device">
                                             Sign out
                                         </button>
-                                        <span
-                                            v-else
-                                            class="text-gray-400 dark:text-gray-500">
+                                        <span v-else class="text-gray-400 dark:text-gray-500">
                                             Current
                                         </span>
                                     </td>
@@ -227,12 +211,10 @@ const getDeviceIcon = device => {
                             <div class="flex items-start gap-3">
                                 <div
                                     class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                                    <svg
+                                    <component
+                                        :is="getDeviceIcon(session.device)"
                                         class="h-5 w-5 text-gray-600 dark:text-gray-400"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path :d="getDeviceIcon(session.device)" />
-                                    </svg>
+                                        aria-hidden="true" />
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-start justify-between gap-2">
@@ -242,11 +224,12 @@ const getDeviceIcon = device => {
                                                 <span class="truncate">
                                                     {{ session.device }}
                                                 </span>
-                                                <span
+                                                <Badge
                                                     v-if="session.isCurrent"
-                                                    class="inline-flex flex-shrink-0 items-center rounded-full bg-green-100 px-2 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                    dot
+                                                    variant="success">
                                                     Current
-                                                </span>
+                                                </Badge>
                                             </div>
                                             <div
                                                 class="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -282,31 +265,19 @@ const getDeviceIcon = device => {
                     </div>
                 </div>
 
-                <div
-                    v-else
-                    class="card p-4 text-center sm:p-6">
+                <div v-else class="card p-4 text-center sm:p-6">
                     <div
                         class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                        <svg
+                        <MonitorIcon
                             class="mb-2 h-10 w-10 text-gray-400 sm:mb-3 sm:h-12 sm:w-12 dark:text-gray-600"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            stroke-width="1.5">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
-                        </svg>
+                            aria-hidden="true" />
                         <p class="text-sm sm:text-base">No active sessions found</p>
                     </div>
                 </div>
             </div>
 
-            <div
-                class="mt-6 border-t border-gray-200 pt-4 sm:mt-8 sm:pt-6 dark:border-gray-700">
-                <div
-                    class="rounded-lg border border-red-200 p-3 sm:p-4 lg:p-6 dark:border-red-800">
+            <div class="mt-6 border-t border-gray-200 pt-4 sm:mt-8 sm:pt-6 dark:border-gray-700">
+                <div class="rounded-lg border border-red-200 p-3 sm:p-4 lg:p-6 dark:border-red-800">
                     <h3
                         class="mb-3 text-sm font-semibold text-red-600 sm:mb-4 sm:text-base lg:mb-6 lg:text-lg dark:text-red-400">
                         Danger Zone
@@ -320,13 +291,15 @@ const getDeviceIcon = device => {
                         </h4>
                         <p
                             class="mb-3 text-xs leading-relaxed text-gray-600 sm:mb-4 sm:text-sm dark:text-gray-400">
-                            This will terminate access from any other devices where you're
-                            currently logged in. Your current session will remain active.
+                            This will terminate access from any other devices where you're currently
+                            logged in. Your current session will remain active.
                         </p>
-                        <Button variant="danger" size="sm" class="flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto" @click="confirmLogoutAll">
-                            <span class="hidden sm:inline">
-                                Sign out of all other sessions
-                            </span>
+                        <Button
+                            variant="danger"
+                            size="sm"
+                            class="flex min-h-[44px] w-full items-center justify-center sm:min-h-0 sm:w-auto"
+                            @click="confirmLogoutAll">
+                            <span class="hidden sm:inline">Sign out of all other sessions</span>
                             <span class="sm:hidden">Sign out all</span>
                         </Button>
                     </div>
@@ -335,7 +308,11 @@ const getDeviceIcon = device => {
         </div>
     </main>
 
-    <Modal :show="logoutModal" @close="logoutModal = false" size="sm">
+    <Modal
+        :show="logoutModal"
+        size="sm"
+        description="That device will be signed out immediately."
+        @close="logoutModal = false">
         <template #title>
             <div
                 class="flex items-center gap-2 text-sm text-red-600 sm:text-base dark:text-red-400">
@@ -354,12 +331,10 @@ const getDeviceIcon = device => {
                     <div class="flex items-center gap-3">
                         <div
                             class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 sm:h-12 sm:w-12 dark:bg-gray-700">
-                            <svg
+                            <component
+                                :is="getDeviceIcon(selectedSession.device)"
                                 class="h-5 w-5 text-gray-600 sm:h-6 sm:w-6 dark:text-gray-400"
-                                fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path :d="getDeviceIcon(selectedSession.device)" />
-                            </svg>
+                                aria-hidden="true" />
                         </div>
                         <div class="min-w-0 flex-1">
                             <div
@@ -388,14 +363,22 @@ const getDeviceIcon = device => {
                     :disabled="logoutForm.processing">
                     Cancel
                 </button>
-                <Button variant="danger" size="sm" @click="logoutSession" :disabled="logoutForm.processing">
+                <Button
+                    variant="danger"
+                    size="sm"
+                    @click="logoutSession"
+                    :disabled="logoutForm.processing">
                     {{ logoutForm.processing ? 'Signing out...' : 'Yes, sign out' }}
                 </Button>
             </div>
         </template>
     </Modal>
 
-    <Modal :show="logoutAllModal" @close="logoutAllModal = false" size="sm">
+    <Modal
+        :show="logoutAllModal"
+        size="sm"
+        description="Every device except this one will be signed out immediately."
+        @close="logoutAllModal = false">
         <template #title>
             <div
                 class="flex items-center gap-2 text-sm text-red-600 sm:text-base dark:text-red-400">
@@ -432,7 +415,11 @@ const getDeviceIcon = device => {
                     :disabled="passwordForm.processing">
                     Cancel
                 </button>
-                <Button variant="danger" size="sm" @click="logoutAllSessions" :disabled="passwordForm.processing">
+                <Button
+                    variant="danger"
+                    size="sm"
+                    @click="logoutAllSessions"
+                    :disabled="passwordForm.processing">
                     {{ passwordForm.processing ? 'Signing out...' : 'Yes, sign out all' }}
                 </Button>
             </div>
