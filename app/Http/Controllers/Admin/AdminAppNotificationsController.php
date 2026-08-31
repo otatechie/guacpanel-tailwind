@@ -65,6 +65,9 @@ class AdminAppNotificationsController extends Controller implements HasMiddlewar
                 'resource' => 'notifications',
                 'transform' => function ($item) {
                     $item->created_at_diff = $item->created_at?->diffForHumans();
+                    // "2 days ago" is what you scan; the exact stamp is what you
+                    // check. The reader's list carries both for the same reason.
+                    $item->created_at_exact = $item->created_at?->toDayDateTimeString();
                     $item->scheduled_on_diff = $item->scheduled_on?->diffForHumans();
                     $item->auto_expire_on_diff = $item->auto_expire_on?->diffForHumans();
                     $item->username = $item->user?->name;
@@ -78,21 +81,19 @@ class AdminAppNotificationsController extends Controller implements HasMiddlewar
 
         return Inertia::render('Admin/Notifications/IndexNotificationPage', [
             'notifications' => $result['data'],
+            'users' => $this->recipientOptions(),
             'filters' => $result['filters'],
         ]);
     }
 
-    public function create()
+    /** Recipients for the notification sheet's user scope. */
+    private function recipientOptions()
     {
-        $users = User::query()
+        return User::query()
             ->select(['id', 'name', 'email'])
             ->orderBy('name')
             ->limit(250)
             ->get();
-
-        return Inertia::render('Admin/Notifications/CreateNotificationPage', [
-            'users' => $users,
-        ]);
     }
 
     public function store(StoreAdminAppNotificationRequest $request)
@@ -124,22 +125,6 @@ class AdminAppNotificationsController extends Controller implements HasMiddlewar
         }
 
         return redirect()->route('admin.notifications.index')->with('success', 'Notification created.');
-    }
-
-    public function edit(string $id)
-    {
-        $notification = AppNotification::query()->whereKey($id)->firstOrFail();
-
-        $users = User::query()
-            ->select(['id', 'name', 'email'])
-            ->orderBy('name')
-            ->limit(250)
-            ->get();
-
-        return Inertia::render('Admin/Notifications/EditNotificationPage', [
-            'notification' => $notification,
-            'users' => $users,
-        ]);
     }
 
     public function update(UpdateAdminAppNotificationRequest $request, string $id)
