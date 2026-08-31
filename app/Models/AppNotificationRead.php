@@ -14,7 +14,16 @@ class AppNotificationRead extends Model
 
     protected $keyType = 'string';
 
-    protected $fillable = ['app_notification_id', 'user_id'];
+    /**
+     * The state columns belong here.
+     *
+     * Every read, unread, dismiss and undismiss writes them through
+     * updateOrCreate(), whose second argument goes through fill() -- and fill()
+     * honours $fillable. Without these four listed, the row was created and the
+     * timestamps were silently dropped, so nothing ever persisted: the page
+     * updated optimistically and reverted on the next load.
+     */
+    protected $fillable = ['app_notification_id', 'user_id', 'read_at', 'dismissed_at', 'u_del_notif_at', 'deleted_at'];
 
     protected $casts = [
         'read_at' => 'datetime',
