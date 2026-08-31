@@ -26,7 +26,7 @@ function exportPayload($test): array
 
 test('it exports the account, roles and preferences', function () {
     $this->user->assignRole(Role::create(['name' => 'editor']));
-    $this->user->update(['notification_preferences' => ['muted_scopes' => ['release'], 'muted_types' => []]]);
+    $this->user->update(['notification_preferences' => ['muted_scopes' => ['release']]]);
 
     $payload = exportPayload($this);
 

@@ -65,7 +65,7 @@ const groupName = computed(
                 <div class="text-sm">
                     <label
                         :for="`${groupName}-${option.value}`"
-                        class="text-foreground cursor-pointer font-medium">
+                        class="text-foreground font-medium">
                         {{ option.label }}
                     </label>
                     <p v-if="option.description" class="text-muted-foreground">

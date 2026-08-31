@@ -52,16 +52,11 @@ const SIZE_OVERRIDE = {
 const uiVariant = computed(() => UI_VARIANT[props.variant] ?? 'default')
 const uiSize = computed(() => UI_SIZE[props.size] ?? 'default')
 const isNativeButton = computed(() => props.as === 'button')
-// Tailwind v4's preflight dropped the browser default `cursor: pointer` on
-// <button>, so every button reads as non-interactive unless it says otherwise.
-// Set here once rather than at each call site.
+// The cursor lives in base.css, which also gives disabled buttons
+// `cursor: not-allowed`. Setting it here beat that rule, so a disabled button
+// still looked clickable.
 const classes = computed(() =>
-    cn(
-        'cursor-pointer rounded-lg',
-        SIZE_OVERRIDE[props.size],
-        VARIANT_OVERRIDE[props.variant],
-        props.class
-    )
+    cn('rounded-lg', SIZE_OVERRIDE[props.size], VARIANT_OVERRIDE[props.variant], props.class)
 )
 </script>
 

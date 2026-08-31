@@ -47,7 +47,6 @@ const submitRecovery = () => {
             <FormInput
                 id="code"
                 v-model="codeForm.code"
-                placeholder=""
                 label="Authentication code"
                 type="text"
                 inputmode="numeric"
@@ -74,7 +73,6 @@ const submitRecovery = () => {
             <FormInput
                 id="recovery_code"
                 v-model="recoveryForm.recovery_code"
-                placeholder=""
                 label="Recovery code"
                 type="text"
                 :show-required-marker="false"

@@ -150,3 +150,64 @@ test('it prevents password update with invalid data', function () {
         ]);
     $response->assertSessionHasErrors('password');
 });
+
+test('deleting an account requires the current password', function () {
+    config(['guacpanel.user.account.delete_enabled' => true]);
+
+    $this->actingAs($this->user)
+        ->post(route('user.delete'), ['password' => 'not-the-password'])
+        ->assertSessionHasErrors('password');
+
+    expect(User::withTrashed()->find($this->user->id)->trashed())->toBeFalse();
+    $this->assertAuthenticatedAs($this->user);
+});
+
+test('the correct password deletes the account', function () {
+    config(['guacpanel.user.account.delete_enabled' => true]);
+
+    $this->actingAs($this->user)
+        ->post(route('user.delete'), ['password' => 'password'])
+        ->assertRedirect(route('home'));
+
+    expect(User::withTrashed()->find($this->user->id)->trashed())->toBeTrue();
+    $this->assertGuest();
+});
+
+test('an account without a password can still be deleted', function () {
+    config(['guacpanel.user.account.delete_enabled' => true]);
+    $socialUser = User::factory()->create(['password' => null]);
+
+    $this->actingAs($socialUser)->post(route('user.delete'))->assertRedirect(route('home'));
+
+    expect(User::withTrashed()->find($socialUser->id)->trashed())->toBeTrue();
+});
+
+test('the account page tells the page how deletion actually behaves', function () {
+    config([
+        'guacpanel.user.account.restore_enabled' => true,
+        'guacpanel.user.account.days_to_restore' => 60,
+    ]);
+
+    $this->actingAs($this->user)
+        ->get(route('user.index'))
+        ->assertInertia(
+            fn($page) => $page
+                ->where('restoreEnabled', true)
+                ->where('daysToRestore', 60)
+                ->where('deletePasswordRequired', true)
+                ->etc(),
+        );
+});
+
+test('session platforms are reported by the name the vendor uses now', function () {
+    $format = new ReflectionMethod(App\Http\Controllers\User\BrowserSessionController::class, 'formatAgent');
+    $controller = new App\Http\Controllers\User\BrowserSessionController();
+
+    $mac = $format->invoke(
+        $controller,
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+    );
+
+    expect($mac['platform'])->toBe('macOS');
+    expect($format->invoke($controller, '')['platform'])->toBe('Unknown');
+});

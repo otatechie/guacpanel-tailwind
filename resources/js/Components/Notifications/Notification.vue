@@ -352,14 +352,14 @@ onUnmounted(() => {
                     <button
                         v-if="hasUnreadNotifications"
                         type="button"
-                        class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                        class="text-muted-foreground hover:text-foreground text-xs"
                         @click="markAllRead">
                         Read all
                     </button>
                     <button
                         v-if="hasAnyNotifications"
                         type="button"
-                        class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                        class="text-muted-foreground hover:text-foreground text-xs"
                         @click="dismissAll">
                         Clear
                     </button>
@@ -403,7 +403,7 @@ onUnmounted(() => {
                                 </h4>
                                 <button
                                     type="button"
-                                    class="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer rounded p-0.5"
+                                    class="text-muted-foreground hover:text-foreground shrink-0 rounded p-0.5"
                                     aria-label="Dismiss"
                                     @click.stop="dismissNotification(n, $event)">
                                     <XIcon class="h-3 w-3" :stroke-width="2" />

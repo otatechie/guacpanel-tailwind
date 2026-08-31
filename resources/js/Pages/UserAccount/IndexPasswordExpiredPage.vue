@@ -3,7 +3,7 @@ import Button from '@/Components/Button.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import Auth from '@js/Layouts/Auth.vue'
 import FormInput from '@js/Components/Forms/FormInput.vue'
-import { InfoIcon } from '@lucide/vue'
+import Alert from '@js/Components/Notifications/Alert.vue'
 
 defineOptions({
     layout: Auth,
@@ -26,43 +26,25 @@ const submit = () => {
 <template>
     <Head title="Password update required" />
 
-    <main class="mx-auto max-w-[384px] px-8" role="main">
-        <h1 class="main-heading text-center dark:text-white">Password update required</h1>
-        <div
-            v-if="$page.props.flash.warning"
-            class="my-4 flex items-center rounded-lg bg-orange-100 p-4 text-orange-700">
-            <div
-                class="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-500">
-                <InfoIcon class="h-5 w-5" aria-hidden="true" />
-                <span class="sr-only">Warning icon</span>
-            </div>
-            <div class="ml-3 text-sm font-normal">
-                <p>{{ $page.props.flash.warning }}</p>
-            </div>
-        </div>
+    <div class="w-full" role="main">
+        <header>
+            <h1 class="text-foreground text-xl font-semibold">Password update required</h1>
+            <p class="text-muted-foreground mt-1.5 text-sm">
+                Your password has expired. Choose a new one to carry on.
+            </p>
+        </header>
 
-        <form class="card mt-6 space-y-6 p-5" @submit.prevent="submit">
-            <section
-                class="rounded-md bg-gray-50 p-4 dark:bg-gray-800"
-                aria-labelledby="password-requirements">
-                <h2
-                    id="password-requirements"
-                    class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    Password must include:
-                </h2>
-                <ul class="list-disc space-y-1 pl-5 text-sm text-gray-500 dark:text-gray-400">
-                    <li>8+ characters</li>
-                    <li>One uppercase letter</li>
-                    <li>One number</li>
-                    <li>One special character</li>
-                </ul>
-            </section>
+        <Alert v-if="$page.props.flash.warning" type="warning" class="mt-4">
+            {{ $page.props.flash.warning }}
+        </Alert>
 
+        <form class="mt-6 space-y-4" @submit.prevent="submit">
             <FormInput
                 id="password"
                 v-model="form.password"
                 label="New password"
                 type="password"
+                autocomplete="new-password"
                 required
                 :disabled="form.processing"
                 :error="form.errors.password"
@@ -73,23 +55,39 @@ const submit = () => {
                 v-model="form.password_confirmation"
                 label="Confirm new password"
                 type="password"
+                autocomplete="new-password"
                 required
                 :disabled="form.processing"
                 :error="form.errors.password_confirmation" />
+
+            <!-- Mirrors the rule in UserAccountController::updateExpiredPassword.
+                 The old list promised only an uppercase letter and never mentioned
+                 the reuse check, so the server rejected passwords the page had
+                 called valid. -->
+            <div id="password-requirements" class="text-muted-foreground text-xs">
+                <p>Your new password needs:</p>
+                <ul class="mt-1 list-disc space-y-0.5 pl-4">
+                    <li>8 characters or more</li>
+                    <li>Upper and lower case letters</li>
+                    <li>A number</li>
+                    <li>A symbol</li>
+                    <li>To be different from your current password</li>
+                </ul>
+            </div>
 
             <Button
                 variant="primary"
                 class="w-full"
                 type="submit"
                 :disabled="form.processing"
-                aria-busy="form.processing">
+                :aria-busy="form.processing">
                 {{ form.processing ? 'Updating password...' : 'Update password' }}
             </Button>
         </form>
 
-        <footer class="mt-8 text-center text-sm text-gray-700 dark:text-gray-300">
+        <footer class="text-muted-foreground mt-8 text-center text-sm">
             Having trouble?
             <Link :href="route('home')" class="link text-sm">Contact support</Link>
         </footer>
-    </main>
+    </div>
 </template>

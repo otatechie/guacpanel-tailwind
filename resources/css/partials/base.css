@@ -9,12 +9,10 @@ input:focus {
     font-family: var(--font-sans);
 }
 
-/* Utility Classes */
-.main-heading,
-
-/* Dark heading colors inherit from variables; no override needed */
-
-/* Tailwind's preflight sets `cursor: default` on buttons. */
+/* Tailwind's preflight sets `cursor: default` on buttons. `.main-heading` used
+   to head this rule as a dangling `.main-heading,` with no block of its own,
+   which swallowed the whole @layer below it into an invalid selector list: the
+   cursor rules never reached the stylesheet. */
 @layer base {
     button:not(:disabled),
     [role='button']:not([aria-disabled='true']),

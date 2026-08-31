@@ -120,14 +120,12 @@ const refreshPersonalisation = () => {
                             id="app_name"
                             v-model="form.app_name"
                             label="Application name"
-                            placeholder=""
                             help="Shown in the browser tab and sidebar."
                             :error="form.errors.app_name" />
                         <FormInput
                             id="copyright_text"
                             v-model="form.copyright_text"
                             label="Copyright text"
-                            placeholder=""
                             help="Shown in the footer."
                             :error="form.errors.copyright_text" />
                     </div>

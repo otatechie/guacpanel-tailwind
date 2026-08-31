@@ -307,7 +307,7 @@ const sendVerificationEmail = () => {
                         </div>
                         <button
                             type="button"
-                            class="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-ring shrink-0 cursor-pointer rounded-md p-1.5 transition-colors focus-visible:outline-2"
+                            class="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-ring shrink-0 rounded-md p-1.5 transition-colors focus-visible:outline-2"
                             :aria-label="`Remove ${formatPermissionName(perm.name)}`"
                             :title="`Remove ${formatPermissionName(perm.name)}`"
                             @click="removeDirectPermission(perm.id)">

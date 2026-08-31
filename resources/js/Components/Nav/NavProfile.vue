@@ -65,7 +65,7 @@ onBeforeUnmount(() => window.removeEventListener('themeChanged', syncThemePrefer
         <template #trigger>
             <button
                 type="button"
-                class="hover:bg-muted focus-visible:ring-ring flex h-9 cursor-pointer items-center gap-1.5 rounded-md px-1.5 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                class="hover:bg-muted focus-visible:ring-ring flex h-9 items-center gap-1.5 rounded-md px-1.5 transition-colors focus-visible:ring-2 focus-visible:outline-none"
                 aria-label="Account menu">
                 <img :src="avatarUrl" :alt="userName" class="size-6 shrink-0 rounded-full" />
                 <ChevronDownIcon
@@ -108,7 +108,7 @@ onBeforeUnmount(() => window.removeEventListener('themeChanged', syncThemePrefer
                     type="button"
                     role="radio"
                     :aria-checked="themePreference === option.value"
-                    class="focus-visible:ring-ring flex flex-1 cursor-pointer items-center justify-center gap-1 rounded px-1 py-0.5 text-[11px] transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    class="focus-visible:ring-ring flex flex-1 items-center justify-center gap-1 rounded px-1 py-0.5 text-[11px] transition-colors focus-visible:ring-2 focus-visible:outline-none"
                     :class="
                         themePreference === option.value
                             ? 'bg-card text-foreground font-medium shadow-sm'
@@ -133,7 +133,7 @@ onBeforeUnmount(() => window.removeEventListener('themeChanged', syncThemePrefer
                         role="radio"
                         :aria-checked="selectedColor === color.value"
                         :aria-label="color.name"
-                        class="focus-visible:ring-ring flex size-4 cursor-pointer items-center justify-center rounded-full transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                        class="focus-visible:ring-ring flex size-4 items-center justify-center rounded-full transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                         :style="{
                             background: `linear-gradient(135deg, ${color.gradientFrom}, ${color.gradientTo})`,
                         }"
@@ -158,7 +158,7 @@ onBeforeUnmount(() => window.removeEventListener('themeChanged', syncThemePrefer
         <div class="p-1">
             <button
                 type="button"
-                class="text-foreground hover:bg-muted focus-visible:ring-ring flex w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                class="text-foreground hover:bg-muted focus-visible:ring-ring flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm transition-colors focus-visible:ring-2 focus-visible:outline-none"
                 @click="signOut">
                 <LogOutIcon class="text-muted-foreground size-4" />
                 Sign out

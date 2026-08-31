@@ -31,7 +31,7 @@ const props = defineProps({
     },
     placeholder: {
         type: String,
-        default: null,
+        default: '',
     },
     disabled: {
         type: Boolean,
@@ -54,10 +54,9 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const showPassword = ref(false)
 
-// placeholder="" means no placeholder; omitting it falls back to the label.
-const inputPlaceholder = computed(() =>
-    props.placeholder === null ? props.label : props.placeholder || undefined
-)
+// No placeholder unless one is asked for: echoing the label into the field adds
+// no information and turns to noise the moment the field has a value.
+const inputPlaceholder = computed(() => props.placeholder || undefined)
 const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s+/g, '-'))
 </script>
 
@@ -86,7 +85,7 @@ const inputId = computed(() => props.id || props.label.toLowerCase().replace(/\s
             <button
                 v-if="type === 'password'"
                 type="button"
-                class="text-muted-foreground hover:text-foreground absolute inset-y-0 right-0 flex min-w-[44px] cursor-pointer items-center justify-center px-3 transition-colors"
+                class="text-muted-foreground hover:text-foreground absolute inset-y-0 right-0 flex min-w-[44px] items-center justify-center px-3 transition-colors"
                 :aria-label="showPassword ? 'Hide password' : 'Show password'"
                 :aria-pressed="showPassword"
                 @click="showPassword = !showPassword">

@@ -39,7 +39,6 @@ const submit = () => {
             <FormInput
                 id="name"
                 v-model="form.name"
-                placeholder=""
                 label="Full name"
                 name="name"
                 type="text"
@@ -51,7 +50,6 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
-                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"

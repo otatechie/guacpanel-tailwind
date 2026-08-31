@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
@@ -25,27 +25,47 @@ const props = defineProps({
     sessions: { type: Object },
     deactivateEnabled: { type: Boolean, default: false },
     deleteEnabled: { type: Boolean, default: false },
+    restoreEnabled: { type: Boolean, default: false },
+    daysToRestore: { type: Number, default: 0 },
+    deletePasswordRequired: { type: Boolean, default: true },
     notificationsEnabled: { type: Boolean, default: false },
     notificationPreferences: { type: Object, default: () => ({}) },
 })
-
-const activeTab = ref(0)
 
 /* The Notifications tab only exists where the feature does, so the tab indices
    below shift with it rather than being hard-coded. */
 const tabs = computed(() =>
     props.notificationsEnabled
-        ? ['Profile', 'Security', 'Notifications', 'Account']
-        : ['Profile', 'Security', 'Account']
+        ? ['Profile', 'Security', 'Notifications', 'Data']
+        : ['Profile', 'Security', 'Data']
 )
 
 const tabIndex = name => tabs.value.indexOf(name)
+
+/* ?tab= keeps the open tab through a reload and makes a section linkable.
+   replaceState rather than push, so Back leaves the page instead of walking
+   the tabs, and Inertia's own history state survives. */
+const slug = name => name.toLowerCase()
+
+const requestedTab = new URLSearchParams(window.location.search).get('tab')
+const activeTab = ref(
+    Math.max(
+        0,
+        tabs.value.findIndex(tab => slug(tab) === requestedTab)
+    )
+)
+
+watch(activeTab, index => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('tab', slug(tabs.value[index]))
+    window.history.replaceState(window.history.state, '', url)
+})
 </script>
 
 <template>
     <Head title="Account" />
 
-    <main class="mx-auto max-w-7xl">
+    <main class="mx-auto max-w-4xl">
         <PageHeader
             title="Account"
             :breadcrumbs="[
@@ -53,41 +73,46 @@ const tabIndex = name => tabs.value.indexOf(name)
                 { label: 'Account' },
             ]" />
 
-        <div class="card overflow-hidden">
-            <div class="border-border bg-muted border-b px-4 sm:px-6">
-                <Tabs v-model="activeTab" :tabs="tabs" />
-            </div>
-            <div class="px-4 py-5 sm:px-6">
-                <!-- Profile -->
-                <ProfileTab v-if="activeTab === 0" :user="user" :profileEnabled="profileEnabled" />
+        <div class="border-border border-b">
+            <Tabs v-model="activeTab" :tabs="tabs" panelId="account-panel" />
+        </div>
 
-                <!-- Security: password + 2FA + devices -->
-                <div v-else-if="activeTab === 1" class="space-y-8">
-                    <PasswordTab :passwordEnabled="passwordEnabled" />
+        <div
+            id="account-panel"
+            class="py-6"
+            role="tabpanel"
+            aria-labelledby="account-panel-active-tab">
+            <!-- Profile -->
+            <ProfileTab v-if="activeTab === 0" :user="user" :profileEnabled="profileEnabled" />
 
-                    <div class="border-border border-t pt-8">
-                        <TwoFactorTab
-                            :user="user"
-                            :qrCodeSvg="qrCodeSvg"
-                            :recoveryCodes="recoveryCodes"
-                            :twoFactorEnabled="twoFactorEnabled" />
-                    </div>
+            <!-- Security: password + 2FA + devices -->
+            <div v-else-if="activeTab === 1" class="space-y-8">
+                <PasswordTab :passwordEnabled="passwordEnabled" />
 
-                    <div class="border-border border-t pt-8">
-                        <DevicesTab :user="user" :sessions="sessions" />
-                    </div>
+                <div class="border-border border-t pt-8">
+                    <TwoFactorTab
+                        :user="user"
+                        :qrCodeSvg="qrCodeSvg"
+                        :recoveryCodes="recoveryCodes"
+                        :twoFactorEnabled="twoFactorEnabled" />
                 </div>
 
-                <!-- Account: deactivate + delete -->
-                <NotificationsTab
-                    v-else-if="activeTab === tabIndex('Notifications')"
-                    :preferences="notificationPreferences" />
-
-                <AccountTab
-                    v-else-if="activeTab === tabIndex('Account')"
-                    :deactivateEnabled="deactivateEnabled"
-                    :deleteEnabled="deleteEnabled" />
+                <div class="border-border border-t pt-8">
+                    <DevicesTab :user="user" :sessions="sessions" />
+                </div>
             </div>
+
+            <NotificationsTab
+                v-else-if="activeTab === tabIndex('Notifications')"
+                :preferences="notificationPreferences" />
+
+            <AccountTab
+                v-else-if="activeTab === tabIndex('Data')"
+                :deactivateEnabled="deactivateEnabled"
+                :deleteEnabled="deleteEnabled"
+                :restoreEnabled="restoreEnabled"
+                :daysToRestore="daysToRestore"
+                :deletePasswordRequired="deletePasswordRequired" />
         </div>
     </main>
 </template>

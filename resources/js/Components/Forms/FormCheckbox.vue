@@ -78,7 +78,7 @@ function onUpdate(value) {
                  just the width of the words. Rows of ragged-right targets are a
                  slog once a list runs past a handful of items. -->
             <div class="min-w-0 flex-1 text-sm">
-                <Label :for="inputId" class="text-foreground block cursor-pointer font-normal">
+                <Label :for="inputId" class="text-foreground block font-normal">
                     {{ label }}{{ required ? ' *' : '' }}
                 </Label>
                 <p

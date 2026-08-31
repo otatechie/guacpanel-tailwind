@@ -10,6 +10,7 @@ import Badge from '@js/Components/Badge.vue'
 const props = defineProps({
     user: { type: Object, required: true },
     sessions: { type: Object },
+    showHeading: { type: Boolean, default: true },
 })
 
 const formattedSessions = computed(() => {
@@ -19,10 +20,36 @@ const formattedSessions = computed(() => {
         device: s.agent?.device || 'Unknown',
         browser: s.agent?.browser || 'Unknown',
         platform: s.agent?.platform || '',
+        ip: s.ip || '',
         lastActive: s.lastActive || '',
         isCurrent: s.isCurrent || false,
     }))
 })
+
+/* A row is a browser session, not a device: two browsers on one laptop are two
+   rows. The count also answers the question people come here with, which is
+   whether anyone else is signed in. */
+const sessionSummary = computed(() =>
+    formattedSessions.value.length === 1
+        ? 'This is your only active session.'
+        : `You have ${formattedSessions.value.length} active sessions.`
+)
+
+/* Two windows of the same browser produce two rows reading "Edge . macOS", so
+   the address is what tells you whether the other one is you. The current row
+   shows it too, to compare against. Last active is omitted there: it is now. */
+const sessionMeta = session =>
+    [session.ip, session.isCurrent ? null : session.lastActive].filter(Boolean).join(' \u00b7 ')
+
+/* "Sign out all" reads as including the one you are reading it in, which is the
+   fear the dialog exists to settle. */
+const otherSessionCount = computed(() => Math.max(0, formattedSessions.value.length - 1))
+
+const logoutAllConsequence = computed(() =>
+    otherSessionCount.value === 1
+        ? 'Your other session is signed out immediately. This browser stays signed in.'
+        : `Your ${otherSessionCount.value} other sessions are signed out immediately. This browser stays signed in.`
+)
 
 const logoutModal = ref(false)
 const logoutAllModal = ref(false)
@@ -61,63 +88,66 @@ const logoutAllSessions = () => {
 </script>
 
 <template>
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
+    <!-- Short rows with a right-aligned action: across the full column the
+         browser and its Sign out end up a screen apart, so the list keeps a
+         measure even though the page does not. -->
+    <section class="max-w-2xl">
+        <div class="flex items-start justify-between gap-4">
             <div>
-                <h2 class="text-foreground text-base font-medium">Active sessions</h2>
-                <p class="text-muted-foreground mt-1 text-sm">
-                    {{ formattedSessions.length }}
-                    {{ formattedSessions.length === 1 ? 'session' : 'sessions' }} across your
-                    devices
+                <h2 v-if="showHeading" class="text-foreground text-base font-medium">
+                    Active sessions
+                </h2>
+                <p class="text-muted-foreground text-sm" :class="showHeading ? 'mt-1' : ''">
+                    {{ sessionSummary }}
                 </p>
             </div>
             <button
                 v-if="formattedSessions.length > 1"
                 type="button"
-                class="shrink-0 text-sm text-red-600 hover:text-red-700 dark:text-red-400"
+                class="text-muted-foreground shrink-0 text-sm transition-colors hover:text-red-600 dark:hover:text-red-400"
                 @click="confirmLogoutAll">
                 Sign out others
             </button>
         </div>
 
-        <div
-            v-if="formattedSessions.length"
-            class="divide-border border-border divide-y rounded-lg border">
+        <!-- Rules between four short rows read as a table the content does not
+             fill; the gap does the same work without the ink. -->
+        <div v-if="formattedSessions.length" class="mt-5 space-y-4">
             <div
                 v-for="s in formattedSessions"
                 :key="s.id"
-                class="flex items-center justify-between gap-4 px-4 py-3">
+                class="flex items-start justify-between gap-4">
                 <div class="min-w-0">
-                    <div class="flex items-center gap-2">
-                        <span class="text-foreground text-sm font-medium">
-                            {{ s.browser }} · {{ s.platform }}
-                        </span>
-                        <Badge v-if="s.isCurrent" dot variant="success">This device</Badge>
-                    </div>
-                    <p class="text-muted-foreground mt-0.5 text-xs">{{ s.lastActive }}</p>
+                    <p class="text-foreground flex items-center gap-2 text-sm font-medium">
+                        {{ s.browser }} · {{ s.platform }}
+                        <Badge v-if="s.isCurrent" dot variant="success">This browser</Badge>
+                    </p>
+                    <p v-if="sessionMeta(s)" class="text-muted-foreground mt-0.5 text-xs">
+                        {{ sessionMeta(s) }}
+                    </p>
                 </div>
                 <button
                     v-if="!s.isCurrent"
                     type="button"
-                    class="shrink-0 text-sm text-red-600 hover:text-red-700 dark:text-red-400"
+                    class="text-muted-foreground shrink-0 text-sm transition-colors hover:text-red-600 dark:hover:text-red-400"
                     @click="confirmLogout(s)">
                     Sign out
                 </button>
             </div>
         </div>
 
-        <p v-else class="text-muted-foreground py-6 text-center text-sm">No active sessions</p>
-    </div>
+        <p v-else class="text-muted-foreground mt-5 text-sm">No active sessions.</p>
+    </section>
 
     <Modal :show="logoutModal" @close="logoutModal = false" size="sm">
         <template #title>Sign out session</template>
         <template #default>
             <p class="text-muted-foreground text-sm">
-                Sign out the session on
                 <span class="text-foreground font-medium">
                     {{ selectedSession?.browser }} · {{ selectedSession?.platform }}
                 </span>
-                ?
+                <template v-if="selectedSession?.ip">at {{ selectedSession.ip }}</template>
+                is signed out immediately. Whoever is using it has to sign in again.
             </p>
         </template>
         <template #footer>
@@ -128,22 +158,20 @@ const logoutAllSessions = () => {
                     size="sm"
                     :disabled="logoutForm.processing"
                     @click="logoutSession">
-                    {{ logoutForm.processing ? 'Signing out...' : 'Sign out' }}
+                    {{ logoutForm.processing ? 'Signing out...' : 'Sign out session' }}
                 </Button>
             </div>
         </template>
     </Modal>
 
     <Modal :show="logoutAllModal" @close="logoutAllModal = false" size="sm">
-        <template #title>Sign out all other sessions</template>
+        <template #title>Sign out other sessions</template>
         <template #default>
             <div class="space-y-4">
-                <p class="text-muted-foreground text-sm">
-                    Enter your password to sign out all other browser sessions.
-                </p>
+                <p class="text-muted-foreground text-sm">{{ logoutAllConsequence }}</p>
                 <FormInput
                     v-model="passwordForm.password"
-                    label="Password"
+                    label="Confirm your password"
                     type="password"
                     :error="passwordForm.errors.password"
                     required
@@ -160,7 +188,7 @@ const logoutAllSessions = () => {
                     size="sm"
                     :disabled="passwordForm.processing"
                     @click="logoutAllSessions">
-                    {{ passwordForm.processing ? 'Signing out...' : 'Sign out all' }}
+                    {{ passwordForm.processing ? 'Signing out...' : 'Sign out other sessions' }}
                 </Button>
             </div>
         </template>

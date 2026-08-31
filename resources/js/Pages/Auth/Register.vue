@@ -51,7 +51,6 @@ const submit = () => {
             <FormInput
                 id="name"
                 v-model="form.name"
-                placeholder=""
                 label="Full name"
                 name="name"
                 :show-required-marker="false"
@@ -61,7 +60,6 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
-                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"
@@ -72,7 +70,6 @@ const submit = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
-                placeholder=""
                 label="Password"
                 name="password"
                 type="password"
@@ -83,7 +80,6 @@ const submit = () => {
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
-                placeholder=""
                 label="Confirm password"
                 name="password_confirmation"
                 type="password"
