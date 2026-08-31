@@ -6,6 +6,7 @@ use App\Events\UserDeleted;
 use App\Events\UserRestored;
 use App\Models\AppNotification;
 use App\Models\User;
+use App\Traits\FormatsUserAgent;
 use App\Traits\UserAccountRestoreTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,14 +14,14 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
-use Jenssegers\Agent\Agent;
 
 class UserAccountController extends Controller
 {
+    use FormatsUserAgent;
     use UserAccountRestoreTrait;
 
     public function index(Request $request)
@@ -41,6 +42,9 @@ class UserAccountController extends Controller
             'sessions' => $this->getUserSessionsData($user, $request->session()->getId()),
             'deactivateEnabled' => config('guacpanel.user.account.deactivate_enabled'),
             'deleteEnabled' => config('guacpanel.user.account.delete_enabled'),
+            'restoreEnabled' => config('guacpanel.user.account.restore_enabled'),
+            'daysToRestore' => (int) config('guacpanel.user.account.days_to_restore'),
+            'deletePasswordRequired' => filled($user->password),
             'notificationsEnabled' => config('guacpanel.notifications.enabled'),
             'notificationPreferences' => $user->notificationPreferences(),
         ];
@@ -53,8 +57,6 @@ class UserAccountController extends Controller
         $validated = $request->validate([
             'muted_scopes' => ['array'],
             'muted_scopes.*' => ['string', Rule::in(User::MUTABLE_SCOPES)],
-            'muted_types' => ['array'],
-            'muted_types.*' => ['string', Rule::in(User::MUTABLE_TYPES)],
         ]);
 
         $user = $request->user();
@@ -62,7 +64,6 @@ class UserAccountController extends Controller
         $user->update([
             'notification_preferences' => [
                 'muted_scopes' => array_values(array_unique($validated['muted_scopes'] ?? [])),
-                'muted_types' => array_values(array_unique($validated['muted_types'] ?? [])),
             ],
         ]);
 
@@ -224,22 +225,6 @@ class UserAccountController extends Controller
         return $sessions;
     }
 
-    protected function formatAgent($userAgent)
-    {
-        if (empty($userAgent)) {
-            return ['device' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown'];
-        }
-
-        $agent = new Agent();
-        $agent->setUserAgent($userAgent);
-
-        return [
-            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
-            'platform' => $agent->platform() ?: 'Unknown',
-            'browser' => $agent->browser() ?: 'Unknown',
-        ];
-    }
-
     public function deactivateAccount()
     {
         if (!config('guacpanel.user.account.deactivate_enabled')) {
@@ -257,13 +242,21 @@ class UserAccountController extends Controller
         return redirect()->route('home')->with('success', 'Account has been deactivated successfully.');
     }
 
-    public function deleteAccount()
+    public function deleteAccount(Request $request)
     {
         if (!config('guacpanel.user.account.delete_enabled')) {
             return redirect()->back()->with('error', __('notifications.general.feature_disabled'));
         }
 
         $user = Auth::user();
+
+        /* Signing other devices out already asks for the password, so ending the
+           account outright cannot ask for less. Social accounts carry no password
+           to check, and a live session is the only proof available for them. */
+        if (filled($user->password)) {
+            $request->validate(['password' => ['required', 'current_password']]);
+        }
+
         $url = $this->setupAccountRestore($user);
         $user->delete();
         event(new UserDeleted($user, $url));

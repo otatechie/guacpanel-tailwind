@@ -83,10 +83,8 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
 
     protected $appends = ['created_at_formatted'];
 
-    /** Announcement scopes and severities a user can mute. */
+    /** Announcement scopes a user can mute. */
     public const MUTABLE_SCOPES = ['system', 'release'];
-
-    public const MUTABLE_TYPES = ['info', 'success', 'warning', 'error'];
 
     /**
      * Notification preferences, with everything on by default.
@@ -98,6 +96,13 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
      * `user` scope is deliberately not mutable -- those are addressed to you
      * personally, and letting someone silence them means an account they cannot
      * be told about.
+     *
+     * Severity was mutable too and is not any more: it cut across every topic at
+     * once, so silencing one noisy source meant going deaf to the quiet ones,
+     * and errors had to be carved out to stop it being dangerous. A per-item
+     * dismiss, which both the feed and the banner already have, answers the
+     * one-off case; a scope mute answers the recurring one. Nothing was left
+     * for severity to do. Stored `muted_types` keys are simply ignored.
      */
     public function notificationPreferences(): array
     {
@@ -107,7 +112,6 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             'muted_scopes' => array_values(
                 array_intersect((array) ($stored['muted_scopes'] ?? []), self::MUTABLE_SCOPES),
             ),
-            'muted_types' => array_values(array_intersect((array) ($stored['muted_types'] ?? []), self::MUTABLE_TYPES)),
         ];
     }
 

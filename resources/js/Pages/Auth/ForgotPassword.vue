@@ -33,7 +33,6 @@ const submit = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
-                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"

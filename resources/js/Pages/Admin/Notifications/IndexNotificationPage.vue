@@ -1,13 +1,15 @@
 <script setup>
 import Button from '@/Components/Button.vue'
-import { Head, Link, router } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import { createColumnHelper } from '@tanstack/vue-table'
 import { computed, h, ref, watch } from 'vue'
 import Default from '@js/Layouts/Default.vue'
 import PageHeader from '@js/Components/Common/PageHeader.vue'
 import NotificationTypeBadge from '@js/Components/Common/NotificationTypeBadge.vue'
 import Datatable from '@js/Components/Common/Datatable.vue'
+import RowActions from '@js/Components/Common/RowActions.vue'
 import Modal from '@js/Components/Notifications/Modal.vue'
+import NotificationSheet from '@js/Pages/Admin/Notifications/NotificationSheet.vue'
 import { SquarePenIcon, Trash2Icon } from '@lucide/vue'
 
 defineOptions({
@@ -23,19 +25,31 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    users: {
+        type: Array,
+        default: () => [],
+    },
 })
 
 const EMPTY = '-'
 
 const loading = ref(false)
 
+const showSheet = ref(false)
+const editTarget = ref(null)
+
+const openCreate = () => {
+    editTarget.value = null
+    showSheet.value = true
+}
+
+const openEdit = row => {
+    editTarget.value = row
+    showSheet.value = true
+}
+
 const showDeleteModal = ref(false)
 const deleteTarget = ref(null)
-
-const showBulkDeleteModal = ref(false)
-const bulkDeleteIds = ref([])
-
-const selectedCount = computed(() => bulkDeleteIds.value.length)
 
 const pagination = ref({
     current_page: props.notifications.current_page,
@@ -83,38 +97,6 @@ const destroyRow = () => {
     })
 }
 
-const closeBulkDeleteModal = () => {
-    showBulkDeleteModal.value = false
-    bulkDeleteIds.value = []
-}
-
-const runBulkDelete = () => {
-    if (!bulkDeleteIds.value.length) return
-
-    loading.value = true
-    router.post(
-        route('admin.notifications.bulk-destroy'),
-        { ids: bulkDeleteIds.value },
-        {
-            preserveScroll: true,
-            preserveState: false,
-            onFinish: () => {
-                loading.value = false
-                closeBulkDeleteModal()
-            },
-        }
-    )
-}
-
-const handleBulkDelete = payload => {
-    const selected = payload?.selectedRows ?? []
-    const ids = selected.map(r => r?.id).filter(Boolean)
-    if (!ids.length) return
-
-    bulkDeleteIds.value = ids
-    showBulkDeleteModal.value = true
-}
-
 const dash = v => {
     if (v === null || v === undefined) return EMPTY
     const s = String(v).trim()
@@ -123,24 +105,34 @@ const dash = v => {
 
 const columnHelper = createColumnHelper()
 
-const btnClass =
-    'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-const iconClass = 'h-3.5 w-3.5'
+const muted = 'text-xs text-muted-foreground'
+
+/* "Delete" alone does not say what. Without this every row hands a screen reader
+   the same trigger. */
+const rowLabel = row => `${dash(row.title)}, ${dash(row.scope)}`
 
 const columns = [
+    /* One fact per column, as the reader's list does. Scope and type were stacked
+       under the title to fill the gap before them, but the gap is density, not
+       structure, and these are what an admin scans to pick a row. */
     columnHelper.accessor('title', {
         header: 'Notification',
-        cell: info => {
-            const row = info.row.original
-            return h('div', { class: 'min-w-0' }, [
-                h('p', { class: 'truncate text-sm font-medium text-foreground' }, dash(row.title)),
-                h('p', { class: 'mt-0.5 text-xs text-muted-foreground' }, [
-                    h('span', { class: 'capitalize' }, dash(row.scope)),
-                    h('span', { class: 'mx-1' }, '·'),
-                    h(NotificationTypeBadge, { type: row.type }),
-                ]),
-            ])
-        },
+        cell: info =>
+            h(
+                'p',
+                { class: 'truncate text-sm font-medium text-foreground' },
+                dash(info.getValue())
+            ),
+    }),
+    columnHelper.accessor('scope', {
+        header: 'Scope',
+        meta: { narrow: true },
+        cell: info => h('span', { class: `${muted} capitalize` }, dash(info.getValue())),
+    }),
+    columnHelper.accessor('type', {
+        header: 'Type',
+        meta: { narrow: true },
+        cell: info => h(NotificationTypeBadge, { type: info.row.original.type }),
     }),
     columnHelper.accessor(row => dash(row.created_by_name), {
         id: 'created_by',
@@ -152,43 +144,42 @@ const columns = [
         id: 'created_at',
         header: 'Created',
         meta: { narrow: true },
-        cell: info => h('span', { class: 'text-xs text-muted-foreground' }, info.getValue()),
+        cell: info =>
+            h(
+                'span',
+                {
+                    class: `tabular-nums whitespace-nowrap ${muted}`,
+                    title: info.row.original.created_at_exact,
+                },
+                info.getValue()
+            ),
     }),
     columnHelper.display({
         id: 'actions',
         header: '',
+        /* One trigger with words behind it. Two glyphs side by side put an
+           irreversible Delete a few pixels from Edit, told apart only by a hover
+           tooltip, which is not a label for something that cannot be undone. */
         cell: info => {
             const row = info.row.original
             if (!row?.id) return null
 
-            // "Edit" / "Delete" alone do not say what. Screen-reader users get a
-            // column of identical buttons otherwise.
-            const label = dash(row.title)
-
-            const editBtn = h(
-                Link,
-                {
-                    href: route('admin.notifications.edit', row.id),
-                    class: btnClass,
-                    'aria-label': `Edit ${label}`,
-                    title: `Edit ${label}`,
-                },
-                { default: () => [h(SquarePenIcon, { class: iconClass, 'aria-hidden': 'true' })] }
-            )
-
-            const deleteBtn = h(
-                'button',
-                {
-                    type: 'button',
-                    class: btnClass + ' hover:text-red-600! dark:hover:text-red-400!',
-                    'aria-label': `Delete ${label}`,
-                    title: `Delete ${label}`,
-                    onClick: () => openDeleteModal(row),
-                },
-                [h(Trash2Icon, { class: iconClass, 'aria-hidden': 'true' })]
-            )
-
-            return h('div', { class: 'flex items-center justify-end gap-2' }, [editBtn, deleteBtn])
+            return h(RowActions, {
+                label: `Actions for ${rowLabel(row)}`,
+                actions: [
+                    {
+                        label: 'Edit',
+                        icon: SquarePenIcon,
+                        onSelect: () => openEdit(row),
+                    },
+                    {
+                        label: 'Delete',
+                        icon: Trash2Icon,
+                        variant: 'destructive',
+                        onSelect: () => openDeleteModal(row),
+                    },
+                ],
+            })
         },
     }),
 ]
@@ -235,13 +226,7 @@ const formatExportData = row => ({
              description only restated the title and the button beside it. -->
         <PageHeader title="Notifications" :breadcrumbs="breadcrumbs">
             <template #actions>
-                <Button
-                    :as="Link"
-                    variant="primary"
-                    size="sm"
-                    :href="route('admin.notifications.create')">
-                    Create notification
-                </Button>
+                <Button variant="primary" size="sm" @click="openCreate">Create notification</Button>
             </template>
         </PageHeader>
 
@@ -255,23 +240,18 @@ const formatExportData = row => ({
                 :pagination="pagination"
                 :page-size-options="pageSizeOptions"
                 :default-page-size="Number(pagination.per_page) || 25"
+                :row-label="rowLabel"
                 empty-message="No notifications yet"
                 empty-description="Notifications you create appear here and go out to your users."
                 export-file-name="admin_notifications"
                 route-name="admin.notifications.index"
-                :bulk-delete-route="route('admin.notifications.bulk-destroy')"
                 :format-export-data="formatExportData"
-                @bulk-delete="handleBulkDelete"
                 @navigate="onNavigate"
                 @update:pagination="pagination = $event">
                 <!-- The next step, where the reader is looking, rather than only
                      in the header 700px away. -->
                 <template #empty-action>
-                    <Button
-                        :as="Link"
-                        variant="secondary"
-                        size="sm"
-                        :href="route('admin.notifications.create')">
+                    <Button variant="secondary" size="sm" @click="openCreate">
                         Create notification
                     </Button>
                 </template>
@@ -279,11 +259,13 @@ const formatExportData = row => ({
         </div>
     </main>
 
-    <Modal
-        :show="showDeleteModal"
-        size="sm"
-        description="This cannot be undone."
-        @close="closeDeleteModal">
+    <NotificationSheet
+        :show="showSheet"
+        :notification="editTarget"
+        :users="users"
+        @close="showSheet = false" />
+
+    <Modal :show="showDeleteModal" size="sm" @close="closeDeleteModal">
         <template #title>Delete notification</template>
         <template #default>
             <!-- Lead with the record, not a sentence wrapped around it. Prettier
@@ -292,6 +274,12 @@ const formatExportData = row => ({
             <p class="text-foreground text-sm font-medium">
                 {{ deleteTarget?.title || 'This notification' }}
             </p>
+            <!-- The consequence moved out of the header subtitle and into the
+                 body, where every other delete modal in the app puts it -- and
+                 said specifically, since an admin delete takes it from everyone. -->
+            <p class="text-muted-foreground mt-2 text-sm">
+                Withdraws it from everyone it was sent to. This cannot be undone.
+            </p>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
@@ -299,35 +287,7 @@ const formatExportData = row => ({
                     Cancel
                 </Button>
                 <Button variant="danger" size="sm" :disabled="loading" @click="destroyRow">
-                    {{ loading ? 'Deleting...' : 'Delete' }}
-                </Button>
-            </div>
-        </template>
-    </Modal>
-
-    <Modal
-        :show="showBulkDeleteModal"
-        size="sm"
-        description="This cannot be undone."
-        @close="closeBulkDeleteModal">
-        <template #title>Delete notifications</template>
-        <template #default>
-            <p class="text-foreground text-sm font-medium">
-                {{ selectedCount }} selected
-                {{ selectedCount === 1 ? 'notification' : 'notifications' }}
-            </p>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-3">
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    :disabled="loading"
-                    @click="closeBulkDeleteModal">
-                    Cancel
-                </Button>
-                <Button variant="danger" size="sm" :disabled="loading" @click="runBulkDelete">
-                    {{ loading ? 'Deleting...' : 'Delete' }}
+                    {{ loading ? 'Deleting...' : 'Delete notification' }}
                 </Button>
             </div>
         </template>

@@ -247,9 +247,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                             ->name('notifications.')
                             ->group(function () {
                                 Route::get('/', [AdminAppNotificationsController::class, 'index'])->name('index');
-                                Route::get('/create', [AdminAppNotificationsController::class, 'create'])->name(
-                                    'create',
-                                );
                                 Route::post('/', [AdminAppNotificationsController::class, 'store'])->name('store');
                                 Route::post('/bulk-destroy', [
                                     AdminAppNotificationsController::class,
@@ -257,9 +254,6 @@ Route::middleware(['web', 'auth', 'auth.session'])->group(function () {
                                 ])->name('bulk-destroy');
                                 Route::get('/deleted', [AdminAppNotificationsController::class, 'deleted'])->name(
                                     'deleted.index',
-                                );
-                                Route::get('/{id}/edit', [AdminAppNotificationsController::class, 'edit'])->name(
-                                    'edit',
                                 );
                                 Route::put('/{id}', [AdminAppNotificationsController::class, 'update'])->name('update');
                                 Route::delete('/{id}', [AdminAppNotificationsController::class, 'destroy'])->name(

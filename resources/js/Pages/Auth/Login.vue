@@ -113,7 +113,6 @@ const sendMagicLink = () => {
             <FormInput
                 id="email"
                 v-model="form.email"
-                placeholder=""
                 label="Email address"
                 name="email"
                 type="email"
@@ -125,7 +124,6 @@ const sendMagicLink = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
-                placeholder=""
                 label="Password"
                 name="password"
                 type="password"
@@ -209,7 +207,6 @@ const sendMagicLink = () => {
                 <FormInput
                     id="magic-link-email"
                     v-model="magicLinkForm.email"
-                    placeholder=""
                     label="Email address"
                     name="magic-link-email"
                     type="email"

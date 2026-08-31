@@ -1,18 +1,32 @@
 <script setup>
 import Button from '@/Components/Button.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Modal from '@js/Components/Notifications/Modal.vue'
+import FormInput from '@js/Components/Forms/FormInput.vue'
 
-defineProps({
+const props = defineProps({
     deactivateEnabled: { type: Boolean, default: false },
     deleteEnabled: { type: Boolean, default: false },
+    restoreEnabled: { type: Boolean, default: false },
+    daysToRestore: { type: Number, default: 0 },
+    deletePasswordRequired: { type: Boolean, default: true },
 })
 
 const deactivateModal = ref(false)
 const deleteModal = ref(false)
 const deactivateForm = useForm({})
-const deleteForm = useForm({})
+const deleteForm = useForm({ password: '' })
+
+/* Deleting soft-deletes and emails a signed restore link, so promising the user
+   it "cannot be undone" was both false and a reason to distrust every other
+   warning on the page. Say what actually happens, and only claim permanence
+   where the restore route is switched off. */
+const deleteConsequence = computed(() =>
+    props.restoreEnabled && props.daysToRestore > 0
+        ? `Removes your account. We email you a link to restore it, good for ${props.daysToRestore} days.`
+        : 'Removes your account and all its data. This cannot be undone.'
+)
 
 const deactivateAccount = () => {
     deactivateForm.post(route('user.deactivate'), {
@@ -28,15 +42,22 @@ const deleteAccount = () => {
         preserveScroll: true,
         onSuccess: () => {
             deleteModal.value = false
+            deleteForm.reset()
         },
     })
+}
+
+const closeDeleteModal = () => {
+    deleteModal.value = false
+    deleteForm.reset()
+    deleteForm.clearErrors()
 }
 </script>
 
 <template>
-    <div class="max-w-2xl space-y-5">
+    <section class="space-y-8">
         <div>
-            <p class="text-foreground text-base font-medium">Download your data</p>
+            <h2 class="text-foreground text-base font-medium">Download your data</h2>
             <p class="text-muted-foreground mt-1 text-sm">
                 A JSON file with your profile, roles and permissions, notification preferences,
                 sign-in history and the notifications addressed to you.
@@ -51,33 +72,42 @@ const deleteAccount = () => {
             </Button>
         </div>
 
-        <div v-if="deactivateEnabled" class="border-border border-t pt-5">
-            <p class="text-foreground text-base font-medium">Deactivate account</p>
+        <!-- Leaving is one goal with two answers, so they are grouped and ordered
+             by consequence rather than sitting at the same weight as an export. -->
+        <div class="border-border border-t pt-8">
+            <h2 class="text-foreground text-base font-medium">Close your account</h2>
             <p class="text-muted-foreground mt-1 text-sm">
-                Signs you out and suspends access. An administrator has to reactivate it for you.
+                One of these is reversible on your own terms. The other is not.
             </p>
-            <Button variant="secondary" size="sm" class="mt-3" @click="deactivateModal = true">
-                Deactivate
-            </Button>
-        </div>
 
-        <div
-            :class="deactivateEnabled ? 'border-t border-red-200 pt-5 dark:border-red-900/30' : ''">
-            <p class="text-base font-medium text-red-600 dark:text-red-400">Delete account</p>
-            <p class="text-muted-foreground mt-1 text-sm">
-                Permanently delete your account and all data. This cannot be undone.
-            </p>
-            <Button
-                variant="danger"
-                size="sm"
-                class="mt-3"
-                v-if="deleteEnabled"
-                @click="deleteModal = true">
-                Delete account
-            </Button>
-            <p v-else class="text-muted-foreground mt-2 text-xs">Account deletion is disabled.</p>
+            <div v-if="deactivateEnabled" class="mt-5">
+                <h3 class="text-foreground text-sm font-medium">Deactivate</h3>
+                <p class="text-muted-foreground mt-1 text-sm">
+                    Signs you out and suspends access. Everything is kept, and an administrator has
+                    to reactivate it for you.
+                </p>
+                <Button variant="secondary" size="sm" class="mt-3" @click="deactivateModal = true">
+                    Deactivate
+                </Button>
+            </div>
+
+            <div class="mt-6">
+                <h3 class="text-foreground text-sm font-medium">Delete</h3>
+                <p class="text-muted-foreground mt-1 text-sm">{{ deleteConsequence }}</p>
+                <Button
+                    v-if="deleteEnabled"
+                    variant="danger"
+                    size="sm"
+                    class="mt-3"
+                    @click="deleteModal = true">
+                    Delete
+                </Button>
+                <p v-else class="text-muted-foreground mt-2 text-xs">
+                    Account deletion is disabled.
+                </p>
+            </div>
         </div>
-    </div>
+    </section>
 
     <Modal :show="deactivateModal" @close="deactivateModal = false" size="sm">
         <template #title>Deactivate account</template>
@@ -97,28 +127,37 @@ const deleteAccount = () => {
                     size="sm"
                     :disabled="deactivateForm.processing"
                     @click="deactivateAccount">
-                    {{ deactivateForm.processing ? 'Deactivating...' : 'Deactivate' }}
+                    {{ deactivateForm.processing ? 'Deactivating...' : 'Deactivate account' }}
                 </Button>
             </div>
         </template>
     </Modal>
 
-    <Modal :show="deleteModal" @close="deleteModal = false" size="sm">
+    <Modal :show="deleteModal" @close="closeDeleteModal" size="sm">
         <template #title>Delete account</template>
         <template #default>
-            <p class="text-muted-foreground text-sm">
-                This permanently deletes your account and all associated data.
-            </p>
+            <form class="space-y-4" @submit.prevent="deleteAccount">
+                <p class="text-muted-foreground text-sm">{{ deleteConsequence }}</p>
+
+                <FormInput
+                    v-if="deletePasswordRequired"
+                    v-model="deleteForm.password"
+                    label="Confirm your password"
+                    type="password"
+                    autocomplete="current-password"
+                    :error="deleteForm.errors.password"
+                    required />
+            </form>
         </template>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <Button variant="secondary" size="sm" @click="deleteModal = false">Cancel</Button>
+                <Button variant="secondary" size="sm" @click="closeDeleteModal">Cancel</Button>
                 <Button
                     variant="danger"
                     size="sm"
                     :disabled="deleteForm.processing"
                     @click="deleteAccount">
-                    {{ deleteForm.processing ? 'Deleting...' : 'Delete' }}
+                    {{ deleteForm.processing ? 'Deleting...' : 'Delete account' }}
                 </Button>
             </div>
         </template>

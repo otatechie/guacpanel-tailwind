@@ -82,7 +82,7 @@ const dismiss = () => {
             v-if="dismissible"
             type="button"
             :class="[
-                'shrink-0 cursor-pointer rounded p-0.5 transition-colors hover:bg-black/5 dark:hover:bg-white/5',
+                'shrink-0 rounded p-0.5 transition-colors hover:bg-black/5 dark:hover:bg-white/5',
                 c.text,
             ]"
             aria-label="Dismiss"

@@ -65,7 +65,7 @@ const deleteBackup = () => {
 }
 
 const actionBtnClass =
-    'cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+    ' rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
 </script>
 
 <template>

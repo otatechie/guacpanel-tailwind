@@ -188,6 +188,17 @@ const activateRow = (event, row) => {
 
 const filteredData = computed(() => props.data)
 
+/* Announced to assistive tech. `none` on a sortable-but-unsorted column is what
+   tells a screen reader the column can be sorted at all; an unsortable column
+   gets no attribute. */
+const ariaSortFor = column => {
+    if (!column.getCanSort()) return undefined
+    const sorted = column.getIsSorted()
+    if (sorted === 'asc') return 'ascending'
+    if (sorted === 'desc') return 'descending'
+    return 'none'
+}
+
 const isServerPagination = computed(() => {
     if (!props.pagination) return false
     if (
@@ -692,29 +703,37 @@ watch(
                                 </div>
                             </TableHead>
 
+                            <!-- A real button when the column sorts, not a <th>
+                                 with a click handler: the handler was reachable
+                                 by mouse only, and nothing announced which
+                                 column was ordering the table. -->
                             <TableHead
                                 v-for="header in table.getHeaderGroups()[0].headers"
                                 :key="header.id"
                                 :class="[
-                                    header.column.getCanSort()
-                                        ? 'hover:bg-muted cursor-pointer'
-                                        : '',
+                                    header.column.getCanSort() ? 'hover:bg-muted' : '',
                                     isNarrow(header.column)
                                         ? 'w-px whitespace-nowrap'
                                         : 'whitespace-normal',
                                 ]"
-                                @click="header.column.getToggleSortingHandler()?.($event)">
-                                <div class="flex items-center gap-2">
+                                :aria-sort="ariaSortFor(header.column)">
+                                <component
+                                    :is="header.column.getCanSort() ? 'button' : 'div'"
+                                    :type="header.column.getCanSort() ? 'button' : undefined"
+                                    class="flex items-center gap-2"
+                                    :class="header.column.getCanSort() ? 'cursor-pointer' : ''"
+                                    @click="header.column.getToggleSortingHandler()?.($event)">
                                     <span>
                                         {{ header.column.columnDef.header }}
                                     </span>
                                     <span
                                         v-if="header.column.getIsSorted()"
                                         :style="{ color: 'var(--primary)' }"
-                                        class="text-foreground">
+                                        class="text-foreground"
+                                        aria-hidden="true">
                                         {{ { asc: '↑', desc: '↓' }[header.column.getIsSorted()] }}
                                     </span>
-                                </div>
+                                </component>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -732,7 +751,7 @@ watch(
                                     </p>
                                     <button
                                         type="button"
-                                        class="text-muted-foreground hover:text-foreground mt-1 cursor-pointer text-sm underline underline-offset-2"
+                                        class="text-muted-foreground hover:text-foreground mt-1 text-sm underline underline-offset-2"
                                         @click="globalFilter = ''">
                                         Clear search
                                     </button>

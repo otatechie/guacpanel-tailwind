@@ -222,7 +222,7 @@ const toggleExpand = id => {
                                 v-if="role.permissions.length > COLLAPSED_CHIPS"
                                 type="button"
                                 :aria-expanded="expandedRoles.has(role.id)"
-                                class="text-muted-foreground hover:text-foreground cursor-pointer px-1 text-xs underline underline-offset-2"
+                                class="text-muted-foreground hover:text-foreground px-1 text-xs underline underline-offset-2"
                                 @click="toggleExpand(role.id)">
                                 {{
                                     expandedRoles.has(role.id)

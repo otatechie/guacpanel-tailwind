@@ -31,7 +31,6 @@ const submit = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
-                placeholder=""
                 label="Password"
                 name="password"
                 type="password"

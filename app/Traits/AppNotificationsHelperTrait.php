@@ -137,11 +137,7 @@ trait AppNotificationsHelperTrait
             });
         }
 
-        if ($sort === 'oldest') {
-            $query->orderBy('an.created_at');
-        } else {
-            $query->orderByDesc('an.created_at');
-        }
+        $this->applySort($query, $sort);
 
         $paginator = $query
             ->paginate($limit, [
@@ -174,6 +170,12 @@ trait AppNotificationsHelperTrait
                     'is_dismissed' => (bool) $dismissedAt,
                     'dismissed_at' => $dismissedAt ? Carbon::parse($dismissedAt)->toISOString() : null,
                     'created_at' => optional($row->created_at)?->toISOString(),
+                    'created_at_diff' => optional($row->created_at)
+                        ? Carbon::parse($row->created_at)->diffForHumans()
+                        : null,
+                    'created_at_exact' => optional($row->created_at)
+                        ? Carbon::parse($row->created_at)->toDayDateTimeString()
+                        : null,
                 ];
             }),
         );
@@ -199,6 +201,57 @@ trait AppNotificationsHelperTrait
     }
 
     /**
+     * The one ordering the page has.
+     *
+     * The column headers and the toolbar control both write this single value,
+     * so there is no second, page-local sort to silently disagree with it.
+     *
+     * Read and dismissed sort on a CASE rather than on the timestamp: where
+     * NULLs land in an ORDER BY is not the same on SQLite, MySQL and Postgres,
+     * and "unread first" has to mean the same thing on all three.
+     */
+    protected function applySort($query, string $sort): void
+    {
+        $columns = [
+            'title' => 'an.title',
+            'scope' => 'an.scope',
+            'type' => 'an.type',
+        ];
+
+        $flags = [
+            'read' => 'anr.read_at',
+            'dismissed' => 'anr.dismissed_at',
+        ];
+
+        if ($sort === 'oldest') {
+            $query->orderBy('an.created_at');
+
+            return;
+        }
+
+        [$key, $direction] = array_pad(explode('_', $sort, 2), 2, 'asc');
+        $direction = $direction === 'desc' ? 'desc' : 'asc';
+
+        // Newest within equal values, so the order is stable rather than
+        // whatever the database happened to return.
+        if (isset($columns[$key])) {
+            $query->orderBy($columns[$key], $direction)->orderByDesc('an.created_at');
+
+            return;
+        }
+
+        if (isset($flags[$key])) {
+            $query
+                ->orderByRaw("case when {$flags[$key]} is null then 0 else 1 end {$direction}")
+                ->orderByDesc('an.created_at');
+
+            return;
+        }
+
+        $query->orderByDesc('an.created_at');
+    }
+
+    /**
      * Hide what the reader has muted.
      *
      * Applied to both the listing and the unread count, or the bell would show
@@ -206,14 +259,10 @@ trait AppNotificationsHelperTrait
      */
     protected function applyNotificationPreferences($query, ?User $user)
     {
-        $preferences = $user?->notificationPreferences() ?? ['muted_scopes' => [], 'muted_types' => []];
+        $preferences = $user?->notificationPreferences() ?? ['muted_scopes' => []];
 
         if ($preferences['muted_scopes']) {
             $query->whereNotIn('an.scope', $preferences['muted_scopes']);
-        }
-
-        if ($preferences['muted_types']) {
-            $query->whereNotIn('an.type', $preferences['muted_types']);
         }
 
         return $query;

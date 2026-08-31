@@ -486,7 +486,7 @@ watch(
                 <button
                     v-if="userBeingEdited"
                     type="button"
-                    class="text-primary mt-1 cursor-pointer text-sm underline-offset-2 hover:underline"
+                    class="text-primary mt-1 text-sm underline-offset-2 hover:underline"
                     @click="openFullSettings">
                     Open full settings
                 </button>

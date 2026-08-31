@@ -51,7 +51,6 @@ const submit = () => {
             <FormInput
                 id="password"
                 v-model="form.password"
-                placeholder=""
                 label="New password"
                 type="password"
                 :show-required-marker="false"
@@ -62,7 +61,6 @@ const submit = () => {
             <FormInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
-                placeholder=""
                 label="Confirm new password"
                 type="password"
                 :show-required-marker="false"

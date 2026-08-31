@@ -28,8 +28,8 @@ defineProps({
         <DropdownMenu>
             <DropdownMenuTrigger
                 :aria-label="label"
-                class="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-ring cursor-pointer rounded-md p-1.5 transition-colors focus-visible:outline-2">
-                <EllipsisIcon class="h-3.5 w-3.5" aria-hidden="true" />
+                class="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-ring flex size-8 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-2">
+                <EllipsisIcon class="size-4" aria-hidden="true" />
             </DropdownMenuTrigger>
 
             <!-- shadcn sizes the panel to the trigger, which here is a 26px button. -->

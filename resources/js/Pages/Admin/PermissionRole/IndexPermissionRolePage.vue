@@ -44,9 +44,13 @@ const activeTab = ref(0)
         <!-- No card. The tab rule already separates the strip from the panel;
              a box around both is decoration, not structure. -->
         <div class="border-border border-b">
-            <Tabs v-model="activeTab" :tabs="tabs" />
+            <Tabs v-model="activeTab" :tabs="tabs" panelId="permission-role-panel" />
         </div>
-        <div class="pt-6">
+        <div
+            id="permission-role-panel"
+            class="pt-6"
+            role="tabpanel"
+            aria-labelledby="permission-role-panel-active-tab">
             <RolesTab
                 v-if="activeTab === 0"
                 :roles="roles"

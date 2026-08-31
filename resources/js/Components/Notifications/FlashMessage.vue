@@ -36,6 +36,11 @@ const flashMessageTypes = [
         type: 'success',
     },
     {
+        check: f => f.status === 'password-updated',
+        message: 'Password updated',
+        type: 'success',
+    },
+    {
         check: f =>
             f.success ||
             f.message ||
@@ -46,6 +51,7 @@ const flashMessageTypes = [
                     'recovery-codes-generated',
                     'verification-link-sent',
                     'profile-information-updated',
+                    'password-updated',
                 ].includes(f.status)),
         message: f => f.success || f.message || f.status,
         type: 'success',

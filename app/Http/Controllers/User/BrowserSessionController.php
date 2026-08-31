@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Traits\FormatsUserAgent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Jenssegers\Agent\Agent;
 
 class BrowserSessionController extends Controller
 {
+    use FormatsUserAgent;
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -28,6 +30,7 @@ class BrowserSessionController extends Controller
                 $sessions[] = [
                     'id' => $session->id ?? '',
                     'agent' => $this->formatAgent($session->user_agent ?? ''),
+                    'ip' => $session->ip_address ?? '',
                     'lastActive' => $session->last_activity
                         ? Carbon::createFromTimestamp($session->last_activity)->diffForHumans()
                         : '',
@@ -40,22 +43,6 @@ class BrowserSessionController extends Controller
             'user' => $user,
             'sessions' => $sessions,
         ]);
-    }
-
-    protected function formatAgent($userAgent)
-    {
-        if (empty($userAgent)) {
-            return ['device' => 'Unknown', 'browser' => 'Unknown', 'platform' => 'Unknown'];
-        }
-
-        $agent = new Agent();
-        $agent->setUserAgent($userAgent);
-
-        return [
-            'device' => $agent->device() ?: ($agent->isDesktop() ? 'Desktop' : 'Unknown'),
-            'platform' => $agent->platform() ?: 'Unknown',
-            'browser' => $agent->browser() ?: 'Unknown',
-        ];
     }
 
     public function logoutOtherDevices(Request $request)
