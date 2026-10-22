@@ -108,7 +108,7 @@ Two things make it different from the alternatives:
 
 ### Prerequisites
 
-- PHP >= 8.3
+- PHP >= 8.4
 - Node.js & NPM (Latest LTS)
 - Composer
 
